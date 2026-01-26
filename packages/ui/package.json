@@ -21,6 +21,7 @@
     "@storybook/addon-vitest": "^10.2.0",
     "@storybook/react": "^10.2.0",
     "@storybook/react-vite": "^10.1.11",
+    "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
     "@vitest/browser-playwright": "^4.0.17",
     "autoprefixer": "^10.4.23",
