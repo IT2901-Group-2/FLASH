@@ -80,7 +80,7 @@ export const Interactive: Story = {
         <ProgressBar value={value} maxValue={max} />
         <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
           <Button
-            onClick={console.log}
+            onClick={() => setValue(old => old - 1)}
             icon={<ArrowLeft />}
             iconPosition="left"
             disabled={value <= 0}
@@ -88,7 +88,7 @@ export const Interactive: Story = {
             Reduser
           </Button>
           <Button
-            onClick={() => console.log("Hello")}
+            onClick={() => setValue(old => old + 1)}
             icon={<ArrowRight />}
             iconPosition="right"
             disabled={value >= max}
