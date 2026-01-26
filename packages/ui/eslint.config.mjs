@@ -3,7 +3,7 @@ import tseslint from "typescript-eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 const eslintConfig = defineConfig([
-  globalIgnores(["dist/**"]),
+  globalIgnores(["dist/**", "storybook-static/**"]),
   eslint.configs.recommended,
   tseslint.configs.recommended,
   {
