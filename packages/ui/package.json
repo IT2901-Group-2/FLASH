@@ -9,6 +9,7 @@
     "dev": "vite build --watch",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    "lint": "eslint",
     "format": "prettier --write src/",
     "format:check": "prettier --check src/"
   },
@@ -38,8 +39,11 @@
     "vitest": "^4.0.17"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
     "@types/node": "^25.0.10",
     "@types/react": "^19.2.9",
-    "prettier": "^3.8.1"
+    "eslint": "^9.39.2",
+    "prettier": "^3.8.1",
+    "typescript-eslint": "^8.53.1"
   }
 }
