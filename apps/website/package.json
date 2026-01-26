@@ -13,7 +13,8 @@
   "dependencies": {
     "next": "16.1.4",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "ui": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20",

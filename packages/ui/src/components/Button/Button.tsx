@@ -1,5 +1,4 @@
 import React from "react";
-import omit from "../../util/omit";
 import { Loader } from "../Loader/Loader";
 import styles from "./Button.module.css";
 import { cl } from "../../util/className";
@@ -56,7 +55,6 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
  */
 export const Button = ({
   variant = "primary",
-  className,
   children,
   size = "medium",
   loading = false,
@@ -64,13 +62,8 @@ export const Button = ({
   "data-color": data = "brand-purple",
   icon,
   iconPosition = "left",
-  onKeyUp,
   ref,
-  ...rest
 }: ButtonProps) => {
-  const filterProps: React.ButtonHTMLAttributes<HTMLButtonElement> =
-    disabled || loading ? omit(rest, []) : rest;
-
   const handleKeyUp = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === " " && !disabled && !loading) e.currentTarget.click();
   };
@@ -78,10 +71,13 @@ export const Button = ({
     <button
       data-color={data}
       data-variant={variant}
-      {...filterProps}
       ref={ref}
       onKeyUp={handleKeyUp}
-      className={cl(styles.button, loading && styles.loading, disabled && styles.disabled)}
+      className={cl(
+        styles.button,
+        loading && styles.loading,
+        disabled && styles.disabled
+      )}
       disabled={(disabled ?? loading) ? true : undefined}
     >
       {icon && iconPosition === "left" && <span className={styles.icon}>{icon}</span>}
