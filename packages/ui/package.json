@@ -1,7 +1,6 @@
 {
   "name": "ui",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
   "main": "src/index.ts",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -13,10 +12,6 @@
     "format": "prettier --write src/",
     "format:check": "prettier --check src/"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
   "dependencies": {
     "@chromatic-com/storybook": "^5.0.0",
     "@storybook/addon-a11y": "^10.2.0",
