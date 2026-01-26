@@ -67,7 +67,8 @@ export const Button = ({
   ...rest
 }: ButtonProps) => {
   const filterProps: React.ButtonHTMLAttributes<HTMLButtonElement> =
-    disabled || loading ? omit(rest, "href") : rest;
+    disabled || loading ? omit(rest, []) : rest;
+
   const handleKeyUp = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === " " && !disabled && !loading) e.currentTarget.click();
   };
