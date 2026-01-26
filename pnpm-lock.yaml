@@ -126,6 +126,9 @@ importers:
       typescript-eslint:
         specifier: ^8.53.1
         version: 8.53.1(eslint@9.39.2)(typescript@5.9.3)
+      vite-plugin-libcss:
+        specifier: ^1.1.2
+        version: 1.1.2(vite@7.3.1(@types/node@25.0.10))
 
 packages:
 
@@ -2953,6 +2956,11 @@ packages:
     peerDependenciesMeta:
       vite:
         optional: true
+
+  vite-plugin-libcss@1.1.2:
+    resolution: {integrity: sha512-nM1vqIibhKPvzpa6aPc8DahGcKS82cUE/Jiap6r9aIrsNno105RIDI8XnLmP1nKU8nhGb08eNrWjSOhO53c6NQ==}
+    peerDependencies:
+      vite: '*'
 
   vite@7.3.1:
     resolution: {integrity: sha512-w+N7Hifpc3gRjZ63vYBXA56dvvRlNWRczTdmCBBa+CotUzAPf5b7YMdMR/8CQoeYE5LX3W4wj6RYTgonm1b9DA==}
@@ -6185,6 +6193,11 @@ snapshots:
       - '@types/node'
       - rollup
       - supports-color
+
+  vite-plugin-libcss@1.1.2(vite@7.3.1(@types/node@25.0.10)):
+    dependencies:
+      minimatch: 9.0.5
+      vite: 7.3.1(@types/node@25.0.10)
 
   vite@7.3.1(@types/node@25.0.10):
     dependencies:

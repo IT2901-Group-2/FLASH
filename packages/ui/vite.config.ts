@@ -6,6 +6,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 import { playwright } from "@vitest/browser-playwright";
+import libCss from "vite-plugin-libcss";
 const dirname =
   typeof __dirname !== "undefined"
     ? __dirname
@@ -18,6 +19,7 @@ export default defineConfig({
     dts({
       include: ["src"],
     }),
+    libCss(),
   ],
   resolve: {
     alias: {
