@@ -1,0 +1,23 @@
+.container {
+  min-width: 1rem;
+  background-color: var(--color-neutral-500);
+  border-radius: 1rem;
+  width: clamp(1rem, 100%, 40rem);
+  overflow: hidden;
+}
+
+.filler {
+  min-height: 0.75rem;
+  background-color: var(--data-color-700);
+  border-radius: 1rem;
+  width: 100%;
+  transition: transform 0.3s ease-in-out;
+
+  &.filler--medium {
+    min-height: 1.01rem;
+  }
+
+  &.filler--large {
+    min-height: 1.5rem;
+  }
+}

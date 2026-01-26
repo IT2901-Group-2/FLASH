@@ -1,0 +1,51 @@
+[data-color="neutral"] {
+  --data-color-100: var(--color-neutral-100);
+  --data-color-200: var(--color-neutral-200);
+  --data-color-300: var(--color-neutral-300);
+  --data-color-400: var(--color-neutral-400);
+  --data-color-500: var(--color-neutral-500);
+  --data-color-600: var(--color-neutral-600);
+  --data-color-700: var(--color-neutral-700);
+  --data-color-800: var(--color-neutral-800);
+  --data-color-900: var(--color-neutral-900);
+  --data-color-1000: var(--color-neutral-1000);
+}
+
+[data-color="brand-purple"] {
+  --data-color-100: var(--color-brand-purple-100);
+  --data-color-200: var(--color-brand-purple-200);
+  --data-color-300: var(--color-brand-purple-300);
+  --data-color-400: var(--color-brand-purple-400);
+  --data-color-500: var(--color-brand-purple-500);
+  --data-color-600: var(--color-brand-purple-600);
+  --data-color-700: var(--color-brand-purple-700);
+  --data-color-800: var(--color-brand-purple-800);
+  --data-color-900: var(--color-brand-purple-900);
+  --data-color-1000: var(--color-brand-purple-1000);
+}
+
+[data-color="accent"] {
+  --data-color-100: var(--color-accent-100);
+  --data-color-200: var(--color-accent-200);
+  --data-color-300: var(--color-accent-300);
+  --data-color-400: var(--color-accent-400);
+  --data-color-500: var(--color-accent-500);
+  --data-color-600: var(--color-accent-600);
+  --data-color-700: var(--color-accent-700);
+  --data-color-800: var(--color-accent-800);
+  --data-color-900: var(--color-accent-900);
+  --data-color-1000: var(--color-accent-1000);
+}
+
+[data-color="success"] {
+  --data-color-100: var(--color-success-100);
+  --data-color-200: var(--color-success-200);
+  --data-color-300: var(--color-success-300);
+  --data-color-400: var(--color-success-400);
+  --data-color-500: var(--color-success-500);
+  --data-color-600: var(--color-success-600);
+  --data-color-700: var(--color-success-700);
+  --data-color-800: var(--color-success-800);
+  --data-color-900: var(--color-success-900);
+  --data-color-1000: var(--color-success-1000);
+}
