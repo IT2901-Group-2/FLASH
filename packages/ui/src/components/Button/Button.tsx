@@ -2,6 +2,7 @@ import React from "react";
 import { Loader } from "../Loader/Loader";
 import styles from "./Button.module.css";
 import { cl } from "../../util/className";
+import { omit } from "@/util/omit";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Button Content. */
@@ -63,7 +64,10 @@ export const Button = ({
   icon,
   iconPosition = "left",
   ref,
+  ...rest
 }: ButtonProps) => {
+  const filterProps: React.ButtonHTMLAttributes<HTMLButtonElement> =
+    disabled || loading ? omit(rest, "href") : rest;
   const handleKeyUp = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === " " && !disabled && !loading) e.currentTarget.click();
   };
@@ -73,6 +77,7 @@ export const Button = ({
       data-variant={variant}
       ref={ref}
       onKeyUp={handleKeyUp}
+      {...filterProps}
       className={cl(
         styles.button,
         loading && styles.loading,
