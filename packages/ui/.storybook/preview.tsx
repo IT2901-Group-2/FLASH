@@ -2,9 +2,7 @@ import type { Preview } from "@storybook/react-vite";
 import "../src/styles/global.css";
 import "../src/docs/styles/docs.css";
 import FontDecorator from "./decorators/TypeDecorator";
-import { Canvas, DocsContainer, Source } from "@storybook/addon-docs/blocks";
 import { themes } from "storybook/theming";
-import theme from "./theme";
 
 export const fonts = ["Open Sans"];
 

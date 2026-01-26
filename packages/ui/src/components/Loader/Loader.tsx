@@ -1,6 +1,6 @@
 import { SVGProps } from "react";
 import styles from "./Loader.module.css";
-import { cl } from "../../util/className";
+import { cl } from "@/util/className";
 
 export interface LoaderProps extends Omit<SVGProps<SVGSVGElement>, "ref"> {
   /**
@@ -37,8 +37,8 @@ export const Loader = ({
   transparent = false,
   variant = "neutral",
   id,
-  ref,
-  ...rest
+  // ref,
+  // ...rest
 }: LoaderProps) => {
   return (
     <svg

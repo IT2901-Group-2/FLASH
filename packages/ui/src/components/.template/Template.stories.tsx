@@ -1,8 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Template } from "./Template";
 import { fn } from "storybook/test";
-import { ArrowLeft, ArrowRight, Circle, GamepadDirectional } from "lucide-react";
-import { background } from "storybook/theming";
 
 const meta: Meta<typeof Template> = {
   title: "Byggeklosser/Komponenter/Template",

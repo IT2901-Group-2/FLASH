@@ -13,7 +13,7 @@ export const CodeBox: React.FC<CodeBoxProps> = ({
   color,
   children,
   language,
-  copyable,
+  // copyable,
 }) => {
   return (
     <InfoBox title={title} color={color} icon={icon}>

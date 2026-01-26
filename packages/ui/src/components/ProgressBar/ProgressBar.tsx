@@ -46,7 +46,7 @@ export const ProgressBar = ({
   maxValue = 100,
   simulated,
   size = "medium",
-  ...rest
+  // ...rest
 }: ProgressBarProps) => {
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
@@ -64,7 +64,7 @@ export const ProgressBar = ({
   }, [simulated]);
 
   const translateX = -100 + (Math.min(value, maxValue) / maxValue) * 100;
-  const translateXSimulated = -100 + (value / maxValue) * 100;
+  // const translateXSimulated = -100 + (value / maxValue) * 100;
 
   return (
     <div data-color={"brand-purple"} className={cl(styles.container)}>

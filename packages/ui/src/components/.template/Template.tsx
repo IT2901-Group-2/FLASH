@@ -1,6 +1,8 @@
-export interface TemplateProps {}
+export interface TemplateProps {
+  temp: string;
+}
 
-export const Template = ({}: TemplateProps) => {
-  return <></>;
+export const Template = ({ temp }: TemplateProps) => {
+  return <>{temp}</>;
 };
 export default Template;

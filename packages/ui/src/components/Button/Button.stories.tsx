@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Button } from "./Button";
 import { fn } from "storybook/test";
-import { ArrowLeft, ArrowRight, Circle, GamepadDirectional } from "lucide-react";
-import { background } from "storybook/theming";
+import { ArrowLeft, ArrowRight, GamepadDirectional } from "lucide-react";
 
 const meta: Meta<typeof Button> = {
   title: "Byggeklosser/Komponenter/Button",

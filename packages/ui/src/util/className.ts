@@ -7,7 +7,9 @@ type ClassValue =
   | null
   | boolean
   | undefined;
+/* eslint-disable @typescript-eslint/no-explicit-any */
 type ClassDictionary = Record<string, any>;
+/* eslint-enable */
 type ClassArray = ClassValue[];
 
 /**
@@ -22,19 +24,19 @@ type ClassArray = ClassValue[];
  * @returns A space-separated string of class names.
  */
 function toVal(mix: Exclude<ClassValue, null | undefined | false>) {
-  var k,
+  let k,
     y,
-    str = "";
+    str: string = "";
 
   if (typeof mix === "string" || typeof mix === "number") {
     str += mix;
   } else if (typeof mix === "object") {
     if (Array.isArray(mix)) {
-      var len = mix.length;
+      const len: number = mix.length;
       for (k = 0; k < len; k++) {
         if (mix[k]) {
           if ((y = toVal(mix[k]))) {
-            str && (str += " ");
+            if (str) str += " ";
             str += y;
           }
         }
@@ -42,7 +44,7 @@ function toVal(mix: Exclude<ClassValue, null | undefined | false>) {
     } else {
       for (y in mix) {
         if (mix[y]) {
-          str && (str += " ");
+          if (str) str += " ";
           str += y;
         }
       }
@@ -62,15 +64,15 @@ function toVal(mix: Exclude<ClassValue, null | undefined | false>) {
  * @returns A single string containing all valid class names separated by spaces.
  */
 export function cl(...inputs: ClassValue[]) {
-  var i = 0,
+  let i: number = 0,
     tmp,
     x,
-    str = "",
-    len = inputs.length;
+    str = "";
+  const len: number = inputs.length;
   for (; i < len; i++) {
     if ((tmp = inputs[i])) {
       if ((x = toVal(tmp))) {
-        str && (str += " ");
+        if (str) str += " ";
         str += x;
       }
     }

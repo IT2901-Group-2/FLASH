@@ -10,12 +10,15 @@ export interface ShowcaseProps {
 
 export const Showcase: React.FC<ShowcaseProps> = ({ of }) => {
   const [active, setActive] = useState<string>(Object.keys(of)[0] || "");
+
   const data = Object.entries(of)
     .filter(key => key[0] !== "default" && !key[0].startsWith("_"))
     .map(([name, story]) => ({
       name,
       story,
+      /* eslint-disable @typescript-eslint/no-explicit-any */
       description: (story as any).parameters?.docs?.description?.story || "",
+      /* eslint-enable */
     }));
   const activeItem = data.find(item => item.name === active);
 
