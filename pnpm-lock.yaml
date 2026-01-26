@@ -114,6 +114,9 @@ importers:
       '@types/react':
         specifier: ^19.2.9
         version: 19.2.9
+      prettier:
+        specifier: ^3.8.1
+        version: 3.8.1
 
 packages:
 

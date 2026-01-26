@@ -12,7 +12,9 @@ const meta: Meta<typeof ProgressBar> = {
   args: { onClick: fn() },
   decorators: [
     Story => (
-      <div style={{ width: "20rem", display: "flex", flexDirection: "column", gap: ".5rem" }}>
+      <div
+        style={{ width: "20rem", display: "flex", flexDirection: "column", gap: ".5rem" }}
+      >
         <Story />
       </div>
     ),

@@ -8,7 +8,9 @@
     "build": "vite build",
     "dev": "vite build --watch",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "format": "prettier --write src/",
+    "format:check": "prettier --check src/"
   },
   "keywords": [],
   "author": "",
@@ -37,6 +39,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.0.10",
-    "@types/react": "^19.2.9"
+    "@types/react": "^19.2.9",
+    "prettier": "^3.8.1"
   }
 }

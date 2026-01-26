@@ -23,7 +23,11 @@ export const Showcase: React.FC<ShowcaseProps> = ({ of }) => {
     <>
       <div className={styles.storySelect}>
         {data.map(item => (
-          <Chips key={item.name} onClick={() => setActive(item.name)} active={active === item.name}>
+          <Chips
+            key={item.name}
+            onClick={() => setActive(item.name)}
+            active={active === item.name}
+          >
             {item.name.replaceAll("_", " ")}
           </Chips>
         ))}

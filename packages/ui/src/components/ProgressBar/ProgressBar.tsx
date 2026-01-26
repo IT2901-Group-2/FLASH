@@ -2,8 +2,10 @@ import React, { useEffect } from "react";
 import styles from "./ProgressBar.module.css";
 import { cl } from "../../util/className";
 
-export interface ProgressBarProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "role"> {
+export interface ProgressBarProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "role"
+> {
   /**
    * Changes height.
    * @default "medium"
