@@ -1,0 +1,10 @@
+.storySelect {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  width: fit-content;
+}
+
+.canvas {
+  background-color: var(--canvas-bg) !important;
+}

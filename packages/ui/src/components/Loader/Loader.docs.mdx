@@ -1,0 +1,32 @@
+import { Meta, ArgTypes } from "@storybook/addon-docs/blocks";
+import Showcase from "@docs-components/Showcase";
+import * as LoaderStories from "./Loader.stories";
+
+<Meta of={LoaderStories} title="Byggeklosser/Komponenter/Loader" />
+
+# Loader
+
+Loader er en visuell indikasjon på at noe laster eller tar tid. Selv om brukere får lite informasjon om hva som skjer, får de en forsikring om at noe skjer.
+
+<img src="figures/loader_header.svg" alt="Illustrasjon av brekkpunkter" />
+
+### Egnet til:
+
+- Laste innhold på siden.
+- Indikere når en handling har midlertidig stoppet applikasjonen.
+- Indikere lasting som tar mer enn 1 sekund.
+- Indikere at data blir lagret når bruker trykker "lagre".
+
+### Uegnet til:
+
+- Når lasting tar mindre enn 1 sekund.
+- Å vise at enkeltelementer på siden blir lastet inn (vurder Skeleton).
+- Lengre prosesser der varighet eller progresjon er kjent (se ProgressBar).
+
+## Eksempler
+
+<Showcase of={LoaderStories} />
+
+## Props
+
+<ArgTypes of={LoaderStories} />

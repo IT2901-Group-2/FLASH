@@ -1,0 +1,93 @@
+.loader {
+  width: 1.5rem;
+  display: inline-block;
+  position: relative;
+  animation: loader-rotate 1.8s linear infinite;
+  stroke-width: 6;
+
+  &.loader--3xlarge {
+    width: 5.5rem;
+    stroke-width: 5;
+  }
+
+  &.loader--2xlarge {
+    width: 4rem;
+    stroke-width: 6;
+  }
+
+  &.loader--xlarge {
+    width: 2.5rem;
+    stroke-width: 6;
+  }
+
+  &.loader--large {
+    width: 2rem;
+    stroke-width: 7;
+  }
+
+  &.loader--medium {
+    width: 1.5rem;
+    stroke-width: 7;
+  }
+
+  &.loader--small {
+    width: 1.25rem;
+    stroke-width: 8;
+  }
+
+  &.loader--xsmall {
+    width: 1rem;
+    stroke-width: 8;
+  }
+}
+
+.loader__foreground {
+  animation: loader-dasharray 1.5s ease-in-out infinite;
+  stroke-dasharray: 80px, 200px;
+  stroke-dashoffset: 0;
+  stroke: var(--color-accent-700);
+  stroke-linecap: round;
+  stroke-width: 4.8px;
+
+  .loader[data-variant="neutral"] & {
+    stroke: var(--color-neutral-700);
+  }
+}
+
+.loader__background {
+  stroke: color-mix(in srgb, var(--color-accent-400) 70%, transparent);
+  stroke-width: 4.8px;
+
+  .loader[data-variant="neutral"] & {
+    stroke: color-mix(in srgb, var(--color-neutral-400) 70%, transparent);
+  }
+}
+
+.loader--transparent {
+  .loader__background {
+    stroke: transparent !important;
+  }
+}
+
+@keyframes loader-rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loader-dasharray {
+  0% {
+    stroke-dasharray: 1px, 200px;
+    stroke-dashoffset: 0;
+  }
+
+  50% {
+    stroke-dasharray: 100px, 200px;
+    stroke-dashoffset: -15px;
+  }
+
+  100% {
+    stroke-dasharray: 100px, 200px;
+    stroke-dashoffset: -120px;
+  }
+}

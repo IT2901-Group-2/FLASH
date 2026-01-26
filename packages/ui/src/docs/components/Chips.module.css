@@ -1,0 +1,19 @@
+.container {
+  width: fit-content;
+  padding: 0.25rem 1rem;
+  background-color: var(--docs-color-background);
+  color: var(--docs-color-text);
+  border-radius: 1rem;
+  border: none;
+  outline: 1px solid var(--docs-color-outline);
+
+  &:hover {
+    /* background-color: color-mix(in srgb, #222325 80%, white); */
+    cursor: pointer;
+    outline-color: color-mix(in srgb, var(--docs-color-outline) 80%, white);
+  }
+}
+
+.active {
+  background-color: color-mix(in srgb, var(--docs-color-background) 80%, white);
+}

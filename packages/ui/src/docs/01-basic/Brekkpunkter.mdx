@@ -1,0 +1,42 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import { Table } from "@docs-components/Table";
+import { InfoBox } from "@docs-components/InfoBox";
+import { CodeBox } from "@docs-components/CodeBox";
+import { Link } from "lucide-react";
+
+<Meta title="Grunnleggende/Styling/Brekkpunkter" />
+
+export const brekkbunkter = {
+  header: ["Brekkpunkt", "Verdi"],
+  data: [
+    { name: "xs", value: "320 px" },
+    { name: "sm", value: "480 px" },
+    { name: "md", value: "768 px" },
+    { name: "lg", value: "1024 px" },
+    { name: "xl", value: "1280 px" },
+    { name: "2xl", value: "1440 px" },
+  ],
+};
+
+# Brekkpunkter
+
+<img src="figures/brekkpunkter_header.svg" alt="Illustrasjon av brekkpunkter" />
+
+Brekkpunkter er spesifikke bredder til en nettside hvor layouten og innholdet kan endre seg. Disse brekkpunktene definerer grensene for når designet skal justeres for å optimalisere brukeropplevelsen på ulike enheter og skjermstørrelser.
+
+Brekkpunktene er mest brukt til å bestemme layoutendringer, som for eksempel å endre antall kolonner i et grid, endre størrelsen på tekst og bilder, eller skjule/vise bestemte elementer på siden. Brukeropplevelsen kan variere avhengig av enhet og skjermstørrelse, og brekkpunktene bidrar til en mer bedre og optimalisert opplevelse på tvers av disse.
+
+## Design
+
+Som designer vil brekkpunkter la deg tilpasse designet til ulike skjermstørrelser og enheter. Overgangen fra et nivå til et annet gir deg muligheten til å endre på layout, størrelser, typografi og grafikk.
+
+<Table header={brekkbunkter.header} data={brekkbunkter.data} />
+
+## Kode
+
+<CodeBox title="CSS" language="css">
+  @media (min-width: 480px) {/* small screens */}
+  @media (min-width: 768px) {/* medium screens */}
+  @media (min-width: 1024px) {/* large screens */}
+  @media (min-width: 1280px) {/* extra-large screens */}
+</CodeBox>

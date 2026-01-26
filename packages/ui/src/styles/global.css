@@ -1,0 +1,94 @@
+@import "./data-colors.css";
+
+:root {
+  --color-neutral-000: #ffffff;
+  --color-neutral-100: #d3d6db;
+  --color-neutral-200: #b6bbc4;
+  --color-neutral-300: #9ea5b1;
+  --color-neutral-400: #9097a5;
+  --color-neutral-500: #8a92a0;
+  --color-neutral-600: #757c88;
+  --color-neutral-700: #616670;
+  --color-neutral-800: #4c5058;
+  --color-neutral-900: #373a40;
+  --color-neutral-1000: #222428;
+  --color-brand-purple-100: #c3b3bd;
+  --color-brand-purple-200: #9c8090;
+  --color-brand-purple-300: #7c586d;
+  --color-brand-purple-400: #683e57;
+  --color-brand-purple-500: #60344e;
+  --color-brand-purple-600: #522c42;
+  --color-brand-purple-700: #432437;
+  --color-brand-purple-800: #351d2b;
+  --color-brand-purple-900: #26151f;
+  --color-brand-purple-1000: #180d14;
+  --color-accent-100: #eadcd5;
+  --color-accent-200: #dcc4b9;
+  --color-accent-300: #d1b1a3;
+  --color-accent-400: #caa695;
+  --color-accent-500: #c7a18f;
+  --color-accent-600: #a9897a;
+  --color-accent-700: #8b7164;
+  --color-accent-800: #6d594f;
+  --color-accent-900: #504039;
+  --color-accent-1000: #322824;
+  --color-success-100: #b6d8be;
+  --color-success-200: #86be92;
+  --color-success-300: #5fa96f;
+  --color-success-400: #479c5a;
+  --color-success-500: #3d9751;
+  --color-success-600: #348045;
+  --color-success-700: #2b6a39;
+  --color-success-800: #22532d;
+  --color-success-900: #183c20;
+  --color-success-1000: #0f2614;
+}
+
+[data-theme="dark"] {
+  --color-neutral-000: #000000;
+  --color-neutral-100: #222428;
+  --color-neutral-200: #373a40;
+  --color-neutral-300: #4c5058;
+  --color-neutral-400: #616670;
+  --color-neutral-500: #757c88;
+  --color-neutral-600: #8a92a0;
+  --color-neutral-700: #9097a5;
+  --color-neutral-800: #9ea5b1;
+  --color-neutral-900: #b6bbc4;
+  --color-neutral-1000: #d3d6db;
+  --color-brand-purple-100: #180d14;
+  --color-brand-purple-200: #26151f;
+  --color-brand-purple-300: #351d2b;
+  --color-brand-purple-400: #432437;
+  --color-brand-purple-500: #522c42;
+  --color-brand-purple-600: #60344e;
+  --color-brand-purple-700: #683e57;
+  --color-brand-purple-800: #7c586d;
+  --color-brand-purple-900: #9c8090;
+  --color-brand-purple-1000: #c3b3bd;
+  --color-accent-100: #322824;
+  --color-accent-200: #504039;
+  --color-accent-300: #6d594f;
+  --color-accent-400: #8b7164;
+  --color-accent-500: #a9897a;
+  --color-accent-600: #c7a18f;
+  --color-accent-700: #caa695;
+  --color-accent-800: #d1b1a3;
+  --color-accent-900: #dcc4b9;
+  --color-accent-1000: #eadcd5;
+  --color-success-100: #0f2614;
+  --color-success-200: #183c20;
+  --color-success-300: #22532d;
+  --color-success-400: #2b6a39;
+  --color-success-500: #348045;
+  --color-success-600: #3d9751;
+  --color-success-700: #479c5a;
+  --color-success-800: #5fa96f;
+  --color-success-900: #86be92;
+  --color-success-1000: #b6d8be;
+}
+
+p {
+  color: var(--color-neutral-1000);
+  font-family: "Nunito Sans";
+}
