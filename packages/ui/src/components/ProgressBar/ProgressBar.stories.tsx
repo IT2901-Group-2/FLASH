@@ -44,7 +44,6 @@ export const Loading: Story = {
           return oldValue + increment > 100 ? 100 : oldValue + increment;
         });
       });
-      console.log(intervalId);
       return () => clearInterval(intervalId);
     }, []);
 
@@ -81,7 +80,7 @@ export const Interactive: Story = {
         <ProgressBar value={value} maxValue={max} />
         <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
           <Button
-            onClick={() => setValue(old => old - 1)}
+            onClick={console.log}
             icon={<ArrowLeft />}
             iconPosition="left"
             disabled={value <= 0}
@@ -89,7 +88,7 @@ export const Interactive: Story = {
             Reduser
           </Button>
           <Button
-            onClick={() => setValue(old => old + 1)}
+            onClick={() => console.log("Hello")}
             icon={<ArrowRight />}
             iconPosition="right"
             disabled={value >= max}
