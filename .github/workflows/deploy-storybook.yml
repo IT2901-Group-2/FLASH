@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main # Default branch
-      - storybook-autodeplay # Test branch
+      - storybook-autodeploy # Test branch
   workflow_dispatch: # Allows manual triggering from GitHub Actions tab
 
 jobs:
