@@ -1,0 +1,41 @@
+name: Deploy Storybook
+
+on:
+  push:
+    branches: [main] # Default branch
+  workflow_dispatch: # Allows manual triggering from GitHub Actions tab
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "25" # Project's Node version
+
+      - name: Install dependencies
+        working-directory: ./packages/ui
+        run: npm install
+
+      - name: Build Storybook
+        working-directory: ./packages/ui
+        run: npm run build-storybook
+
+      - name: Deploy to university server
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+        run: |
+          # Setup SSH
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H login.stud.ntnu.no >> ~/.ssh/known_hosts
+
+          # Sync files to server
+          rsync -avz --delete -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+            ./packages/ui/storybook-static/ $SERVER_USER@login.stud.ntnu.no:/home/groupswww/it2901-02/design/
