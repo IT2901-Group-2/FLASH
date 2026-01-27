@@ -69,7 +69,7 @@ export const WithIcon: Story = {
   ),
 };
 
-export const IconPosition: Story = {
+export const Icon_Position: Story = {
   render: () => (
     <>
       <Input placeholder="Icon on left" icon={<Search />} iconPosition="left" />
@@ -100,7 +100,7 @@ export const States: Story = {
   ),
 };
 
-export const WithHelperText: Story = {
+export const With_Helper_Text: Story = {
   render: () => (
     <>
       <Input
@@ -112,7 +112,7 @@ export const WithHelperText: Story = {
   ),
 };
 
-export const DifferentTypes: Story = {
+export const Different_Types: Story = {
   render: () => (
     <>
       <Input type="text" placeholder="Text input" icon={<User />} />
@@ -124,7 +124,7 @@ export const DifferentTypes: Story = {
   ),
 };
 
-export const ComplexExample: Story = {
+export const Complex_Example: Story = {
   render: () => (
     <>
       <div>
