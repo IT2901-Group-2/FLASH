@@ -1,0 +1,117 @@
+.inputWrapper {
+  --color-error: var(--color-error-500);
+  --color-success: var(--color-success-500);
+}
+.inputContainer {
+  --color-base: var(--data-color-500);
+  --color-hover: var(--data-color-200);
+  --color-active: var(--data-color-300);
+  --color-disabled: var(--data-color-200);
+
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 18.7rem;
+  height: 1.25rem;
+  padding: 0.875rem 1.25rem;
+  border-radius: 4rem;
+  border: none;
+  font-size: 1rem;
+  position: relative;
+
+  &[data-variant="primary"] {
+    background-color: var(#F0E9EC);
+    outline: 1px solid var(--color-base);
+
+    /* &:hover:not(:has(input:disabled), .disabled, .loading) {
+      outline-color: var(--color-hover);
+    } */
+     &:focus-within:not(:has(input:disabled), .disabled).error {
+      outline-color: var(--color-error);
+      outline-width: 3px;
+    }
+
+    &:focus-within:not(:has(input:disabled), .disabled).success {
+      outline-color: var(--color-success);
+      outline-width: 3px;
+    }
+
+    &:focus-within:not(:has(input:disabled), .disabled) {
+      outline-color: var(--color-active);
+      outline-width: 3px;
+    }
+
+    &:is(.disabled, :has(input:disabled)) {
+      background-color: var(--color-neutral-50);
+      outline-color: var(--color-disabled);
+      cursor: not-allowed;
+    }
+
+    &.error {
+      outline-color: var(--color-error);
+    }
+
+    &.success {
+      outline-color: var(--color-success);
+    }
+  }
+
+  
+}
+
+.input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: inherit;
+  color: var(--color-neutral-1000);
+  width: 100%;
+
+  &::placeholder {
+    color: var(--color-neutral-600);
+  }
+
+  &:disabled {
+    color: var(--color-neutral-800);
+    cursor: not-allowed;
+  }
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-base);
+  flex-shrink: 0;
+
+  .disabled &,
+  .inputContainer:has(input:disabled) & {
+    color: var(--color-neutral-500);
+  }
+  .error &{
+    color: var(--color-error);
+  }
+  .success &{
+    color: var(--color-success);
+  }
+}
+
+.loaderContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.message {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--color-neutral-700);
+  margin-top: 0.25rem;
+  padding: 0 0.25rem;
+
+  &.errorMessage {
+    color: var(--color-error);
+  }
+}

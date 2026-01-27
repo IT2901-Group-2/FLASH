@@ -3,20 +3,13 @@ import { Loader } from "../Loader";
 import styles from "./Input.module.css";
 import { cl } from "@/util/className";
 
-export interface InputProps extends Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  "size"
-> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   /**
    * Changes design and interaction-visuals.
+   * As of now their only exists styling for the primary variant
    * @default "primary"
    */
   variant?: "primary" | "secondary" | "tertiary";
-  /**
-   * Changes padding, height and font-size
-   * @default "medium"
-   */
-  size?: "medium" | "small" | "xsmall";
   /**
    * **Avoid using if possible for accessibility purposes**.
    *
@@ -69,7 +62,6 @@ export interface InputProps extends Omit<
 
 export const Input = ({
   variant = "primary",
-  size = "medium",
   disabled,
   loading = false,
   icon,
@@ -94,7 +86,6 @@ export const Input = ({
         )}
         data-color={data}
         data-variant={variant}
-        data-size={size}
       >
         {icon && iconPosition === "left" && <span className={styles.icon}>{icon}</span>}
         <input
@@ -105,7 +96,7 @@ export const Input = ({
         />
         {loading && (
           <span className={styles.loaderContainer}>
-            <Loader size={size} />
+            <Loader />
           </span>
         )}
         {icon && iconPosition === "right" && !loading && (

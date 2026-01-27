@@ -42,6 +42,16 @@
   --color-success-800: #22532d;
   --color-success-900: #183c20;
   --color-success-1000: #0f2614;
+  --color-error-100: #f5c6c6;
+  --color-error-200: #eda5a5;
+  --color-error-300: #e68989;
+  --color-error-400: #e27777;
+  --color-error-500: #e06d6d;
+  --color-error-600: #c25d5d;
+  --color-error-700: #a34d4d;
+  --color-error-800: #853d3d;
+  --color-error-900: #662d2d;
+  --color-error-1000: #481d1d;
 }
 
 [data-theme="dark"] {
