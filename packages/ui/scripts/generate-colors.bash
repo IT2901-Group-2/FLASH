@@ -7,6 +7,7 @@
 # Output files
 OUTPUT_FILE="../src/styles/global.css"
 DATA_ATTR_FILE="../src/styles/data-colors.css"
+TYPESCRIPT_FILE="../src/styles/colorType.ts"
 
 # Function to convert hex to RGB
 hex_to_rgb() {
@@ -60,6 +61,7 @@ fi
 
 # Import data-color styles
 echo "@import './data-colors.css';" >> "$OUTPUT_FILE"
+echo "@import './canvas.css';" >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
 # Output light theme
@@ -135,6 +137,22 @@ while IFS=: read -r name hex || [ -n "$name" ]; do
     echo "}" >> "$DATA_ATTR_FILE"
     echo "" >> "$DATA_ATTR_FILE"
 done < "$1"
+
+# Generate typescript file for color types
+echo "// Auto-generated color types" > "$TYPESCRIPT_FILE"
+echo "export type ColorName =" >> "$TYPESCRIPT_FILE"
+first=true
+while IFS=: read -r name hex || [ -n "$name" ]; do
+    [[ -z "$name" || "$name" =~ ^[[:space:]]*# ]] && continue
+    name=$(echo "$name" | tr -d '[:space:]')
+    if [ "$first" = true ]; then
+        echo "  | '$name'" >> "$TYPESCRIPT_FILE"
+        first=false
+    else
+        echo "  | '$name'" >> "$TYPESCRIPT_FILE"
+    fi
+done < "$1"
+echo ";" >> "$TYPESCRIPT_FILE"
 
 echo "Color spectrum generated:"
 echo "  - $OUTPUT_FILE"

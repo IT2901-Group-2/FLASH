@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import styles from "./ProgressBar.module.css";
 import { cl } from "../../util/className";
+import { ColorName } from "@/styles/colorType";
 
 export interface ProgressBarProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -38,7 +39,7 @@ export interface ProgressBarProps extends Omit<
   /**
    * Overrides inherited color.
    */
-  "data-color"?: undefined;
+  "data-color"?: ColorName;
 }
 
 export const ProgressBar = ({
