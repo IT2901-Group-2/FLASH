@@ -7,7 +7,7 @@
 # Output files
 OUTPUT_FILE="../src/styles/global.css"
 DATA_ATTR_FILE="../src/styles/data-colors.css"
-TYPESCRIPT_FILE="../src/styles/colors.ts"
+TYPESCRIPT_FILE="../src/styles/colorType.ts"
 
 # Function to convert hex to RGB
 hex_to_rgb() {
@@ -60,8 +60,8 @@ fi
 > "$DATA_ATTR_FILE"
 
 # Import data-color styles
-echo "@import './data-colors.css';" >> "$OUTPUT_FILE"
-echo "@import './canvas.css';" >> "$OUTPUT_FILE"
+echo "@import \"./data-colors.css\";" >> "$OUTPUT_FILE"
+echo "@import \"./canvas.css\";" >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
 # Output light theme
