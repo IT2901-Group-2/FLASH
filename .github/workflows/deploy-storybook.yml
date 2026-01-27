@@ -41,6 +41,15 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H login.stud.ntnu.no >> ~/.ssh/known_hosts
 
+          # Test SSH connection first
+          echo "Testing SSH connection..."
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no $SERVER_USER@login.stud.ntnu.no "echo 'SSH connection successful'; ls -la /home/groupswww/it2901-02/"
+
+          # Check if storybook-static exists
+          echo "Checking if storybook-static directory exists..."
+          ls -la ./packages/ui/storybook-static/ || echo "storybook-static not found!"
+
           # Sync files to server
+          echo "Starting rsync..."
           rsync -avz --delete -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
             ./packages/ui/storybook-static/ $SERVER_USER@login.stud.ntnu.no:/home/groupswww/it2901-02/design/
