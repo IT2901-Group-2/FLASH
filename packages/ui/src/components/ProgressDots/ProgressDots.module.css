@@ -1,0 +1,30 @@
+.progressDot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: var(--data-color-500);
+  color: var(--color-neutral-000);
+  font-size: 1.5rem;
+
+  &:is(:disabled, .disabled) {
+    background-color: var(--data-color-300);
+  }
+}
+
+.dotLine {
+  position: absolute;
+  width: 1.5rem;
+  height: 0.25rem;
+  background-color: inherit;
+
+  &:is(.left) {
+    transform: translateX(-100%);
+  }
+
+  &:is(.right) {
+    transform: translateX(100%);
+  }
+}
