@@ -2,7 +2,9 @@ name: Deploy Storybook
 
 on:
   push:
-    branches: [main] # Default branch
+    branches:
+      - main # Default branch
+      - storybook-autodeplay # Test branch
   workflow_dispatch: # Allows manual triggering from GitHub Actions tab
 
 jobs:
@@ -24,6 +26,9 @@ jobs:
       - name: Build Storybook
         working-directory: ./packages/ui
         run: npm run build-storybook --docs
+
+      - name: Install rsync
+        run: sudo apt-get update && sudo apt-get install -y rsync
 
       - name: Deploy to university server
         env:
