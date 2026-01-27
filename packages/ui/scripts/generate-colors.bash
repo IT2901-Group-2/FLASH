@@ -140,19 +140,21 @@ done < "$1"
 
 # Generate typescript file for color types
 echo "// Auto-generated color types" > "$TYPESCRIPT_FILE"
-echo "export type ColorName =" >> "$TYPESCRIPT_FILE"
+echo "export const colorNames = [" >> "$TYPESCRIPT_FILE"
 first=true
 while IFS=: read -r name hex || [ -n "$name" ]; do
     [[ -z "$name" || "$name" =~ ^[[:space:]]*# ]] && continue
     name=$(echo "$name" | tr -d '[:space:]')
     if [ "$first" = true ]; then
-        echo "  | '$name'" >> "$TYPESCRIPT_FILE"
+        echo "  \"$name\"," >> "$TYPESCRIPT_FILE"
         first=false
     else
-        echo "  | '$name'" >> "$TYPESCRIPT_FILE"
+        echo "  \"$name\"," >> "$TYPESCRIPT_FILE"
     fi
 done < "$1"
-echo ";" >> "$TYPESCRIPT_FILE"
+echo "] as const;" >> "$TYPESCRIPT_FILE"
+echo "" >> "$TYPESCRIPT_FILE"
+echo "export type ColorName = (typeof colorNames)[number];" >> "$TYPESCRIPT_FILE"
 
 echo "Color spectrum generated:"
 echo "  - $OUTPUT_FILE"
