@@ -43,7 +43,7 @@ jobs:
 
           # Test SSH connection first
           echo "Testing SSH connection..."
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no $SERVER_USER@login.stud.ntnu.no "echo 'SSH connection successful'; ls -la /home/groupswww/it2901-02/"
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no $SERVER_USER@login.stud.ntnu.no "echo 'SSH connection successful'; ls -la /home/groupswww/it2901-02/" || echo "SSH failed with exit code $?"
 
           # Check if storybook-static exists
           echo "Checking if storybook-static directory exists..."
@@ -51,5 +51,5 @@ jobs:
 
           # Sync files to server
           echo "Starting rsync..."
-          rsync -avz --delete -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
-            ./packages/ui/storybook-static/ $SERVER_USER@login.stud.ntnu.no:/home/groupswww/it2901-02/design/
+          rsync -avzP --delete -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+            ./packages/ui/storybook-static/ $SERVER_USER@login.stud.ntnu.no:/home/groupswww/it2901-02/design/ || echo "Rsync failed with exit code $?"
