@@ -2,6 +2,7 @@ import React from "react";
 import { Loader } from "../Loader/Loader";
 import styles from "./Button.module.css";
 import { cl } from "../../util/className";
+import { ColorName } from "@/styles/colorType";
 import { omit } from "@/util/omit";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -40,7 +41,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   /**
    * Overrides inherited color.
    */
-  "data-color"?: "accent" | "neutral" | "brand-purple";
+  "data-color"?: ColorName;
   /**
    * Ref to the button element
    */
@@ -48,11 +49,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 /**
- * A button component
- * @example
- * ```jsx
- * <Button>Click Me</Button>
- * ```
+ * A Button allows the user to perform an action.
  */
 export const Button = ({
   variant = "primary",
@@ -85,6 +82,7 @@ export const Button = ({
         disabled && styles.disabled
       )}
       disabled={(disabled ?? loading) ? true : undefined}
+      {...rest}
     >
       {icon && iconPosition === "left" && <span className={styles.icon}>{icon}</span>}
       {loading && <Loader size={size} />}

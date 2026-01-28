@@ -1,4 +1,5 @@
 @import "./data-colors.css";
+@import "./canvas.css";
 
 :root {
   --color-neutral-000: #ffffff;
@@ -42,6 +43,16 @@
   --color-success-800: #22532d;
   --color-success-900: #183c20;
   --color-success-1000: #0f2614;
+  --color-warning-100: #f3bbbd;
+  --color-warning-200: #ea8e92;
+  --color-warning-300: #e46a6f;
+  --color-warning-400: #e05359;
+  --color-warning-500: #de4a50;
+  --color-warning-600: #bd3f44;
+  --color-warning-700: #9b3438;
+  --color-warning-800: #7a292c;
+  --color-warning-900: #591e20;
+  --color-warning-1000: #381214;
 }
 
 [data-theme="dark"] {
@@ -86,9 +97,14 @@
   --color-success-800: #5fa96f;
   --color-success-900: #86be92;
   --color-success-1000: #b6d8be;
-}
-
-p {
-  color: var(--color-neutral-1000);
-  font-family: "Nunito Sans";
+  --color-warning-100: #381214;
+  --color-warning-200: #591e20;
+  --color-warning-300: #7a292c;
+  --color-warning-400: #9b3438;
+  --color-warning-500: #bd3f44;
+  --color-warning-600: #de4a50;
+  --color-warning-700: #e05359;
+  --color-warning-800: #e46a6f;
+  --color-warning-900: #ea8e92;
+  --color-warning-1000: #f3bbbd;
 }
