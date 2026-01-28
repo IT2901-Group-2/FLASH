@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Title } from "./Title";
-import { Star, Sparkles, Crown } from "lucide-react";
 
 const meta: Meta<typeof Title> = {
   title: "Byggeklosser/Komponenter/Title",
