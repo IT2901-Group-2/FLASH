@@ -40,6 +40,7 @@
     "@types/react": "^19.2.9",
     "@vitest/coverage-istanbul": "^4.0.18",
     "eslint": "^9.39.2",
+    "playwright": "^1.58.0",
     "prettier": "^3.8.1",
     "typescript-eslint": "^8.53.1",
     "vite-plugin-libcss": "^1.1.2"
