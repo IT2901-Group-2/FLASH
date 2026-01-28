@@ -1,4 +1,5 @@
 .progressDot {
+  /* position: relative; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,21 +11,26 @@
   font-size: 1.5rem;
 
   &:is(:disabled, .disabled) {
-    background-color: var(--data-color-300);
+    background-color: var(--data-color-200);
   }
 }
 
 .dotLine {
   position: absolute;
-  width: 1.5rem;
+  left: 100%;
+  transform: translateX(calc(100% * (var(--dot-value) + 1 - var(--dot-count))));
   height: 0.25rem;
+  z-index: -1;
   background-color: inherit;
+  width: calc(100% / (var(--dot-count) - 1));
+  transition: background-color 0.5s ease;
+}
 
-  &:is(.left) {
-    transform: translateX(-100%);
-  }
-
-  &:is(.right) {
-    transform: translateX(100%);
-  }
+.progressDots {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
