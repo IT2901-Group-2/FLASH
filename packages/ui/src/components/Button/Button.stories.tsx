@@ -135,22 +135,17 @@ export const LoadingButton: Story = {
     loading: true,
     onClick: fn(),
   },
-  play: async ({ canvasElement, args, step }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Button shows loading state", async () => {
       const button = canvas.getByRole("button");
       await expect(button).toBeInTheDocument();
-      // Assuming your button shows a loader, you might check for it
-      // const loader = canvas.getByTestId("loader"); // or similar
-      // await expect(loader).toBeInTheDocument();
     });
 
     await step("Loading button may prevent interaction", async () => {
       const button = canvas.getByRole("button");
       await userEvent.click(button);
-      // Depending on implementation, loading might prevent clicks
-      // This test can be adjusted based on your button's behavior
     });
   },
 };
