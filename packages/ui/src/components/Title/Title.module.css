@@ -1,6 +1,6 @@
 .title {
   --color-base: var(--data-color-800);
-  
+
   display: flex;
   align-items: center;
   gap: 0.5rem;
