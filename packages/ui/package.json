@@ -11,7 +11,8 @@
     "build-storybook": "storybook build",
     "lint": "eslint",
     "format": "prettier --write src/",
-    "format:check": "prettier --check src/"
+    "format:check": "prettier --check src/",
+    "setup": "playwright install --with-deps"
   },
   "dependencies": {
     "@chromatic-com/storybook": "^5.0.0",
