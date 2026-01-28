@@ -37,11 +37,7 @@ export const Card = ({
     <div
       data-color={data}
       data-variant={variant}
-      className={cl(
-        styles.card,
-        styles[`card--${variant}`],
-        className
-      )}
+      className={cl(styles.card, styles[`card--${variant}`], className)}
       {...rest}
     >
       {children}
