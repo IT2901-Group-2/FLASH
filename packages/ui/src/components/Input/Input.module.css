@@ -1,9 +1,9 @@
 .inputWrapper {
-  --color-error: var(--color-error-500);
+  --color-warning: var(--color-warning-500);
   --color-success: var(--color-success-500);
   --color-text-primary: var(--data-color-800);
 }
-.inputContainer { 
+.inputContainer {
   --color-base: var(--data-color-500);
   --color-hover: var(--data-color-200);
   --color-active: var(--data-color-300);
@@ -21,14 +21,14 @@
   position: relative;
 
   &[data-variant="primary"] {
-    background-color: var(#F0E9EC);
+    background-color: var(#f0e9ec);
     outline: 1px solid var(--color-base);
 
     /* &:hover:not(:has(input:disabled), .disabled, .loading) {
       outline-color: var(--color-hover);
     } */
-     &:focus-within:not(:has(input:disabled), .disabled).error {
-      outline-color: var(--color-error);
+    &:focus-within:not(:has(input:disabled), .disabled).error {
+      outline-color: var(--color-warning);
       outline-width: 3px;
     }
 
@@ -49,15 +49,13 @@
     }
 
     &.error {
-      outline-color: var(--color-error);
+      outline-color: var(--color-warning);
     }
 
     &.success {
       outline-color: var(--color-success);
     }
   }
-
-  
 }
 
 .input {
@@ -90,10 +88,10 @@
   .inputContainer:has(input:disabled) & {
     color: var(--color-neutral-500);
   }
-  .error &{
-    color: var(--color-error);
+  .error & {
+    color: var(--color-warning);
   }
-  .success &{
+  .success & {
     color: var(--color-success);
   }
 }
@@ -113,7 +111,7 @@
   padding: 0 0.25rem;
 
   &.errorMessage {
-    color: var(--color-error);
+    color: var(--color-warning);
   }
 }
 
@@ -129,7 +127,7 @@
 }
 
 .required {
-  color: var(--color-error);
+  color: var(--color-warning);
 }
 
 .disabled .label {
