@@ -46,8 +46,6 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 /**
  * A Button allows the user to perform an action.
- *
- * @BaHuyP
  */
 export const Button = ({
   variant = "primary",
