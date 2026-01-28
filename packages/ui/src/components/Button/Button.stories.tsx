@@ -41,7 +41,6 @@ export const PrimaryVariant: Story = {
     const button = canvas.getByRole("button", { name: /primary button/i });
 
     await expect(button).toBeInTheDocument();
-    console.log(button);
   },
 };
 
