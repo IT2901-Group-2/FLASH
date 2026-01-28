@@ -156,6 +156,10 @@ echo "] as const;" >> "$TYPESCRIPT_FILE"
 echo "" >> "$TYPESCRIPT_FILE"
 echo "export type ColorName = (typeof colorNames)[number];" >> "$TYPESCRIPT_FILE"
 
+# Format output files using Prettier
+# pnpm prettier --write "$OUTPUT_FILE" "$DATA_ATTR_FILE" "$TYPESCRIPT_FILE"
+
 echo "Color spectrum generated:"
 echo "  - $OUTPUT_FILE"
 echo "  - $DATA_ATTR_FILE"
+echo "  - $TYPESCRIPT_FILE"
