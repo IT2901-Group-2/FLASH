@@ -4,16 +4,37 @@ import { cl } from "../../util/className";
 import { ColorName } from "@/styles/colorType";
 
 export interface BreadcrumbItem {
+  /** The text label for the breadcrumb item. */
   label: string;
+  /** Optional URL for the breadcrumb link. */
   href?: string;
 }
 
 export interface BreadcrumbProps {
+  /** Array of breadcrumb items to display. */
   items: BreadcrumbItem[];
+  /** Optional CSS class name for custom styling. */
   className?: string;
+  /**
+   * Overrides inherited color.
+   */
   "data-color"?: ColorName;
 }
 
+/**
+ * A breadcrumb navigation component for displaying the user's location in a hierarchical structure.
+ * The first item displays a home icon, middle items are clickable links, and the last item represents the current page.
+ * @example
+ * ```jsx
+ * <Breadcrumb
+ *   items={[
+ *     { label: "", href: "/" },
+ *     { label: "Albums", href: "/albums" },
+ *     { label: "Main Gallery" }
+ *   ]}
+ * />
+ * ```
+ */
 export const Breadcrumb = ({
   items,
   className,
