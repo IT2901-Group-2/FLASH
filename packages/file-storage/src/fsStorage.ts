@@ -1,56 +1,40 @@
 import { Err, Ok, Result } from "ts-results";
-import {
-  Directory,
-  File,
-  FileStorage,
-  FileStorageEntry,
-  FileStorageError,
-  Filetype,
-} from "./fileStorage";
-import pathlib from "path";
+import { FileStorage } from "./fileStorage";
+import { absolutePath, dirPath } from "./utils";
 import fs from "fs/promises";
 
 export class FSStorage implements FileStorage {
   readonly dir: string;
 
   constructor(dir: string) {
-    this.dir = pathlib.resolve(dir);
+    this.dir = dirPath(absolutePath(dir));
   }
 
-  async stat(path: string): Promise<Result<FileStorageEntry, FileStorageError>> {
-    const stat = await fs.stat(path);
-    if (!stat.isFile() && !stat.isDirectory()) {
-      return Err(FileStorageError.NOT_FOUND);
-    }
-
-    return stat.isFile()
-      ? Ok({
-          type: Filetype.FILE,
-          path,
-          isFile: (() => true) as () => this is File,
-          isDir: (() => false) as () => this is Directory,
-        })
-      : Ok({
-          type: Filetype.DIR,
-          path,
-          isFile: (() => false) as () => this is File,
-          isDir: (() => true) as () => this is Directory,
-        });
+  list(path: string): Promise<Result<string[], Error>> {
+    return fs
+      .readdir(absolutePath(this.dir, path))
+      .then(Ok<string[]>)
+      .catch(() => Err(new Error(`Directory ${path} not found`)));
   }
 
-  async list(path: string): Promise<Result<FileStorageEntry[], FileStorageError>> {
-    return null as never;
+  read(path: string): Promise<Result<Blob, Error>> {
+    return fs
+      .readFile(absolutePath(this.dir, path))
+      .then(buf => Ok(new Blob([buf])))
+      .catch(() => Err(new Error(`File ${path} not found`)));
   }
 
-  async read(path: string): Promise<Result<Blob, FileStorageError>> {
-    return null as never;
+  mkdir(path: string): Promise<Result<void, Error>> {
+    return fs
+      .mkdir(absolutePath(this.dir, path))
+      .then(() => Ok.EMPTY)
+      .catch(() => Err(new Error(`Couldn't create directory ${path}`)));
   }
 
-  async mkdir(paht: string): Promise<Result<void, FileStorageError>> {
-    return null as never;
-  }
-
-  async write(): Promise<Result<void, FileStorageError>> {
-    return null as never;
+  write(path: string, data: Blob): Promise<Result<void, Error>> {
+    return fs
+      .writeFile(absolutePath(this.dir, path), data.stream())
+      .then(() => Ok.EMPTY)
+      .catch(() => Err(new Error(`Couldn't create file ${path}`)));
   }
 }
