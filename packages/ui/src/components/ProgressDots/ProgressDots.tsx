@@ -1,9 +1,8 @@
 import { ColorName } from "@/styles/colorType";
 import styles from "./ProgressDots.module.css";
 import { cl } from "@/util/className";
-import { IntRange } from "@/types/utility";
 
-export interface ProgressDotProps extends React.HTMLAttributes<HTMLDivElement> {
+interface ProgressDotProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Text to be displayed inside the progress dot. Only the first two characters will be shown.
    * @default undefined
@@ -22,9 +21,9 @@ export interface ProgressDotProps extends React.HTMLAttributes<HTMLDivElement> {
   "data-color"?: ColorName;
 }
 
-export const ProgressDot: React.FC<ProgressDotProps> = ({
+const ProgressDot: React.FC<ProgressDotProps> = ({
   text,
-  "data-color": color = "neutral",
+  "data-color": color,
   disabled,
   ...rest
 }) => {
@@ -44,10 +43,8 @@ export const ProgressDot: React.FC<ProgressDotProps> = ({
 export interface ProgressDotsProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * The value of the progressdot with the highest number.
-   *
-   * Must in the range 2-10
    */
-  maxValue: IntRange<2, 10>;
+  maxValue: number;
   /**
    * Current value of the progress dots.
    */
@@ -64,6 +61,13 @@ export interface ProgressDotsProps extends React.HTMLAttributes<HTMLDivElement> 
   lineThickness?: "thin" | "medium" | "thick";
 }
 
+/**
+ * Component for displaying a series of progress dots.
+ * @param {number} maxValue - The maximum value (number of dots).
+ * @param {number} value - The current value (number of filled dots).
+ * @param {string} lineThickness - The thickness of the line between the dots.
+ * @param {string} color - The color of the progress dots.
+ */
 export const ProgressDots = ({
   maxValue,
   value = 0,
@@ -71,9 +75,6 @@ export const ProgressDots = ({
   "data-color": color = "neutral",
   ...rest
 }: ProgressDotsProps) => {
-  if (maxValue < 2 || maxValue > 10)
-    throw new Error("maxValue must be in the range 2-10");
-
   return (
     <div className={styles.progressDots} data-color={color} {...rest}>
       <div className={styles.dotLine} line-type={lineThickness}>
@@ -88,7 +89,7 @@ export const ProgressDots = ({
         <ProgressDot
           key={i}
           text={String(i + 1)}
-          disabled={value !== undefined ? i + 1 > value : false}
+          disabled={i + 1 > value}
           data-color={color}
         />
       ))}

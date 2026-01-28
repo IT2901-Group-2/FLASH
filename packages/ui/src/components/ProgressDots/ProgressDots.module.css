@@ -16,7 +16,7 @@
 
   &:is(:disabled, .disabled) {
     background-color: var(--data-color-200);
-    color: var(--color-neutral-400);
+    color: var(--color-neutral-800);
   }
 }
 
