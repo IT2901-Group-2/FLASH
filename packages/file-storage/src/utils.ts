@@ -27,9 +27,9 @@ export function resolvePath(...paths: string[]): string {
 }
 
 export function absolutePath(...paths: string[]): string {
-  return resolvePath(...paths).replace(/^([^\/])/, "/$1");
+  return resolvePath(...paths).replace(/^([^/])/, "/$1");
 }
 
 export function dirPath(path: string): string {
-  return path.replace(/([^\/])$/, "$1/");
+  return path.replace(/([^/])$/, "$1/");
 }
