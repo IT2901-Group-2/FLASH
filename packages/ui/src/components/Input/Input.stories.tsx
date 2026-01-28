@@ -35,6 +35,10 @@ const meta: Meta<typeof Input> = {
       control: "boolean",
       description: "Shows success state styling",
     },
+    required: {
+      control: "boolean",
+      description: "Marks the input as required (adds asterisk to label)",
+    },
   },
   args: {
     onChange: fn(),
@@ -58,6 +62,65 @@ const meta: Meta<typeof Input> = {
 
 export default meta;
 type Story = StoryObj<typeof Input>;
+
+export const With_Labels: Story = {
+  render: () => (
+    <>
+      <Input label="Email Address" placeholder="you@example.com" icon={<Mail />} />
+      <Input label="Username" placeholder="Enter your username" icon={<User />} />
+      <Input label="Search" placeholder="Search..." icon={<Search />} />
+    </>
+  ),
+};
+
+export const Required_Fields: Story = {
+  render: () => (
+    <>
+      <Input
+        label="Email Address"
+        placeholder="you@example.com"
+        icon={<Mail />}
+        required
+      />
+      <Input label="Full Name" placeholder="John Doe" icon={<User />} required />
+      <Input
+        label="Password"
+        type="password"
+        placeholder="Enter your password"
+        required
+      />
+    </>
+  ),
+};
+
+export const Labels_With_States: Story = {
+  render: () => (
+    <>
+      <Input
+        label="Email Address"
+        placeholder="you@example.com"
+        icon={<Mail />}
+        helperText="We'll never share your email with anyone else."
+      />
+      <Input
+        label="Username"
+        placeholder="johndoe"
+        icon={<Check />}
+        iconPosition="right"
+        success
+        helperText="This username is available!"
+      />
+      <Input
+        label="Password"
+        type="password"
+        placeholder="Enter your password"
+        error="Password must be at least 8 characters"
+        required
+      />
+      <Input label="Company Name" placeholder="Acme Inc." disabled />
+    </>
+  ),
+};
 
 export const WithIcon: Story = {
   render: () => (
@@ -128,10 +191,8 @@ export const Complex_Example: Story = {
   render: () => (
     <>
       <div>
-        <h3 style={{ marginBottom: "0.5rem", fontSize: "0.875rem", fontWeight: 600 }}>
-          Email Address
-        </h3>
         <Input
+          label="Email Address"
           type="email"
           placeholder="you@example.com"
           icon={<Mail />}
@@ -139,10 +200,8 @@ export const Complex_Example: Story = {
         />
       </div>
       <div>
-        <h3 style={{ marginBottom: "0.5rem", fontSize: "0.875rem", fontWeight: 600 }}>
-          Search
-        </h3>
         <Input
+          label="Search"
           type="search"
           placeholder="Search for anything..."
           icon={<Search />}
@@ -150,10 +209,8 @@ export const Complex_Example: Story = {
         />
       </div>
       <div>
-        <h3 style={{ marginBottom: "0.5rem", fontSize: "0.875rem", fontWeight: 600 }}>
-          Username
-        </h3>
         <Input
+          label="Username"
           placeholder="johndoe"
           icon={<Check />}
           iconPosition="right"

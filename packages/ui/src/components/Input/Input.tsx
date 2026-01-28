@@ -51,12 +51,21 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
    * Ref to the input element
    */
   ref?: React.Ref<HTMLInputElement>;
+  /**
+   * Label text for the input
+   */
+  label?: string;
+  /**
+   * Whether the input is required (adds asterisk to label)
+   * @default false
+   */
+  required?: boolean;
 }
 /**
  * An input component
  * @example
  * ```jsx
- * <Input placeholder="Enter your email" />
+ * <Input label="Email" placeholder="Enter your email" />
  * ```
  */
 
@@ -72,10 +81,25 @@ export const Input = ({
   "data-color": data = "brand-purple",
   className,
   ref,
+  label,
+  required = false,
+  id,
   ...props
 }: InputProps) => {
+  // Generate a unique ID if not provided (needed for label association)
+  const inputId = id || `input-${React.useId()}`;
   return (
-    <div className={cl(styles.inputWrapper, className)}>
+    <div
+      className={cl(styles.inputWrapper, className)}
+      data-color={data}
+      data-variant={variant}
+    >
+      {label && (
+        <label htmlFor={inputId} className={styles.label}>
+          {label}
+          {required && <span className={styles.required}> *</span>}
+        </label>
+      )}
       <div
         className={cl(
           styles.inputContainer,
@@ -90,8 +114,10 @@ export const Input = ({
         {icon && iconPosition === "left" && <span className={styles.icon}>{icon}</span>}
         <input
           ref={ref}
+          id={inputId}
           className={styles.input}
           disabled={disabled || loading}
+          required={required}
           {...props}
         />
         {loading && (
