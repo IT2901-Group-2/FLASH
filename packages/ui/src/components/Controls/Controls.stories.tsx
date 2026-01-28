@@ -61,3 +61,15 @@ export const Three_Items: Story = {
     />
   ),
 };
+
+export const Loading: Story = {
+  render: () => (
+    <Controls
+      options={EnableDisable}
+      value="enable"
+      variant="primary"
+      data-color="accent"
+      loading
+    />
+  ),
+};

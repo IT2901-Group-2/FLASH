@@ -2,13 +2,16 @@ import React from "react";
 import styles from "./Controls.module.css";
 import { cl } from "../../util/className";
 import { ColorName } from "@/styles/colorType";
+import { Loader } from "../Loader/Loader";
 
 export type SegmentedOption<T extends string> = {
   value: T;
   label: React.ReactNode;
 };
 
-export interface ControlsProps<T extends string> {
+export interface ControlsProps<
+  T extends string,
+> extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Changes design and interaction-visuals.
    * As of now, there only exists styling for the primary variant
@@ -18,7 +21,7 @@ export interface ControlsProps<T extends string> {
   /**
    *  **Avoid using if possible for accessibility purposes**.
    *
-   * Prevent the user from interacting with the button: it cannot me pressed or focused.
+   * Prevent the user from interacting with the button: it cannot be pressed or focused.
    */
   disabled?: boolean;
   /**
@@ -37,7 +40,7 @@ export interface ControlsProps<T extends string> {
   /**
    * The options to choose from
    */
-  options?: readonly SegmentedOption<T>[];
+  options: readonly SegmentedOption<T>[];
   /**
    * Ref to the controls element
    */
@@ -53,16 +56,34 @@ export const Controls = <T extends string>({
   value,
   onChange,
   disabled,
+  loading = false,
   variant = "primary",
   "data-color": data = "accent",
   className,
+  ref,
 }: ControlsProps<T>) => {
   const activeIndex = Math.max(0, options?.findIndex(o => o.value === value) ?? 0);
+
+  if (loading) {
+    return (
+      <div
+        data-color={data}
+        data-variant={variant}
+        ref={ref}
+        className={cl(styles.controls, styles.loading, className)}
+        role="status"
+        aria-busy="true"
+      >
+        <Loader size="medium" />
+      </div>
+    );
+  }
 
   return (
     <div
       data-color={data}
       data-variant={variant}
+      ref={ref}
       className={cl(styles.controls, disabled && styles.disabled, className)}
       role="radiogroup"
       aria-disabled={disabled ? true : undefined}
