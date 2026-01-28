@@ -10,11 +10,6 @@ export interface ProgressDotProps extends React.HTMLAttributes<HTMLDivElement> {
    */
   text?: string;
   /**
-   * Whether to show a line out from the progress dot.
-   * @default false
-   */
-  showLine?: boolean;
-  /**
    * Try not to use for accesebility reasons.
    *
    * Makes the color of the dot look non-active.
@@ -29,7 +24,6 @@ export interface ProgressDotProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const ProgressDot: React.FC<ProgressDotProps> = ({
   text,
-  showLine,
   "data-color": color = "neutral",
   disabled,
   ...rest
@@ -42,7 +36,6 @@ export const ProgressDot: React.FC<ProgressDotProps> = ({
         {...rest}
       >
         {text?.slice(0, 2)}
-        {showLine && <div className={cl(styles.dotLine)}></div>}
       </div>
     </>
   );
@@ -65,42 +58,38 @@ export interface ProgressDotsProps extends React.HTMLAttributes<HTMLDivElement> 
    */
   "data-color"?: ColorName;
   /**
-   * Length of the line between the dots.
-   * @default "full"
-   */
-  lineLength?: "full" | "short";
-  /**
    * Thickness of the line between the dots.
-   * @default "thick"
+   * @default "medium"
    */
-  lineThickness?: "thin" | "thick";
-  /**
-   * Style of the line between the dots.
-   *
-   *  **Only applies if lineLength is full**
-   * @default "solid"
-   */
-  lineType?: "solid" | "dashed";
+  lineThickness?: "thin" | "medium" | "thick";
 }
 
 export const ProgressDots = ({
   maxValue,
-  value,
+  value = 0,
+  lineThickness = "medium",
   "data-color": color = "neutral",
+  ...rest
 }: ProgressDotsProps) => {
   if (maxValue < 2 || maxValue > 10)
     throw new Error("maxValue must be in the range 2-10");
 
   return (
-    <div className={styles.progressDots}>
+    <div className={styles.progressDots} data-color={color} {...rest}>
+      <div className={styles.dotLine} line-type={lineThickness}>
+        <div
+          className={styles.progressLine}
+          style={
+            { "--progress": `${(value - 1) / (maxValue - 1)}` } as React.CSSProperties
+          }
+        ></div>
+      </div>
       {Array.from({ length: maxValue }, (_, i) => (
         <ProgressDot
           key={i}
           text={String(i + 1)}
-          showLine={i < maxValue - 1}
           disabled={value !== undefined ? i + 1 > value : false}
           data-color={color}
-          style={{ "--dot-count": maxValue, "--dot-value": i } as React.CSSProperties}
         />
       ))}
     </div>

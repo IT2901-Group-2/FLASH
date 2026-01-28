@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { ProgressDot, ProgressDots } from "./ProgressDots";
+import { ProgressDots } from "./ProgressDots";
 import { colorNames } from "@/styles/colorType";
 
 const meta: Meta<typeof ProgressDots> = {

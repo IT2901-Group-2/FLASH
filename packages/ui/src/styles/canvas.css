@@ -5,4 +5,5 @@ p {
 
 .innerZoomElementWrapper > * {
   width: 100% !important;
+  font-family: "Nunito Sans", sans-serif;
 }
