@@ -1,0 +1,59 @@
+.controls {
+  --color-base: var(--data-color-500);
+  --color-surface: var(--data-color-100);
+  --color-border: var(--data-color-200);
+  --color-text: var(--data-color-900);
+  --color-text-muted: var(--data-color-700);
+
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 0.5rem;
+  width: 19rem;
+  height: 3rem;
+  padding: 0.25rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+}
+
+.indicator {
+  position: absolute;
+  top: 0.25rem;
+  left: 0.25rem;
+  height: calc(100% - 0.5rem);
+  border-radius: 9999px;
+  background: var(--color-base);
+  transition: transform 200ms ease;
+  z-index: 0;
+}
+
+.item {
+  position: relative;
+  z-index: 1;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  font-size: 1.05rem;
+  border-radius: 9999px;
+  cursor: pointer;
+}
+
+.item:hover:not(:disabled) {
+  color: var(--color-text);
+}
+
+.active {
+  color: var(--color-text);
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.disabled * {
+  cursor: not-allowed;
+}
