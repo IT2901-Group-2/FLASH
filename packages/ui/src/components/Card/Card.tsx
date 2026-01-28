@@ -1,19 +1,15 @@
 import React from "react";
 import styles from "./Card.module.css";
 import { cl } from "../../util/className";
+import { ColorName } from "@/styles/colorType";
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Card content. */
   children?: React.ReactNode;
   /**
-   * Changes visual style of the card.
-   * @default "primary"
-   */
-  variant?: "primary" | "secondary" | "dark";
-  /**
    * Overrides inherited color.
    */
-  "data-color"?: "accent" | "neutral" | "brand-purple";
+  "data-color"?: ColorName;
 }
 
 /**
@@ -27,17 +23,15 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
  * ```
  */
 export const Card = ({
-  variant = "primary",
   children,
-  "data-color": data = "brand-purple",
+  "data-color": data = "background-secondary",
   className,
   ...rest
 }: CardProps) => {
   return (
     <div
       data-color={data}
-      data-variant={variant}
-      className={cl(styles.card, styles[`card--${variant}`], className)}
+      className={cl(styles.card, className)}
       {...rest}
     >
       {children}
