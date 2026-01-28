@@ -20,9 +20,15 @@
       "@utils/*": ["src/utils/*"],
       "@styles/*": ["src/styles/*"],
       "@docs/*": ["src/docs/*"],
-      "@docs-components/*": ["src/docs/components/*"]
+      "@docs-components/*": [".storybook/components/*"]
     }
   },
-  "include": ["src", "temp.ts", "src/types/global.d.ts"],
+  "include": [
+    "src",
+    "temp.ts",
+    "src/types/global.d.ts",
+    ".storybook/DocsTemplate.tsx",
+    ".storybook/components"
+  ],
   "exclude": ["node_modules", "dist"]
 }
