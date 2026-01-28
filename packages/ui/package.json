@@ -8,7 +8,7 @@
     "dev": "vite build --watch",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "lint": "eslint",
+    "lint": "eslint --max-warnings 0",
     "format": "prettier --write src/",
     "format:check": "prettier --check src/"
   },
