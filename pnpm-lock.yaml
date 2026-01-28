@@ -48,6 +48,28 @@ importers:
         specifier: ^5
         version: 5.9.3
 
+  packages/file-storage:
+    dependencies:
+      ts-results:
+        specifier: ^3.3.0
+        version: 3.3.0
+    devDependencies:
+      '@eslint/js':
+        specifier: ^9.39.2
+        version: 9.39.2
+      '@types/node':
+        specifier: ^25.0.10
+        version: 25.0.10
+      eslint:
+        specifier: ^9.39.2
+        version: 9.39.2
+      prettier:
+        specifier: ^3.8.1
+        version: 3.8.1
+      typescript-eslint:
+        specifier: ^8.53.1
+        version: 8.53.1(eslint@9.39.2)(typescript@5.9.3)
+
   packages/ui:
     dependencies:
       '@chromatic-com/storybook':
@@ -2862,6 +2884,9 @@ packages:
   ts-dedent@2.2.0:
     resolution: {integrity: sha512-q5W7tVM71e2xjHZTlgfTDoPF/SmqKG5hddq9SzR49CH2hayqRKJtQ4mtRlSxKaJlR/+9rEM+mnBHf7I2/BQcpQ==}
     engines: {node: '>=6.10'}
+
+  ts-results@3.3.0:
+    resolution: {integrity: sha512-FWqxGX2NHp5oCyaMd96o2y2uMQmSu8Dey6kvyuFdRJ2AzfmWo3kWa4UsPlCGlfQ/qu03m09ZZtppMoY8EMHuiA==}
 
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
@@ -6047,6 +6072,8 @@ snapshots:
       typescript: 5.9.3
 
   ts-dedent@2.2.0: {}
+
+  ts-results@3.3.0: {}
 
   tsconfig-paths@3.15.0:
     dependencies:
