@@ -49,3 +49,16 @@
   --data-color-900: var(--color-success-900);
   --data-color-1000: var(--color-success-1000);
 }
+
+[data-color="warning"] {
+  --data-color-100: var(--color-warning-100);
+  --data-color-200: var(--color-warning-200);
+  --data-color-300: var(--color-warning-300);
+  --data-color-400: var(--color-warning-400);
+  --data-color-500: var(--color-warning-500);
+  --data-color-600: var(--color-warning-600);
+  --data-color-700: var(--color-warning-700);
+  --data-color-800: var(--color-warning-800);
+  --data-color-900: var(--color-warning-900);
+  --data-color-1000: var(--color-warning-1000);
+}
