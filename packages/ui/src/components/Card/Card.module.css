@@ -1,0 +1,48 @@
+.card {
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  border: 2px solid var(--color-brand-purple-300);
+  background-color: var(--color-neutral-000);
+  transition: all 0.2s ease-in-out;
+  cursor: default;
+
+  &:hover {
+    border-color: var(--color-brand-purple-500);
+    box-shadow: 0 4px 12px rgba(96, 52, 78, 0.12);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(96, 52, 78, 0.08);
+  }
+}
+
+.card--primary {
+  background-color: var(--color-neutral-000);
+  border-color: var(--color-brand-purple-300);
+}
+
+.card--secondary {
+  background-color: var(--color-neutral-100);
+  border-color: var(--color-brand-purple-300);
+}
+
+.card--dark {
+  background-color: var(--color-neutral-900);
+  border-color: var(--color-brand-purple-600);
+  color: var(--color-neutral-000);
+
+  & p {
+    color: var(--color-neutral-000);
+  }
+
+  &:hover {
+    border-color: var(--color-brand-purple-700);
+    box-shadow: 0 4px 12px rgba(96, 52, 78, 0.25);
+  }
+
+  &:active {
+    box-shadow: 0 2px 6px rgba(96, 52, 78, 0.18);
+  }
+}
