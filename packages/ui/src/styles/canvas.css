@@ -2,3 +2,8 @@ p {
   font-family: "Nunito Sans", sans-serif;
   color: var(--color-neutral-1000);
 }
+
+.innerZoomElementWrapper > * {
+  width: 100% !important;
+  font-family: "Nunito Sans", sans-serif;
+}

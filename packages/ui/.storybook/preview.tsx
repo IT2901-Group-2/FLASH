@@ -8,8 +8,10 @@ export const fonts = ["Open Sans"];
 
 export default {
   parameters: {
+    layout: "centered",
     options: {
       panelPosition: "right",
+      showPanel: true,
       storySort: {
         method: "alphabetical",
         order: [
@@ -20,7 +22,6 @@ export default {
         ],
       },
     },
-    layout: "centred",
     // backgrounds: { disable: true },
     controls: {
       matchers: {
@@ -77,15 +78,7 @@ export default {
     ),
     (Story, context) => {
       return (
-        <div
-          data-theme={context.globals.backgrounds.value}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: ".5rem",
-          }}
-        >
+        <div data-theme={context.globals.backgrounds.value}>
           <Story />
         </div>
       );
