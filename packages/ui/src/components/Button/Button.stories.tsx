@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Button } from "./Button";
 import { expect, fn, userEvent, within } from "storybook/test";
 import { GamepadDirectional } from "lucide-react";
+import { colorNames } from "@/styles/colorType";
 
 const TestIcon = <GamepadDirectional data-testid="test-icon" />;
 
@@ -25,6 +26,16 @@ const meta: Meta<typeof Button> = {
       control: "boolean",
     },
     children: { control: { type: "text" } },
+    "data-color": {
+      control: "select",
+      options: colorNames,
+    },
+    icon: { control: "check" }, // To not make it changable
+  },
+  args: {
+    loading: false,
+    disabled: false,
+    children: "Button",
   },
   decorators: [],
 } satisfies Meta<typeof Button>;
@@ -32,7 +43,7 @@ const meta: Meta<typeof Button> = {
 export default meta;
 type Story = StoryObj<typeof Button>;
 
-export const PrimaryVariant: Story = {
+export const Primary: Story = {
   args: {
     variant: "primary",
     children: "Primary Button",
@@ -44,7 +55,7 @@ export const PrimaryVariant: Story = {
   },
 };
 
-export const SecondaryVariant: Story = {
+export const Secondary: Story = {
   args: {
     variant: "secondary",
     children: "Secondary Button",
@@ -56,7 +67,7 @@ export const SecondaryVariant: Story = {
   },
 };
 
-export const TertiaryVariant: Story = {
+export const Tertiary: Story = {
   args: {
     variant: "tertiary",
     children: "Tertiary Button",
@@ -65,6 +76,28 @@ export const TertiaryVariant: Story = {
     const button = canvas.getByRole("button", { name: /tertiary button/i });
 
     await expect(button).toBeInTheDocument();
+  },
+};
+
+export const Small: Story = {
+  args: {
+    size: "small",
+    children: "Small Button",
+  },
+  play: async ({ canvas }) => {
+    const button = canvas.getByRole("button", { name: /small button/i });
+    await expect(button).toHaveAttribute("data-size", "small");
+  },
+};
+
+export const Xsmall: Story = {
+  args: {
+    size: "xsmall",
+    children: "Xsmall Button",
+  },
+  play: async ({ canvas }) => {
+    const button = canvas.getByRole("button", { name: /xsmall button/i });
+    await expect(button).toHaveAttribute("data-size", "xsmall");
   },
 };
 
@@ -99,7 +132,7 @@ export const ClickInteraction: Story = {
   },
 };
 
-export const DisabledButton: Story = {
+export const Disabled: Story = {
   args: {
     variant: "primary",
     children: "Disabled Button",
@@ -129,7 +162,7 @@ export const DisabledButton: Story = {
 };
 
 // Loading State Tests
-export const LoadingButton: Story = {
+export const Loading: Story = {
   args: {
     variant: "primary",
     loading: true,
@@ -151,7 +184,7 @@ export const LoadingButton: Story = {
 };
 
 // Icon Tests
-export const ButtonWithIconLeft: Story = {
+export const IconLeft: Story = {
   args: {
     variant: "primary",
     children: "Button with Icon",
@@ -172,7 +205,7 @@ export const ButtonWithIconLeft: Story = {
 };
 
 // Data Attribute Tests
-export const ButtonWithDataColor: Story = {
+export const Color: Story = {
   args: {
     variant: "primary",
     children: "Custom Color",
@@ -219,7 +252,7 @@ export const KeyboardInteraction: Story = {
 };
 
 // HTML Attributes Tests
-export const ButtonWithCustomAttributes: Story = {
+export const CustomAttributes: Story = {
   args: {
     variant: "primary",
     children: "Custom Attributes",
@@ -243,7 +276,7 @@ export const ButtonWithCustomAttributes: Story = {
 };
 
 // Accessibility Tests
-export const AccessibilityTest: Story = {
+export const Accessibility: Story = {
   args: {
     variant: "primary",
     children: "Accessible Button",
@@ -272,24 +305,20 @@ export const AccessibilityTest: Story = {
 export const AllVariants: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-      <Button variant="primary">Primary</Button>
-      <Button variant="secondary">Secondary</Button>
-      <Button variant="tertiary">Tertiary</Button>
-      <Button variant="primary" disabled>
-        Disabled
-      </Button>
-      <Button variant="primary" loading>
-        Loading
-      </Button>
-      <Button variant="primary" icon={TestIcon}>
-        With Icon
-      </Button>
+      <Button>Primary</Button>
+      <Button>Secondary</Button>
+      <Button>Tertiary</Button>
+      <Button disabled>Disabled</Button>
+      <Button loading />
+      <Button icon={TestIcon}>With Icon</Button>
+      <Button size="small">Small</Button>
+      <Button size="xsmall">Xsmall</Button>
     </div>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const buttons = canvas.getAllByRole("button");
 
-    await expect(buttons).toHaveLength(6);
+    await expect(buttons).toHaveLength(8);
   },
 };

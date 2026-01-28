@@ -42,14 +42,12 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
    * Overrides inherited color.
    */
   "data-color"?: ColorName;
-  /**
-   * Ref to the button element
-   */
-  ref?: React.Ref<HTMLButtonElement>;
 }
 
 /**
  * A Button allows the user to perform an action.
+ *
+ * @BaHuyP
  */
 export const Button = ({
   variant = "primary",
@@ -57,10 +55,9 @@ export const Button = ({
   size = "medium",
   loading = false,
   disabled,
-  "data-color": data = "brand-purple",
+  "data-color": data = "neutral",
   icon,
   iconPosition = "left",
-  ref,
   ...rest
 }: ButtonProps) => {
   const filterProps: React.ButtonHTMLAttributes<HTMLButtonElement> =
@@ -73,7 +70,7 @@ export const Button = ({
     <button
       data-color={data}
       data-variant={variant}
-      ref={ref}
+      data-size={size}
       onKeyUp={handleKeyUp}
       {...filterProps}
       className={cl(
@@ -81,12 +78,11 @@ export const Button = ({
         loading && styles.loading,
         disabled && styles.disabled
       )}
-      disabled={(disabled ?? loading) ? true : undefined}
-      {...rest}
+      disabled={disabled || loading}
     >
       {icon && iconPosition === "left" && <span className={styles.icon}>{icon}</span>}
       {loading && <Loader size={size} />}
-      {children && <span className={""}>{children}</span>}
+      {children && !loading && <span>{children}</span>}
       {icon && iconPosition === "right" && <span className={styles.icon}>{icon}</span>}
     </button>
   );

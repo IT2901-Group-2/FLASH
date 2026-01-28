@@ -73,11 +73,19 @@
       color: var(--color-neutral-800);
     }
   }
+
+  &[data-size="small"] {
+    height: 2.5rem;
+    font-size: 1.125rem;
+  }
+  &[data-size="xsmall"] {
+    height: 2rem;
+    font-size: 1rem;
+  }
 }
 
 .icon {
   display: flex;
-
   .icon-only & {
     margin: 0;
   }
