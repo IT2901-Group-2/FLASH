@@ -14,9 +14,17 @@ export interface BreadcrumbProps {
   "data-color"?: ColorName;
 }
 
-export const Breadcrumb = ({ items, className, "data-color": data = "brand-purple" }: BreadcrumbProps) => {
+export const Breadcrumb = ({
+  items,
+  className,
+  "data-color": data = "brand-purple",
+}: BreadcrumbProps) => {
   return (
-    <nav className={cl(styles.breadcrumb, className)} data-color={data} aria-label="Breadcrumb">
+    <nav
+      className={cl(styles.breadcrumb, className)}
+      data-color={data}
+      aria-label="Breadcrumb"
+    >
       <ol className={styles.list}>
         {items.map((item, index) => (
           <li key={index} className={styles.item}>
@@ -31,8 +39,8 @@ export const Breadcrumb = ({ items, className, "data-color": data = "brand-purpl
                 )}
               </>
             )}
-            {item.label && (
-              item.href ? (
+            {item.label &&
+              (item.href ? (
                 <a href={item.href} className={styles.link}>
                   {item.label}
                 </a>
@@ -40,13 +48,9 @@ export const Breadcrumb = ({ items, className, "data-color": data = "brand-purpl
                 <span className={styles.current} aria-current="page">
                   {item.label}
                 </span>
-              )
-            )}
+              ))}
             {index < items.length - 1 && (
-              <ChevronRight
-                className={styles.separator}
-                aria-hidden="true"
-              />
+              <ChevronRight className={styles.separator} aria-hidden="true" />
             )}
           </li>
         ))}
