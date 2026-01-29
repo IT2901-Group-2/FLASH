@@ -1,0 +1,118 @@
+/* ImageCard.module.css */
+.imageCard {
+  --color-base: var(--data-color-800);
+  --color-hover: var(--data-color-200);
+  --color-active: var(--data-color-300);
+  --color-disabled: var(--data-color-200);
+  --color-text: var(--color-neutral-100);
+  display: flex;
+  flex-direction: column;
+  border-radius: 2rem;
+  border: 1px solid var(--color-base);
+  width: 10rem;
+  height: 12.25rem;
+  overflow: hidden;
+  background: var(--color-base);
+  transition: all 0.2s ease;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 10rem;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: opacity 0.2s ease;
+}
+
+.loaderOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.icon {
+  display: flex;
+}
+
+.titleBox {
+  padding: 0.6rem 0.8rem;
+  background: var(--color-primary);
+  flex: 1; 
+  display: flex;
+  align-items: center; 
+  min-height: 0; 
+  overflow: hidden;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text);
+  width: 100%;
+  overflow: hidden;
+}
+
+.titleText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+[data-size="small"] .title {
+  font-size: 1rem;
+}
+
+
+[data-size="large"] .title {
+  font-size: 18px;
+}
+
+[data-size="large"] .icon {
+  top: 16px;
+  right: 16px;
+}
+
+/* State styles */
+.rejected {
+  border: 2px solid var(--color-error, #ef4444);
+}
+
+.rejected .image {
+  opacity: 0.5;
+}
+
+.approved {
+  border: 2px solid var(--color-success, #22c55e);
+}
+
+.selected {
+  border: 2px solid var(--color-primary, #3b82f6);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Hover effects (optional) */
+.imageCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
