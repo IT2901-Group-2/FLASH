@@ -123,3 +123,66 @@ describe("FSStorage write file", () => {
     );
   });
 });
+
+describe("FSStorage delete file/directory", () => {
+  it("Should return Err when deleting non-existent file/directory", async () => {
+    const result = await fsStorage.delete("testfile");
+    equal(result.err, true);
+  });
+
+  it("Should return Err when file/directory deletion fails", async () => {
+    fs.writeFileSync(pathlib.join(tmpDir, "testfile"), "");
+    mock.method(fs.promises, "rm", () => Promise.reject());
+
+    const result = await fsStorage.delete("testfile");
+    equal(result.err, true);
+  });
+
+  it("Should delete file", async () => {
+    fs.writeFileSync(pathlib.join(tmpDir, "testfile"), "");
+
+    await fsStorage.delete("testfile").unwrap();
+    equal(
+      fs.statSync(pathlib.join(tmpDir, "testfile"), { throwIfNoEntry: false }),
+      undefined
+    );
+  });
+
+  it("Should delete file within directory", async () => {
+    fs.mkdirSync(pathlib.join(tmpDir, "testdir"));
+    fs.writeFileSync(pathlib.join(tmpDir, "testdir", "testfile"), "");
+
+    await fsStorage.delete("testdir/testfile").unwrap();
+    equal(fs.statSync(pathlib.join(tmpDir, "testdir")).isDirectory(), true);
+    equal(
+      fs.statSync(pathlib.join(tmpDir, "testdir", "testfile"), { throwIfNoEntry: false }),
+      undefined
+    );
+  });
+
+  it("Should delete empty directory", async () => {
+    fs.mkdirSync(pathlib.join(tmpDir, "testdir"));
+
+    await fsStorage.delete("testdir").unwrap();
+    equal(
+      fs.statSync(pathlib.join(tmpDir, "testdir"), { throwIfNoEntry: false }),
+      undefined
+    );
+  });
+
+  it("Should delete directory with content", async () => {
+    fs.mkdirSync(pathlib.join(tmpDir, "test"));
+    fs.mkdirSync(pathlib.join(tmpDir, "test", "dir"));
+    fs.writeFileSync(pathlib.join(tmpDir, "test", "dir", "foo.txt"), "");
+    fs.writeFileSync(pathlib.join(tmpDir, "test", "dir", "bar"), "");
+    fs.mkdirSync(pathlib.join(tmpDir, "test", "dir", "baz"));
+    fs.writeFileSync(pathlib.join(tmpDir, "test", "dir", "baz", "test.txt"), "");
+    fs.mkdirSync(pathlib.join(tmpDir, "test", "dir", "dir2"));
+
+    await fsStorage.delete("test").unwrap();
+    equal(
+      fs.statSync(pathlib.join(tmpDir, "test"), { throwIfNoEntry: false }),
+      undefined
+    );
+  });
+});
