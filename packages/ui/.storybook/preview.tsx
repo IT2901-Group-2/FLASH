@@ -1,8 +1,9 @@
 import type { Preview } from "@storybook/react-vite";
 import "../src/styles/global.css";
-import "../src/docs/styles/docs.css";
+import "./styles/docs.css";
 import FontDecorator from "./decorators/TypeDecorator";
 import { themes } from "storybook/theming";
+import DocsTemplate from "./DocsTemplate";
 
 export const fonts = ["Open Sans"];
 
@@ -31,7 +32,10 @@ export default {
     },
     docs: {
       theme: themes.dark,
+      page: DocsTemplate,
       source: {
+        excludeDecorators: true,
+        type: "dynamic",
         dark: true,
       },
     },

@@ -3,6 +3,7 @@ import { Title } from "./Title";
 
 const meta: Meta<typeof Title> = {
   title: "Byggeklosser/Komponenter/Title",
+  tags: ["autodocs"],
   component: Title,
   argTypes: {},
   decorators: [

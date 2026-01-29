@@ -2,10 +2,12 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Input } from "./Input";
 import { fn } from "storybook/test";
 import { Search, User, Mail, Check, X } from "lucide-react";
+import { colorNames } from "@/styles/colorType";
 
 const meta: Meta<typeof Input> = {
   title: "Byggeklosser/Komponenter/Input",
   component: Input,
+  tags: ["autodocs"],
   argTypes: {
     variant: {
       control: "select",
@@ -15,7 +17,7 @@ const meta: Meta<typeof Input> = {
     },
     "data-color": {
       control: "select",
-      options: ["accent", "neutral", "brand-purple"],
+      options: colorNames,
       description: "Overrides inherited color scheme",
     },
     iconPosition: {
