@@ -1,56 +1,58 @@
-import React, { useState } from "react";
-import { Chips } from "./Chips";
+import { Canvas, Source, useOf } from "@storybook/addon-docs/blocks";
+import { useState } from "react";
+import Chips from "./Chips";
 import styles from "./Showcase.module.css";
-import { Canvas, Source } from "@storybook/addon-docs/blocks";
-import { ModuleExport } from "storybook/internal/types";
+import type { StoryObj, Meta } from "@storybook/react";
 
-export interface ShowcaseProps {
-  of: ModuleExport;
+interface ShowcaseProps {
+  of?: Meta | Record<string, StoryObj>;
 }
 
-export const Showcase: React.FC<ShowcaseProps> = ({ of }) => {
-  const [active, setActive] = useState<string>(Object.keys(of)[0] || "");
+export const Showcase: React.FC<ShowcaseProps> = ({ of = "meta" }) => {
+  const resolvedOf = useOf(of, ["meta"]);
 
-  const data = Object.entries(of)
-    .filter(key => key[0] !== "default" && !key[0].startsWith("_"))
-    .map(([name, story]) => ({
-      name,
-      story,
-      /* eslint-disable @typescript-eslint/no-explicit-any */
-      description: (story as any).parameters?.docs?.description?.story || "",
-      /* eslint-enable */
+  const csfFile = resolvedOf.type === "meta" ? resolvedOf.csfFile : null;
+  const stories = csfFile ? Object.entries(csfFile.stories) : [];
+
+  const data = stories
+    .filter(([, story]) => !story.name.startsWith("_"))
+    .map(([id, story]) => ({
+      name: story.name,
+      id: id,
+      story: story,
+      description: story.parameters?.docs?.description?.story || "",
     }));
-  const activeItem = data.find(item => item.name === active);
+
+  const [active, setActive] = useState<string>(data[0]?.id || "");
+  const activeItem = data.find(item => item.id === active);
 
   return (
     <>
       <div className={styles.storySelect}>
         {data.map(item => (
           <Chips
-            key={item.name}
-            onClick={() => setActive(item.name)}
-            active={active === item.name}
+            key={item.id}
+            onClick={() => setActive(item.id)}
+            active={active === item.id}
           >
             {item.name.replaceAll("_", " ")}
           </Chips>
         ))}
       </div>
-
       {activeItem && (
         <>
           <p>{activeItem.description}</p>
           <Canvas
-            of={activeItem.story}
+            of={activeItem.story.moduleExport}
             sourceState="none"
             layout="centered"
             withToolbar
             className={styles.canvas}
           />
-          <Source of={activeItem.story} />
+          <Source of={activeItem.story.moduleExport} />
         </>
       )}
     </>
   );
 };
-
 export default Showcase;
