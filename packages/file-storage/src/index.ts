@@ -1,2 +1,2 @@
-export * from "./fileStorage";
-export * from "./fsStorage";
+export * from "./interface";
+export * from "./implementations";

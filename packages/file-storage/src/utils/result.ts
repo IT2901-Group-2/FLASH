@@ -1,4 +1,3 @@
-import pathlib from "path";
 import { Result } from "ts-results";
 
 export type AwaitedResult<T, E> = Promise<Result<T, E>> & {
@@ -19,16 +18,4 @@ export function awaited<T, E>(promise: Promise<Result<T, E>>): AwaitedResult<T, 
     unwrap: () => promise.then(r => r.unwrap()),
     unwrapOr: <T2>(val: T2): Promise<T | T2> => promise.then(r => r.unwrapOr(val)),
   });
-}
-
-export function resolvePath(...paths: string[]): string {
-  return pathlib.resolve("/", ...paths).replace(/^\/(.+)/, "$1");
-}
-
-export function absolutePath(...paths: string[]): string {
-  return resolvePath(...paths).replace(/^([^/])/, "/$1");
-}
-
-export function dirPath(path: string): string {
-  return path.replace(/([^/])$/, "$1/");
 }

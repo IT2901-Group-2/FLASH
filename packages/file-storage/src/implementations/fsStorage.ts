@@ -1,6 +1,6 @@
 import { Err, Ok } from "ts-results";
-import { FileStorage } from "./fileStorage";
-import { absolutePath, awaited, AwaitedResult, dirPath, resolvePath } from "./utils";
+import { FileStorage } from "../interface";
+import { absolutePath, awaited, AwaitedResult, dirPath, resolvePath } from "../utils";
 import pathlib from "path";
 import fs from "fs";
 
