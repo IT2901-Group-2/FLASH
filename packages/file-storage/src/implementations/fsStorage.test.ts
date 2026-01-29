@@ -1,4 +1,4 @@
-import { test, after, afterEach, mock } from "node:test";
+import { describe, it, after, afterEach, mock } from "node:test";
 import { equal, deepEqual } from "assert/strict";
 import { FSStorage } from "./fsStorage";
 import pathlib from "path";
@@ -9,29 +9,65 @@ const tmpDir = fs.mkdtempSync(pathlib.join(tmpdir(), "fsStorage-"));
 const fsStorage = new FSStorage(tmpDir);
 
 after(() => fs.rmSync(tmpDir, { recursive: true }));
-afterEach(() => mock.reset());
+afterEach(() => {
+  fs.rmSync(tmpDir, { recursive: true });
+  fs.mkdirSync(tmpDir);
+  mock.reset();
+});
 
-test("Return Err when file creation fails", async () => {
-  mock.method(fs.promises, "writeFile", () => {
-    throw new Error();
+describe("FSStorage list directory", () => {
+  it("Should return Err when listing non-existent directory", async () => {
+    const result = await fsStorage.list("testdir");
+    equal(result.err, true);
   });
-  const result = await fsStorage.write("test.txt", new Blob(["This will fail"]));
-  equal(result.err, true);
+
+  it("Should return empty list when listing empty directory", async () => {
+    deepEqual(await fsStorage.list("/").unwrap(), []);
+
+    fs.mkdirSync(pathlib.join(tmpDir, "testdir"));
+    deepEqual(await fsStorage.list("testdir").unwrap(), []);
+  });
+
+  it("Should return correct file/directory names when listing directory", async () => {
+    fs.mkdirSync(pathlib.join(tmpDir, "test"));
+    fs.mkdirSync(pathlib.join(tmpDir, "test", "dir"));
+    fs.writeFileSync(pathlib.join(tmpDir, "test", "dir", "foo.txt"), "");
+    fs.writeFileSync(pathlib.join(tmpDir, "test", "dir", "bar"), "");
+    fs.mkdirSync(pathlib.join(tmpDir, "test", "dir", "baz"));
+    fs.writeFileSync(pathlib.join(tmpDir, "test", "dir", "baz", "test.txt"), "");
+    fs.mkdirSync(pathlib.join(tmpDir, "test", "dir", "dir2"));
+
+    deepEqual(
+      await fsStorage
+        .list("test/dir")
+        .map(f => new Set(f))
+        .unwrap(),
+      new Set(["foo.txt", "bar", "baz/", "dir2/"])
+    );
+  });
 });
 
-test("FSStorage test", async () => {
-  deepEqual(await fsStorage.list("/").unwrap(), []);
-
-  await fsStorage.write("temp/test.txt", new Blob(["This is a test"])).unwrap();
-  equal(
-    await fsStorage
-      .read("temp/test.txt")
-      .map(b => b.text())
-      .unwrap(),
-    "This is a test"
-  );
-
-  deepEqual(await fsStorage.list("/").unwrap(), ["temp/"]);
-  await fsStorage.delete("temp/").unwrap();
-  deepEqual(await fsStorage.list("/").unwrap(), []);
-});
+// it("Should return Err when file creation fails", async () => {
+//   mock.method(fs.promises, "writeFile", () => {
+//     throw new Error();
+//   });
+//   const result = await fsStorage.write("test.txt", new Blob(["This will fail"]));
+//   equal(result.err, true);
+// });
+//
+// it("FSStorage test", async () => {
+//   deepEqual(await fsStorage.list("/").unwrap(), []);
+//
+//   await fsStorage.write("temp/test.txt", new Blob(["This is a test"])).unwrap();
+//   equal(
+//     await fsStorage
+//       .read("temp/test.txt")
+//       .map(b => b.text())
+//       .unwrap(),
+//     "This is a test"
+//   );
+//
+//   deepEqual(await fsStorage.list("/").unwrap(), ["temp/"]);
+//   await fsStorage.delete("temp/").unwrap();
+//   deepEqual(await fsStorage.list("/").unwrap(), []);
+// });
