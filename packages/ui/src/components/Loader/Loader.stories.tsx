@@ -4,6 +4,7 @@ import { fn } from "storybook/test";
 
 const meta: Meta<typeof Loader> = {
   title: "Byggeklosser/Komponenter/Loader",
+  tags: ["autodocs"],
   component: Loader,
   parameters: {
     layout: "centered",

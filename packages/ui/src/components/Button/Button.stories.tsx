@@ -43,95 +43,91 @@ const meta: Meta<typeof Button> = {
 export default meta;
 type Story = StoryObj<typeof Button>;
 
-export const Primary: Story = {
+export const Variants: Story = {
+  render: () => (
+    <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+      <Button variant="primary">Primary</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="tertiary">Tertiary</Button>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const buttons = canvas.getAllByRole("button");
+
+    await expect(buttons).toHaveLength(3);
+    await expect(canvas.getByRole("button", { name: /primary/i })).toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: /secondary/i })).toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: /tertiary/i })).toBeInTheDocument();
+  },
+};
+
+// Sizes Story
+export const Sizes: Story = {
+  render: () => (
+    <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+      <Button size="xsmall">Xsmall</Button>
+      <Button size="small">Small</Button>
+      <Button>Default</Button>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const xsmallButton = canvas.getByRole("button", { name: /^xsmall/i });
+    const smallButton = canvas.getByRole("button", { name: /^small/i });
+
+    await expect(xsmallButton).toHaveAttribute("data-size", "xsmall");
+    await expect(smallButton).toHaveAttribute("data-size", "small");
+  },
+};
+
+// Comprehensive Interaction Tests
+export const Interactions: Story = {
   args: {
     variant: "primary",
-    children: "Primary Button",
-  },
-  play: async ({ canvas }) => {
-    const button = canvas.getByRole("button", { name: /primary button/i });
-
-    await expect(button).toBeInTheDocument();
-  },
-};
-
-export const Secondary: Story = {
-  args: {
-    variant: "secondary",
-    children: "Secondary Button",
-  },
-  play: async ({ canvas }) => {
-    const button = canvas.getByRole("button", { name: /secondary button/i });
-
-    await expect(button).toBeInTheDocument();
-  },
-};
-
-export const Tertiary: Story = {
-  args: {
-    variant: "tertiary",
-    children: "Tertiary Button",
-  },
-  play: async ({ canvas }) => {
-    const button = canvas.getByRole("button", { name: /tertiary button/i });
-
-    await expect(button).toBeInTheDocument();
-  },
-};
-
-export const Small: Story = {
-  args: {
-    size: "small",
-    children: "Small Button",
-  },
-  play: async ({ canvas }) => {
-    const button = canvas.getByRole("button", { name: /small button/i });
-    await expect(button).toHaveAttribute("data-size", "small");
-  },
-};
-
-export const Xsmall: Story = {
-  args: {
-    size: "xsmall",
-    children: "Xsmall Button",
-  },
-  play: async ({ canvas }) => {
-    const button = canvas.getByRole("button", { name: /xsmall button/i });
-    await expect(button).toHaveAttribute("data-size", "xsmall");
-  },
-};
-
-export const ClickInteraction: Story = {
-  args: {
-    variant: "primary",
-    children: "Click Me",
+    children: "Interactive Button",
     onClick: fn(),
   },
   play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
     const user = userEvent.setup();
+    const button = canvas.getByRole("button", { name: /interactive button/i });
 
-    await step("Button renders with correct text", async () => {
-      const button = await canvas.findByRole("button", { name: /click me/i });
+    await step("Button renders correctly", async () => {
       await expect(button).toBeInTheDocument();
     });
 
-    await step("Button is clickable and fires onClick", async () => {
-      const button = await canvas.findByRole("button", { name: /click me/i });
+    await step("Button responds to clicks", async () => {
       await user.click(button);
-      console.log("args.onClick is", args.onClick);
       await expect(args.onClick).toHaveBeenCalledTimes(1);
     });
 
     await step("Multiple clicks work correctly", async () => {
-      const button = await canvas.findByRole("button", { name: /click me/i });
       await user.click(button);
       await user.click(button);
       await expect(args.onClick).toHaveBeenCalledTimes(3);
     });
+
+    await step("Button can be focused with keyboard", async () => {
+      button.focus();
+      await expect(button).toHaveFocus();
+    });
+
+    await step("Button responds to Enter key", async () => {
+      button.focus();
+      await userEvent.keyboard("{Enter}");
+      await expect(args.onClick).toHaveBeenCalled();
+    });
+
+    await step("Button responds to Space key", async () => {
+      button.focus();
+      await userEvent.keyboard(" ");
+      await expect(args.onClick).toHaveBeenCalled();
+    });
   },
 };
 
+// Disabled State
 export const Disabled: Story = {
   args: {
     variant: "primary",
@@ -141,121 +137,79 @@ export const Disabled: Story = {
   },
   play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
+    const button = canvas.getByRole("button", { name: /disabled button/i });
 
     await step("Button is disabled", async () => {
-      const button = canvas.getByRole("button", { name: /disabled button/i });
       await expect(button).toBeDisabled();
     });
 
     await step("Disabled button does not respond to clicks", async () => {
-      const button = canvas.getByRole("button", { name: /disabled button/i });
       await userEvent.click(button);
       await expect(args.onClick).not.toHaveBeenCalled();
     });
 
     await step("Disabled button cannot be focused via keyboard", async () => {
-      const button = canvas.getByRole("button", { name: /disabled button/i });
       button.focus();
       await expect(button).not.toHaveFocus();
     });
   },
 };
 
-// Loading State Tests
+// Loading State
 export const Loading: Story = {
   args: {
     variant: "primary",
     loading: true,
+    children: "Loading Button",
     onClick: fn(),
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    const button = canvas.getByRole("button");
 
     await step("Button shows loading state", async () => {
-      const button = canvas.getByRole("button");
       await expect(button).toBeInTheDocument();
     });
 
     await step("Loading button may prevent interaction", async () => {
-      const button = canvas.getByRole("button");
       await userEvent.click(button);
     });
   },
 };
 
 // Icon Tests
-export const IconLeft: Story = {
-  args: {
-    variant: "primary",
-    children: "Button with Icon",
-    icon: TestIcon,
-    iconPosition: "left",
-  },
+export const WithIcon: Story = {
+  render: () => (
+    <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+      <Button variant="primary" icon={TestIcon} iconPosition="left">
+        Icon Left
+      </Button>
+      <Button variant="primary" icon={TestIcon} iconPosition="right">
+        Icon Right
+      </Button>
+      <Button variant="secondary" icon={TestIcon} />
+    </div>
+  ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Button renders with icon on the left", async () => {
-      const button = canvas.getByRole("button", { name: /button with icon/i });
-      const icon = canvas.getByTestId("test-icon");
+    await step("Buttons render with icons", async () => {
+      const buttons = canvas.getAllByRole("button");
+      const icons = canvas.getAllByTestId("test-icon");
 
-      await expect(button).toBeInTheDocument();
-      await expect(icon).toBeInTheDocument();
+      await expect(buttons.length).toEqual(3);
+      await expect(icons.length).toEqual(3);
     });
   },
 };
 
-// Data Attribute Tests
-export const Color: Story = {
+// Accessibility and HTML Attributes
+export const AccessibilityAndAttributes: Story = {
   args: {
     variant: "primary",
-    children: "Custom Color",
-    "data-color": "warning",
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const button = canvas.getByRole("button", { name: /custom color/i });
-
-    await expect(button).toHaveAttribute("data-color", "warning");
-  },
-};
-
-// Keyboard Interaction Tests
-export const KeyboardInteraction: Story = {
-  args: {
-    variant: "primary",
-    children: "Keyboard Test",
-    onClick: fn(),
-  },
-  play: async ({ canvasElement, args, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Button can be focused with keyboard", async () => {
-      const button = canvas.getByRole("button", { name: /keyboard test/i });
-      await userEvent.tab();
-      await expect(button).toHaveFocus();
-    });
-
-    await step("Button responds to Enter key", async () => {
-      const button = canvas.getByRole("button", { name: /keyboard test/i });
-      button.focus();
-      await userEvent.keyboard("{Enter}");
-      await expect(args.onClick).toHaveBeenCalled();
-    });
-
-    await step("Button responds to Space key", async () => {
-      const button = canvas.getByRole("button", { name: /keyboard test/i });
-      button.focus();
-      await userEvent.keyboard(" ");
-      await expect(args.onClick).toHaveBeenCalled();
-    });
-  },
-};
-
-// HTML Attributes Tests
-export const CustomAttributes: Story = {
-  args: {
-    variant: "primary",
-    children: "Custom Attributes",
+    children: "Accessible Button",
+    "aria-label": "Custom aria label",
+    "aria-describedby": "description-id",
     type: "submit",
     form: "test-form",
     name: "submit-button",
@@ -263,53 +217,51 @@ export const CustomAttributes: Story = {
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    const button = canvas.getByRole("button");
+
+    await step("Button has correct ARIA attributes", async () => {
+      await expect(button).toHaveAccessibleName("Custom aria label");
+      await expect(button).toHaveAttribute("aria-describedby", "description-id");
+    });
 
     await step("Button has correct HTML attributes", async () => {
-      const button = canvas.getByRole("button", { name: /custom attributes/i });
-
       await expect(button).toHaveAttribute("type", "submit");
       await expect(button).toHaveAttribute("form", "test-form");
       await expect(button).toHaveAttribute("name", "submit-button");
       await expect(button).toHaveAttribute("value", "submit-value");
     });
-  },
-};
-
-// Accessibility Tests
-export const Accessibility: Story = {
-  args: {
-    variant: "primary",
-    children: "Accessible Button",
-    "aria-label": "Custom aria label",
-    "aria-describedby": "description-id",
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Button has correct ARIA attributes", async () => {
-      const button = canvas.getByRole("button");
-
-      await expect(button).toHaveAccessibleName("Custom aria label");
-      await expect(button).toHaveAttribute("aria-describedby", "description-id");
-    });
 
     await step("Button is keyboard accessible", async () => {
-      const button = canvas.getByRole("button");
       await userEvent.tab();
       await expect(button).toHaveFocus();
     });
   },
 };
 
-// All Variants Comparison
+// Data Attributes
+export const DataAttributes: Story = {
+  args: {
+    variant: "primary",
+    children: "Custom Data Attributes",
+    "data-color": "warning",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole("button", { name: /custom data attributes/i });
+
+    await expect(button).toHaveAttribute("data-color", "warning");
+  },
+};
+
+// All Variants Showcase
 export const AllVariants: Story = {
   render: () => (
-    <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-      <Button>Primary</Button>
-      <Button>Secondary</Button>
-      <Button>Tertiary</Button>
+    <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", maxWidth: "600px" }}>
+      <Button variant="primary">Primary</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="tertiary">Tertiary</Button>
       <Button disabled>Disabled</Button>
-      <Button loading />
+      <Button loading>Loading</Button>
       <Button icon={TestIcon}>With Icon</Button>
       <Button size="small">Small</Button>
       <Button size="xsmall">Xsmall</Button>

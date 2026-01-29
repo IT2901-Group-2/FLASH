@@ -28,7 +28,7 @@ export default defineConfig({
       "@utils": path.resolve(__dirname, "src/utils"),
       "@styles": path.resolve(__dirname, "src/styles"),
       "@docs": path.resolve(__dirname, "src/docs"),
-      "@docs-components": path.resolve(__dirname, "src/docs/components"),
+      "@docs-components": path.resolve(__dirname, ".storybook/components/"),
     },
   },
   build: {
