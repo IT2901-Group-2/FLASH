@@ -16,7 +16,7 @@ export class FSStorage implements FileStorage {
     return pathlib.join(this.dir, resolvePath(path));
   }
 
-  list(path: string): AwaitedResult<string[], Error> {
+  list(path: string): AwaitedResult<string[], string> {
     return awaited(
       fs.promises
         .readdir(this.resolvePath(path), { withFileTypes: true })
@@ -24,45 +24,45 @@ export class FSStorage implements FileStorage {
           files.map(file => (file.isDirectory() ? dirPath(file.name) : file.name))
         )
         .then(Ok<string[]>)
-        .catch(() => Err(new Error(`Directory ${path} not found`)))
+        .catch(() => Err(`Directory ${path} not found`))
     );
   }
 
-  read(path: string): AwaitedResult<Blob, Error> {
+  read(path: string): AwaitedResult<Blob, string> {
     return awaited(
       fs.promises
         .readFile(this.resolvePath(path))
         .then(buf => Ok(new Blob([buf])))
-        .catch(() => Err(new Error(`File ${path} not found`)))
+        .catch(() => Err(`File ${path} not found`))
     );
   }
 
-  mkdir(path: string): AwaitedResult<void, Error> {
+  mkdir(path: string): AwaitedResult<void, string> {
     return awaited(
       fs.promises
         .mkdir(this.resolvePath(path), { recursive: true })
         .then(() => Ok.EMPTY)
-        .catch(() => Err(new Error(`Couldn't create directory ${path}`)))
+        .catch(() => Err(`Couldn't create directory ${path}`))
     );
   }
 
-  write(path: string, data: Blob): AwaitedResult<void, Error> {
+  write(path: string, data: Blob): AwaitedResult<void, string> {
     const filepath = this.resolvePath(path);
     return awaited(
       fs.promises
         .mkdir(pathlib.dirname(filepath), { recursive: true })
         .then(() => fs.promises.writeFile(filepath, data.stream()))
         .then(() => Ok.EMPTY)
-        .catch(() => Err(new Error(`Couldn't create file ${path}`)))
+        .catch(() => Err(`Couldn't create file ${path}`))
     );
   }
 
-  delete(path: string): AwaitedResult<void, Error> {
+  delete(path: string): AwaitedResult<void, string> {
     return awaited(
       fs.promises
         .rm(absolutePath(this.dir, path), { recursive: true })
         .then(() => Ok.EMPTY)
-        .catch(() => Err(new Error(`Couldn't delete file or directory ${path}`)))
+        .catch(() => Err(`Couldn't delete file or directory ${path}`))
     );
   }
 }
