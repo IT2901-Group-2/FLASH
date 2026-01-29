@@ -44,7 +44,6 @@ export const Loading: Story = {
           return oldValue + increment > 100 ? 100 : oldValue + increment;
         });
       });
-      console.log(intervalId);
       return () => clearInterval(intervalId);
     }, []);
 
