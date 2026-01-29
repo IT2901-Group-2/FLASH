@@ -1,9 +1,11 @@
 // Auto-generated color types
-export type ColorName =
-  | 'neutral'
-  | 'brand-purple'
-  | 'accent'
-  | 'success'
-  | 'warning'
-  | 'background-secondary'
-;
+export const colorNames = [
+  "neutral",
+  "brand-purple",
+  "accent",
+  "success",
+  "warning",
+  'background-secondary'
+] as const;
+
+export type ColorName = (typeof colorNames)[number];

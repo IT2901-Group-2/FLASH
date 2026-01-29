@@ -1,0 +1,58 @@
+.progressDot {
+  /* position: relative; */
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: var(--data-color-500);
+  color: var(--color-neutral-000);
+  font-size: 1.5rem;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+
+  &:is(:disabled, .disabled) {
+    background-color: var(--data-color-200);
+    color: var(--color-neutral-800);
+  }
+}
+
+.dotLine {
+  background-color: var(--data-color-200);
+  width: 100%;
+  height: 0.25rem;
+  position: absolute;
+  overflow: hidden;
+  z-index: -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &[line-type="thin"] {
+    height: 0.125rem;
+  }
+  &[line-type="thick"] {
+    height: 0.5rem;
+  }
+}
+
+.progressLine {
+  height: 100%;
+  width: 100%;
+  background-color: var(--data-color-500);
+  transform: translateX(calc((var(--progress) * 100%) - 100%));
+  transition: transform 0.3s ease;
+}
+
+.progressDots {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
