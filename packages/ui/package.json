@@ -6,11 +6,13 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
+    "test": "vitest --project=storybook --coverage",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "lint": "eslint",
+    "lint": "eslint --max-warnings 0",
     "format": "prettier --write src/",
-    "format:check": "prettier --check src/"
+    "format:check": "prettier --check src/",
+    "setup": "playwright install --with-deps"
   },
   "dependencies": {
     "@chromatic-com/storybook": "^5.0.0",
@@ -37,7 +39,9 @@
     "@eslint/js": "^9.39.2",
     "@types/node": "^25.0.10",
     "@types/react": "^19.2.9",
+    "@vitest/coverage-istanbul": "^4.0.18",
     "eslint": "^9.39.2",
+    "playwright": "^1.58.0",
     "prettier": "^3.8.1",
     "typescript-eslint": "^8.53.1",
     "vite-plugin-libcss": "^1.1.2"

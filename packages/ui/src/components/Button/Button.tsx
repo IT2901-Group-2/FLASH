@@ -48,11 +48,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 /**
- * A button component
- * @example
- * ```jsx
- * <Button>Click Me</Button>
- * ```
+ * A Button allows the user to perform an action.
  */
 export const Button = ({
   variant = "primary",
@@ -64,6 +60,7 @@ export const Button = ({
   icon,
   iconPosition = "left",
   ref,
+  ...rest
 }: ButtonProps) => {
   const handleKeyUp = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === " " && !disabled && !loading) e.currentTarget.click();
@@ -80,6 +77,7 @@ export const Button = ({
         disabled && styles.disabled
       )}
       disabled={(disabled ?? loading) ? true : undefined}
+      {...rest}
     >
       {icon && iconPosition === "left" && <span className={styles.icon}>{icon}</span>}
       {loading && <Loader size={size} />}
