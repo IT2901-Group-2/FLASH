@@ -99,3 +99,27 @@ describe("FSStorage create directory", () => {
     equal(fs.statSync(pathlib.join(tmpDir, "test", "dir", "foo")).isDirectory(), true);
   });
 });
+
+describe("FSStorage write file", () => {
+  it("Should return Err when file creation fails", async () => {
+    mock.method(fs.promises, "writeFile", () => Promise.reject());
+
+    const result = await fsStorage.write("testfile", new Blob([]));
+    equal(result.err, true);
+  });
+
+  it("Should create file with correct contents", async () => {
+    await fsStorage.write("testfile", new Blob(["This is a test"])).unwrap();
+
+    equal(fs.readFileSync(pathlib.join(tmpDir, "testfile")).toString(), "This is a test");
+  });
+
+  it("Should create file with correct contents recursively", async () => {
+    await fsStorage.write("foo/bar/testfile", new Blob(["This is a test"])).unwrap();
+
+    equal(
+      fs.readFileSync(pathlib.join(tmpDir, "foo", "bar", "testfile")).toString(),
+      "This is a test"
+    );
+  });
+});
