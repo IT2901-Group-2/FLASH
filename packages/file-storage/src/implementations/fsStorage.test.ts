@@ -47,6 +47,40 @@ describe("FSStorage list directory", () => {
   });
 });
 
+describe("FSStorage read file", () => {
+  it("Should return Err when reading non-existent file", async () => {
+    const result = await fsStorage.read("testfile");
+    equal(result.err, true);
+  });
+
+  it("Should return Err when reading directory", async () => {
+    fs.mkdirSync(pathlib.join(tmpDir, "testdir"));
+
+    const result = await fsStorage.read("testdir");
+    equal(result.err, true);
+  });
+
+  it("Should return Err when reading file fails", async () => {
+    fs.writeFileSync(pathlib.join(tmpDir, "testfile"), "");
+    mock.method(fs.promises, "readFile", () => Promise.reject());
+
+    const result = await fsStorage.read("testfile");
+    equal(result.err, true);
+  });
+
+  it("Should return the contents of the file", async () => {
+    fs.writeFileSync(pathlib.join(tmpDir, "testfile"), "This is a test");
+
+    equal(
+      await fsStorage
+        .read("testfile")
+        .map(b => b.text())
+        .unwrap(),
+      "This is a test"
+    );
+  });
+});
+
 // it("Should return Err when file creation fails", async () => {
 //   mock.method(fs.promises, "writeFile", () => {
 //     throw new Error();
