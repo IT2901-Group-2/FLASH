@@ -29,11 +29,7 @@ export const Card = ({
   ...rest
 }: CardProps) => {
   return (
-    <div
-      data-color={data}
-      className={cl(styles.card, className)}
-      {...rest}
-    >
+    <div data-color={data} className={cl(styles.card, className)} {...rest}>
       {children}
     </div>
   );

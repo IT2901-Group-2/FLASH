@@ -9,7 +9,14 @@ const meta: Meta<typeof Card> = {
   argTypes: {
     "data-color": {
       control: "select",
-      options: ["neutral", "brand-purple", "accent", "success", "warning", "background-secondary"],
+      options: [
+        "neutral",
+        "brand-purple",
+        "accent",
+        "success",
+        "warning",
+        "background-secondary",
+      ],
     },
     children: { control: { type: "text" } },
   },
