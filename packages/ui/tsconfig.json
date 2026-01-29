@@ -7,7 +7,7 @@
     "declaration": true,
     "declarationMap": true,
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "strict": true,
     "moduleResolution": "Bundler",
     "esModuleInterop": true,
@@ -23,12 +23,6 @@
       "@docs-components/*": [".storybook/components/*"]
     }
   },
-  "include": [
-    "src",
-    "temp.ts",
-    "src/types/global.d.ts",
-    ".storybook/DocsTemplate.tsx",
-    ".storybook/components"
-  ],
+  "include": ["src", ".storybook/**/*"],
   "exclude": ["node_modules", "dist"]
 }
