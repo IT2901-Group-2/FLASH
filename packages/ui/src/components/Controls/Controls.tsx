@@ -9,9 +9,10 @@ export type SegmentedOption<T extends string> = {
   label: React.ReactNode;
 };
 
-export interface ControlsProps<
-  T extends string,
-> extends React.HTMLAttributes<HTMLDivElement> {
+export interface ControlsProps<T extends string> extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange"
+> {
   /**
    * Changes design and interaction-visuals.
    * As of now, there only exists styling for the primary variant
@@ -51,6 +52,9 @@ export interface ControlsProps<
   onChange?: (value: T) => void;
 }
 
+/**
+ * Controls allows the user to select from a set of mutually-exclusive options.
+ */
 export const Controls = <T extends string>({
   options,
   value,
@@ -113,7 +117,7 @@ export const Controls = <T extends string>({
               if (e.key === " " && !disabled) e.currentTarget.click();
             }}
           >
-            {opt.label}
+            <span className={cl(active && styles.active)}>{opt.label}</span>
           </button>
         );
       })}

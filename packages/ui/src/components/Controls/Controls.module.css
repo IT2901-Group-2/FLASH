@@ -2,8 +2,7 @@
   --color-base: var(--data-color-500);
   --color-surface: var(--data-color-100);
   --color-border: var(--data-color-200);
-  --color-text: var(--data-color-900);
-  --color-text-muted: var(--data-color-700);
+  --color-text: var(--data-color-800);
 
   position: relative;
   display: grid;
@@ -34,15 +33,19 @@
   z-index: 1;
   border: none;
   background: transparent;
-  color: var(--color-text-muted);
+  color: var(--color-text);
   font-weight: 600;
   font-size: 1.05rem;
   border-radius: 9999px;
   cursor: pointer;
 }
 
-.item:hover:not(:disabled) {
+.item:hover {
   color: var(--color-text);
+}
+
+.item:hover:not(:disabled) {
+  color: var(--data-color-10);
 }
 
 .active {
@@ -62,4 +65,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.active {
+  color: var(--data-color-10);
 }
