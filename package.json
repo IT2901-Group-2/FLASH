@@ -7,7 +7,9 @@
     "build": "pnpm -r --if-present build",
     "lint": "pnpm -r --if-present lint",
     "format": "pnpm -r --if-present format",
-    "format:check": "pnpm -r --if-present format:check"
+    "format:check": "pnpm -r --if-present format:check",
+    "test": "pnpm -r --if-present test",
+    "setup": "pnpm -r --if-present run setup"
   },
   "packageManager": "pnpm@10.26.1"
 }
