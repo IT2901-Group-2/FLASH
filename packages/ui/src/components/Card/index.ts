@@ -1,2 +1,2 @@
-export { Card } from "./Card";
-export type { CardProps } from "./Card";
+"use client";
+export { default as Card, type CardProps } from "./Card";
