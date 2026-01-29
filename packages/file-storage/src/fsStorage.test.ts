@@ -1,4 +1,5 @@
-import { jest, afterAll, expect, test } from "@jest/globals";
+import { test, after, afterEach, mock } from "node:test";
+import { equal, deepEqual } from "assert/strict";
 import { FSStorage } from "./fsStorage";
 import pathlib from "path";
 import { tmpdir } from "os";
@@ -7,28 +8,30 @@ import fs from "fs";
 const tmpDir = fs.mkdtempSync(pathlib.join(tmpdir(), "fsStorage-"));
 const fsStorage = new FSStorage(tmpDir);
 
-afterAll(() => fs.rmSync(tmpDir, { recursive: true }));
+after(() => fs.rmSync(tmpDir, { recursive: true }));
+afterEach(() => mock.reset());
 
 test("Return Err when file creation fails", async () => {
-  jest.spyOn(fs.promises, "writeFile").mockImplementationOnce(() => {
+  mock.method(fs.promises, "writeFile", () => {
     throw new Error();
   });
   const result = await fsStorage.write("test.txt", new Blob(["This will fail"]));
-  expect(result.err).toBe(true);
+  equal(result.err, true);
 });
 
 test("FSStorage test", async () => {
-  expect(await fsStorage.list("/").unwrap()).toHaveLength(0);
+  deepEqual(await fsStorage.list("/").unwrap(), []);
 
   await fsStorage.write("temp/test.txt", new Blob(["This is a test"])).unwrap();
-  expect(
+  equal(
     await fsStorage
       .read("temp/test.txt")
       .map(b => b.text())
-      .unwrap()
-  ).toBe("This is a test");
+      .unwrap(),
+    "This is a test"
+  );
 
-  expect(await fsStorage.list("/").unwrap()).toStrictEqual(["temp/"]);
+  deepEqual(await fsStorage.list("/").unwrap(), ["temp/"]);
   await fsStorage.delete("temp/").unwrap();
-  expect(await fsStorage.list("/").unwrap()).toHaveLength(0);
+  deepEqual(await fsStorage.list("/").unwrap(), []);
 });
