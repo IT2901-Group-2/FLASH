@@ -7,6 +7,7 @@ import { Button } from "../Button";
 
 const meta: Meta<typeof ProgressBar> = {
   title: "Byggeklosser/Komponenter/ProgressBar",
+  tags: ["autodocs"],
   component: ProgressBar,
   argTypes: {},
   args: { onClick: fn() },

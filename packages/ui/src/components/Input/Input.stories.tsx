@@ -7,6 +7,7 @@ import { colorNames } from "@/styles/colorType";
 const meta: Meta<typeof Input> = {
   title: "Byggeklosser/Komponenter/Input",
   component: Input,
+  tags: ["autodocs"],
   argTypes: {
     variant: {
       control: "select",
