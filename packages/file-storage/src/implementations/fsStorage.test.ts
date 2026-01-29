@@ -81,27 +81,21 @@ describe("FSStorage read file", () => {
   });
 });
 
-// it("Should return Err when file creation fails", async () => {
-//   mock.method(fs.promises, "writeFile", () => {
-//     throw new Error();
-//   });
-//   const result = await fsStorage.write("test.txt", new Blob(["This will fail"]));
-//   equal(result.err, true);
-// });
-//
-// it("FSStorage test", async () => {
-//   deepEqual(await fsStorage.list("/").unwrap(), []);
-//
-//   await fsStorage.write("temp/test.txt", new Blob(["This is a test"])).unwrap();
-//   equal(
-//     await fsStorage
-//       .read("temp/test.txt")
-//       .map(b => b.text())
-//       .unwrap(),
-//     "This is a test"
-//   );
-//
-//   deepEqual(await fsStorage.list("/").unwrap(), ["temp/"]);
-//   await fsStorage.delete("temp/").unwrap();
-//   deepEqual(await fsStorage.list("/").unwrap(), []);
-// });
+describe("FSStorage create directory", () => {
+  it("Should return Err when directory creation fails", async () => {
+    mock.method(fs.promises, "mkdir", () => Promise.reject());
+
+    const result = await fsStorage.mkdir("testdir");
+    equal(result.err, true);
+  });
+
+  it("Should create directory", async () => {
+    await fsStorage.mkdir("testdir").unwrap();
+    equal(fs.statSync(pathlib.join(tmpDir, "testdir")).isDirectory(), true);
+  });
+
+  it("Should create directory recursively", async () => {
+    await fsStorage.mkdir("test/dir/foo").unwrap();
+    equal(fs.statSync(pathlib.join(tmpDir, "test", "dir", "foo")).isDirectory(), true);
+  });
+});
