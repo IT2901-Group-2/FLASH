@@ -49,6 +49,9 @@ export default defineConfig({
     },
   },
   test: {
+    coverage: {
+      provider: "istanbul",
+    },
     projects: [
       {
         extends: true,

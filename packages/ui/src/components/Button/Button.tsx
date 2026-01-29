@@ -3,6 +3,7 @@ import { Loader } from "../Loader/Loader";
 import styles from "./Button.module.css";
 import { cl } from "../../util/className";
 import { omit } from "@/util/omit";
+import { ColorName } from "@/styles/colorType";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Button Content. */
@@ -40,7 +41,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   /**
    * Overrides inherited color.
    */
-  "data-color"?: "accent" | "neutral" | "brand-purple";
+  "data-color"?: ColorName;
   /**
    * Ref to the button element
    */
@@ -48,11 +49,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 /**
- * A button component
- * @example
- * ```jsx
- * <Button>Click Me</Button>
- * ```
+ * A Button allows the user to perform an action.
  */
 export const Button = ({
   variant = "primary",
