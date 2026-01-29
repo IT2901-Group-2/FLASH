@@ -73,7 +73,7 @@ export const ProgressBar = ({
   const animationDuration = simulated ? `${simulated.seconds ?? 5}s` : undefined;
 
   return (
-    <div data-color={data} className={cl(styles.container)}>
+    <div data-color={data} className={cl(styles.container)} {...rest}>
       <div
         className={cl(
           styles.filler,
