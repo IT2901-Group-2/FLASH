@@ -13,8 +13,35 @@ export class FSStorage implements FileStorage {
     fs.mkdirSync(this.dir, { recursive: true });
   }
 
+  /**
+   * Converts the provided path into a consistent internal representation.
+   *
+   * @example
+   * ```
+   * // this.dir = "/foo"
+   * this.resolvePath("bar/baz.txt") // -> "/foo/bar/baz.txt"
+   * this.resolvePath("bar/dir/../baz.txt") // -> "/foo/bar/baz.txt"
+   * this.resolvePath("bar") // -> "/foo/bar/"
+   * ```
+   * @param path An arbitrary path
+   * @returns A resolved path
+   */
   private resolvePath(path: string): string {
     return pathlib.join(this.dir, resolvePath(path));
+  }
+
+  /**
+   * Recursively creates a directory at the specified path.
+   * Does not resolve the path beforehand, that should be done by the caller (see `resolvePath`).
+   *
+   * @param dirpath A resolved path
+   * @returns An empty result
+   */
+  private makeDir(dirpath: string): AsyncResult<void, Error> {
+    return Result.try(
+      () => fs.promises.mkdir(dirpath, { recursive: true }),
+      () => new Error(`Couldn't create directory ${dirpath}`)
+    ).map(Result.ok);
   }
 
   list(path: string): AsyncResult<string[], Error> {
@@ -38,12 +65,7 @@ export class FSStorage implements FileStorage {
   }
 
   mkdir(path: string): AsyncResult<void, Error> {
-    const dirpath = this.resolvePath(path);
-
-    return Result.try(
-      () => fs.promises.mkdir(dirpath, { recursive: true }),
-      () => new Error(`Couldn't create directory ${dirpath}`)
-    ).map(Result.ok);
+    return this.makeDir(this.resolvePath(path));
   }
 
   write(
@@ -51,12 +73,8 @@ export class FSStorage implements FileStorage {
     data: WithImplicitCoercion<ArrayLike<number>> | string
   ): AsyncResult<void, Error> {
     const filepath = this.resolvePath(path);
-    const dirpath = pathlib.dirname(filepath);
 
-    return Result.try(
-      () => fs.promises.mkdir(dirpath, { recursive: true }),
-      () => new Error(`Couldn't create directory ${dirpath}`)
-    ).mapCatching(
+    return this.makeDir(pathlib.dirname(filepath)).mapCatching(
       () => fs.promises.writeFile(filepath, Buffer.from(data)),
       () => new Error(`Couldn't create file ${filepath}`)
     );
