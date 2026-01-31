@@ -17,25 +17,31 @@ export class FSStorage implements FileStorage {
   }
 
   list(path: string): AsyncResult<string[], Error> {
+    const dirpath = this.resolvePath(path);
+
     return Result.try(
-      () => fs.promises.readdir(this.resolvePath(path), { withFileTypes: true }),
-      () => new Error(`Directory ${path} not found`)
+      () => fs.promises.readdir(dirpath, { withFileTypes: true }),
+      () => new Error(`Directory ${dirpath} not found`)
     ).map(files =>
       files.map(file => (file.isDirectory() ? dirPath(file.name) : file.name))
     );
   }
 
   read(path: string): AsyncResult<Blob, Error> {
+    const filepath = this.resolvePath(path);
+
     return Result.try(
-      () => fs.promises.readFile(this.resolvePath(path)),
-      () => new Error(`File ${path} not found`)
+      () => fs.promises.readFile(filepath),
+      () => new Error(`File ${filepath} not found`)
     ).map(buf => new Blob([buf]));
   }
 
   mkdir(path: string): AsyncResult<void, Error> {
+    const dirpath = this.resolvePath(path);
+
     return Result.try(
-      () => fs.promises.mkdir(this.resolvePath(path), { recursive: true }),
-      () => new Error(`Couldn't create directory ${path}`)
+      () => fs.promises.mkdir(dirpath, { recursive: true }),
+      () => new Error(`Couldn't create directory ${dirpath}`)
     ).map(() => Result.ok());
   }
 
@@ -53,9 +59,11 @@ export class FSStorage implements FileStorage {
   }
 
   delete(path: string): AsyncResult<void, Error> {
+    const rPath = this.resolvePath(path);
+
     return Result.try(
-      () => fs.promises.rm(this.resolvePath(path), { recursive: true }),
-      () => new Error(`Couldn't delete file or directory ${path}`)
+      () => fs.promises.rm(rPath, { recursive: true }),
+      () => new Error(`Couldn't delete file or directory ${rPath}`)
     );
   }
 }

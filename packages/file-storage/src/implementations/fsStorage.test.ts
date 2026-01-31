@@ -102,6 +102,12 @@ describe("FSStorage write file", () => {
     Result.assertError(await fsStorage.write("testfile", new Blob([])));
   });
 
+  it("Should return Err when directory creation fails", async () => {
+    jest.spyOn(fs.promises, "mkdir").mockImplementationOnce(() => Promise.reject());
+
+    Result.assertError(await fsStorage.write("testdir/testfile", new Blob([])));
+  });
+
   it("Should create file with correct contents", async () => {
     await fsStorage.write("testfile", new Blob(["This is a test"])).getOrThrow();
 
