@@ -6,7 +6,7 @@ import fs from "fs";
 import { WithImplicitCoercion } from "buffer";
 
 export class FSStorage implements FileStorage {
-  readonly dir: string;
+  private dir: string;
 
   constructor(dir: string) {
     this.dir = dirPath(absolutePath(dir));
