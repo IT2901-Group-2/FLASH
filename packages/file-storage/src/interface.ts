@@ -33,7 +33,7 @@ export interface FileStorage {
    * @param path The path to the file
    * @returns A result containing the contents of the file
    */
-  read(path: string): AsyncResult<Blob, Error>;
+  read(path: string): AsyncResult<Buffer, Error>;
 
   /**
    * Creates an empty directory.
@@ -62,7 +62,7 @@ export interface FileStorage {
    * @param data The data to write to the file
    * @returns An empty result
    */
-  write(path: string, data: Blob): AsyncResult<void, Error>;
+  write(path: string, data: Buffer): AsyncResult<void, Error>;
 
   /**
    * Recursively deletes a file or directory.

@@ -27,13 +27,13 @@ export class FSStorage implements FileStorage {
     );
   }
 
-  read(path: string): AsyncResult<Blob, Error> {
+  read(path: string): AsyncResult<Buffer, Error> {
     const filepath = this.resolvePath(path);
 
     return Result.try(
       () => fs.promises.readFile(filepath),
       () => new Error(`File ${filepath} not found`)
-    ).map(buf => new Blob([buf]));
+    );
   }
 
   mkdir(path: string): AsyncResult<void, Error> {
@@ -45,7 +45,7 @@ export class FSStorage implements FileStorage {
     ).map(() => Result.ok());
   }
 
-  write(path: string, data: Blob): AsyncResult<void, Error> {
+  write(path: string, data: Buffer): AsyncResult<void, Error> {
     const filepath = this.resolvePath(path);
     const dirpath = pathlib.dirname(filepath);
 
@@ -53,7 +53,7 @@ export class FSStorage implements FileStorage {
       () => fs.promises.mkdir(dirpath, { recursive: true }),
       () => new Error(`Couldn't create directory ${dirpath}`)
     ).mapCatching(
-      () => fs.promises.writeFile(filepath, data.stream()),
+      () => fs.promises.writeFile(filepath, data),
       () => new Error(`Couldn't create file ${filepath}`)
     );
   }

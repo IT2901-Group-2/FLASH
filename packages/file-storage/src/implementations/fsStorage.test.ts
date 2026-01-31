@@ -69,7 +69,7 @@ describe("FSStorage read file", () => {
     expect(
       await fsStorage
         .read("testfile")
-        .map(b => b.text())
+        .map(b => b.toString())
         .getOrThrow()
     ).toBe("This is a test");
   });
@@ -99,17 +99,17 @@ describe("FSStorage write file", () => {
   it("Should return Err when file creation fails", async () => {
     jest.spyOn(fs.promises, "writeFile").mockImplementationOnce(() => Promise.reject());
 
-    Result.assertError(await fsStorage.write("testfile", new Blob([])));
+    Result.assertError(await fsStorage.write("testfile", Buffer.from("")));
   });
 
   it("Should return Err when directory creation fails", async () => {
     jest.spyOn(fs.promises, "mkdir").mockImplementationOnce(() => Promise.reject());
 
-    Result.assertError(await fsStorage.write("testdir/testfile", new Blob([])));
+    Result.assertError(await fsStorage.write("testdir/testfile", Buffer.from("")));
   });
 
   it("Should create file with correct contents", async () => {
-    await fsStorage.write("testfile", new Blob(["This is a test"])).getOrThrow();
+    await fsStorage.write("testfile", Buffer.from("This is a test")).getOrThrow();
 
     expect(fs.readFileSync(pathlib.join(tmpDir, "testfile")).toString()).toBe(
       "This is a test"
@@ -117,7 +117,7 @@ describe("FSStorage write file", () => {
   });
 
   it("Should create file with correct contents recursively", async () => {
-    await fsStorage.write("foo/bar/testfile", new Blob(["This is a test"])).getOrThrow();
+    await fsStorage.write("foo/bar/testfile", Buffer.from("This is a test")).getOrThrow();
 
     expect(
       fs.readFileSync(pathlib.join(tmpDir, "foo", "bar", "testfile")).toString()
