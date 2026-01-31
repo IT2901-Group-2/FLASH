@@ -9,15 +9,18 @@
     "format:check": "prettier --check src/"
   },
   "dependencies": {
+    "@google-cloud/storage": "^7.18.0",
     "typescript-result": "^3.5.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "@jest/globals": "^30.2.0",
+    "@testcontainers/gcloud": "^11.11.0",
     "@types/node": "^25.0.10",
     "eslint": "^9.39.2",
     "jest": "^30.2.0",
     "prettier": "^3.8.1",
+    "testcontainers": "^11.11.0",
     "ts-jest": "^29.4.6",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.53.1"
