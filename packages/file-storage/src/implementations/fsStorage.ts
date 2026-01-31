@@ -1,6 +1,6 @@
-import { Err, Ok } from "ts-results";
 import { FileStorage } from "../interface";
-import { absolutePath, awaited, AwaitedResult, dirPath, resolvePath } from "../utils";
+import { absolutePath, dirPath, resolvePath } from "../utils";
+import { AsyncResult, Result } from "typescript-result";
 import pathlib from "path";
 import fs from "fs";
 
@@ -16,53 +16,46 @@ export class FSStorage implements FileStorage {
     return pathlib.join(this.dir, resolvePath(path));
   }
 
-  list(path: string): AwaitedResult<string[], string> {
-    return awaited(
-      fs.promises
-        .readdir(this.resolvePath(path), { withFileTypes: true })
-        .then(files =>
-          files.map(file => (file.isDirectory() ? dirPath(file.name) : file.name))
-        )
-        .then(Ok<string[]>)
-        .catch(() => Err(`Directory ${path} not found`))
+  list(path: string): AsyncResult<string[], Error> {
+    return Result.try(
+      () => fs.promises.readdir(this.resolvePath(path), { withFileTypes: true }),
+      () => new Error(`Directory ${path} not found`)
+    ).map(files =>
+      files.map(file => (file.isDirectory() ? dirPath(file.name) : file.name))
     );
   }
 
-  read(path: string): AwaitedResult<Blob, string> {
-    return awaited(
-      fs.promises
-        .readFile(this.resolvePath(path))
-        .then(buf => Ok(new Blob([buf])))
-        .catch(() => Err(`File ${path} not found`))
-    );
+  read(path: string): AsyncResult<Blob, Error> {
+    return Result.try(
+      () => fs.promises.readFile(this.resolvePath(path)),
+      () => new Error(`File ${path} not found`)
+    ).map(buf => new Blob([buf]));
   }
 
-  mkdir(path: string): AwaitedResult<void, string> {
-    return awaited(
-      fs.promises
-        .mkdir(this.resolvePath(path), { recursive: true })
-        .then(() => Ok.EMPTY)
-        .catch(() => Err(`Couldn't create directory ${path}`))
-    );
+  mkdir(path: string): AsyncResult<void, Error> {
+    return Result.try(
+      () => fs.promises.mkdir(this.resolvePath(path), { recursive: true }),
+      () => new Error(`Couldn't create directory ${path}`)
+    ).map(() => Result.ok());
   }
 
-  write(path: string, data: Blob): AwaitedResult<void, string> {
+  write(path: string, data: Blob): AsyncResult<void, Error> {
     const filepath = this.resolvePath(path);
-    return awaited(
-      fs.promises
-        .mkdir(pathlib.dirname(filepath), { recursive: true })
-        .then(() => fs.promises.writeFile(filepath, data.stream()))
-        .then(() => Ok.EMPTY)
-        .catch(() => Err(`Couldn't create file ${path}`))
+    const dirpath = pathlib.dirname(filepath);
+
+    return Result.try(
+      () => fs.promises.mkdir(dirpath, { recursive: true }),
+      () => new Error(`Couldn't create directory ${dirpath}`)
+    ).mapCatching(
+      () => fs.promises.writeFile(filepath, data.stream()),
+      () => new Error(`Couldn't create file ${filepath}`)
     );
   }
 
-  delete(path: string): AwaitedResult<void, string> {
-    return awaited(
-      fs.promises
-        .rm(absolutePath(this.dir, path), { recursive: true })
-        .then(() => Ok.EMPTY)
-        .catch(() => Err(`Couldn't delete file or directory ${path}`))
+  delete(path: string): AsyncResult<void, Error> {
+    return Result.try(
+      () => fs.promises.rm(this.resolvePath(path), { recursive: true }),
+      () => new Error(`Couldn't delete file or directory ${path}`)
     );
   }
 }
