@@ -43,7 +43,7 @@ export class FSStorage implements FileStorage {
     return Result.try(
       () => fs.promises.mkdir(dirpath, { recursive: true }),
       () => new Error(`Couldn't create directory ${dirpath}`)
-    ).map(() => Result.ok());
+    ).map(Result.ok);
   }
 
   write(
