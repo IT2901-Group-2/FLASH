@@ -1,26 +1,37 @@
-import { jest, describe, it, afterAll, afterEach, expect } from "@jest/globals";
+import { jest, describe, it, afterEach, expect, beforeEach } from "@jest/globals";
 import { FSStorage } from "./fsStorage";
 import pathlib from "path";
 import { tmpdir } from "os";
 import fs from "fs";
 import { Result } from "typescript-result";
 
-const tmpDir = fs.mkdtempSync(pathlib.join(tmpdir(), "fsStorage-"));
-const fsStorage = new FSStorage(tmpDir);
+let tmpDir: string;
 
-afterAll(() => fs.rmSync(tmpDir, { recursive: true }));
+beforeEach(() => {
+  tmpDir = fs.mkdtempSync(pathlib.join(tmpdir(), "fsStorage-"));
+});
+
 afterEach(() => {
   fs.rmSync(tmpDir, { recursive: true });
-  fs.mkdirSync(tmpDir);
   jest.restoreAllMocks();
+});
+
+describe("FSStorage constructor", () => {
+  it("Should create directory if it does not exists", () => {
+    fs.rmSync(tmpDir, { recursive: true });
+    new FSStorage(tmpDir);
+    expect(fs.statSync(tmpDir).isDirectory()).toBe(true);
+  });
 });
 
 describe("FSStorage list directory", () => {
   it("Should return Err when listing non-existent directory", async () => {
-    Result.assertError(await fsStorage.list("testdir"));
+    Result.assertError(await new FSStorage(tmpDir).list("testdir"));
   });
 
   it("Should return empty list when listing empty directory", async () => {
+    const fsStorage = new FSStorage(tmpDir);
+
     expect(await fsStorage.list("/").getOrThrow()).toStrictEqual([]);
 
     fs.mkdirSync(pathlib.join(tmpDir, "testdir"));
@@ -37,7 +48,7 @@ describe("FSStorage list directory", () => {
     fs.mkdirSync(pathlib.join(tmpDir, "test", "dir", "dir2"));
 
     expect(
-      await fsStorage
+      await new FSStorage(tmpDir)
         .list("test/dir")
         .map(f => new Set(f))
         .getOrThrow()
@@ -47,27 +58,27 @@ describe("FSStorage list directory", () => {
 
 describe("FSStorage read file", () => {
   it("Should return Err when reading non-existent file", async () => {
-    Result.assertError(await fsStorage.read("testfile"));
+    Result.assertError(await new FSStorage(tmpDir).read("testfile"));
   });
 
   it("Should return Err when reading directory", async () => {
     fs.mkdirSync(pathlib.join(tmpDir, "testdir"));
 
-    Result.assertError(await fsStorage.read("testdir"));
+    Result.assertError(await new FSStorage(tmpDir).read("testdir"));
   });
 
   it("Should return Err when reading file fails", async () => {
     fs.writeFileSync(pathlib.join(tmpDir, "testfile"), "");
     jest.spyOn(fs.promises, "readFile").mockImplementationOnce(() => Promise.reject());
 
-    Result.assertError(await fsStorage.read("testfile"));
+    Result.assertError(await new FSStorage(tmpDir).read("testfile"));
   });
 
   it("Should return the contents of the file", async () => {
     fs.writeFileSync(pathlib.join(tmpDir, "testfile"), "This is a test");
 
     expect(
-      await fsStorage
+      await new FSStorage(tmpDir)
         .read("testfile")
         .map(b => b.toString())
         .getOrThrow()
@@ -79,16 +90,16 @@ describe("FSStorage create directory", () => {
   it("Should return Err when directory creation fails", async () => {
     jest.spyOn(fs.promises, "mkdir").mockImplementationOnce(() => Promise.reject());
 
-    Result.assertError(await fsStorage.mkdir("testdir"));
+    Result.assertError(await new FSStorage(tmpDir).mkdir("testdir"));
   });
 
   it("Should create directory", async () => {
-    await fsStorage.mkdir("testdir").getOrThrow();
+    await new FSStorage(tmpDir).mkdir("testdir").getOrThrow();
     expect(fs.statSync(pathlib.join(tmpDir, "testdir")).isDirectory()).toBe(true);
   });
 
   it("Should create directory recursively", async () => {
-    await fsStorage.mkdir("test/dir/foo").getOrThrow();
+    await new FSStorage(tmpDir).mkdir("test/dir/foo").getOrThrow();
     expect(fs.statSync(pathlib.join(tmpDir, "test", "dir", "foo")).isDirectory()).toBe(
       true
     );
@@ -99,17 +110,17 @@ describe("FSStorage write file", () => {
   it("Should return Err when file creation fails", async () => {
     jest.spyOn(fs.promises, "writeFile").mockImplementationOnce(() => Promise.reject());
 
-    Result.assertError(await fsStorage.write("testfile", ""));
+    Result.assertError(await new FSStorage(tmpDir).write("testfile", ""));
   });
 
   it("Should return Err when directory creation fails", async () => {
     jest.spyOn(fs.promises, "mkdir").mockImplementationOnce(() => Promise.reject());
 
-    Result.assertError(await fsStorage.write("testdir/testfile", ""));
+    Result.assertError(await new FSStorage(tmpDir).write("testdir/testfile", ""));
   });
 
   it("Should create file with correct contents", async () => {
-    await fsStorage.write("testfile", "This is a test").getOrThrow();
+    await new FSStorage(tmpDir).write("testfile", "This is a test").getOrThrow();
 
     expect(fs.readFileSync(pathlib.join(tmpDir, "testfile")).toString()).toBe(
       "This is a test"
@@ -117,7 +128,7 @@ describe("FSStorage write file", () => {
   });
 
   it("Should create file with correct contents recursively", async () => {
-    await fsStorage.write("foo/bar/testfile", "This is a test").getOrThrow();
+    await new FSStorage(tmpDir).write("foo/bar/testfile", "This is a test").getOrThrow();
 
     expect(
       fs.readFileSync(pathlib.join(tmpDir, "foo", "bar", "testfile")).toString()
@@ -127,20 +138,20 @@ describe("FSStorage write file", () => {
 
 describe("FSStorage delete file/directory", () => {
   it("Should return Err when deleting non-existent file/directory", async () => {
-    Result.assertError(await fsStorage.delete("testfile"));
+    Result.assertError(await new FSStorage(tmpDir).delete("testfile"));
   });
 
   it("Should return Err when file/directory deletion fails", async () => {
     fs.writeFileSync(pathlib.join(tmpDir, "testfile"), "");
     jest.spyOn(fs.promises, "rm").mockImplementationOnce(() => Promise.reject());
 
-    Result.assertError(await fsStorage.delete("testfile"));
+    Result.assertError(await new FSStorage(tmpDir).delete("testfile"));
   });
 
   it("Should delete file", async () => {
     fs.writeFileSync(pathlib.join(tmpDir, "testfile"), "");
 
-    await fsStorage.delete("testfile").getOrThrow();
+    await new FSStorage(tmpDir).delete("testfile").getOrThrow();
     expect(
       fs.statSync(pathlib.join(tmpDir, "testfile"), { throwIfNoEntry: false })
     ).toBeUndefined();
@@ -150,7 +161,7 @@ describe("FSStorage delete file/directory", () => {
     fs.mkdirSync(pathlib.join(tmpDir, "testdir"));
     fs.writeFileSync(pathlib.join(tmpDir, "testdir", "testfile"), "");
 
-    await fsStorage.delete("testdir/testfile").getOrThrow();
+    await new FSStorage(tmpDir).delete("testdir/testfile").getOrThrow();
     expect(fs.statSync(pathlib.join(tmpDir, "testdir")).isDirectory()).toBe(true);
     expect(
       fs.statSync(pathlib.join(tmpDir, "testdir", "testfile"), { throwIfNoEntry: false })
@@ -160,7 +171,7 @@ describe("FSStorage delete file/directory", () => {
   it("Should delete empty directory", async () => {
     fs.mkdirSync(pathlib.join(tmpDir, "testdir"));
 
-    await fsStorage.delete("testdir").getOrThrow();
+    await new FSStorage(tmpDir).delete("testdir").getOrThrow();
     expect(
       fs.statSync(pathlib.join(tmpDir, "testdir"), { throwIfNoEntry: false })
     ).toBeUndefined();
@@ -175,7 +186,7 @@ describe("FSStorage delete file/directory", () => {
     fs.writeFileSync(pathlib.join(tmpDir, "test", "dir", "baz", "test.txt"), "");
     fs.mkdirSync(pathlib.join(tmpDir, "test", "dir", "dir2"));
 
-    await fsStorage.delete("test").getOrThrow();
+    await new FSStorage(tmpDir).delete("test").getOrThrow();
     expect(
       fs.statSync(pathlib.join(tmpDir, "test"), { throwIfNoEntry: false })
     ).toBeUndefined();
