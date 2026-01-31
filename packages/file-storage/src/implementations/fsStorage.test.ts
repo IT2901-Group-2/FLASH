@@ -8,7 +8,7 @@ import { Result } from "typescript-result";
 let tmpDir: string;
 
 beforeEach(() => {
-  tmpDir = fs.mkdtempSync(pathlib.join(tmpdir(), "fsStorage-"));
+  tmpDir = fs.mkdtempSync(pathlib.join(tmpdir(), "test-fsStorage-"));
 });
 
 afterEach(() => {
@@ -17,7 +17,7 @@ afterEach(() => {
 });
 
 describe("FSStorage constructor", () => {
-  it("Should create directory if it does not exists", () => {
+  it("Should create directory if it does not exist", () => {
     fs.rmSync(tmpDir, { recursive: true });
     new FSStorage(tmpDir);
     expect(fs.statSync(tmpDir).isDirectory()).toBe(true);
