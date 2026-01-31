@@ -3,6 +3,7 @@ import { absolutePath, dirPath, resolvePath } from "../utils";
 import { AsyncResult, Result } from "typescript-result";
 import pathlib from "path";
 import fs from "fs";
+import { WithImplicitCoercion } from "buffer";
 
 export class FSStorage implements FileStorage {
   readonly dir: string;
@@ -45,7 +46,10 @@ export class FSStorage implements FileStorage {
     ).map(() => Result.ok());
   }
 
-  write(path: string, data: Buffer): AsyncResult<void, Error> {
+  write(
+    path: string,
+    data: WithImplicitCoercion<ArrayLike<number>> | string
+  ): AsyncResult<void, Error> {
     const filepath = this.resolvePath(path);
     const dirpath = pathlib.dirname(filepath);
 
@@ -53,7 +57,7 @@ export class FSStorage implements FileStorage {
       () => fs.promises.mkdir(dirpath, { recursive: true }),
       () => new Error(`Couldn't create directory ${dirpath}`)
     ).mapCatching(
-      () => fs.promises.writeFile(filepath, data),
+      () => fs.promises.writeFile(filepath, Buffer.from(data)),
       () => new Error(`Couldn't create file ${filepath}`)
     );
   }

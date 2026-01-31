@@ -99,17 +99,17 @@ describe("FSStorage write file", () => {
   it("Should return Err when file creation fails", async () => {
     jest.spyOn(fs.promises, "writeFile").mockImplementationOnce(() => Promise.reject());
 
-    Result.assertError(await fsStorage.write("testfile", Buffer.from("")));
+    Result.assertError(await fsStorage.write("testfile", ""));
   });
 
   it("Should return Err when directory creation fails", async () => {
     jest.spyOn(fs.promises, "mkdir").mockImplementationOnce(() => Promise.reject());
 
-    Result.assertError(await fsStorage.write("testdir/testfile", Buffer.from("")));
+    Result.assertError(await fsStorage.write("testdir/testfile", ""));
   });
 
   it("Should create file with correct contents", async () => {
-    await fsStorage.write("testfile", Buffer.from("This is a test")).getOrThrow();
+    await fsStorage.write("testfile", "This is a test").getOrThrow();
 
     expect(fs.readFileSync(pathlib.join(tmpDir, "testfile")).toString()).toBe(
       "This is a test"
@@ -117,7 +117,7 @@ describe("FSStorage write file", () => {
   });
 
   it("Should create file with correct contents recursively", async () => {
-    await fsStorage.write("foo/bar/testfile", Buffer.from("This is a test")).getOrThrow();
+    await fsStorage.write("foo/bar/testfile", "This is a test").getOrThrow();
 
     expect(
       fs.readFileSync(pathlib.join(tmpDir, "foo", "bar", "testfile")).toString()

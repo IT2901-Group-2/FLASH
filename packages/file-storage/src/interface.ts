@@ -1,3 +1,4 @@
+import { WithImplicitCoercion } from "buffer";
 import { AsyncResult } from "typescript-result";
 
 export interface FileStorage {
@@ -55,14 +56,17 @@ export interface FileStorage {
    * @example
    * ```typescript
    * // Creates the file `foo.txt` and writes "some data" to it
-   * await fileStorage.write("foo.txt", new Blob(["some data"])).getOrThrow();
+   * await fileStorage.write("foo.txt", "some data").getOrThrow();
    * ```
    *
    * @param path The path to the file
    * @param data The data to write to the file
    * @returns An empty result
    */
-  write(path: string, data: Buffer): AsyncResult<void, Error>;
+  write(
+    path: string,
+    data: WithImplicitCoercion<ArrayLike<number>> | string
+  ): AsyncResult<void, Error>;
 
   /**
    * Recursively deletes a file or directory.
