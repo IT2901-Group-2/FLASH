@@ -38,30 +38,21 @@ export class FSStorage implements FileStorage {
    * @returns An empty result
    */
   private makeDir(dirpath: string): AsyncResult<void, Error> {
-    return Result.try(
-      () => fs.promises.mkdir(dirpath, { recursive: true }),
-      () => new Error(`Couldn't create directory ${dirpath}`)
-    ).map(Result.ok);
+    return Result.try(() => fs.promises.mkdir(dirpath, { recursive: true })).map(
+      Result.ok
+    );
   }
 
   list(path: string): AsyncResult<string[], Error> {
-    const dirpath = this.resolvePath(path);
-
-    return Result.try(
-      () => fs.promises.readdir(dirpath, { withFileTypes: true }),
-      () => new Error(`Directory ${dirpath} not found`)
+    return Result.try(() =>
+      fs.promises.readdir(this.resolvePath(path), { withFileTypes: true })
     ).map(files =>
       files.map(file => (file.isDirectory() ? dirPath(file.name) : file.name))
     );
   }
 
   read(path: string): AsyncResult<Buffer, Error> {
-    const filepath = this.resolvePath(path);
-
-    return Result.try(
-      () => fs.promises.readFile(filepath),
-      () => new Error(`File ${filepath} not found`)
-    );
+    return Result.try(() => fs.promises.readFile(this.resolvePath(path)));
   }
 
   mkdir(path: string): AsyncResult<void, Error> {
@@ -74,18 +65,12 @@ export class FSStorage implements FileStorage {
   ): AsyncResult<void, Error> {
     const filepath = this.resolvePath(path);
 
-    return this.makeDir(pathlib.dirname(filepath)).mapCatching(
-      () => fs.promises.writeFile(filepath, Buffer.from(data)),
-      () => new Error(`Couldn't create file ${filepath}`)
+    return this.makeDir(pathlib.dirname(filepath)).mapCatching(() =>
+      fs.promises.writeFile(filepath, Buffer.from(data))
     );
   }
 
   delete(path: string): AsyncResult<void, Error> {
-    const rPath = this.resolvePath(path);
-
-    return Result.try(
-      () => fs.promises.rm(rPath, { recursive: true }),
-      () => new Error(`Couldn't delete file or directory ${rPath}`)
-    );
+    return Result.try(() => fs.promises.rm(this.resolvePath(path), { recursive: true }));
   }
 }

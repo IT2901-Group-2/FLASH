@@ -69,7 +69,9 @@ describe("FSStorage read file", () => {
 
   it("Should return Err when reading file fails", async () => {
     fs.writeFileSync(pathlib.join(tmpDir, "testfile"), "");
-    jest.spyOn(fs.promises, "readFile").mockImplementationOnce(() => Promise.reject());
+    jest.spyOn(fs.promises, "readFile").mockImplementationOnce(() => {
+      throw new Error("");
+    });
 
     Result.assertError(await new FSStorage(tmpDir).read("testfile"));
   });
@@ -88,7 +90,9 @@ describe("FSStorage read file", () => {
 
 describe("FSStorage create directory", () => {
   it("Should return Err when directory creation fails", async () => {
-    jest.spyOn(fs.promises, "mkdir").mockImplementationOnce(() => Promise.reject());
+    jest.spyOn(fs.promises, "mkdir").mockImplementationOnce(() => {
+      throw new Error("");
+    });
 
     Result.assertError(await new FSStorage(tmpDir).mkdir("testdir"));
   });
@@ -108,13 +112,17 @@ describe("FSStorage create directory", () => {
 
 describe("FSStorage write file", () => {
   it("Should return Err when file creation fails", async () => {
-    jest.spyOn(fs.promises, "writeFile").mockImplementationOnce(() => Promise.reject());
+    jest.spyOn(fs.promises, "writeFile").mockImplementationOnce(() => {
+      throw new Error("");
+    });
 
     Result.assertError(await new FSStorage(tmpDir).write("testfile", ""));
   });
 
   it("Should return Err when directory creation fails", async () => {
-    jest.spyOn(fs.promises, "mkdir").mockImplementationOnce(() => Promise.reject());
+    jest.spyOn(fs.promises, "mkdir").mockImplementationOnce(() => {
+      throw new Error("");
+    });
 
     Result.assertError(await new FSStorage(tmpDir).write("testdir/testfile", ""));
   });
@@ -143,7 +151,9 @@ describe("FSStorage delete file/directory", () => {
 
   it("Should return Err when file/directory deletion fails", async () => {
     fs.writeFileSync(pathlib.join(tmpDir, "testfile"), "");
-    jest.spyOn(fs.promises, "rm").mockImplementationOnce(() => Promise.reject());
+    jest.spyOn(fs.promises, "rm").mockImplementationOnce(() => {
+      throw new Error("");
+    });
 
     Result.assertError(await new FSStorage(tmpDir).delete("testfile"));
   });
