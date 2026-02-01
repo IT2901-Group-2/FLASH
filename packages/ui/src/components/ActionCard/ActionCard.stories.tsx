@@ -1,6 +1,15 @@
 import { Meta, StoryObj } from "@storybook/react";
 import ActionCard from "./ActionCard";
-import { Camera, RotateCcw, Upload, X, Save, ArrowRight, QrCode, Edit } from "lucide-react";
+import {
+  Camera,
+  RotateCcw,
+  Upload,
+  X,
+  Save,
+  ArrowRight,
+  QrCode,
+  Edit,
+} from "lucide-react";
 
 const meta: Meta<typeof ActionCard> = {
   title: "Byggeklosser/Komponenter/ActionCard",
@@ -81,7 +90,7 @@ export const FailedUpload: Story = {
       icon: <RotateCcw size={18} />,
       iconPosition: "right",
       "data-color": "brand-purple",
-    }, 
+    },
   },
 };
 
@@ -89,8 +98,8 @@ export const FailedUpload: Story = {
 export const UploadToSelectedAlbum: Story = {
   args: {
     description: "You have 10 uploads remaining",
-    secondaryButton: { 
-      text: "Cancel", 
+    secondaryButton: {
+      text: "Cancel",
       icon: <X size={18} />,
       iconPosition: "right",
       "data-color": "brand-purple",
@@ -116,13 +125,15 @@ export const Loading: Story = {
       text: "",
       loading: true,
       "data-color": "brand-purple",
-    }
+    },
   },
 };
 
 export const UploadStates: Story = {
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "2rem", flexWrap: "wrap" }}>
+    <div
+      style={{ display: "flex", flexDirection: "column", gap: "2rem", flexWrap: "wrap" }}
+    >
       <ActionCard {...UploadToSelectedAlbum.args} />
       <ActionCard {...Loading.args} />
       <ActionCard {...SuccessfulUpload.args} />
@@ -179,7 +190,7 @@ export const DownloadQrCode: Story = {
   },
 };
 
-export const EditEvent : Story = {
+export const EditEvent: Story = {
   args: {
     secondaryButton: {
       text: "Edit Event",
@@ -198,7 +209,9 @@ export const EditEvent : Story = {
 
 export const AllVariants: Story = {
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "2rem", flexWrap: "wrap" }}>
+    <div
+      style={{ display: "flex", flexDirection: "column", gap: "2rem", flexWrap: "wrap" }}
+    >
       <ActionCard {...UploadImage.args} />
       <ActionCard {...TakePhoto.args} />
       <ActionCard {...SuccessfulUpload.args} />

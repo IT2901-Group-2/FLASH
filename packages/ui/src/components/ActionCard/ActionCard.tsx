@@ -5,8 +5,7 @@ import { Button, ButtonProps } from "../Button";
 import styles from "./ActionCard.module.css";
 import { cl } from "../../util/className";
 
-export interface ActionCardButtonConfig
-  extends Omit<ButtonProps, "children"> {
+export interface ActionCardButtonConfig extends Omit<ButtonProps, "children"> {
   text: React.ReactNode;
   icon?: React.ReactNode;
 }
@@ -38,9 +37,9 @@ export interface ActionCardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 /**
- * 
- * An action card allows the user to interact with primary and secondary actions. This could be used for prompting the user to take an action, such as uploading a photo or taking a new one. It could also be used for routing and navigation purposes, or to save changes.  
- * 
+ *
+ * An action card allows the user to interact with primary and secondary actions. This could be used for prompting the user to take an action, such as uploading a photo or taking a new one. It could also be used for routing and navigation purposes, or to save changes.
+ *
  */
 export const ActionCard = ({
   description,
@@ -55,10 +54,7 @@ export const ActionCard = ({
   return (
     <Card data-color={data} className={cl(styles.actionCard, className)} {...rest}>
       {description && (
-        <p
-          className={styles.description}
-          data-color={descriptionColor}
-        >
+        <p className={styles.description} data-color={descriptionColor}>
           {description}
         </p>
       )}
@@ -70,11 +66,7 @@ export const ActionCard = ({
               {secondaryButton.text}
             </Button>
           )}
-          {primaryButton && (
-            <Button {...primaryButton}>
-              {primaryButton.text}
-            </Button>
-          )}
+          {primaryButton && <Button {...primaryButton}>{primaryButton.text}</Button>}
         </div>
       )}
     </Card>
