@@ -11,7 +11,7 @@ export const DocsTemplate = () => {
         <Description />
       </div>
 
-      <h2>Usage</h2>
+      <h2>Examples</h2>
       <Showcase />
 
       <h2>Props</h2>
