@@ -1,7 +1,7 @@
 import { FileStorage } from "../interface";
 import { absolutePath, dirPath, resolvePath } from "../utils";
 import { AsyncResult, Result } from "typescript-result";
-import pathlib from "path";
+import upath from "upath";
 import fs from "fs";
 import { WithImplicitCoercion } from "buffer";
 
@@ -27,7 +27,7 @@ export class FSStorage implements FileStorage {
    * @returns A resolved path
    */
   private resolvePath(path: string): string {
-    return pathlib.join(this.dir, resolvePath(path));
+    return upath.join(this.dir, resolvePath(path));
   }
 
   /**
@@ -65,7 +65,7 @@ export class FSStorage implements FileStorage {
   ): AsyncResult<void, Error> {
     const filepath = this.resolvePath(path);
 
-    return this.makeDir(pathlib.dirname(filepath)).mapCatching(() =>
+    return this.makeDir(upath.dirname(filepath)).mapCatching(() =>
       fs.promises.writeFile(filepath, Buffer.from(data))
     );
   }

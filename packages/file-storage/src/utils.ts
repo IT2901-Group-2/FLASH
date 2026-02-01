@@ -1,4 +1,4 @@
-import pathlib from "path";
+import upath from "upath";
 
 /**
  * Resolves a path as if it were a path from root and then removes the leading `/`.
@@ -14,7 +14,7 @@ import pathlib from "path";
  * @returns The resolved path
  */
 export function resolvePath(...paths: string[]): string {
-  return pathlib.resolve("/", ...paths).replace(/^\/(.+)/, "$1");
+  return upath.resolve("/", ...paths).replace(/^\/(.+)/, "$1");
 }
 
 /**

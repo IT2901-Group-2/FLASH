@@ -9,7 +9,8 @@
     "format:check": "prettier --check src/"
   },
   "dependencies": {
-    "typescript-result": "^3.5.2"
+    "typescript-result": "^3.5.2",
+    "upath": "^2.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
