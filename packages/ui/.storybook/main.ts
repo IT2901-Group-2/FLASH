@@ -27,7 +27,7 @@ const config: StorybookConfig = {
         "@utils": resolve(__dirname, "../src/utils"),
         "@styles": resolve(__dirname, "../src/styles"),
         "@docs": resolve(__dirname, "../src/docs"),
-        "@docs-components": resolve(__dirname, "../src/docs/components"),
+        "@docs-components": resolve(__dirname, "./components"),
       };
     }
     return config;
