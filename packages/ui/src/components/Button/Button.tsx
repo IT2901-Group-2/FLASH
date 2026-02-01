@@ -3,6 +3,7 @@ import { Loader } from "../Loader/Loader";
 import styles from "./Button.module.css";
 import { cl } from "../../util/className";
 import { ColorName } from "@/styles/colorType";
+import { omit } from "@/util/omit";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Button Content. */
@@ -41,10 +42,6 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
    * Overrides inherited color.
    */
   "data-color"?: ColorName;
-  /**
-   * Ref to the button element
-   */
-  ref?: React.Ref<HTMLButtonElement>;
 }
 
 /**
@@ -56,12 +53,14 @@ export const Button = ({
   size = "medium",
   loading = false,
   disabled,
-  "data-color": data = "brand-purple",
+  "data-color": data = "neutral",
   icon,
   iconPosition = "left",
-  ref,
   ...rest
 }: ButtonProps) => {
+  const filterProps: React.ButtonHTMLAttributes<HTMLButtonElement> =
+    disabled || loading ? omit(rest, []) : rest;
+
   const handleKeyUp = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === " " && !disabled && !loading) e.currentTarget.click();
   };
@@ -69,19 +68,19 @@ export const Button = ({
     <button
       data-color={data}
       data-variant={variant}
-      ref={ref}
+      data-size={size}
       onKeyUp={handleKeyUp}
+      {...filterProps}
       className={cl(
         styles.button,
         loading && styles.loading,
         disabled && styles.disabled
       )}
-      disabled={(disabled ?? loading) ? true : undefined}
-      {...rest}
+      disabled={disabled || loading}
     >
       {icon && iconPosition === "left" && <span className={styles.icon}>{icon}</span>}
       {loading && <Loader size={size} />}
-      {children && <span className={""}>{children}</span>}
+      {children && !loading && <span>{children}</span>}
       {icon && iconPosition === "right" && <span className={styles.icon}>{icon}</span>}
     </button>
   );

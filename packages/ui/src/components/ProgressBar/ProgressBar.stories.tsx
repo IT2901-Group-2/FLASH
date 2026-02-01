@@ -7,6 +7,7 @@ import { Button } from "../Button";
 
 const meta: Meta<typeof ProgressBar> = {
   title: "Byggeklosser/Komponenter/ProgressBar",
+  tags: ["autodocs"],
   component: ProgressBar,
   argTypes: {},
   args: { onClick: fn() },
@@ -44,7 +45,6 @@ export const Loading: Story = {
           return oldValue + increment > 100 ? 100 : oldValue + increment;
         });
       });
-      console.log(intervalId);
       return () => clearInterval(intervalId);
     }, []);
 

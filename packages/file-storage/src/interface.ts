@@ -1,6 +1,9 @@
 import { WithImplicitCoercion } from "buffer";
 import { AsyncResult } from "typescript-result";
 
+/**
+ * Generic file storage interface.
+ */
 export interface FileStorage {
   /**
    * Lists the filenames of all files in a directory (not recursively). All directories end with `/`.
@@ -37,7 +40,7 @@ export interface FileStorage {
   read(path: string): AsyncResult<Buffer, Error>;
 
   /**
-   * Creates an empty directory.
+   * Creates an empty directory. Does nothing if the directory already exists.
    *
    * @example
    * ```typescript

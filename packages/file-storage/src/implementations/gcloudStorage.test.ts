@@ -7,7 +7,7 @@ let container: StartedTestContainer;
 let bucket: Bucket;
 
 beforeEach(async () => {
-  container = await image.withExposedPorts(9000).withStartupTimeout(1500).start();
+  container = await image.withExposedPorts(9000).withStartupTimeout(2000).start();
   bucket = await new Storage({
     projectId: "test-project",
     apiEndpoint: `http://${container.getHost()}:${container.getMappedPort(9000)}`,
