@@ -56,7 +56,8 @@ export const ActionCard = ({
     <Card data-color={data} className={cl(styles.actionCard, className)} {...rest}>
       {description && (
         <p
-          className={cl(styles.description, styles[`description--${descriptionColor}`])}
+          className={styles.description}
+          data-color={descriptionColor}
         >
           {description}
         </p>

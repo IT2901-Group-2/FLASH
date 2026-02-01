@@ -9,14 +9,7 @@
   font-size: 0.875rem;
   line-height: 1.5;
   text-align: center;
-}
-
-.description--neutral {
-  color: var(--color-text-secondary, #6b7280);
-}
-
-.description--accent {
-  color: var(--color-text-primary, #1f2937);
+  color: var(--data-color-500);
 }
 
 .buttonsContainer {

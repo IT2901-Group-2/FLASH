@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
 import ActionCard from "./ActionCard";
-import { Camera, Upload } from "lucide-react";
+import { Camera, Cross, Upload, X } from "lucide-react";
 
 const meta: Meta<typeof ActionCard> = {
   title: "Byggeklosser/Komponenter/ActionCard",
@@ -40,6 +40,26 @@ export const TakePhoto: Story = {
       icon: <Upload size={18} />,
       iconPosition: "right",
       "data-color": "brand-purple",
+    },
+  },
+};
+
+export const SuccessfulUpload: Story = {
+  args: {
+    description: "Upload successful! You have 9 uploads remaining.",
+    descriptionColor: "success",
+    secondaryButton: {
+      text: "Cancel",
+      icon: <X size={18} />,
+      iconPosition: "right",
+      "data-color": "brand-purple",
+    },
+    primaryButton: {
+      text: "Upload Image",
+      icon: <Upload size={18} />,
+      iconPosition: "right",
+      "data-color": "brand-purple",
+      disabled: true,
     },
   },
 };
