@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
 import ActionCard from "./ActionCard";
-import { Camera, RotateCcw, Upload, X, CheckCircle2, Save, ArrowRight } from "lucide-react";
+import { Camera, RotateCcw, Upload, X, Save, ArrowRight, QrCode, Edit } from "lucide-react";
 
 const meta: Meta<typeof ActionCard> = {
   title: "Byggeklosser/Komponenter/ActionCard",
@@ -162,4 +162,53 @@ export const Next: Story = {
       "data-color": "brand-purple",
     },
   },
+};
+
+export const DownloadQrCode: Story = {
+  args: {
+    secondaryButton: {
+      text: "Download QR Code",
+      icon: <QrCode size={18} />,
+      iconPosition: "right",
+      "data-color": "brand-purple",
+    },
+    primaryButton: {
+      text: "Done",
+      "data-color": "brand-purple",
+    },
+  },
+};
+
+export const EditEvent : Story = {
+  args: {
+    secondaryButton: {
+      text: "Edit Event",
+      icon: <Edit size={18} />,
+      iconPosition: "right",
+      "data-color": "brand-purple",
+    },
+    primaryButton: {
+      text: "Go to Event",
+      icon: <ArrowRight size={18} />,
+      iconPosition: "right",
+      "data-color": "brand-purple",
+    },
+  },
+};
+
+export const AllVariants: Story = {
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "2rem", flexWrap: "wrap" }}>
+      <ActionCard {...UploadImage.args} />
+      <ActionCard {...TakePhoto.args} />
+      <ActionCard {...SuccessfulUpload.args} />
+      <ActionCard {...FailedUpload.args} />
+      <ActionCard {...UploadToSelectedAlbum.args} />
+      <ActionCard {...Loading.args} />
+      <ActionCard {...SaveChanges.args} />
+      <ActionCard {...Next.args} />
+      <ActionCard {...DownloadQrCode.args} />
+      <ActionCard {...EditEvent.args} />
+    </div>
+  ),
 };
