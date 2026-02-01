@@ -4,7 +4,7 @@ WORKDIR /app
 RUN git clone https://github.com/googleapis/storage-testbench.git .
 RUN python -m venv /venv
 ENV PATH="/venv/bin:$PATH"
-RUN pip install .
+RUN pip install . --no-cache-dir
 
 FROM python:3.13-slim
 WORKDIR /app
