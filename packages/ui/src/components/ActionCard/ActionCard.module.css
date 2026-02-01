@@ -18,3 +18,8 @@
   gap: 0.75rem;
   align-items: center;
 }
+
+.buttonsContainer > * {
+  width: 100%;
+  min-width: 180px;
+}
