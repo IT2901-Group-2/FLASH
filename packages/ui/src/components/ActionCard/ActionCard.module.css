@@ -1,0 +1,27 @@
+.actionCard {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.description {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.description--neutral {
+  color: var(--color-text-secondary, #6b7280);
+}
+
+.description--accent {
+  color: var(--color-text-primary, #1f2937);
+}
+
+.buttonsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+}
