@@ -12,7 +12,6 @@ const meta: Meta<typeof Loader> = {
   argTypes: {
     variant: { control: "radio" },
     title: { control: "text" },
-    ref: { control: "inline-check" },
   },
   args: { onClick: fn() },
 } satisfies Meta<typeof Loader>;
