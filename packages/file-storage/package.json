@@ -4,7 +4,7 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "jest",
-    "lint": "eslint",
+    "lint": "eslint --max-warnings 0",
     "format": "prettier --write src/",
     "format:check": "prettier --check src/"
   },
