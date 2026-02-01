@@ -2,12 +2,12 @@ import { jest, afterEach, beforeEach, describe, expect, it } from "@jest/globals
 import { GenericContainer, StartedTestContainer } from "testcontainers";
 import { Bucket, Storage } from "@google-cloud/storage";
 
-const image = new GenericContainer("igiwa001/test-repo:gcloud-v0.1");
+const image = new GenericContainer("igiwa001/test-repo:gcloud-v1");
 let container: StartedTestContainer;
 let bucket: Bucket;
 
 beforeEach(async () => {
-  container = await image.withExposedPorts(9000).withStartupTimeout(1000).start();
+  container = await image.withExposedPorts(9000).withStartupTimeout(2000).start();
   bucket = await new Storage({
     projectId: "test-project",
     apiEndpoint: `http://${container.getHost()}:${container.getMappedPort(9000)}`,
