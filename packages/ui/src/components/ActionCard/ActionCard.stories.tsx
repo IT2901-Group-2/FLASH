@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
 import ActionCard from "./ActionCard";
-import { Camera, RotateCcw, Upload, X, CheckCircle2 } from "lucide-react";
+import { Camera, RotateCcw, Upload, X, CheckCircle2, Save } from "lucide-react";
 
 const meta: Meta<typeof ActionCard> = {
   title: "Byggeklosser/Komponenter/ActionCard",
@@ -177,4 +177,21 @@ export const UploadStates: Story = {
       />
     </div>
   ),
+};
+
+export const SaveChanges: Story = {
+  args: {
+    secondaryButton: {
+      text: "Cancel",
+      icon: <X size={18} />,
+      iconPosition: "right",
+      "data-color": "brand-purple",
+    },
+    primaryButton: {
+      text: "Save Changes",
+      icon: <Save size={18} />,
+      iconPosition: "right",
+      "data-color": "brand-purple",
+    },
+  },
 };
