@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
 import ActionCard from "./ActionCard";
-import { Camera, RotateCcw, Upload, X, CheckCircle2, Save } from "lucide-react";
+import { Camera, RotateCcw, Upload, X, CheckCircle2, Save, ArrowRight } from "lucide-react";
 
 const meta: Meta<typeof ActionCard> = {
   title: "Byggeklosser/Komponenter/ActionCard",
@@ -122,59 +122,10 @@ export const Loading: Story = {
 
 export const UploadStates: Story = {
   render: () => (
-    <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
-      <ActionCard
-        description="Upload an image to the selected album."
-        descriptionColor="brand-purple"
-        primaryButton={{
-          text: "Upload Image",
-          icon: <Upload size={18} />,
-          iconPosition: "right",
-          "data-color": "brand-purple",
-        }}
-        secondaryButton={{
-          text: "Cancel",
-          icon: <Camera size={18} />,
-          iconPosition: "right",
-          variant: "secondary",
-          "data-color": "brand-purple",
-        }}
-      />
-      <ActionCard
-        description="Uploading image..."
-        descriptionColor="brand-purple"
-        primaryButton={{
-          text: "Uploading...",
-          loading: true,
-          icon: <Upload size={18} />,
-          iconPosition: "right",
-          "data-color": "brand-purple",
-        }}
-        secondaryButton={{
-          text: "Cancel",
-          icon: <Camera size={18} />,
-          iconPosition: "right",
-          variant: "secondary",
-          "data-color": "brand-purple",
-        }}
-      />
-      <ActionCard
-        description="Upload successful!"
-        descriptionColor="success"
-        primaryButton={{
-          text: "Done",
-          icon: <CheckCircle2 size={18} />,
-          iconPosition: "right",
-          "data-color": "brand-purple",
-        }}
-        secondaryButton={{
-          text: "Upload Another",
-          icon: <Upload size={18} />,
-          iconPosition: "right",
-          variant: "secondary",
-          "data-color": "brand-purple",
-        }}
-      />
+    <div style={{ display: "flex", flexDirection: "column", gap: "2rem", flexWrap: "wrap" }}>
+      <ActionCard {...UploadToSelectedAlbum.args} />
+      <ActionCard {...Loading.args} />
+      <ActionCard {...SuccessfulUpload.args} />
     </div>
   ),
 };
@@ -190,6 +141,23 @@ export const SaveChanges: Story = {
     primaryButton: {
       text: "Save Changes",
       icon: <Save size={18} />,
+      iconPosition: "right",
+      "data-color": "brand-purple",
+    },
+  },
+};
+
+export const Next: Story = {
+  args: {
+    secondaryButton: {
+      text: "Cancel",
+      icon: <X size={18} />,
+      iconPosition: "right",
+      "data-color": "brand-purple",
+    },
+    primaryButton: {
+      text: "Next",
+      icon: <ArrowRight size={18} />,
       iconPosition: "right",
       "data-color": "brand-purple",
     },
