@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ImageCard } from "./ImageCard";
 import { expect, fn, userEvent, within } from "storybook/test";
 import { Heart, Star, Camera } from "lucide-react";
