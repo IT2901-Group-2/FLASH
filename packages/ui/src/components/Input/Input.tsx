@@ -49,10 +49,6 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
    */
   success?: boolean;
   /**
-   * Ref to the input element
-   */
-  ref?: React.Ref<HTMLInputElement>;
-  /**
    * Label text for the input
    */
   label?: string;
@@ -68,13 +64,10 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   required?: boolean;
 }
 /**
- * An input component
- * @example
- * ```jsx
- * <Input label="Email" placeholder="Enter your email" />
- * ```
+ * An input allows the user to enter and edit text or data.
+ *
+ * > _Last updated: `2026-01-29`_
  */
-
 export const Input = ({
   variant = "primary",
   disabled,
@@ -86,7 +79,6 @@ export const Input = ({
   success = false,
   "data-color": data = "brand-purple",
   className,
-  ref,
   label,
   required = false,
   "aria-label": ariaLabel,
@@ -120,7 +112,6 @@ export const Input = ({
       >
         {icon && iconPosition === "left" && <span className={styles.icon}>{icon}</span>}
         <input
-          ref={ref}
           id={inputId}
           className={styles.input}
           disabled={disabled || loading}

@@ -21,3 +21,52 @@
     min-height: 1.5rem;
   }
 }
+
+.fillerSimulated {
+  animation: simulatedProgress var(--animation-duration, 5s) cubic-bezier(0.4, 0, 0.2, 1)
+    forwards;
+}
+
+.fillerIndeterminate {
+  width: 50%;
+  animation-name: indeterminateProgress;
+  animation-timing-function: cubic-bezier(0.46, 0.03, 0.52, 0.96), ease-in-out;
+  animation-duration: 2.5s !important;
+  animation-iteration-count: infinite;
+}
+
+@keyframes simulatedProgress {
+  0% {
+    transform: translateX(-100%);
+  }
+  30% {
+    transform: translateX(-70%);
+  }
+  50% {
+    transform: translateX(-50%);
+  }
+  55% {
+    transform: translateX(-48%);
+  }
+  70% {
+    transform: translateX(-30%);
+  }
+  80% {
+    transform: translateX(-10%);
+  }
+  100% {
+    transform: translateX(-10%);
+  }
+}
+
+@keyframes indeterminateProgress {
+  0% {
+    transform: translateX(calc(-100%));
+  }
+  50% {
+    transform: translateX(calc(200%));
+  }
+  100% {
+    transform: translateX(calc(-100%));
+  }
+}

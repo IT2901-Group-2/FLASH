@@ -24,17 +24,25 @@ export interface LoaderProps extends Omit<SVGProps<SVGSVGElement>, "ref"> {
    * @default "neutral"
    */
   variant?: "neutral" | "interaction"; //"inverted"
-  /**
-   * Ref to the button element
-   */
-  ref?: React.Ref<HTMLButtonElement>;
 }
 
 /**
- * Loader er en visuell indikasjon på at noe laster eller tar tid. Selv om
- * brukere får lite informasjon om hva som skjer, får de en * * forsikring om
- * at noe skjer.
+ * Loader is a visual indication that something is loading or taking time. Even though
+ * users get little information about what is happening, they get an * * assurance that
+ * something is happening.
  *
+ * > _Last updated: `2026-02-02`_
+ *
+ * ### Suitable for:
+ * - Loading content on the page.
+ * - Indicating when an action has temporarily stopped the application.
+ * - Indicating loading that takes more than 1 second.
+ * - Indicating that data is being saved when the user clicks "save".
+ *
+ * ### Unsuitable for:
+ * - When loading takes less than 1 second.
+ * - Showing that individual elements on the page are being loaded (consider Skeleton).
+ * - Longer processes where duration or progress is known (see ProgressBar).
  */
 export const Loader = ({
   className,
@@ -43,8 +51,7 @@ export const Loader = ({
   transparent = false,
   variant = "neutral",
   id,
-  // ref,
-  // ...rest
+  ...rest
 }: LoaderProps) => {
   return (
     <svg
@@ -60,6 +67,7 @@ export const Loader = ({
         transparent && [styles["loader--transparent"]]
       )}`}
       id={id}
+      {...rest}
     >
       <title>{title}</title>
       <circle
