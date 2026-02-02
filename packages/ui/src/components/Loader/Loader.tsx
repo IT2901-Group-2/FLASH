@@ -31,6 +31,8 @@ export interface LoaderProps extends Omit<SVGProps<SVGSVGElement>, "ref"> {
  * users get little information about what is happening, they get an * * assurance that
  * something is happening.
  *
+ * > _Last updated: `2026-02-02`_
+ *
  * ### Suitable for:
  * - Loading content on the page.
  * - Indicating when an action has temporarily stopped the application.
