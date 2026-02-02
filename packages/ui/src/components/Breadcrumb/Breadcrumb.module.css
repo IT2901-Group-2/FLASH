@@ -1,10 +1,10 @@
 .breadcrumb {
-  --breadcrumb-home-color: var(--data-color-500);
-  --breadcrumb-home-hover: var(--data-color-700);
-  --breadcrumb-middle-color: var(--color-neutral-500);
-  --breadcrumb-middle-hover: var(--color-neutral-600);
-  --breadcrumb-current-color: var(--color-neutral-200);
-  --breadcrumb-separator-color: var(--color-neutral-400);
+  --breadcrumb-home-color: var(--data-color-700);
+  --breadcrumb-home-hover: var(--data-color-800);
+  --breadcrumb-middle-color: var(--color-neutral-800);
+  --breadcrumb-middle-hover: var(--color-neutral-900);
+  --breadcrumb-current-color: var(--color-neutral-800);
+  --breadcrumb-separator-color: var(--color-neutral-600);
 }
 
 .list {

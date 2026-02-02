@@ -52,7 +52,11 @@ export const Breadcrumb = ({
             {index === 0 && (
               <>
                 {item.href ? (
-                  <a href={item.href} className={styles.homeLink}>
+                  <a 
+                    href={item.href} 
+                    className={styles.homeLink}
+                    aria-label={item.label || "Home"}
+                  >
                     <Home className={styles.homeIcon} aria-hidden="true" />
                   </a>
                 ) : (
@@ -62,7 +66,11 @@ export const Breadcrumb = ({
             )}
             {item.label &&
               (item.href ? (
-                <a href={item.href} className={styles.link}>
+                <a 
+                  href={item.href} 
+                  className={styles.link}
+                  aria-label={`Go to ${item.label}`}
+                >
                   {item.label}
                 </a>
               ) : (
