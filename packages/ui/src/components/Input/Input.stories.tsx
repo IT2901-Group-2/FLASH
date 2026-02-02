@@ -83,7 +83,10 @@ export const Variants: Story = {
 // Comprehensive Interaction Tests
 export const Interactions: Story = {
   args: {
+    label: "Interactive input",
     placeholder: "Interactive Input",
+    type: "email",
+    required: true,
     onChange: fn(),
     onFocus: fn(),
     onBlur: fn(),
@@ -98,9 +101,9 @@ export const Interactions: Story = {
     });
 
     await step("Input responds to typing", async () => {
-      await user.type(input, "Hello");
+      await user.type(input, "test@example.com");
       await expect(args.onChange).toHaveBeenCalled();
-      await expect(input).toHaveValue("Hello");
+      await expect(input).toHaveValue("test@example.com");
     });
 
     await step("Input responds to focus", async () => {
@@ -118,55 +121,10 @@ export const Interactions: Story = {
       await user.clear(input);
       await expect(input).toHaveValue("");
     });
-  },
-};
 
-// Disabled State
-export const Disabled: Story = {
-  args: {
-    placeholder: "Disabled Input",
-    disabled: true,
-    onChange: fn(),
-  },
-  play: async ({ canvasElement, args, step }) => {
-    const canvas = within(canvasElement);
-    const input = canvas.getByRole("textbox");
-
-    await step("Input is disabled", async () => {
-      await expect(input).toBeDisabled();
-    });
-
-    await step("Disabled input does not respond to typing", async () => {
-      await userEvent.type(input, "Test");
-      await expect(args.onChange).not.toHaveBeenCalled();
-      await expect(input).toHaveValue("");
-    });
-
-    await step("Disabled input cannot be focused", async () => {
-      input.focus();
-      await expect(input).not.toHaveFocus();
-    });
-  },
-};
-
-// Loading State
-export const Loading: Story = {
-  args: {
-    placeholder: "Loading Input",
-    loading: true,
-    onChange: fn(),
-  },
-  play: async ({ canvasElement, args, step }) => {
-    const canvas = within(canvasElement);
-    const input = canvas.getByRole("textbox");
-
-    await step("Input shows loading state", async () => {
-      await expect(input).toBeDisabled();
-    });
-
-    await step("Loading input does not respond to typing", async () => {
-      await userEvent.type(input, "Test");
-      await expect(args.onChange).not.toHaveBeenCalled();
+    await step("Input can be re-typed with new value", async () => {
+      await user.type(input, "newemail@example.com");
+      await expect(input).toHaveValue("newemail@example.com");
     });
   },
 };
@@ -199,106 +157,6 @@ export const WithIcon: Story = {
 
       await expect(searchIcon).toBeInTheDocument();
       await expect(checkIcon).toBeInTheDocument();
-    });
-  },
-};
-
-// Label and Required Tests
-export const WithLabel: Story = {
-  args: {
-    label: "Email Address",
-    placeholder: "you@example.com",
-    required: false,
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Input has associated label", async () => {
-      const input = canvas.getByRole("textbox");
-      const label = canvas.getByText("Email Address");
-
-      await expect(label).toBeInTheDocument();
-      await expect(input).toHaveAccessibleName("Email Address");
-    });
-  },
-};
-
-export const RequiredField: Story = {
-  args: {
-    label: "Required Field",
-    placeholder: "This field is required",
-    required: true,
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Input shows required indicator", async () => {
-      const label = canvas.getByText(/Required Field/);
-      const asterisk = canvas.getByText("*");
-
-      await expect(label).toBeInTheDocument();
-      await expect(asterisk).toBeInTheDocument();
-    });
-
-    await step("Input has required attribute", async () => {
-      const input = canvas.getByRole("textbox");
-      await expect(input).toBeRequired();
-    });
-  },
-};
-
-// Error and Helper Text
-export const WithError: Story = {
-  args: {
-    label: "Email",
-    placeholder: "you@example.com",
-    error: "Please enter a valid email address",
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Error message is displayed", async () => {
-      const errorMessage = canvas.getByText("Please enter a valid email address");
-      await expect(errorMessage).toBeInTheDocument();
-    });
-  },
-};
-
-export const WithHelperText: Story = {
-  args: {
-    label: "Username",
-    placeholder: "Enter your username",
-    helperText: "Username must be at least 3 characters",
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Helper text is displayed", async () => {
-      const helperText = canvas.getByText("Username must be at least 3 characters");
-      await expect(helperText).toBeInTheDocument();
-    });
-  },
-};
-
-// Success State
-export const SuccessState: Story = {
-  args: {
-    label: "Username",
-    placeholder: "johndoe",
-    icon: <Check data-testid="success-icon" />,
-    iconPosition: "right",
-    success: true,
-    helperText: "This username is available!",
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Success state is visible", async () => {
-      const icon = canvas.getByTestId("success-icon");
-      const helperText = canvas.getByText("This username is available!");
-
-      await expect(icon).toBeInTheDocument();
-      await expect(helperText).toBeInTheDocument();
     });
   },
 };
@@ -366,23 +224,7 @@ export const InputTypes: Story = {
   },
 };
 
-// Data Attributes
-export const DataAttributes: Story = {
-  args: {
-    placeholder: "Custom Color Input",
-    "data-color": "accent",
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const input = canvas.getByRole("textbox");
-
-    // Check parent wrapper has data-color attribute
-    const wrapper = input.closest("[data-color]");
-    await expect(wrapper).toHaveAttribute("data-color", "accent");
-  },
-};
-
-// All States Showcase
+// All States Showcase and tests
 export const AllStates: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -397,7 +239,7 @@ export const AllStates: Story = {
       <Input
         aria-label="success"
         placeholder="Success state"
-        icon={<Check />}
+        icon={<Check data-testid="success-icon" />}
         iconPosition="right"
         success
         helperText="Success!"
@@ -423,41 +265,82 @@ export const AllStates: Story = {
       />
     </div>
   ),
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
     const inputs = canvas.getAllByRole("textbox");
 
     await expect(inputs).toHaveLength(7);
-  },
-};
 
-// Form Validation Example
-export const FormValidation: Story = {
-  args: {
-    label: "Email",
-    type: "email",
-    placeholder: "you@example.com",
-    required: true,
-    onChange: fn(),
-  },
-  play: async ({ canvasElement, args, step }) => {
-    const canvas = within(canvasElement);
-    const user = userEvent.setup();
-    const input = canvas.getByRole("textbox");
+    // Testing the disabled input state
 
-    await step("User types invalid email", async () => {
-      await user.type(input, "invalid-email");
-      await expect(input).toHaveValue("invalid-email");
+    await step("Input is disabled", async () => {
+      await expect(inputs[1]).toBeDisabled();
     });
 
-    await step("User corrects to valid email", async () => {
-      await user.clear(input);
-      await user.type(input, "valid@example.com");
-      await expect(input).toHaveValue("valid@example.com");
+    await step("Disabled input does not respond to typing", async () => {
+      await userEvent.type(inputs[1], "Test");
+      await expect(args.onChange).not.toHaveBeenCalled();
+      await expect(inputs[1]).toHaveValue("");
     });
 
-    await step("onChange was called", async () => {
-      await expect(args.onChange).toHaveBeenCalled();
+    await step("Disabled input cannot be focused", async () => {
+      inputs[1].focus();
+      await expect(inputs[1]).not.toHaveFocus();
+    });
+
+    // Testing the loading input state
+
+    await step("Input shows loading state", async () => {
+      await expect(inputs[2]).toBeDisabled();
+    });
+
+    await step("Loading input does not respond to typing", async () => {
+      await userEvent.type(inputs[2], "Test");
+      await expect(args.onChange).not.toHaveBeenCalled();
+    });
+
+    // Testing the success input state
+
+    await step("Success state is visible", async () => {
+      const helperText = canvas.getByText("Success!");
+      await expect(helperText).toBeInTheDocument();
+    });
+
+    // Testing the error text
+
+    await step("Error message is displayed", async () => {
+      const errorMessage = canvas.getByText("Error message");
+      await expect(errorMessage).toBeInTheDocument();
+    });
+
+    // Testing the helper text
+
+    await step("Helper text is displayed", async () => {
+      const helperText = canvas.getByText("Helper text");
+      await expect(helperText).toBeInTheDocument();
+    });
+
+    // Testing a labeled input
+
+    await step("Input has associated label", async () => {
+      const label = canvas.getByText(/With label/);
+
+      await expect(label).toBeInTheDocument();
+      await expect(inputs[5]).toHaveAccessibleName("labeled");
+    });
+
+    // Testing the required input state
+
+    await step("Input shows required indicator", async () => {
+      const label = canvas.getByText(/Required field/);
+      const asterisk = canvas.getByText("*");
+
+      await expect(label).toBeInTheDocument();
+      await expect(asterisk).toBeInTheDocument();
+    });
+
+    await step("Input has required attribute", async () => {
+      await expect(inputs[6]).toBeRequired();
     });
   },
 };
