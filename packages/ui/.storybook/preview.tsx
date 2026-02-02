@@ -4,7 +4,6 @@ import "./styles/docs.css";
 import FontDecorator from "./decorators/TypeDecorator";
 import { themes } from "storybook/theming";
 import DocsTemplate from "./DocsTemplate";
-import { useState } from "react";
 
 export const fonts = ["Open Sans"];
 
