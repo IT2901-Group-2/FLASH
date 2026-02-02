@@ -17,6 +17,8 @@ const meta: Meta<typeof ImageCard> = {
   tags: ["autodocs"],
   argTypes: {
     variant: {
+      description:
+        "Changes design and styling. As of now there only exists styling for the primary variant",
       control: "select",
       options: ["primary", "secondary", "tertiary"],
     },
@@ -24,14 +26,13 @@ const meta: Meta<typeof ImageCard> = {
       control: "select",
       options: ["small", "medium", "large"],
     },
-    state: ["loading", "rejected", "approved", "selected", "pending", "default"],
+    state: {
+      control: "select",
+      options: ["loading", "rejected", "approved", "selected", "pending", "default"],
+    },
     src: { control: { type: "text" } },
     alt: { control: { type: "text" } },
     title: { control: { type: "text" } },
-    "data-color": {
-      control: "select",
-      options: ["brand-purple", "brand-blue", "brand-green", "brand-red", "brand-yellow"],
-    },
   },
   decorators: [],
 } satisfies Meta<typeof ImageCard>;
@@ -114,7 +115,7 @@ export const ClickInteraction: Story = {
     src: SAMPLE_IMAGE,
     alt: "Clickable card",
     title: "Click Me",
-    onClick: fn(),
+    onClick: () => alert("clicked"),
   },
   play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);

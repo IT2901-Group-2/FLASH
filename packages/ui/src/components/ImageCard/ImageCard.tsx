@@ -36,12 +36,17 @@ export interface ImageCardProps extends React.HTMLAttributes<HTMLDivElement> {
    */
   "data-color"?: ColorName;
   /**
-   * Shows rejected state styling
-   * @default false
+   * Visual state of the card (loading, rejected, approved, selected, pending, or default)
+   * @default "default"
    */
   state?: ImageCardState;
+  /**
+   * Optional icon to display in the title area when state is "default"
+   */
   icon?: React.ReactNode;
-
+  /**
+   * Click handler for the card
+   */
   onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
   /**
    * Ref to the div element
@@ -102,10 +107,7 @@ export const ImageCard = ({
         )}
         {state === "rejected" && (
           <div className={styles.rejectedOverlay}>
-            <X
-              style={{ color: "red" }}
-              size={size === "small" ? 80 : size === "medium" ? 100 : 120}
-            />
+            <X className={styles.rejectedIcon} />
           </div>
         )}
         {state === "pending" && <div className={styles.pendingOverlay}></div>}
