@@ -112,7 +112,7 @@ export const ClickInteraction: Story = {
     src: SAMPLE_IMAGE,
     alt: "Clickable card",
     title: "Click Me",
-    onClick: () => alert("clicked"),
+    onClick: fn(),
   },
   play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
