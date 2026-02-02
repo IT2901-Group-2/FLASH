@@ -1,8 +1,14 @@
 .card {
+  --color-base: var(--data-color-100);
+  --color-hover: var(--data-color-200);
+  --color-active: var(--data-color-300);
+  --color-disabled: var(--data-color-200);
   border-radius: 0.5rem;
+  font-size: 1.25rem;
   padding: 1.5rem;
   border: 2px solid var(--data-color-300);
   background-color: var(--data-color-600);
+  color: var(--color-base);
   transition: all 0.2s ease-in-out;
   cursor: default;
 
@@ -16,4 +22,24 @@
     transform: translateY(0);
     box-shadow: 0 2px 6px rgba(96, 52, 78, 0.08);
   }
+}
+
+.card[data-color="background-secondary"] {
+  --color-base: var(--data-color-1000);
+}
+
+.card[data-color="brand-purple"] {
+  --color-base: var(--data-color-100);
+}
+
+[data-theme="dark"] .card[data-color="brand-purple"] {
+  --color-base: var(--data-color-1000);
+}
+
+[data-theme="dark"] .card[data-color="background-secondary"] {
+  --color-base: var(--data-color-100);
+}
+
+[data-theme="dark"] .card p {
+  color: var(--data-color-300);
 }
