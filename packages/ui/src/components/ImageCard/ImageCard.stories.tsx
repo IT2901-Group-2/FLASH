@@ -69,7 +69,6 @@ export const SmallSize: Story = {
     title: "Small Card",
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
     const card = canvasElement.querySelector('[data-size="small"]');
 
     await expect(card).toBeInTheDocument();
@@ -85,7 +84,6 @@ export const MediumSize: Story = {
     title: "Medium Card",
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
     const card = canvasElement.querySelector('[data-size="medium"]');
 
     await expect(card).toBeInTheDocument();
@@ -101,7 +99,6 @@ export const LargeSize: Story = {
     title: "Large Card",
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
     const card = canvasElement.querySelector('[data-size="large"]');
 
     await expect(card).toBeInTheDocument();
@@ -149,7 +146,6 @@ export const NonClickableCard: Story = {
     title: "No Click Handler",
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
     const card = canvasElement.querySelector('[data-variant="primary"]');
 
     await expect(card).toBeInTheDocument();
