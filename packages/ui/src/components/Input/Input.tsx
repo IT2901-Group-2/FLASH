@@ -2,6 +2,7 @@ import React from "react";
 import { Loader } from "../Loader";
 import styles from "./Input.module.css";
 import { cl } from "@/util/className";
+import { ColorName } from "@/styles/colorType";
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   /**
@@ -41,7 +42,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   /**
    * Overrides inherited color scheme.
    */
-  "data-color"?: "accent" | "neutral" | "brand-purple";
+  "data-color"?: ColorName;
   /**
    * Shows success state styling
    * @default false
@@ -55,6 +56,11 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
    * Label text for the input
    */
   label?: string;
+  /**
+   * Accessible label for screen readers (REQUIRED for accessibility)
+   * This will be used even if a visible label is provided
+   */
+  "aria-label": string;
   /**
    * Whether the input is required (adds asterisk to label)
    * @default false
@@ -83,6 +89,7 @@ export const Input = ({
   ref,
   label,
   required = false,
+  "aria-label": ariaLabel,
   id,
   ...props
 }: InputProps) => {
@@ -118,6 +125,7 @@ export const Input = ({
           className={styles.input}
           disabled={disabled || loading}
           required={required}
+          aria-label={ariaLabel}
           {...props}
         />
         {loading && (
