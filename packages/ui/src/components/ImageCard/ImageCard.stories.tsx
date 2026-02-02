@@ -1,13 +1,20 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { ImageCard } from "./ImageCard";
-import { fn } from "storybook/test";
-import { Check, Star, X } from "lucide-react";
+import { expect, fn, userEvent, within } from "storybook/test";
+import { Heart, Star, Camera } from "lucide-react";
+import { useState } from "react";
 
-// Example icons (you can replace these with your actual icon components)
+const TestIcon = <Star data-testid="test-icon" />;
+
+// Sample image URLs for testing
+const SAMPLE_IMAGE = "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=400";
+const SAMPLE_IMAGE_2 =
+  "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=400";
 
 const meta: Meta<typeof ImageCard> = {
   title: "Byggeklosser/Komponenter/ImageCard",
   component: ImageCard,
+  tags: ["autodocs"],
   argTypes: {
     variant: {
       control: "select",
@@ -17,188 +24,481 @@ const meta: Meta<typeof ImageCard> = {
       control: "select",
       options: ["small", "medium", "large"],
     },
-    loading: {
-      control: "boolean",
-    },
-    rejected: {
-      control: "boolean",
-    },
-    approved: {
-      control: "boolean",
-    },
-    selected: {
-      control: "boolean",
-    },
+    state: ["loading", "rejected", "approved", "selected", "pending", "default"],
+    src: { control: { type: "text" } },
+    alt: { control: { type: "text" } },
+    title: { control: { type: "text" } },
     "data-color": {
       control: "select",
-      options: ["brand-purple", "brand-blue", "brand-green"],
+      options: ["brand-purple", "brand-blue", "brand-green", "brand-red", "brand-yellow"],
     },
   },
-  args: {
-    onClick: fn(),
-    src: "https://picsum.photos/300/450",
-    alt: "Mountain landscape",
-    title: "Beautiful Mountain",
-  },
-  decorators: [
-    Story => (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "1rem",
-          maxWidth: "400px",
-        }}
-      >
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [],
 } satisfies Meta<typeof ImageCard>;
 
 export default meta;
 type Story = StoryObj<typeof ImageCard>;
 
-export const Standard_Purple: Story = {
+// Basic Variant Tests
+export const PrimaryVariant: Story = {
   args: {
-    src: "https://picsum.photos/300/450",
-    alt: "Mountain landscape",
-    title: "Beautiful Mountain",
+    variant: "primary",
+    src: SAMPLE_IMAGE,
+    alt: "Sample landscape image",
+    title: "Beautiful Landscape",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const image = canvas.getByRole("img");
+    const title = canvas.getByText(/beautiful landscape/i);
+
+    await expect(image).toBeInTheDocument();
+    await expect(image).toHaveAttribute("alt", "Sample landscape image");
+    await expect(title).toBeInTheDocument();
+  },
+};
+
+// Size Tests
+export const SmallSize: Story = {
+  args: {
+    variant: "primary",
+    size: "small",
+    src: SAMPLE_IMAGE,
+    alt: "Small card",
+    title: "Small Card",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const card = canvasElement.querySelector('[data-size="small"]');
+
+    await expect(card).toBeInTheDocument();
+  },
+};
+
+export const MediumSize: Story = {
+  args: {
+    variant: "primary",
+    size: "medium",
+    src: SAMPLE_IMAGE,
+    alt: "Medium card",
+    title: "Medium Card",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const card = canvasElement.querySelector('[data-size="medium"]');
+
+    await expect(card).toBeInTheDocument();
+  },
+};
+
+export const LargeSize: Story = {
+  args: {
+    variant: "primary",
+    size: "large",
+    src: SAMPLE_IMAGE,
+    alt: "Large card",
+    title: "Large Card",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const card = canvasElement.querySelector('[data-size="large"]');
+
+    await expect(card).toBeInTheDocument();
+  },
+};
+
+// Click Interaction Tests
+export const ClickInteraction: Story = {
+  args: {
+    variant: "primary",
+    src: SAMPLE_IMAGE,
+    alt: "Clickable card",
+    title: "Click Me",
+    onClick: fn(),
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const user = userEvent.setup();
+
+    await step("Card renders as clickable button", async () => {
+      const card = canvas.getByRole("button");
+      await expect(card).toBeInTheDocument();
+    });
+
+    await step("Card is clickable and fires onClick", async () => {
+      const card = canvas.getByRole("button");
+      await user.click(card);
+      await expect(args.onClick).toHaveBeenCalledTimes(1);
+    });
+
+    await step("Multiple clicks work correctly", async () => {
+      const card = canvas.getByRole("button");
+      await user.click(card);
+      await user.click(card);
+      await expect(args.onClick).toHaveBeenCalledTimes(3);
+    });
+  },
+};
+
+export const NonClickableCard: Story = {
+  args: {
+    variant: "primary",
+    src: SAMPLE_IMAGE,
+    alt: "Non-clickable card",
+    title: "No Click Handler",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const card = canvasElement.querySelector('[data-variant="primary"]');
+
+    await expect(card).toBeInTheDocument();
+    await expect(card).not.toHaveAttribute("role", "button");
+    await expect(card).not.toHaveAttribute("tabIndex");
+  },
+};
+
+// State Tests
+export const LoadingState: Story = {
+  args: {
+    variant: "primary",
+    src: SAMPLE_IMAGE,
+    alt: "Loading image",
+    title: "Image Title",
+    state: "loading",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const loadingText = canvas.getByText(/loading\.\.\./i);
+
+    await expect(loadingText).toBeInTheDocument();
+  },
+};
+
+export const RejectedState: Story = {
+  args: {
+    variant: "primary",
+    src: SAMPLE_IMAGE,
+    alt: "Rejected image",
+    title: "Image Title",
+    state: "rejected",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const rejectedText = canvas.getByText(/rejected/i);
+
+    await expect(rejectedText).toBeInTheDocument();
+  },
+};
+
+export const ApprovedState: Story = {
+  args: {
+    variant: "primary",
+    src: SAMPLE_IMAGE,
+    alt: "Approved image",
+    title: "Image Title",
+    state: "approved",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const approvedText = canvas.getByText(/approved/i);
+
+    await expect(approvedText).toBeInTheDocument();
+  },
+};
+
+export const SelectedState: Story = {
+  args: {
+    variant: "primary",
+    src: SAMPLE_IMAGE,
+    alt: "Selected image",
+    title: "Image Title",
+    state: "selected",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const selectedText = canvas.getByText(/selected/i);
+
+    await expect(selectedText).toBeInTheDocument();
+  },
+};
+
+export const PendingState: Story = {
+  args: {
+    variant: "primary",
+    src: SAMPLE_IMAGE,
+    alt: "Pending image",
+    title: "Image Title",
+    state: "pending",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const pendingText = canvas.getByText(/pending\.\.\./i);
+
+    await expect(pendingText).toBeInTheDocument();
+  },
+};
+
+// Icon Tests
+export const CardWithIcon: Story = {
+  args: {
+    variant: "primary",
+    src: SAMPLE_IMAGE,
+    alt: "Card with icon",
+    title: "Featured Image",
+    icon: TestIcon,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const icon = canvas.getByTestId("test-icon");
+    const title = canvas.getByText(/featured image/i);
+
+    await expect(icon).toBeInTheDocument();
+    await expect(title).toBeInTheDocument();
+  },
+};
+
+// Data Color Tests
+export const CustomColorPurple: Story = {
+  args: {
+    variant: "primary",
+    src: SAMPLE_IMAGE,
+    alt: "Purple themed card",
+    title: "Purple Theme",
     "data-color": "brand-purple",
   },
+  play: async ({ canvasElement }) => {
+    const card = canvasElement.querySelector('[data-color="brand-purple"]');
+    await expect(card).toBeInTheDocument();
+  },
+};
+// Keyboard Interaction Tests
+export const KeyboardInteraction: Story = {
+  args: {
+    variant: "primary",
+    src: SAMPLE_IMAGE,
+    alt: "Keyboard test card",
+    title: "Keyboard Test",
+    onClick: fn(),
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Card can be focused with keyboard", async () => {
+      const card = canvas.getByRole("button");
+      await userEvent.tab();
+      await expect(card).toHaveFocus();
+    });
+
+    await step("Card responds to Enter key", async () => {
+      const card = canvas.getByRole("button");
+      card.focus();
+      await userEvent.keyboard("{Enter}");
+      await expect(args.onClick).toHaveBeenCalled();
+    });
+
+    await step("Card responds to Space key", async () => {
+      const card = canvas.getByRole("button");
+      card.focus();
+      await userEvent.keyboard(" ");
+      await expect(args.onClick!).toHaveBeenCalledTimes(2);
+    });
+  },
 };
 
+// Accessibility Tests
+export const AccessibilityTest: Story = {
+  args: {
+    variant: "primary",
+    src: SAMPLE_IMAGE,
+    alt: "Accessible image description",
+    title: "Accessible Card",
+    onClick: fn(),
+    "aria-label": "Custom card label",
+    "aria-describedby": "card-description",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Card has correct ARIA attributes", async () => {
+      const card = canvas.getByRole("button");
+      await expect(card).toHaveAttribute("aria-label", "Custom card label");
+      await expect(card).toHaveAttribute("aria-describedby", "card-description");
+    });
+
+    await step("Image has correct alt text", async () => {
+      const image = canvas.getByRole("img");
+      await expect(image).toHaveAttribute("alt", "Accessible image description");
+    });
+
+    await step("Card is keyboard accessible", async () => {
+      const card = canvas.getByRole("button");
+      await userEvent.tab();
+      await expect(card).toHaveFocus();
+    });
+  },
+};
+
+// All States Comparison
+export const AllStates: Story = {
+  render: () => (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+        gap: "1rem",
+      }}
+    >
+      <ImageCard variant="primary" src={SAMPLE_IMAGE} alt="Normal state" title="Normal" />
+      <ImageCard
+        variant="primary"
+        src={SAMPLE_IMAGE}
+        alt="Loading state"
+        title="Title"
+        state="loading"
+      />
+      <ImageCard
+        variant="primary"
+        src={SAMPLE_IMAGE}
+        alt="Pending state"
+        title="Title"
+        state="pending"
+      />
+      <ImageCard
+        variant="primary"
+        src={SAMPLE_IMAGE}
+        alt="Approved state"
+        title="Title"
+        state="approved"
+      />
+      <ImageCard
+        variant="primary"
+        src={SAMPLE_IMAGE}
+        alt="Selected state"
+        title="Title"
+        state="selected"
+      />
+      <ImageCard
+        variant="primary"
+        src={SAMPLE_IMAGE}
+        alt="Rejected state"
+        title="Title"
+        state="rejected"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const images = canvas.getAllByRole("img");
+
+    await expect(images).toHaveLength(6);
+  },
+};
+
+// All Sizes Comparison
 export const AllSizes: Story = {
   render: () => (
-    <>
+    <div style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
       <ImageCard
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
-        alt="Mountain landscape"
-        title="Small Size"
-        size="small"
-      />
-      <ImageCard
-        src="https://picsum.photos/300/450"
-        alt="Mountain landscape"
-        title="Medium Size"
-        size="medium"
-      />
-      <ImageCard
-        src="https://picsum.photos/400/600"
-        alt="Mountain landscape"
-        title="Large Size"
-        size="large"
-      />
-    </>
-  ),
-};
-
-export const AllVariants: Story = {
-  render: () => (
-    <>
-      <ImageCard
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
-        alt="Mountain landscape"
-        title="Primary Variant"
         variant="primary"
+        size="small"
+        src={SAMPLE_IMAGE}
+        alt="Small size"
+        title="Small"
       />
       <ImageCard
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
-        alt="Mountain landscape"
-        title="Secondary Variant"
-        variant="secondary"
+        variant="primary"
+        size="medium"
+        src={SAMPLE_IMAGE}
+        alt="Medium size"
+        title="Medium"
       />
       <ImageCard
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
-        alt="Mountain landscape"
-        title="Tertiary Variant"
-        variant="tertiary"
+        variant="primary"
+        size="large"
+        src={SAMPLE_IMAGE}
+        alt="Large size"
+        title="Large"
       />
-    </>
+    </div>
   ),
-};
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const images = canvas.getAllByRole("img");
 
-export const WithStates: Story = {
-  render: () => (
-    <>
-      <ImageCard
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
-        alt="Mountain landscape"
-        title="Approved Image"
-        approved={true}
-        icon={<Check />}
-      />
-      <ImageCard
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
-        alt="Mountain landscape"
-        title="Rejected Image"
-        rejected={true}
-        icon={<X />}
-      />
-      <ImageCard
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
-        alt="Mountain landscape"
-        title="Selected Image"
-        selected={true}
-        icon={<Star />}
-      />
-    </>
-  ),
-};
-
-export const Loading: Story = {
-  args: {
-    src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
-    alt: "Mountain landscape",
-    title: "Loading Image",
-    loading: true,
+    await expect(images).toHaveLength(3);
   },
 };
 
-export const WithIcon: Story = {
-  render: () => (
-    <>
-      <ImageCard
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
-        alt="Mountain landscape"
-        title="Image with Check Icon"
-        icon={<Check />}
-      />
-      <ImageCard
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
-        alt="Mountain landscape"
-        title="Image with X Icon"
-        icon={<X />}
-      />
-      <ImageCard
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
-        alt="Mountain landscape"
-        title="Image with Star Icon"
-        icon={<Star />}
-      />
-    </>
-  ),
-};
+// Interactive Gallery Example
+export const InteractiveGallery: Story = {
+  render: () => {
+    const [selectedId, setSelectedId] = useState<string | null>(null);
 
-export const Interactive: Story = {
-  args: {
-    src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
-    alt: "Mountain landscape",
-    title: "Click me!",
-    style: { cursor: "pointer" },
+    return (
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gap: "1rem",
+        }}
+      >
+        {[1, 2, 3, 4].map(id => (
+          <ImageCard
+            key={id}
+            variant="primary"
+            src={id % 2 === 0 ? SAMPLE_IMAGE : SAMPLE_IMAGE_2}
+            alt={`Gallery image ${id}`}
+            title={`Image ${id}`}
+            state={selectedId === `image-${id}` ? "selected" : "default"}
+            onClick={() => setSelectedId(`image-${id}`)}
+            icon={<Heart />}
+          />
+        ))}
+      </div>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const user = userEvent.setup();
+
+    await step("Gallery renders all cards", async () => {
+      const cards = canvas.getAllByRole("button");
+      await expect(cards).toHaveLength(4);
+    });
+
+    await step("Clicking a card selects it", async () => {
+      const cards = canvas.getAllByRole("button");
+      await user.click(cards[0]);
+      // The selected state should be visible
+      const selectedText = await canvas.findByText(/selected/i);
+      await expect(selectedText).toBeInTheDocument();
+    });
   },
 };
 
-export const Playground: Story = {
+// Complex State with Icon
+export const ComplexCard: Story = {
   args: {
-    src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
-    alt: "Mountain landscape",
-    title: "Customize Me",
-    size: "medium",
     variant: "primary",
-    loading: false,
-    approved: false,
-    rejected: false,
-    selected: false,
+    size: "large",
+    src: SAMPLE_IMAGE,
+    alt: "Complex card example",
+    title: "Photography Contest Entry",
+    icon: <Camera />,
+    "data-color": "brand-purple",
+    onClick: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const user = userEvent.setup();
+
+    const card = canvas.getByRole("button");
+    const image = canvas.getByRole("img");
+
+    await expect(card).toBeInTheDocument();
+    await expect(image).toHaveAttribute("alt", "Complex card example");
+
+    await user.click(card);
+    await expect(args.onClick).toHaveBeenCalledTimes(1);
   },
 };
