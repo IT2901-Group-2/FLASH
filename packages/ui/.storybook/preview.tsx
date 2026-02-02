@@ -4,6 +4,7 @@ import "./styles/docs.css";
 import FontDecorator from "./decorators/TypeDecorator";
 import { themes } from "storybook/theming";
 import DocsTemplate from "./DocsTemplate";
+import { useState } from "react";
 
 export const fonts = ["Open Sans"];
 
@@ -81,16 +82,9 @@ export default {
       </FontDecorator>
     ),
     (Story, context) => {
-      return (
-        <div data-theme={context.globals.backgrounds.value}>
-          <Story />
-        </div>
-      );
-    },
-    (Story, context) => {
-      document.documentElement.style.setProperty(
-        "--canvas-bg",
-        context.globals.backgrounds.value === "dark" ? "#222325" : "#ffffff"
+      document.documentElement.setAttribute(
+        "data-theme",
+        context.globals.backgrounds.value ?? "light"
       );
       return <Story />;
     },
