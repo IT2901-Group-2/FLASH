@@ -26,8 +26,6 @@ export const Showcase = ({ of = "meta" }) => {
       return orderA - orderB;
     });
 
-  console.log(moduleExports.__namedExportsOrder, data);
-
   const [active, setActive] = useState<string>(data[0]?.id || "");
   const activeItem = data.find(item => item.id === active);
 
