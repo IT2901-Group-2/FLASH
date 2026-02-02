@@ -2,7 +2,7 @@ import { Canvas, Source, useOf } from "@storybook/addon-docs/blocks";
 import { useState } from "react";
 import Chips from "./Chips";
 import styles from "./Showcase.module.css";
-import type { StoryObj, Meta } from "@storybook/react";
+import type { StoryObj, Meta } from "@storybook/react-vite";
 
 interface ShowcaseProps {
   of?: Meta | Record<string, StoryObj>;

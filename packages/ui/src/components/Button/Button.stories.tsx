@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "./Button";
 import { expect, fn, userEvent, within } from "storybook/test";
 import { GamepadDirectional } from "lucide-react";
@@ -30,7 +30,6 @@ const meta: Meta<typeof Button> = {
       control: "select",
       options: colorNames,
     },
-    icon: { control: "check" }, // To not make it changable
   },
   args: {
     loading: false,
