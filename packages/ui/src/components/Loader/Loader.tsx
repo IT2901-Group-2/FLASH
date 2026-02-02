@@ -30,6 +30,12 @@ export interface LoaderProps extends Omit<SVGProps<SVGSVGElement>, "ref"> {
   ref?: React.Ref<HTMLButtonElement>;
 }
 
+/**
+ * Loader er en visuell indikasjon på at noe laster eller tar tid. Selv om
+ * brukere får lite informasjon om hva som skjer, får de en * * forsikring om
+ * at noe skjer.
+ *
+ */
 export const Loader = ({
   className,
   size = "medium",
