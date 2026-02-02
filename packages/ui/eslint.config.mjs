@@ -21,7 +21,7 @@ const eslintConfig = defineConfig([
       ],
     },
   },
-  ...storybook.configs["flat/recommended"],
+  ...storybook.configs["flat/recommended"]
 ]);
 
 export default eslintConfig;
