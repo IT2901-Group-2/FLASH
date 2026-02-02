@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./ProgressBar.module.css";
 import { cl } from "../../util/className";
 import { ColorName } from "@/styles/colorType";
@@ -38,23 +38,37 @@ export interface ProgressBarProps extends Omit<
   };
   /**
    * Overrides inherited color.
+   * @default "brand-purple"
    */
   "data-color"?: ColorName;
 }
 
+/**
+ * ProgressBar shows progress in a process
+ *
+ * > _Last updated: `2026-02-02`_
+ *
+ * ### Suitable for:
+ * - Step indicator.
+ * - Time-consuming process with an expected duration.
+ */
 export const ProgressBar = ({
   value = 0,
   maxValue = 100,
   simulated,
   size = "medium",
-  // ...rest
+  "data-color": data = "brand-purple",
+  ...rest
 }: ProgressBarProps) => {
+  const [isIndeterminate, setIsIndeterminate] = useState<boolean>(false);
+
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
     if (simulated) {
       timeoutId = setTimeout(
         () => {
           simulated.onTimeout();
+          setIsIndeterminate(true);
         },
         (simulated.seconds ?? 5) * 1000
       );
@@ -65,13 +79,21 @@ export const ProgressBar = ({
   }, [simulated]);
 
   const translateX = -100 + (Math.min(value, maxValue) / maxValue) * 100;
-  // const translateXSimulated = -100 + (value / maxValue) * 100;
+  const animationDuration = simulated ? `${simulated.seconds ?? 5}s` : undefined;
 
   return (
-    <div data-color={"brand-purple"} className={cl(styles.container)}>
+    <div data-color={data} className={cl(styles.container)} {...rest}>
       <div
-        className={cl(styles.filler, styles[`filler--${size}`])}
-        style={{ transform: `translateX(${translateX}%)` }}
+        className={cl(
+          styles.filler,
+          styles[`filler--${size}`],
+          simulated && !isIndeterminate && styles.fillerSimulated,
+          isIndeterminate && styles.fillerIndeterminate
+        )}
+        style={{
+          transform: `translateX(${translateX}%)`,
+          animationDuration: animationDuration,
+        }}
       ></div>
     </div>
   );

@@ -62,11 +62,12 @@ export interface ProgressDotsProps extends React.HTMLAttributes<HTMLDivElement> 
 }
 
 /**
- * Component for displaying a series of progress dots.
- * @param {number} maxValue - The maximum value (number of dots).
- * @param {number} value - The current value (number of filled dots).
- * @param {string} lineThickness - The thickness of the line between the dots.
- * @param {string} color - The color of the progress dots.
+ * ProgressDots shows which step the user is at in an form dialog.
+ *
+ * > _Last updated: `2026-02-02`_
+ *
+ * ### Suitable for:
+ * - Form dialogues
  */
 export const ProgressDots = ({
   maxValue,

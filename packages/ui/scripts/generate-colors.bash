@@ -61,7 +61,6 @@ fi
 
 # Import data-color styles
 echo "@import \"./data-colors.css\";" >> "$OUTPUT_FILE"
-echo "@import \"./canvas.css\";" >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
 # Output light theme
