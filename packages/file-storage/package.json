@@ -6,8 +6,7 @@
     "test": "jest",
     "lint": "eslint --max-warnings 0",
     "format": "prettier --write src/",
-    "format:check": "prettier --check src/",
-    "docker:build": "docker build -f gcs.Dockerfile"
+    "format:check": "prettier --check src/"
   },
   "dependencies": {
     "@google-cloud/storage": "^7.18.0",

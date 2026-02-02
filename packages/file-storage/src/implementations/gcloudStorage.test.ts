@@ -2,7 +2,7 @@ import { jest, afterEach, beforeEach, describe, expect, it } from "@jest/globals
 import { GenericContainer, StartedTestContainer } from "testcontainers";
 import { Bucket, Storage } from "@google-cloud/storage";
 
-const image = new GenericContainer("igiwa001/test-repo:gcloud-v2");
+const image = new GenericContainer("igiwa001/google-storage-testbench");
 let container: StartedTestContainer;
 let bucket: Bucket;
 
