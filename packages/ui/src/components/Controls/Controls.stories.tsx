@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import React from "react";
 import { Controls } from "./Controls";
 import { expect, fn, userEvent, within } from "storybook/test";
+import { colorNames } from "@/styles/colorType";
 
 const meta: Meta<typeof Controls> = {
   title: "Byggeklosser/Komponenter/Controls",
@@ -10,7 +11,7 @@ const meta: Meta<typeof Controls> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["primary", "secondary", "tertiary"],
+      options: colorNames,
     },
     disabled: {
       control: "boolean",

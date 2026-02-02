@@ -2,19 +2,21 @@
   --color-base: var(--data-color-500);
   --color-surface: var(--data-color-100);
   --color-border: var(--data-color-200);
-  --color-text: var(--data-color-800);
+  --color-text: var(--data-color-1000);
+  --color-text-inactive: var(--data-color-800);
 
   position: relative;
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
   gap: 0.5rem;
-  width: 19rem;
+  width: max-content;
+  min-width: 19rem;
   height: 3rem;
   padding: 0.25rem;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 9999px;
+  border-radius: 1.5rem;
 }
 
 .indicator {
@@ -22,7 +24,7 @@
   top: 0.25rem;
   left: 0.25rem;
   height: calc(100% - 0.5rem);
-  border-radius: 9999px;
+  border-radius: 1.25rem;
   background: var(--color-base);
   transition: transform 200ms ease;
   z-index: 0;
@@ -33,19 +35,15 @@
   z-index: 1;
   border: none;
   background: transparent;
-  color: var(--color-text);
+  color: var(--color-text-inactive);
   font-weight: 600;
   font-size: 1.05rem;
-  border-radius: 9999px;
+  border-radius: 1.25rem;
   cursor: pointer;
-}
 
-.item:hover {
-  color: var(--color-text);
-}
-
-.item:hover:not(:disabled) {
-  color: var(--data-color-10);
+  &:hover:not(:disabled) {
+    color: var(--color-text);
+  }
 }
 
 .active {
@@ -55,18 +53,14 @@
 .disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
 
-.disabled * {
-  cursor: not-allowed;
+  & * {
+    cursor: not-allowed;
+  }
 }
 
 .loading {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.active {
-  color: var(--data-color-10);
 }
