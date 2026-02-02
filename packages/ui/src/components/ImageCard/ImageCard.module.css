@@ -1,0 +1,154 @@
+/* ImageCard.module.css */
+.imageCard {
+  --color-base: var(--data-color-800);
+  --color-text: var(--color-neutral-100);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  &[data-variant="primary"] {
+    border: 1px solid var(--color-base);
+    background: var(--color-base);
+  }
+
+  &[data-size="small"] {
+    width: 7.5rem;
+    height: 9.75rem;
+    border-radius: 1.8rem;
+  }
+
+  &[data-size="medium"] {
+    width: 10rem;
+    height: 12.25rem;
+    border-radius: 2rem;
+  }
+
+  &[data-size="large"] {
+    width: 12.5rem;
+    height: 14.75rem;
+    border-radius: 2.2rem;
+  }
+}
+
+.imageCard[role="button"] {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.imageCard[role="button"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 83%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: opacity 0.2s ease;
+}
+
+.icon {
+  display: flex;
+  width: 1.25rem;
+  color: var(--color-accent-600);
+}
+
+.titleBox {
+  padding: 0.6rem 0.8rem;
+  background: var(--color-primary);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text);
+  width: 100%;
+  overflow: hidden;
+}
+
+.titleText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+[data-size="small"] .title {
+  font-size: 0.5rem;
+}
+
+[data-size="medium"] .title {
+  font-size: 1rem;
+}
+
+[data-size="large"] .title {
+  font-size: 1.5rem;
+}
+
+/* State styles */
+
+.loaderOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.rejectedOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  & svg {
+    color: var(--color-warning-600);
+  }
+  & .rejectedIcon {
+    width: 60%;
+    height: 60%;
+  }
+}
+
+.pendingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.3);
+  z-index: 1;
+}
+
+.selected {
+  background-color: var(--color-brand-purple-500);
+  box-shadow: 0 4px 17px 4px var(--color-brand-purple-500);
+}

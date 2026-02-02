@@ -2,8 +2,8 @@ import React from "react";
 import { Loader } from "../Loader/Loader";
 import styles from "./Button.module.css";
 import { cl } from "../../util/className";
-import { ColorName } from "@/styles/colorType";
 import { omit } from "@/util/omit";
+import { ColorName } from "@/styles/colorType";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Button Content. */
@@ -46,6 +46,13 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 /**
  * A Button allows the user to perform an action.
+ *
+ * > _Last updated: `2026-02-01`_
+ *
+ * ### Suitable for:
+ * - Form Submission
+ * - Calculation of Results
+ * - Actions
  */
 export const Button = ({
   variant = "primary",

@@ -37,10 +37,8 @@ export interface TitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
 
 /**
  * A flexible title/heading component
- * @example
- * ```jsx
- * <Title as="h1" size="xlarge">Page Title</Title>
- * ```
+ *
+ * > _Last updated: `2026-02-02`_
  */
 export const Title = ({
   as: Component = "h2",

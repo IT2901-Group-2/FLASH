@@ -2,4 +2,33 @@
   --docs-color-background: #222325;
   --docs-color-outline: #39393b;
   --docs-color-text: #c9cccf;
+
+  --canvas-bg-inverted: #222325;
+  --canvas-bg: #ffffff;
+}
+
+[data-theme="dark"] {
+  --canvas-bg-inverted: #ffffff;
+  --canvas-bg: #222325;
+}
+
+p {
+  font-family: "Nunito Sans", sans-serif;
+  color: var(--color-neutral-1000);
+}
+
+.innerZoomElementWrapper > * {
+  width: 100% !important;
+  font-family: "Nunito Sans", sans-serif;
+}
+
+.docs-story {
+  background-color: red;
+  background-color: var(--canvas-bg-inverted);
+
+  > div {
+    resize: horizontal;
+    background-color: var(--canvas-bg);
+    max-width: calc(100% - 2.75rem);
+  }
 }
