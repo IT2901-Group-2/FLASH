@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Input } from "./Input";
 import { expect, fn, userEvent, within } from "storybook/test";
-import { Search, User, Mail, Check, X } from "lucide-react";
+import { Search, Mail, Check, X } from "lucide-react";
 import { colorNames } from "@/styles/colorType";
 
 const meta: Meta<typeof Input> = {

@@ -24,7 +24,6 @@
     background-color: var(#f0e9ec);
     outline: 0.1rem solid var(--color-base);
 
-    
     &:focus-within:not(:has(input:disabled), .disabled).error {
       outline-color: var(--color-warning);
       outline-width: 0.1rem;
