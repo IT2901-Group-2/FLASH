@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "./Button";
 import { expect, fn, userEvent, within } from "storybook/test";
 import { GamepadDirectional } from "lucide-react";
@@ -30,7 +30,6 @@ const meta: Meta<typeof Button> = {
       control: "select",
       options: colorNames,
     },
-    icon: { control: "check" }, // To not make it changable
   },
   args: {
     loading: false,
@@ -43,6 +42,11 @@ const meta: Meta<typeof Button> = {
 export default meta;
 type Story = StoryObj<typeof Button>;
 
+/**
+ * Primary, secondary, and tertiary buttons are used to communicate visual
+ * priority. Use the primary variant for the main action in a view, and
+ * secondary or tertiary variants for supporting or less prominent actions.
+ */
 export const Variants: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
@@ -62,7 +66,10 @@ export const Variants: Story = {
   },
 };
 
-// Sizes Story
+/**
+ * The buttons come in three sizes: medium, small and xsmall. xsmall is only
+ * used in special cases where space is limited, such as in tables.
+ */
 export const Sizes: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
@@ -81,7 +88,6 @@ export const Sizes: Story = {
   },
 };
 
-// Comprehensive Interaction Tests
 export const Interactions: Story = {
   args: {
     variant: "primary",
@@ -127,7 +133,10 @@ export const Interactions: Story = {
   },
 };
 
-// Disabled State
+/**
+ * A disabled button communicates that an action is currently unavailable. Use
+ * this state when prerequisites are not met or an action should be prevented.
+ */
 export const Disabled: Story = {
   args: {
     variant: "primary",

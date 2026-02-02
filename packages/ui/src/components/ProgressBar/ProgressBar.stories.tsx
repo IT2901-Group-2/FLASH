@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ProgressBar } from "./ProgressBar";
 import { fn } from "storybook/test";
 import { ArrowLeft, ArrowRight } from "lucide-react";
