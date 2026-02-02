@@ -42,6 +42,15 @@ export interface ProgressBarProps extends Omit<
   "data-color"?: ColorName;
 }
 
+/**
+ * ProgressBar shows progress in a process
+ *
+ * > _Last updated: `2026-02-02`_
+ *
+ * ### Suitable for:
+ * - Step indicator.
+ * - Time-consuming process with an expected duration.
+ */
 export const ProgressBar = ({
   value = 0,
   maxValue = 100,

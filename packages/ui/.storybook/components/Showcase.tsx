@@ -4,24 +4,28 @@ import Chips from "./Chips";
 import styles from "./Showcase.module.css";
 import type { StoryObj, Meta } from "@storybook/react-vite";
 
-interface ShowcaseProps {
-  of?: Meta | Record<string, StoryObj>;
-}
-
-export const Showcase: React.FC<ShowcaseProps> = ({ of = "meta" }) => {
+export const Showcase = ({ of = "meta" }) => {
   const resolvedOf = useOf(of, ["meta"]);
-
   const csfFile = resolvedOf.type === "meta" ? resolvedOf.csfFile : null;
-  const stories = csfFile ? Object.entries(csfFile.stories) : [];
 
-  const data = stories
+  if (!csfFile) return null;
+
+  const { moduleExports, stories: storiesMap } = csfFile;
+  const namedExportsOrder: Array<string> = moduleExports.__namedExportsOrder ?? [];
+
+  const data = Object.entries(storiesMap)
     .filter(([, story]) => !story.name.startsWith("_"))
     .map(([id, story]) => ({
       name: story.name,
       id: id,
-      story: story,
+      story: story.moduleExport,
       description: story.parameters?.docs?.description?.story || "",
-    }));
+    }))
+    .sort((a, b) => {
+      const orderA = namedExportsOrder?.indexOf(a.name.replaceAll(/_| /g, "")) ?? -1;
+      const orderB = namedExportsOrder?.indexOf(b.name.replaceAll(/_| /g, "")) ?? -1;
+      return orderA - orderB;
+    });
 
   const [active, setActive] = useState<string>(data[0]?.id || "");
   const activeItem = data.find(item => item.id === active);
@@ -43,13 +47,13 @@ export const Showcase: React.FC<ShowcaseProps> = ({ of = "meta" }) => {
         <>
           <p>{activeItem.description}</p>
           <Canvas
-            of={activeItem.story.moduleExport}
+            of={activeItem.story}
             sourceState="none"
             layout="centered"
             withToolbar
             className={styles.canvas}
           />
-          <Source of={activeItem.story.moduleExport} />
+          <Source of={activeItem.story} />
         </>
       )}
     </>
