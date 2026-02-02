@@ -1,0 +1,79 @@
+.switch {
+  width: fit-content;
+  min-height: 3rem;
+  position: relative;
+}
+
+.input {
+  cursor: pointer;
+  z-index: 1;
+  opacity: 0;
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  top: 0;
+  margin: 0;
+
+  &:hover ~ .track > .thumb {
+    transform: translateX(0.15rem);
+  }
+  &:checked:hover ~ .track > .thumb {
+    transform: translateX(1.1rem);
+  }
+  &:checked ~ .track {
+    background-color: var(--data-color-800);
+    border-color: var(--data-color-800);
+    > .thumb {
+      background-color: var(--data-color-100);
+      transform: translateX(1.25rem);
+    }
+  }
+}
+
+.track {
+  background-color: color-mix(in srgb, var(--color-neutral-200) 50%, transparent);
+  box-sizing: border-box;
+  width: 2.75rem;
+  height: 1.5rem;
+  top: 0.75rem;
+  border-radius: 9999px;
+  border: 2px solid var(--color-neutral-500);
+  transition-property: background-color, border-color;
+  transition-duration: 0.1s;
+  transition-timing-function: ease;
+  position: absolute;
+  left: 0;
+
+  .thumb {
+    background-color: var(--color-neutral-500);
+    border-radius: 9999px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1.125rem;
+    height: 1.125rem;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    position: absolute;
+    top: 0.0625rem;
+    left: 0.0625rem;
+    transform: translateX(0);
+
+    svg {
+      color: var(--data-color-800);
+    }
+  }
+}
+
+.label {
+  cursor: pointer;
+  color: var(--color-neutral-1000);
+
+  .content {
+    padding-block: 0.75rem;
+    padding-inline: 3.75rem 0;
+    gap: 0.125rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+}
