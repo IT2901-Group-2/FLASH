@@ -122,3 +122,10 @@ export const Indeterminate: Story = {
     );
   },
 };
+
+export const Status_Change: Story = {
+  args: {
+    "data-color": "warning",
+    value: 70,
+  },
+};
