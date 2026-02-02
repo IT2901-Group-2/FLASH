@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Input } from "./Input";
 import { fn } from "storybook/test";
 import { Search, User, Mail, Check, X } from "lucide-react";
@@ -65,7 +65,7 @@ const meta: Meta<typeof Input> = {
 export default meta;
 type Story = StoryObj<typeof Input>;
 
-export const With_Labels: Story = {
+export const Labels: Story = {
   render: () => (
     <>
       <Input label="Email Address" placeholder="you@example.com" icon={<Mail />} />
@@ -75,7 +75,7 @@ export const With_Labels: Story = {
   ),
 };
 
-export const Required_Fields: Story = {
+export const RequiredFields: Story = {
   render: () => (
     <>
       <Input
@@ -95,7 +95,7 @@ export const Required_Fields: Story = {
   ),
 };
 
-export const Labels_With_States: Story = {
+export const LabelsWithStates: Story = {
   render: () => (
     <>
       <Input
@@ -134,7 +134,7 @@ export const WithIcon: Story = {
   ),
 };
 
-export const Icon_Position: Story = {
+export const IconPosition: Story = {
   render: () => (
     <>
       <Input placeholder="Icon on left" icon={<Search />} iconPosition="left" />
@@ -165,7 +165,7 @@ export const States: Story = {
   ),
 };
 
-export const With_Helper_Text: Story = {
+export const WithHelperText: Story = {
   render: () => (
     <>
       <Input
@@ -177,7 +177,7 @@ export const With_Helper_Text: Story = {
   ),
 };
 
-export const Different_Types: Story = {
+export const DifferentTypes: Story = {
   render: () => (
     <>
       <Input type="text" placeholder="Text input" icon={<User />} />
@@ -189,7 +189,7 @@ export const Different_Types: Story = {
   ),
 };
 
-export const Complex_Example: Story = {
+export const ComplexExample: Story = {
   render: () => (
     <>
       <div>

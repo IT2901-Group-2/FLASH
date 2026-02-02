@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ProgressBar } from "./ProgressBar";
 import { fn } from "storybook/test";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -120,5 +120,12 @@ export const Indeterminate: Story = {
         {isIndeterminate && <p>Dette tok lenger tid enn forventet.</p>}
       </>
     );
+  },
+};
+
+export const Status_Change: Story = {
+  args: {
+    "data-color": "warning",
+    value: 70,
   },
 };
