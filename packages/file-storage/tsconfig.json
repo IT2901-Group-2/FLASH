@@ -6,7 +6,8 @@
     "strict": true,
     "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "skipLibCheck": true,
+    "rootDir": ".",
+    "skipLibCheck": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*"]
 }
