@@ -28,7 +28,7 @@
 }
 
 .switch--small {
-  height: 2rem;
+  min-height: 2rem;
 }
 
 .input {
@@ -108,20 +108,23 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .input:hover:not(:disabled) ~ .track {
+  .input:hover:not(:disabled) ~ .track,
+  .input:focus:not(:disabled) ~ .track {
     background-color: var(--color-unchecked-bg-hover);
     > .thumb {
       transform: translateX(0.15rem);
     }
   }
-  .input:checked:hover:not(:disabled) ~ .track {
+  .input:checked:hover:not(:disabled) ~ .track,
+  .input:checked:focus:not(:disabled) ~ .track {
     background-color: var(--color-checked-hover);
     border-color: var(--color-checked-hover);
     > .thumb {
       transform: translateX(1.1rem);
     }
   }
-  .switch--small > .input:checked:hover:not(:disabled) ~ .track > .thumb {
+  .switch--small > .input:checked:hover:not(:disabled) ~ .track > .thumb,
+  .switch--small > .input:checked:focus:not(:disabled) ~ .track > .thumb {
     transform: translateX(0.875rem);
   }
 
