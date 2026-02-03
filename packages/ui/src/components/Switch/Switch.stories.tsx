@@ -1,40 +1,29 @@
 import { Meta, StoryObj } from "@storybook/react-vite";
 import { Switch } from "./Switch";
 
-export default {
+const meta: Meta<typeof Switch> = {
   title: "Byggeklosser/Komponenter/Switch",
   component: Switch,
   tags: ["autodocs"],
   argTypes: {
     size: {
-      control: {
-        type: "radio",
-      },
+      control: { type: "radio" },
       options: ["medium", "small"],
     },
     position: {
-      control: {
-        type: "radio",
-      },
+      control: { type: "radio" },
       options: ["right", "left"],
     },
-    description: {
-      type: "string",
-    },
-    hideLabel: {
-      type: "boolean",
-    },
-    disabled: {
-      type: "boolean",
-    },
-    loading: {
-      type: "boolean",
-    },
+    description: { type: "string" },
+    hideLabel: { type: "boolean" },
+    disabled: { type: "boolean" },
+    loading: { type: "boolean" },
   },
   parameters: {
     chromatic: { disable: true },
   },
 } satisfies Meta<typeof Switch>;
+export default meta;
 
 type Story = StoryObj<typeof Switch>;
 

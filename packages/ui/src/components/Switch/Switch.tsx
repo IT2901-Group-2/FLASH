@@ -1,8 +1,9 @@
 import { InputHTMLAttributes, useEffect, useState } from "react";
 import styles from "./Switch.module.css";
 import { Loader } from "../Loader";
-import { Check } from "lucide-react";
+import { Check, Lock } from "lucide-react";
 import { ColorName } from "@/styles/colorType";
+import { cl } from "@/util/className";
 
 export interface SwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
   /**
@@ -69,8 +70,13 @@ export const Switch = ({
   const checked = checkedProp ?? _checked;
 
   return (
-    <div className={styles.switch} data-color={color}>
+    <div
+      className={cl(styles.switch, styles[`switch--${size}`])}
+      data-color={color}
+      aria-readonly={readOnly}
+    >
       <input
+        readOnly={readOnly}
         type="checkbox"
         disabled={disabled ?? loading}
         checked={checkedProp}
@@ -80,16 +86,19 @@ export const Switch = ({
           setChecked(event.target.checked);
           rest.onChange?.(event);
         }}
-        className={styles.input}
+        className={cl(styles.input)}
       />
       <span className={styles.track}>
         <span className={styles.thumb}>
           <SwitchIcon size={size} checked={checked} loading={loading} />
         </span>
       </span>
-      <label htmlFor="" className={styles.label}>
+      <label htmlFor="" className={styles.labelWrapper}>
         <span className={styles.content}>
-          <span>{children}</span>
+          <span className={styles.label}>
+            {readOnly && <Lock size={18} />}
+            {children}
+          </span>
         </span>
       </label>
     </div>
@@ -111,7 +120,7 @@ const SwitchIcon = ({
 
   if (!checked) return null;
 
-  if (size === "small") return <Check strokeWidth={4} size={8} />;
+  if (size === "small") return <Check strokeWidth={6} size={8} />;
   return <Check strokeWidth={6} size={12} />;
 };
 
