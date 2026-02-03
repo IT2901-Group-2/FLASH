@@ -12,10 +12,12 @@ export interface SwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>,
   children: React.ReactNode;
   /**
    * If enabled shows the label and description for screenreaders only.
+   * @default false
    */
   hideLabel?: boolean;
   /**
    * Toggles loading state with loader-component on switch.
+   * @default false
    */
   loading?: boolean;
   /**
@@ -31,16 +33,23 @@ export interface SwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>,
    * **Avoid using if possible for accessibility purposes**.
    *
    * Disables element.
+   * @default false
    */
   disabled?: boolean;
   /**
    * Read-only state.
+   * @default false
    */
   readOnly?: boolean;
   /**
    * Changes font-size, padding and gaps.
+   * @default "medium"
    */
   size?: "medium" | "small";
+  /**
+   * The color the of the switch in the checked/active state.
+   * @default "neutral"
+   */
   "data-color"?: ColorName;
 }
 
@@ -49,13 +58,13 @@ export const Switch = ({
   className,
   description,
   hideLabel = false,
-  loading,
+  loading = false,
   checked: checkedProp,
   defaultChecked,
   position = "left",
-  readOnly,
-  disabled,
-  size,
+  readOnly = false,
+  disabled = false,
+  size = "medium",
   "data-color": color = "neutral",
   ...rest
 }: SwitchProps) => {
@@ -71,11 +80,17 @@ export const Switch = ({
 
   return (
     <div
-      className={cl(styles.switch, styles[`switch--${size}`])}
+      className={cl(
+        styles.switch,
+        styles[`switch--${size}`],
+        styles[`${position}`],
+        className
+      )}
       data-color={color}
       aria-readonly={readOnly}
     >
       <input
+        id={styles.switch}
         readOnly={readOnly}
         type="checkbox"
         disabled={disabled ?? loading}
@@ -93,12 +108,13 @@ export const Switch = ({
           <SwitchIcon size={size} checked={checked} loading={loading} />
         </span>
       </span>
-      <label htmlFor="" className={styles.labelWrapper}>
+      <label htmlFor={styles.switch} className={styles.labelWrapper}>
         <span className={styles.content}>
           <span className={styles.label}>
             {readOnly && <Lock size={18} />}
             {children}
           </span>
+          {description && <span className={styles.description}>{description}</span>}
         </span>
       </label>
     </div>
