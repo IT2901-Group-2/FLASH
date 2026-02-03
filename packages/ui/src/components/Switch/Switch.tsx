@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, useEffect, useState } from "react";
+import { InputHTMLAttributes, useEffect, useId, useState } from "react";
 import styles from "./Switch.module.css";
 import { Loader } from "../Loader";
 import { Check, Lock } from "lucide-react";
@@ -33,7 +33,6 @@ export interface SwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>,
    * **Avoid using if possible for accessibility purposes**.
    *
    * Disables element.
-   * @default false
    */
   disabled?: boolean;
   /**
@@ -51,20 +50,25 @@ export interface SwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>,
    * @default "neutral"
    */
   "data-color"?: ColorName;
+  /**
+   * Override internal id.
+   */
+  id?: string;
 }
 
 export const Switch = ({
   children,
   className,
   description,
-  hideLabel = false,
-  loading = false,
+  hideLabel,
+  loading,
   checked: checkedProp,
   defaultChecked,
   position = "left",
-  readOnly = false,
-  disabled = false,
+  readOnly,
+  disabled,
   size = "medium",
+  id: customID,
   "data-color": color = "neutral",
   ...rest
 }: SwitchProps) => {
@@ -77,6 +81,7 @@ export const Switch = ({
   }, [checkedProp]);
 
   const checked = checkedProp ?? _checked;
+  const id = customID ?? useId();
 
   return (
     <div
@@ -84,16 +89,18 @@ export const Switch = ({
         styles.switch,
         styles[`switch--${size}`],
         styles[`${position}`],
+        disabled && styles.disabled,
+        readOnly && styles.readonly,
         className
       )}
       data-color={color}
       aria-readonly={readOnly}
     >
       <input
-        id={styles.switch}
+        id={id}
         readOnly={readOnly}
         type="checkbox"
-        disabled={disabled ?? loading}
+        disabled={disabled ?? loading ?? readOnly}
         checked={checkedProp}
         defaultChecked={defaultChecked}
         onChange={event => {
@@ -102,18 +109,21 @@ export const Switch = ({
           rest.onChange?.(event);
         }}
         className={cl(styles.input)}
+        role="switch"
       />
       <span className={styles.track}>
         <span className={styles.thumb}>
           <SwitchIcon size={size} checked={checked} loading={loading} />
         </span>
       </span>
-      <label htmlFor={styles.switch} className={styles.labelWrapper}>
+      <label htmlFor={id} className={styles.labelWrapper}>
         <span className={styles.content}>
-          <span className={styles.label}>
-            {readOnly && <Lock size={18} />}
-            {children}
-          </span>
+          {!hideLabel && (
+            <span className={styles.label}>
+              {readOnly && <Lock size={18} />}
+              {children}
+            </span>
+          )}
           {description && <span className={styles.description}>{description}</span>}
         </span>
       </label>

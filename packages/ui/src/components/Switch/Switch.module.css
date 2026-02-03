@@ -1,13 +1,20 @@
 .switch {
   --color-text: var(--color-neutral-1000);
   --color-description: var(--color-neutral-700);
-  --color-unchecked: var(--color-neutral-500);
+  --color-unchecked: var(--color-neutral-600);
+  --color-unchecked-readonly: var(--color-neutral-200);
   --color-unchecked-bg: color-mix(
     in srgb,
     var(--color-neutral-200) 50%,
     var(--color-neutral-000)
   );
-  --color-checked: var(--data-color-500);
+  --color-unchecked-bg-hover: color-mix(
+    in srgb,
+    var(--color-neutral-200) 80%,
+    var(--color-neutral-000)
+  );
+
+  --color-checked: var(--data-color-600);
   --color-checked-thumb: var(--color-neutral-100);
   --color-checked-hover: color-mix(
     in srgb,
@@ -40,6 +47,7 @@
   }
 }
 
+/* ---------------------------------- Track -------------------------------- */
 .track {
   background-color: var(--color-unchecked-bg);
   box-sizing: border-box;
@@ -59,16 +67,13 @@
     width: 2.25rem;
     height: 1.25rem;
   }
-  .input:checked:not(:disabled) ~ & {
+  .input:checked ~ & {
     background-color: var(--color-checked);
     border-color: var(--color-checked);
-    > .thumb {
-      background-color: var(--color-checked-thumb);
-      transform: translateX(1.25rem);
-    }
   }
 }
 
+/* ---------------------------------- Thumb -------------------------------- */
 .thumb {
   background-color: var(--color-unchecked);
   border-radius: 9999px;
@@ -82,6 +87,11 @@
   top: 0.0625rem;
   left: 0.0625rem;
   transform: translateX(0);
+
+  .input:checked ~ .track > & {
+    background-color: var(--color-checked-thumb);
+    transform: translateX(1.25rem);
+  }
 
   .switch--small > .input:checked ~ .track > & {
     transform: translateX(1rem);
@@ -99,7 +109,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .input:hover:not(:disabled) ~ .track {
-    background-color: var(--color-unchecked-bg);
+    background-color: var(--color-unchecked-bg-hover);
     > .thumb {
       transform: translateX(0.15rem);
     }
@@ -128,6 +138,7 @@
   }
 }
 
+/* ---------------------------------- Text --------------------------------- */
 .labelWrapper {
   cursor: pointer;
   color: var(--color-text);
@@ -156,10 +167,53 @@
   .label {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.5rem;
   }
 
   .description {
     color: var(--color-description);
+  }
+}
+
+/* -------------------------- Switch Disabled-state ------------------------ */
+.input:disabled {
+  appearance: none;
+}
+
+.disabled:not(.loading) {
+  opacity: 0.5;
+}
+
+.input:disabled,
+.input:disabled ~ .labelWrapper {
+  cursor: not-allowed;
+}
+
+/* -------------------------- Switch Readonly state ------------------------ */
+
+.readonly {
+  & > .track,
+  & > input:hover ~ .track,
+  & > input:checked ~ .track,
+  & > .input:checked:hover ~ .track {
+    background-color: var(--color-unchecked-bg-hover);
+    border-color: var(--color-unchecked-readonly);
+  }
+
+  & > .labelWrapper,
+  & > .input {
+    cursor: default !important;
+  }
+
+  & .label {
+    display: inline-flex;
+  }
+
+  & .thumb {
+    background-color: var(--color-checked) !important;
+
+    svg {
+      color: var(--color-unchecked-bg-hover);
+    }
   }
 }
