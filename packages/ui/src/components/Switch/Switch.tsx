@@ -4,7 +4,6 @@ import { Loader } from "../Loader";
 import { Check, Lock } from "lucide-react";
 import { ColorName } from "@/styles/colorType";
 import { cl } from "@/util/className";
-import { onKey } from "@/util/KeyHandler";
 
 export interface SwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
   /**
