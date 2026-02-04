@@ -4,5 +4,6 @@ export * from "./ProgressBar";
 export * from "./ProgressDots";
 export * from "./Input";
 export * from "./ImageCard";
+export * from "./Sidebar";
 export * from "./Switch";
 export * from "./Title";
