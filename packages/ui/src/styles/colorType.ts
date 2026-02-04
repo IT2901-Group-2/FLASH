@@ -1,6 +1,7 @@
 // Auto-generated color types
 export const colorNames = [
   "neutral",
+  "foreground",
   "brand-purple",
   "accent",
   "success",
