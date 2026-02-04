@@ -18,6 +18,7 @@ export default defineConfig({
     react(),
     dts({
       include: ["src"],
+      insertTypesEntry: true,
     }),
     libCss(),
   ],
