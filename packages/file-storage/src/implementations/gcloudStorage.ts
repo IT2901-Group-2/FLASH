@@ -12,6 +12,14 @@ export class GcloudStorage implements FileStorage {
     this.bucket = bucket;
   }
 
+  /**
+   * Returns a `@google-cloud/storage` `File` instance to a file in the bucket.
+   * Returns an error if the file does not exist at the specified path.
+   * Does not resolve the path beforehand, that should be done by the caller.
+   *
+   * @param path A resolved path
+   * @returns A result with the `File` instance or an Error on failure
+   */
   private getFile(path: string): AsyncResult<File, Error> {
     const file = this.bucket.file(path);
 
@@ -23,6 +31,14 @@ export class GcloudStorage implements FileStorage {
     );
   }
 
+  /**
+   * Recursively creates a directory at the specified path.
+   * Does not resolve the path beforehand, that should be done by the caller.
+   * Will append a trailing `/` to the path if not already present.
+   *
+   * @param path A resolved path
+   * @returns An empty result
+   */
   private makeDir(path: string): AsyncResult<void, Error> {
     const dirpath = dirPath(path);
 
