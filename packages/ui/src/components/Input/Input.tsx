@@ -64,7 +64,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   required?: boolean;
   /**
    * Data size of the input
-   * 
+   *
    * @default "large"
    */
   visualSize?: "small" | "medium" | "large" | "xlarge";
@@ -101,11 +101,7 @@ export const Input = ({
       data-variant={variant}
     >
       {label && (
-        <label
-          htmlFor={inputId}
-          className={styles.label}
-          data-size={visualSize}
-        >
+        <label htmlFor={inputId} className={styles.label} data-size={visualSize}>
           {label}
           {required && <span className={styles.required}> *</span>}
         </label>

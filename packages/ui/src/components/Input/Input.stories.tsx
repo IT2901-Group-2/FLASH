@@ -44,7 +44,7 @@ const meta: Meta<typeof Input> = {
     size: {
       control: "select",
       options: ["small", "medium", "large", "xlarge"],
-      description: "Sets the visual size of the input",  
+      description: "Sets the visual size of the input",
     },
   },
   args: {
@@ -353,10 +353,30 @@ export const AllStates: Story = {
 export const SizeVariants: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <Input label="Small" aria-label="small" visualSize="small" placeholder="Small size" />
-      <Input label="Medium" aria-label="medium" visualSize="medium" placeholder="Medium size" />
-      <Input label="Large" aria-label="large" visualSize="large" placeholder="Large size" />
-      <Input label="Extra Large" aria-label="xlarge" visualSize="xlarge" placeholder="Extra Large size" />
+      <Input
+        label="Small"
+        aria-label="small"
+        visualSize="small"
+        placeholder="Small size"
+      />
+      <Input
+        label="Medium"
+        aria-label="medium"
+        visualSize="medium"
+        placeholder="Medium size"
+      />
+      <Input
+        label="Large"
+        aria-label="large"
+        visualSize="large"
+        placeholder="Large size"
+      />
+      <Input
+        label="Extra Large"
+        aria-label="xlarge"
+        visualSize="xlarge"
+        placeholder="Extra Large size"
+      />
     </div>
   ),
   play: async ({ canvasElement }) => {
