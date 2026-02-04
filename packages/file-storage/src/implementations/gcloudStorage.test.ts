@@ -201,6 +201,12 @@ describe("GcloudStorage delete file", () => {
     Result.assertError(await new GcloudStorage(bucket).rm("testfile"));
   });
 
+  it("Should return Err when deleting directory", async () => {
+    await bucket.file("testdir/").save("");
+
+    Result.assertError(await new GcloudStorage(bucket).rm("testdir"));
+  });
+
   it("Should delete file", async () => {
     await bucket.file("testfile").save("");
 
@@ -247,6 +253,12 @@ describe("GcloudStorage delete directory", () => {
     });
 
     Result.assertError(await new GcloudStorage(bucket).rmdir("testdir"));
+  });
+
+  it("Should return Err when deleting file", async () => {
+    await bucket.file("testfile").save("");
+
+    Result.assertError(await new GcloudStorage(bucket).rmdir("testfile"));
   });
 
   it("Should delete empty directory", async () => {
