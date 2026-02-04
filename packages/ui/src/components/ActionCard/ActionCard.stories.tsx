@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react-vite";
 import ActionCard from "./ActionCard";
 import {
   Camera,
@@ -10,6 +10,7 @@ import {
   QrCode,
   Edit,
 } from "lucide-react";
+import { expect, within } from "storybook/test";
 
 const meta: Meta<typeof ActionCard> = {
   title: "Byggeklosser/Komponenter/ActionCard",
@@ -33,6 +34,10 @@ export const UploadImage: Story = {
       "data-color": "brand-purple",
     },
   },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText("You have 10 uploads remaining")).toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: "Upload Image" })).toBeInTheDocument();
+  }
 };
 
 /* TakePhoto variant with secondary and primary buttons */
@@ -40,16 +45,21 @@ export const TakePhoto: Story = {
   args: {
     secondaryButton: {
       text: "Take Photo",
-      icon: <Camera size={18} />,
+      icon: <Camera size={18} />, 
       iconPosition: "right",
       "data-color": "brand-purple",
     },
     primaryButton: {
       text: "Upload Image",
-      icon: <Upload size={18} />,
+      icon: <Upload size={18} />, 
       iconPosition: "right",
       "data-color": "brand-purple",
     },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("button", { name: "Take Photo" })).toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: "Upload Image" })).toBeInTheDocument();
   },
 };
 
@@ -60,17 +70,23 @@ export const SuccessfulUpload: Story = {
     descriptionColor: "success",
     secondaryButton: {
       text: "Cancel",
-      icon: <X size={18} />,
+      icon: <X size={18} />, 
       iconPosition: "right",
       "data-color": "brand-purple",
     },
     primaryButton: {
       text: "Upload Image",
-      icon: <Upload size={18} />,
+      icon: <Upload size={18} />, 
       iconPosition: "right",
       "data-color": "brand-purple",
       disabled: true,
     },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("Upload successful! You have 9 uploads remaining.")).toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: "Upload Image" })).toBeDisabled();
+    await expect(canvas.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
   },
 };
 
@@ -81,16 +97,22 @@ export const FailedUpload: Story = {
     descriptionColor: "warning",
     secondaryButton: {
       text: "Cancel",
-      icon: <X size={18} />,
+      icon: <X size={18} />, 
       iconPosition: "right",
       "data-color": "brand-purple",
     },
     primaryButton: {
       text: "Try Again",
-      icon: <RotateCcw size={18} />,
+      icon: <RotateCcw size={18} />, 
       iconPosition: "right",
       "data-color": "brand-purple",
     },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("Upload failed. Please try again.")).toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: "Try Again" })).toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
   },
 };
 
@@ -111,8 +133,15 @@ export const UploadToSelectedAlbum: Story = {
       "data-color": "brand-purple",
     },
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("You have 10 uploads remaining")).toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: "Upload to selected album" })).toBeInTheDocument();
+  },
 };
 
+/* Loading variant with description and both buttons */
 export const Loading: Story = {
   args: {
     description: "Uploading...",
@@ -127,8 +156,14 @@ export const Loading: Story = {
       "data-color": "brand-purple",
     },
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("Uploading...")).toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: "Cancel" })).toBeDisabled();
+  },
 };
 
+/* Story showcasing upload states */
 export const UploadStates: Story = {
   render: () => (
     <div
@@ -141,6 +176,7 @@ export const UploadStates: Story = {
   ),
 };
 
+/* Save changes variant with both buttons */
 export const SaveChanges: Story = {
   args: {
     secondaryButton: {
@@ -156,8 +192,14 @@ export const SaveChanges: Story = {
       "data-color": "brand-purple",
     },
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: "Save Changes" })).toBeInTheDocument();
+  },
 };
 
+/* Variant with Next button */
 export const Next: Story = {
   args: {
     secondaryButton: {
@@ -173,8 +215,14 @@ export const Next: Story = {
       "data-color": "brand-purple",
     },
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: "Next" })).toBeInTheDocument();
+  },
 };
 
+/* Variant with Download QR Code button */
 export const DownloadQrCode: Story = {
   args: {
     secondaryButton: {
@@ -188,8 +236,14 @@ export const DownloadQrCode: Story = {
       "data-color": "brand-purple",
     },
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("button", { name: "Download QR Code" })).toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: "Done" })).toBeInTheDocument();
+  },
 };
 
+/* Variant with Edit Event button */
 export const EditEvent: Story = {
   args: {
     secondaryButton: {
@@ -205,8 +259,14 @@ export const EditEvent: Story = {
       "data-color": "brand-purple",
     },
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("button", { name: "Edit Event" })).toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: "Go to Event" })).toBeInTheDocument();
+  }
 };
 
+/* All variants showcased together */
 export const AllVariants: Story = {
   render: () => (
     <div
