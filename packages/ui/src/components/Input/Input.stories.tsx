@@ -362,8 +362,10 @@ export const SizeVariants: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const inputs = canvas.getAllByRole("textbox");
-
+    // There should be 4 inputs for the 4 size variants
     await expect(inputs).toHaveLength(4);
+
+    // Check that each input has the correct data-size attribute
     await expect(inputs[0]).toHaveAttribute("data-size", "small");
     await expect(inputs[1]).toHaveAttribute("data-size", "medium");
     await expect(inputs[2]).toHaveAttribute("data-size", "large");
