@@ -35,7 +35,7 @@ export default {
       page: DocsTemplate,
       source: {
         excludeDecorators: true,
-        type: "code",
+        type: "auto",
         dark: true,
       },
     },

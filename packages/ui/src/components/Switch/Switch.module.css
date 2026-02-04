@@ -1,0 +1,222 @@
+.switch {
+  --color-text: var(--color-neutral-1000);
+  --color-description: var(--color-neutral-700);
+  --color-unchecked: var(--color-neutral-600);
+  --color-unchecked-readonly: var(--color-neutral-200);
+  --color-unchecked-bg: color-mix(
+    in srgb,
+    var(--color-neutral-200) 50%,
+    var(--color-neutral-000)
+  );
+  --color-unchecked-bg-hover: color-mix(
+    in srgb,
+    var(--color-neutral-200) 80%,
+    var(--color-neutral-000)
+  );
+
+  --color-checked: var(--data-color-600);
+  --color-checked-thumb: var(--color-neutral-100);
+  --color-checked-hover: color-mix(
+    in srgb,
+    var(--data-color-500) 80%,
+    var(--color-neutral-000)
+  );
+
+  width: fit-content;
+  min-height: 3rem;
+  position: relative;
+}
+
+.switch--small {
+  min-height: 2rem;
+}
+
+.input {
+  cursor: pointer;
+  z-index: 1;
+  opacity: 0;
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  top: 0;
+  margin: 0;
+
+  .switch--small > & {
+    height: 2rem;
+    width: 2.5rem;
+  }
+}
+
+/* ---------------------------------- Track -------------------------------- */
+.track {
+  background-color: var(--color-unchecked-bg);
+  box-sizing: border-box;
+  width: 2.75rem;
+  height: 1.5rem;
+  top: 0.75rem;
+  border-radius: 9999px;
+  border: 2px solid var(--color-unchecked);
+  transition-property: background-color, border-color;
+  transition-duration: 0.1s;
+  transition-timing-function: ease;
+  position: absolute;
+  left: 0;
+
+  .switch--small > & {
+    top: 0.375rem;
+    width: 2.25rem;
+    height: 1.25rem;
+  }
+  .input:checked ~ & {
+    background-color: var(--color-checked);
+    border-color: var(--color-checked);
+  }
+}
+
+/* ---------------------------------- Thumb -------------------------------- */
+.thumb {
+  background-color: var(--color-unchecked);
+  border-radius: 9999px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  position: absolute;
+  top: 0.0625rem;
+  left: 0.0625rem;
+  transform: translateX(0);
+
+  .input:checked ~ .track > & {
+    background-color: var(--color-checked-thumb);
+    transform: translateX(1.25rem);
+  }
+
+  .switch--small > .input:checked ~ .track > & {
+    transform: translateX(1rem);
+  }
+
+  .switch--small & {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  svg {
+    color: var(--color-checked);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .input:hover:not(:disabled) ~ .track,
+  .input:focus:not(:disabled) ~ .track {
+    background-color: var(--color-unchecked-bg-hover);
+    > .thumb {
+      transform: translateX(0.15rem);
+    }
+  }
+  .input:checked:hover:not(:disabled) ~ .track,
+  .input:checked:focus:not(:disabled) ~ .track {
+    background-color: var(--color-checked-hover);
+    border-color: var(--color-checked-hover);
+    > .thumb {
+      transform: translateX(1.1rem);
+    }
+  }
+  .switch--small > .input:checked:hover:not(:disabled) ~ .track > .thumb,
+  .switch--small > .input:checked:focus:not(:disabled) ~ .track > .thumb {
+    transform: translateX(0.875rem);
+  }
+
+  .right {
+    width: auto;
+    & .input,
+    & .track {
+      right: 0;
+      left: auto;
+    }
+    .content {
+      padding-inline: 0 3.75rem;
+    }
+  }
+}
+
+/* ---------------------------------- Text --------------------------------- */
+.labelWrapper {
+  cursor: pointer;
+  color: var(--color-text);
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+
+  .switch--small > & {
+    font-size: 1rem;
+    line-height: 1.25rem;
+  }
+}
+
+.content {
+  padding-block: 0.75rem;
+  padding-inline: 3.75rem 0;
+  gap: 0.125rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  .switch--small & {
+    padding-block: 0.375rem;
+    padding-inline: 2.75rem 0;
+  }
+
+  .label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .description {
+    color: var(--color-description);
+  }
+}
+
+/* -------------------------- Switch Disabled-state ------------------------ */
+.input:disabled {
+  appearance: none;
+}
+
+.disabled:not(.loading) {
+  opacity: 0.5;
+}
+
+.input:disabled,
+.input:disabled ~ .labelWrapper {
+  cursor: not-allowed;
+}
+
+/* -------------------------- Switch Readonly state ------------------------ */
+
+.readonly {
+  & > .track,
+  & > input:hover ~ .track,
+  & > input:checked ~ .track,
+  & > .input:checked:hover ~ .track {
+    background-color: var(--color-unchecked-bg-hover);
+    border-color: var(--color-unchecked-readonly);
+  }
+
+  & > .labelWrapper,
+  & > .input {
+    cursor: default !important;
+  }
+
+  & .label {
+    display: inline-flex;
+  }
+
+  & .thumb {
+    background-color: var(--color-checked) !important;
+
+    svg {
+      color: var(--color-unchecked-bg-hover);
+    }
+  }
+}
