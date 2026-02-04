@@ -56,8 +56,18 @@ export class GcloudStorage implements FileStorage {
     const dirpath = dirPath(resolvePath(path));
 
     return this.getFile(dirpath)
-      .mapCatching(() => this.bucket.getFiles({ matchGlob: `${dirpath}*` }))
-      .map(([files]) => files.map(file => file.name.slice(dirpath.length)));
+      .mapCatching(() =>
+        this.bucket.getFiles({
+          prefix: dirpath,
+          delimiter: "/",
+          includeTrailingDelimiter: true,
+        })
+      )
+      .map(([files]) =>
+        files
+          .filter(file => file.name !== dirpath)
+          .map(file => file.name.slice(dirpath.length))
+      );
   }
 
   read(path: string): AsyncResult<Buffer, Error> {
