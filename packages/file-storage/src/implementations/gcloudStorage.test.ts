@@ -88,3 +88,47 @@ describe("GcloudStorage read file", () => {
     ).toBe("This is a test");
   });
 });
+
+describe("GcloudStorage create directory", () => {
+  it("Shuold return Err when directory creation fails", async () => {
+    jest.spyOn(File.prototype, "save").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(await new GcloudStorage(bucket).mkdir("testdir"));
+  });
+
+  it("Should create directory", async () => {
+    await new GcloudStorage(bucket).mkdir("testdir").getOrThrow();
+
+    expect(
+      await bucket
+        .file("testdir/")
+        .exists()
+        .then(res => res[0])
+    ).toBe(true);
+  });
+
+  it("Should create directory recursively", async () => {
+    await new GcloudStorage(bucket).mkdir("test/dir/foo").getOrThrow();
+
+    expect(
+      await bucket
+        .file("test/")
+        .exists()
+        .then(res => res[0])
+    ).toBe(true);
+    expect(
+      await bucket
+        .file("test/dir/")
+        .exists()
+        .then(res => res[0])
+    ).toBe(true);
+    expect(
+      await bucket
+        .file("test/dir/foo/")
+        .exists()
+        .then(res => res[0])
+    ).toBe(true);
+  });
+});

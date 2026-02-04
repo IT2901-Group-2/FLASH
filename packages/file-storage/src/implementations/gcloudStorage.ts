@@ -23,6 +23,17 @@ export class GcloudStorage implements FileStorage {
     );
   }
 
+  private makeDir(dirpath: string): AsyncResult<void, Error> {
+    return Result.fromAsyncCatching(
+      Promise.all(
+        dirpath
+          .matchAll(/\//g)
+          .map(({ index }) => dirpath.slice(0, index + 1))
+          .map(dir => this.bucket.file(dir).save(""))
+      )
+    ).map(Result.ok);
+  }
+
   list(path: string): AsyncResult<string[], Error> {
     const dirpath = dirPath(resolvePath(path));
 
@@ -48,9 +59,7 @@ export class GcloudStorage implements FileStorage {
   }
 
   mkdir(path: string): AsyncResult<void, Error> {
-    return Result.fromAsyncCatching(() => {
-      throw new Error("Not implemented");
-    });
+    return this.makeDir(dirPath(resolvePath(path)));
   }
 
   write(
