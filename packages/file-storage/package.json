@@ -16,7 +16,6 @@
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "@jest/globals": "^30.2.0",
-    "@testcontainers/gcloud": "^11.11.0",
     "@types/node": "^25.0.10",
     "eslint": "^9.39.2",
     "jest": "^30.2.0",

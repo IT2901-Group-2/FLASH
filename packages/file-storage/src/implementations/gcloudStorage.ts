@@ -1,4 +1,4 @@
-import { Bucket } from "@google-cloud/storage";
+import { Bucket, File } from "@google-cloud/storage";
 import { FileStorage } from "../interface";
 import { AsyncResult, Result } from "typescript-result";
 import { WithImplicitCoercion } from "node:buffer";
@@ -12,19 +12,21 @@ export class GcloudStorage implements FileStorage {
     this.bucket = bucket;
   }
 
+  private getFile(path: string): AsyncResult<File, Error> {
+    const file = this.bucket.file(path);
+
+    return Result.try(async () => path === "/" || file.exists().then(res => res[0])).map(
+      exists =>
+        exists
+          ? Result.ok(file)
+          : Result.error(new Error(`File or directory ${path} does not exist`))
+    );
+  }
+
   list(path: string): AsyncResult<string[], Error> {
-    const dirpath = dirPath(resolvePath(path)).replace(/^\//, "");
+    const dirpath = dirPath(resolvePath(path));
 
-    return Result.try(async () => {
-      if (dirpath === "") {
-        return;
-      }
-
-      const [exists] = await this.bucket.file(dirpath).exists();
-      if (!exists) {
-        throw new Error(`Directory ${dirpath} does not exist`);
-      }
-    })
+    return this.getFile(dirpath)
       .mapCatching(() =>
         this.bucket.getFiles({
           prefix: dirpath,
@@ -32,8 +34,7 @@ export class GcloudStorage implements FileStorage {
           includeTrailingDelimiter: true,
         })
       )
-      .map(res => res[0])
-      .map(files =>
+      .map(([files]) =>
         files
           .map(file => file.name.replace(new RegExp(`^${dirpath}`), ""))
           .filter(file => file !== "")
@@ -41,9 +42,9 @@ export class GcloudStorage implements FileStorage {
   }
 
   read(path: string): AsyncResult<Buffer, Error> {
-    return Result.fromAsyncCatching(() => {
-      throw new Error("Not implemented");
-    });
+    return this.getFile(resolvePath(path)).mapCatching(file =>
+      file.download().then(res => res[0])
+    );
   }
 
   mkdir(path: string): AsyncResult<void, Error> {

@@ -1,6 +1,6 @@
 import { jest, afterEach, beforeEach, describe, expect, it } from "@jest/globals";
 import { GenericContainer, StartedTestContainer } from "testcontainers";
-import { Bucket, Storage } from "@google-cloud/storage";
+import { Bucket, Storage, File } from "@google-cloud/storage";
 import { Result } from "typescript-result";
 import { GcloudStorage } from "./gcloudStorage";
 
@@ -54,5 +54,37 @@ describe("GcloudStorage list directory", () => {
         .map(f => new Set(f))
         .getOrThrow()
     ).toStrictEqual(new Set(["foo.txt", "bar", "baz/", "dir2/"]));
+  });
+});
+
+describe("GcloudStorage read file", () => {
+  it("Should return Err when reading non-existent file", async () => {
+    Result.assertError(await new GcloudStorage(bucket).read("testfile"));
+  });
+
+  it("Should return Err when reading directory", async () => {
+    await bucket.file("testdir/").save("");
+
+    Result.assertError(await new GcloudStorage(bucket).read("testdir/"));
+  });
+
+  it("Should return Err when reading file fails", async () => {
+    await bucket.file("testfile").save("");
+    jest.spyOn(File.prototype, "download").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(await new GcloudStorage(bucket).read("testfile"));
+  });
+
+  it("Should return the contents of the file", async () => {
+    await bucket.file("testfile").save("This is a test");
+
+    expect(
+      await new GcloudStorage(bucket)
+        .read("testfile")
+        .map(b => b.toString())
+        .getOrThrow()
+    ).toBe("This is a test");
   });
 });
