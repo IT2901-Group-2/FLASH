@@ -4,9 +4,17 @@
 
 ### Type of Change
 
-<!-- Type one -->
+<!-- Please keep the relevant option and delete the rest. -->
 
-Bug fix | New feature | Breaking change | Documentation | Refactoring | Performance | Tests | Dependencies | Other
+- Bug fix (non-breaking change which fixes an issue)
+- New feature (non-breaking change which adds functionality)
+- Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- Documentation update
+- Refactoring (no functional changes)
+- Performance improvement
+- Test updates
+- Dependency updates
+- Other (please describe):
 
 ### Related Issues
 
