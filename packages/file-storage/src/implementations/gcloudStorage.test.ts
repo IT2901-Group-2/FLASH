@@ -186,3 +186,88 @@ describe("GcloudStorage write file", () => {
     ).toBe("This is a test");
   });
 });
+
+describe("GcloudStorage delete file/directory", () => {
+  it("Should return Err when file/directory deletion fails", async () => {
+    await bucket.file("testfile").save("");
+    jest.spyOn(File.prototype, "delete").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(await new GcloudStorage(bucket).delete("testfile"));
+  });
+
+  it("Should delete file", async () => {
+    await bucket.file("testfile").save("");
+
+    await new GcloudStorage(bucket).delete("testfile").getOrThrow();
+
+    expect(
+      await bucket
+        .file("foo/bar/testfile")
+        .exists()
+        .then(res => res[0])
+    ).toBe(false);
+  });
+
+  it("Should delete file within directory", async () => {
+    await bucket.file("testdir/").save("");
+    await bucket.file("testdir/testfile").save("");
+
+    await new GcloudStorage(bucket).delete("testdir/testfile").getOrThrow();
+
+    expect(
+      await bucket
+        .file("testdir/")
+        .exists()
+        .then(res => res[0])
+    ).toBe(true);
+    expect(
+      await bucket
+        .file("testdir/testfile")
+        .exists()
+        .then(res => res[0])
+    ).toBe(false);
+  });
+
+  it("Should delete empty directory", async () => {
+    await bucket.file("testdir/").save("");
+
+    await new GcloudStorage(bucket).delete("testdir").getOrThrow();
+
+    expect(
+      await bucket
+        .file("testdir/")
+        .exists()
+        .then(res => res[0])
+    ).toBe(false);
+  });
+
+  it("Should delete directory with content", async () => {
+    await bucket.file("test/").save("");
+    await bucket.file("test/dir/").save("");
+    await bucket.file("test/dir/foo.txt").save("");
+    await bucket.file("test/dir/bar").save("");
+    await bucket.file("test/dir/baz/").save("");
+    await bucket.file("test/dir/baz/test.txt").save("");
+    await bucket.file("test/dir/dir2/").save("");
+
+    await new GcloudStorage(bucket).delete("test").getOrThrow();
+
+    for (const dir of [
+      "test/dir/",
+      "test/dir/foo.txt",
+      "test/dir/bar",
+      "test/dir/baz/",
+      "test/dir/baz/test.txt",
+      "test/dir/dir2/",
+    ]) {
+      expect(
+        await bucket
+          .file(dir)
+          .exists()
+          .then(res => res[0])
+      ).toBe(false);
+    }
+  });
+});

@@ -77,8 +77,11 @@ export class GcloudStorage implements FileStorage {
   }
 
   delete(path: string): AsyncResult<void, Error> {
-    return Result.fromAsyncCatching(() => {
-      throw new Error("Not implemented");
-    });
+    const rPath = resolvePath(path);
+
+    return this.getFile(rPath)
+      .mapCatching(() => this.bucket.getFiles({ prefix: rPath }))
+      .mapCatching(([files]) => Promise.all(files.map(file => file.delete())))
+      .map(() => Result.ok());
   }
 }
