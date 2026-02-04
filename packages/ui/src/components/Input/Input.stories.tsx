@@ -41,6 +41,11 @@ const meta: Meta<typeof Input> = {
       control: "boolean",
       description: "Marks the input as required (adds asterisk to label)",
     },
+    size: {
+      control: "select",
+      options: ["small", "medium", "large", "xlarge"],
+      description: "Sets the visual size of the input",  
+    },
   },
   args: {
     onChange: fn(),
@@ -342,5 +347,26 @@ export const AllStates: Story = {
     await step("Input has required attribute", async () => {
       await expect(inputs[6]).toBeRequired();
     });
+  },
+};
+
+export const SizeVariants: Story = {
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <Input label="Small" aria-label="small" visualSize="small" placeholder="Small size" />
+      <Input label="Medium" aria-label="medium" visualSize="medium" placeholder="Medium size" />
+      <Input label="Large" aria-label="large" visualSize="large" placeholder="Large size" />
+      <Input label="Extra Large" aria-label="xlarge" visualSize="xlarge" placeholder="Extra Large size" />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const inputs = canvas.getAllByRole("textbox");
+
+    await expect(inputs).toHaveLength(4);
+    await expect(inputs[0]).toHaveAttribute("data-size", "small");
+    await expect(inputs[1]).toHaveAttribute("data-size", "medium");
+    await expect(inputs[2]).toHaveAttribute("data-size", "large");
+    await expect(inputs[3]).toHaveAttribute("data-size", "xlarge");
   },
 };

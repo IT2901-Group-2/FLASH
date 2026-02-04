@@ -62,6 +62,12 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
    * @default false
    */
   required?: boolean;
+  /**
+   * Data size of the input
+   * 
+   * @default "large"
+   */
+  visualSize?: "small" | "medium" | "large" | "xlarge";
 }
 /**
  * An input allows the user to enter and edit text or data.
@@ -83,6 +89,7 @@ export const Input = ({
   required = false,
   "aria-label": ariaLabel,
   id,
+  visualSize = "large",
   ...props
 }: InputProps) => {
   // Generate a unique ID if not provided (needed for label association)
@@ -94,7 +101,11 @@ export const Input = ({
       data-variant={variant}
     >
       {label && (
-        <label htmlFor={inputId} className={styles.label}>
+        <label
+          htmlFor={inputId}
+          className={styles.label}
+          data-size={visualSize}
+        >
           {label}
           {required && <span className={styles.required}> *</span>}
         </label>
@@ -114,6 +125,7 @@ export const Input = ({
         <input
           id={inputId}
           className={styles.input}
+          data-size={visualSize}
           disabled={disabled || loading}
           required={required}
           aria-label={ariaLabel}

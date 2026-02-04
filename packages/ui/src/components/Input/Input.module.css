@@ -72,6 +72,19 @@
     color: var(--color-neutral-800);
     cursor: not-allowed;
   }
+
+  &[data-size="small"] {
+    font-size: 0.875rem;
+  }
+  &[data-size="medium"] {
+    font-size: 1rem;
+  }
+  &[data-size="large"] {
+    font-size: 1.25rem;
+  }
+  &[data-size="xlarge"] {
+    font-size: 1.5rem;
+  }
 }
 
 .icon {
@@ -116,12 +129,24 @@
 .label {
   display: block;
   margin-bottom: 0.5rem;
-  font-family: "Kantumruy Pro";
-  font-size: 1.5rem;
+  font-family: "Kantumruy Pro"; 
   font-style: normal;
   font-weight: 700;
   line-height: normal;
   color: var(--color-text-primary);
+
+  &[data-size="xlarge"] {
+    font-size: 1.75rem;
+  }
+  &[data-size="large"] {
+    font-size: 1.5rem;
+  }
+  &[data-size="medium"] {
+    font-size: 1.25rem;
+  }
+  &[data-size="small"] {
+    font-size: 1rem;
+  }
 }
 
 .required {
@@ -132,3 +157,4 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
