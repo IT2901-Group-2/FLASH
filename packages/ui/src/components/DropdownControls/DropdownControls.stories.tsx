@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DropdownControls } from "./DropdownControls";
 import { expect, fn, userEvent, within } from "storybook/test";
 import { colorNames } from "@/styles/colorType";
@@ -135,7 +135,7 @@ export const WithInput: Story = {
     });
 
     await step("Limit option shows input and accepts typing", async () => {
-      const limit = canvas.getByRole("radio", { name: /limit/i });
+      const limit = canvas.getByRole("radio", { name: /^limit$/i });
       await user.click(limit);
 
       const input = canvas.getByLabelText("limit-input");

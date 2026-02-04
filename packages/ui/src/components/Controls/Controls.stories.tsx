@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import React from "react";
 import { Controls } from "./Controls";
 import { expect, fn, userEvent, within } from "storybook/test";
