@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./Title.module.css";
 import { cl } from "../../util/className";
+import { ColorName } from "@/styles/colorType";
 
 export interface TitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   /** Title Content. */
@@ -28,7 +29,7 @@ export interface TitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   /**
    * Overrides inherited color.
    */
-  "data-color"?: "accent" | "neutral" | "brand-purple";
+  "data-color"?: ColorName;
   /**
    * Ref to the heading element
    */
