@@ -1,10 +1,10 @@
 .wrapper {
+  --color-base: var(--data-color-800);
   display: flex;
   flex-direction: column;
 }
 
 .title {
-  --color-base: var(--data-color-800);
   display: flex;
   align-items: center;
   margin: 0;
@@ -72,13 +72,9 @@
   }
 
   &[data-size="small"] {
-    font-size: 0.6rem
+    font-size: 0.6rem;
   }
-
-
 }
-
-
 
 .icon {
   display: flex;
