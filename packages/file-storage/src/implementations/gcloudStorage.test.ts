@@ -1,29 +1,43 @@
-import { jest, afterEach, beforeEach, describe, expect, it } from "@jest/globals";
+import {
+  jest,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  beforeAll,
+  afterAll,
+} from "@jest/globals";
 import { GenericContainer, StartedTestContainer } from "testcontainers";
 import { Bucket, Storage, File } from "@google-cloud/storage";
 import { Result } from "typescript-result";
 import { GcloudStorage } from "./gcloudStorage";
+import { randomUUID } from "crypto";
 
 let container: StartedTestContainer;
+let storage: Storage;
 let bucket: Bucket;
 
-beforeEach(async () => {
+beforeAll(async () => {
   container = await new GenericContainer("igiwa001/google-storage-testbench")
     .withExposedPorts(9000)
     .withStartupTimeout(2000)
     .start();
-  bucket = await new Storage({
+  storage = new Storage({
     projectId: "test-project",
     apiEndpoint: `http://${container.getHost()}:${container.getMappedPort(9000)}`,
-  })
-    .createBucket("test-bucket")
-    .then(res => res[0]);
-}, 30 * 1000);
+  });
+}, 3e4);
 
-afterEach(async () => {
-  container.stop();
+beforeEach(async () => {
+  bucket = await storage.createBucket(`test-bucket-${randomUUID()}`).then(res => res[0]);
+});
+
+afterEach(() => {
   jest.restoreAllMocks();
 });
+
+afterAll(() => container.stop());
 
 describe("GcloudStorage list directory", () => {
   it("Should return Err when listing non-existent directory", async () => {
