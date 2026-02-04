@@ -187,24 +187,28 @@ describe("GcloudStorage write file", () => {
   });
 });
 
-describe("GcloudStorage delete file/directory", () => {
-  it("Should return Err when file/directory deletion fails", async () => {
+describe("GcloudStorage delete file", () => {
+  it("Should return Err when deleting non-existent file", async () => {
+    Result.assertError(await new GcloudStorage(bucket).rm("testfile"));
+  });
+
+  it("Should return Err when file deletion fails", async () => {
     await bucket.file("testfile").save("");
     jest.spyOn(File.prototype, "delete").mockImplementationOnce(() => {
       throw new Error();
     });
 
-    Result.assertError(await new GcloudStorage(bucket).delete("testfile"));
+    Result.assertError(await new GcloudStorage(bucket).rm("testfile"));
   });
 
   it("Should delete file", async () => {
     await bucket.file("testfile").save("");
 
-    await new GcloudStorage(bucket).delete("testfile").getOrThrow();
+    await new GcloudStorage(bucket).rm("testfile").getOrThrow();
 
     expect(
       await bucket
-        .file("foo/bar/testfile")
+        .file("testfile")
         .exists()
         .then(res => res[0])
     ).toBe(false);
@@ -214,7 +218,7 @@ describe("GcloudStorage delete file/directory", () => {
     await bucket.file("testdir/").save("");
     await bucket.file("testdir/testfile").save("");
 
-    await new GcloudStorage(bucket).delete("testdir/testfile").getOrThrow();
+    await new GcloudStorage(bucket).rm("testdir/testfile").getOrThrow();
 
     expect(
       await bucket
@@ -229,11 +233,26 @@ describe("GcloudStorage delete file/directory", () => {
         .then(res => res[0])
     ).toBe(false);
   });
+});
+
+describe("GcloudStorage delete directory", () => {
+  it("Should return Err when deleting non-existent directory", async () => {
+    Result.assertError(await new GcloudStorage(bucket).rmdir("testdir"));
+  });
+
+  it("Should return Err when directory deletion fails", async () => {
+    await bucket.file("testdir/").save("");
+    jest.spyOn(File.prototype, "delete").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(await new GcloudStorage(bucket).rmdir("testdir"));
+  });
 
   it("Should delete empty directory", async () => {
     await bucket.file("testdir/").save("");
 
-    await new GcloudStorage(bucket).delete("testdir").getOrThrow();
+    await new GcloudStorage(bucket).rmdir("testdir").getOrThrow();
 
     expect(
       await bucket
@@ -250,10 +269,22 @@ describe("GcloudStorage delete file/directory", () => {
     await bucket.file("test/dir/bar").save("");
     await bucket.file("test/dir/baz/").save("");
     await bucket.file("test/dir/baz/test.txt").save("");
-    await bucket.file("test/dir/dir2/").save("");
+    await bucket.file("test/dir2/").save("");
 
-    await new GcloudStorage(bucket).delete("test").getOrThrow();
+    await new GcloudStorage(bucket).rmdir("test/dir").getOrThrow();
 
+    expect(
+      await bucket
+        .file("test/")
+        .exists()
+        .then(res => res[0])
+    ).toBe(true);
+    expect(
+      await bucket
+        .file("test/dir2/")
+        .exists()
+        .then(res => res[0])
+    ).toBe(true);
     for (const dir of [
       "test/dir/",
       "test/dir/foo.txt",

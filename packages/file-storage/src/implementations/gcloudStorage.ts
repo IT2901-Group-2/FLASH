@@ -5,7 +5,6 @@ import { WithImplicitCoercion } from "node:buffer";
 import { dirPath, resolvePath } from "../utils";
 import upath from "upath";
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 export class GcloudStorage implements FileStorage {
   private bucket: Bucket;
 
@@ -76,12 +75,15 @@ export class GcloudStorage implements FileStorage {
     );
   }
 
-  delete(path: string): AsyncResult<void, Error> {
-    const rPath = resolvePath(path);
+  rm(path: string): AsyncResult<void, Error> {
+    return this.getFile(resolvePath(path)).mapCatching(file => file.delete());
+  }
 
-    return this.getFile(rPath)
-      .mapCatching(() => this.bucket.getFiles({ prefix: rPath }))
-      .mapCatching(([files]) => Promise.all(files.map(file => file.delete())))
-      .map(() => Result.ok());
+  rmdir(path: string): AsyncResult<void, Error> {
+    const dirpath = dirPath(resolvePath(path));
+
+    return this.getFile(dirpath)
+      .mapCatching(() => this.bucket.getFiles({ prefix: dirpath }))
+      .mapCatching(([files]) => Promise.all(files.map(file => file.delete())));
   }
 }
