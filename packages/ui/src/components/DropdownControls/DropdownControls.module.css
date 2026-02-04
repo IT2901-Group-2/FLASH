@@ -1,0 +1,33 @@
+.dropdownControls {
+  --color-base: var(--data-color-500);
+  --color-surface: var(--data-color-100);
+  --color-border: var(--color-text);
+  --color-text: var(--data-color-1000);
+  --color-text-inactive: var(--data-color-800);
+
+  width: max-content;
+  min-width: 21.375rem;
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1.5rem;
+
+  overflow: hidden;
+
+  display: grid;
+  grid-template-rows: auto 0fr;
+  transition: grid-template-rows 200ms ease;
+
+  &[data-expanded="true"] {
+    grid-template-rows: auto 1fr;
+  }
+}
+
+.content {
+  overflow: hidden;
+}
+
+.contentInner {
+  padding: 0.25rem 0.75rem 0.75rem;
+  color: var(--color-text);
+}

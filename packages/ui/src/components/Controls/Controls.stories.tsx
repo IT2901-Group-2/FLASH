@@ -238,4 +238,17 @@ export const Three_Items: Story = {
       data-color="accent"
     />
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders three options", async () => {
+      const radios = canvas.getAllByRole("radio");
+      await expect(radios).toHaveLength(3);
+    });
+
+    await step("Center is selected by default", async () => {
+      const center = canvas.getByRole("radio", { name: /center/i });
+      await expect(center).toHaveAttribute("aria-checked", "true");
+    });
+  },
 };
