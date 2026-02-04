@@ -1,5 +1,5 @@
 .inputWrapper {
-  --color-warning: var(--color-warning-500);
+  --color-warning: var(--color-warning-600);
   --color-success: var(--color-success-500);
   --color-text-primary: var(--data-color-800);
 }
@@ -22,24 +22,21 @@
 
   &[data-variant="primary"] {
     background-color: var(#f0e9ec);
-    outline: 1px solid var(--color-base);
+    outline: 0.1rem solid var(--color-base);
 
-    /* &:hover:not(:has(input:disabled), .disabled, .loading) {
-      outline-color: var(--color-hover);
-    } */
     &:focus-within:not(:has(input:disabled), .disabled).error {
       outline-color: var(--color-warning);
-      outline-width: 3px;
+      outline-width: 0.1rem;
     }
 
     &:focus-within:not(:has(input:disabled), .disabled).success {
       outline-color: var(--color-success);
-      outline-width: 3px;
+      outline-width: 0.1rem;
     }
 
     &:focus-within:not(:has(input:disabled), .disabled) {
       outline-color: var(--color-active);
-      outline-width: 3px;
+      outline-width: 0.1rem;
     }
 
     &:is(.disabled, :has(input:disabled)) {
@@ -112,6 +109,7 @@
 
   &.errorMessage {
     color: var(--color-warning);
+    font-size: 1rem;
   }
 }
 
