@@ -18,8 +18,8 @@ const ROOT = upath.resolve("/");
 export function resolvePath(...paths: string[]): string {
   return upath
     .resolve(ROOT, ...paths)
-    .replace(/^\/(.+)/, "$1")
-    .replace(new RegExp(`^${ROOT}`), "/");
+    .replace(new RegExp(`^${ROOT}`), "/")
+    .replace(/^\//, "");
 }
 
 /**
