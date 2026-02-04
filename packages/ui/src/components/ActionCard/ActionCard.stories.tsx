@@ -36,8 +36,10 @@ export const UploadImage: Story = {
   },
   play: async ({ canvas }) => {
     await expect(canvas.getByText("You have 10 uploads remaining")).toBeInTheDocument();
-    await expect(canvas.getByRole("button", { name: "Upload Image" })).toBeInTheDocument();
-  }
+    await expect(
+      canvas.getByRole("button", { name: "Upload Image" })
+    ).toBeInTheDocument();
+  },
 };
 
 /* TakePhoto variant with secondary and primary buttons */
@@ -45,13 +47,13 @@ export const TakePhoto: Story = {
   args: {
     secondaryButton: {
       text: "Take Photo",
-      icon: <Camera size={18} />, 
+      icon: <Camera size={18} />,
       iconPosition: "right",
       "data-color": "brand-purple",
     },
     primaryButton: {
       text: "Upload Image",
-      icon: <Upload size={18} />, 
+      icon: <Upload size={18} />,
       iconPosition: "right",
       "data-color": "brand-purple",
     },
@@ -59,7 +61,9 @@ export const TakePhoto: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("button", { name: "Take Photo" })).toBeInTheDocument();
-    await expect(canvas.getByRole("button", { name: "Upload Image" })).toBeInTheDocument();
+    await expect(
+      canvas.getByRole("button", { name: "Upload Image" })
+    ).toBeInTheDocument();
   },
 };
 
@@ -70,13 +74,13 @@ export const SuccessfulUpload: Story = {
     descriptionColor: "success",
     secondaryButton: {
       text: "Cancel",
-      icon: <X size={18} />, 
+      icon: <X size={18} />,
       iconPosition: "right",
       "data-color": "brand-purple",
     },
     primaryButton: {
       text: "Upload Image",
-      icon: <Upload size={18} />, 
+      icon: <Upload size={18} />,
       iconPosition: "right",
       "data-color": "brand-purple",
       disabled: true,
@@ -84,7 +88,9 @@ export const SuccessfulUpload: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText("Upload successful! You have 9 uploads remaining.")).toBeInTheDocument();
+    await expect(
+      canvas.getByText("Upload successful! You have 9 uploads remaining.")
+    ).toBeInTheDocument();
     await expect(canvas.getByRole("button", { name: "Upload Image" })).toBeDisabled();
     await expect(canvas.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
   },
@@ -97,20 +103,22 @@ export const FailedUpload: Story = {
     descriptionColor: "warning",
     secondaryButton: {
       text: "Cancel",
-      icon: <X size={18} />, 
+      icon: <X size={18} />,
       iconPosition: "right",
       "data-color": "brand-purple",
     },
     primaryButton: {
       text: "Try Again",
-      icon: <RotateCcw size={18} />, 
+      icon: <RotateCcw size={18} />,
       iconPosition: "right",
       "data-color": "brand-purple",
     },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText("Upload failed. Please try again.")).toBeInTheDocument();
+    await expect(
+      canvas.getByText("Upload failed. Please try again.")
+    ).toBeInTheDocument();
     await expect(canvas.getByRole("button", { name: "Try Again" })).toBeInTheDocument();
     await expect(canvas.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
   },
@@ -137,7 +145,9 @@ export const UploadToSelectedAlbum: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByText("You have 10 uploads remaining")).toBeInTheDocument();
     await expect(canvas.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
-    await expect(canvas.getByRole("button", { name: "Upload to selected album" })).toBeInTheDocument();
+    await expect(
+      canvas.getByRole("button", { name: "Upload to selected album" })
+    ).toBeInTheDocument();
   },
 };
 
@@ -195,7 +205,9 @@ export const SaveChanges: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
-    await expect(canvas.getByRole("button", { name: "Save Changes" })).toBeInTheDocument();
+    await expect(
+      canvas.getByRole("button", { name: "Save Changes" })
+    ).toBeInTheDocument();
   },
 };
 
@@ -238,7 +250,9 @@ export const DownloadQrCode: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("button", { name: "Download QR Code" })).toBeInTheDocument();
+    await expect(
+      canvas.getByRole("button", { name: "Download QR Code" })
+    ).toBeInTheDocument();
     await expect(canvas.getByRole("button", { name: "Done" })).toBeInTheDocument();
   },
 };
@@ -263,7 +277,7 @@ export const EditEvent: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("button", { name: "Edit Event" })).toBeInTheDocument();
     await expect(canvas.getByRole("button", { name: "Go to Event" })).toBeInTheDocument();
-  }
+  },
 };
 
 /* All variants showcased together */
