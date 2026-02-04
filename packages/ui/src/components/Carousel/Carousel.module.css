@@ -1,0 +1,45 @@
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  padding: 0.5rem 0;
+  margin: -0.5rem 0;
+}
+
+.carouselWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.scrollIndicator {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Item styles - to be used by children */
+.carousel > * {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.carousel > *:hover {
+  transform: translateY(-0.25rem);
+}
+
+.carousel > *:active {
+  transform: translateY(0);
+}
