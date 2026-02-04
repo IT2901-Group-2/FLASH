@@ -158,6 +158,12 @@ describe("FSStorage delete file", () => {
     Result.assertError(await new FSStorage(tmpDir).rm("testfile"));
   });
 
+  it("Should return Err when deleting directory", async () => {
+    fs.mkdirSync(upath.join(tmpDir, "testdir"));
+
+    Result.assertError(await new FSStorage(tmpDir).rm("testdir"));
+  });
+
   it("Should delete file", async () => {
     fs.writeFileSync(upath.join(tmpDir, "testfile"), "");
 
@@ -191,6 +197,12 @@ describe("FSStorage delete directory", () => {
     jest.spyOn(fs.promises, "rm").mockImplementationOnce(() => {
       throw new Error();
     });
+
+    Result.assertError(await new FSStorage(tmpDir).rmdir("testfile"));
+  });
+
+  it("Should return Err when deleting file", async () => {
+    fs.writeFileSync(upath.join(tmpDir, "testfile"), "");
 
     Result.assertError(await new FSStorage(tmpDir).rmdir("testfile"));
   });
