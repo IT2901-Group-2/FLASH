@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Loader } from "./Loader";
 import { fn } from "storybook/test";
 
@@ -12,7 +12,6 @@ const meta: Meta<typeof Loader> = {
   argTypes: {
     variant: { control: "radio" },
     title: { control: "text" },
-    ref: { control: "inline-check" },
   },
   args: { onClick: fn() },
 } satisfies Meta<typeof Loader>;

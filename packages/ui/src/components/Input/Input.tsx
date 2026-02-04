@@ -2,6 +2,7 @@ import React from "react";
 import { Loader } from "../Loader";
 import styles from "./Input.module.css";
 import { cl } from "@/util/className";
+import { ColorName } from "@/styles/colorType";
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   /**
@@ -41,20 +42,21 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   /**
    * Overrides inherited color scheme.
    */
-  "data-color"?: "accent" | "neutral" | "brand-purple";
+  "data-color"?: ColorName;
   /**
    * Shows success state styling
    * @default false
    */
   success?: boolean;
   /**
-   * Ref to the input element
-   */
-  ref?: React.Ref<HTMLInputElement>;
-  /**
    * Label text for the input
    */
   label?: string;
+  /**
+   * Accessible label for screen readers (REQUIRED for accessibility)
+   * This will be used even if a visible label is provided
+   */
+  "aria-label": string;
   /**
    * Whether the input is required (adds asterisk to label)
    * @default false
@@ -62,13 +64,10 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   required?: boolean;
 }
 /**
- * An input component
- * @example
- * ```jsx
- * <Input label="Email" placeholder="Enter your email" />
- * ```
+ * An input allows the user to enter and edit text or data.
+ *
+ * > _Last updated: `2026-01-29`_
  */
-
 export const Input = ({
   variant = "primary",
   disabled,
@@ -80,9 +79,9 @@ export const Input = ({
   success = false,
   "data-color": data = "brand-purple",
   className,
-  ref,
   label,
   required = false,
+  "aria-label": ariaLabel,
   id,
   ...props
 }: InputProps) => {
@@ -113,11 +112,11 @@ export const Input = ({
       >
         {icon && iconPosition === "left" && <span className={styles.icon}>{icon}</span>}
         <input
-          ref={ref}
           id={inputId}
           className={styles.input}
           disabled={disabled || loading}
           required={required}
+          aria-label={ariaLabel}
           {...props}
         />
         {loading && (

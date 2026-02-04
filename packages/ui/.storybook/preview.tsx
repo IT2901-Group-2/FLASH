@@ -35,7 +35,7 @@ export default {
       page: DocsTemplate,
       source: {
         excludeDecorators: true,
-        type: "dynamic",
+        type: "auto",
         dark: true,
       },
     },
@@ -81,16 +81,9 @@ export default {
       </FontDecorator>
     ),
     (Story, context) => {
-      return (
-        <div data-theme={context.globals.backgrounds.value}>
-          <Story />
-        </div>
-      );
-    },
-    (Story, context) => {
-      document.documentElement.style.setProperty(
-        "--canvas-bg",
-        context.globals.backgrounds.value === "dark" ? "#222325" : "#ffffff"
+      document.documentElement.setAttribute(
+        "data-theme",
+        context.globals.backgrounds.value ?? "light"
       );
       return <Story />;
     },
