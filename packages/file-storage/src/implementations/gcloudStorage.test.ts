@@ -132,3 +132,57 @@ describe("GcloudStorage create directory", () => {
     ).toBe(true);
   });
 });
+
+describe("GcloudStorage write file", () => {
+  it("Should return Err when file creation fails", async () => {
+    jest.spyOn(File.prototype, "save").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(await new GcloudStorage(bucket).write("testfile", ""));
+  });
+
+  it("Should return Err when directory creation fails", async () => {
+    jest.spyOn(File.prototype, "save").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(await new GcloudStorage(bucket).write("testdir/testfile", ""));
+  });
+
+  it("Should create file with correct contents", async () => {
+    await new GcloudStorage(bucket).write("testfile", "This is a test").getOrThrow();
+
+    expect(
+      await bucket
+        .file("testfile")
+        .download()
+        .then(res => res[0].toString())
+    ).toBe("This is a test");
+  });
+
+  it("Should create file with correct contents recursively", async () => {
+    await new GcloudStorage(bucket)
+      .write("foo/bar/testfile", "This is a test")
+      .getOrThrow();
+
+    expect(
+      await bucket
+        .file("foo/")
+        .exists()
+        .then(res => res[0])
+    ).toBe(true);
+    expect(
+      await bucket
+        .file("foo/bar/")
+        .exists()
+        .then(res => res[0])
+    ).toBe(true);
+    expect(
+      await bucket
+        .file("foo/bar/testfile")
+        .download()
+        .then(res => res[0].toString())
+    ).toBe("This is a test");
+  });
+});

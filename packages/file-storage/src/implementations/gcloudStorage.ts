@@ -3,6 +3,7 @@ import { FileStorage } from "../interface";
 import { AsyncResult, Result } from "typescript-result";
 import { WithImplicitCoercion } from "node:buffer";
 import { dirPath, resolvePath } from "../utils";
+import upath from "upath";
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export class GcloudStorage implements FileStorage {
@@ -23,7 +24,9 @@ export class GcloudStorage implements FileStorage {
     );
   }
 
-  private makeDir(dirpath: string): AsyncResult<void, Error> {
+  private makeDir(path: string): AsyncResult<void, Error> {
+    const dirpath = dirPath(path);
+
     return Result.fromAsyncCatching(
       Promise.all(
         dirpath
@@ -59,16 +62,18 @@ export class GcloudStorage implements FileStorage {
   }
 
   mkdir(path: string): AsyncResult<void, Error> {
-    return this.makeDir(dirPath(resolvePath(path)));
+    return this.makeDir(resolvePath(path));
   }
 
   write(
     path: string,
     data: WithImplicitCoercion<ArrayLike<number>> | string
   ): AsyncResult<void, Error> {
-    return Result.fromAsyncCatching(() => {
-      throw new Error("Not implemented");
-    });
+    const filepath = resolvePath(path);
+
+    return this.makeDir(upath.dirname(filepath)).mapCatching(() =>
+      this.bucket.file(filepath).save(Buffer.from(data))
+    );
   }
 
   delete(path: string): AsyncResult<void, Error> {
