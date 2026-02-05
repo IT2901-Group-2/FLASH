@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import React from "react";
 import { Controls } from "./Controls";
-import { expect, fn, userEvent, within } from "storybook/test";
+import { clearAllMocks, expect, fn, userEvent, within } from "storybook/test";
 import { colorNames } from "@/styles/colorType";
 
 const meta: Meta<typeof Controls> = {
@@ -133,7 +133,7 @@ export const Disabled: Story = {
     });
 
     await step("Disabled options do not trigger onChange", async () => {
-      args.onChange?.mockClear();
+      clearAllMocks();
 
       const disable = canvas.getByRole("radio", { name: /disable/i });
       await userEvent.click(disable);
@@ -141,7 +141,7 @@ export const Disabled: Story = {
     });
 
     await step("Disabled options ignore keyboard", async () => {
-      args.onChange?.mockClear();
+      clearAllMocks();
 
       const enable = canvas.getByRole("radio", { name: /enable/i });
       enable.focus();
@@ -232,7 +232,7 @@ export const KeyboardInteraction: Story = {
     });
 
     await step("Unhandled key does nothing", async () => {
-      args.onChange?.mockClear();
+      clearAllMocks();
 
       const enable = canvas.getByRole("radio", { name: /enable/i });
       enable.focus();
