@@ -26,8 +26,14 @@ const SidebarMain = ({ children, ...rest }: HTMLAttributes<HTMLDivElement>) => {
   const { open, toggleOpen } = useSidebar();
 
   return (
-    <div data-color={"foreground"} data-open={open} className={styles.sidebar} {...rest}>
-      <div className={styles.stateButton} onClick={toggleOpen}>
+    <div
+      data-color={"foreground"}
+      data-open={open}
+      className={styles.sidebar}
+      {...rest}
+      role="sidebar"
+    >
+      <div className={styles.stateButton} onClick={toggleOpen} role="sidebar-button">
         <ChevronLeft />
       </div>
       {children}

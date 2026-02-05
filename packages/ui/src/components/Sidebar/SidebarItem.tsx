@@ -18,14 +18,14 @@ export const SidebarItem = ({ children, icon, ...rest }: SidebarItemProps) => {
   const { open } = useSidebar();
 
   return (
-    <div className={styles.sidebarItem}>
+    <button className={styles.sidebarItem}>
       {icon}
       {open && (
         <span className={styles.itemTitle} {...rest}>
           {children}
         </span>
       )}
-    </div>
+    </button>
   );
 };
 
