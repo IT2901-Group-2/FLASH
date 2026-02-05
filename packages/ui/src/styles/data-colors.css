@@ -62,3 +62,16 @@
   --data-color-900: var(--color-warning-900);
   --data-color-1000: var(--color-warning-1000);
 }
+
+[data-color="background-secondary"] {
+  --data-color-100: var(--color-background-secondary-100);
+  --data-color-200: var(--color-background-secondary-200);
+  --data-color-300: var(--color-background-secondary-300);
+  --data-color-400: var(--color-background-secondary-400);
+  --data-color-500: var(--color-background-secondary-500);
+  --data-color-600: var(--color-background-secondary-600);
+  --data-color-700: var(--color-background-secondary-700);
+  --data-color-800: var(--color-background-secondary-800);
+  --data-color-900: var(--color-background-secondary-900);
+  --data-color-1000: var(--color-background-secondary-1000);
+}

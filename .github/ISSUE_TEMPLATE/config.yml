@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Ask a Question
+    url: https://github.com/IT2901-Group-2/foto-app/discussions
+    about: Ask questions and discuss with the community
+  - name: Documentation
+    url: https://github.com/IT2901-Group-2/foto-app/wiki
+    about: Check out our documentation
