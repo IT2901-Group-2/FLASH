@@ -5,6 +5,8 @@ import { cl } from "../../util/className";
 export interface TitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   /** Title Content. */
   children?: React.ReactNode;
+  /** Optional description shown below the title */
+  description?: React.ReactNode;
   /**
    * Semantic heading level
    * @default "h2"
@@ -43,6 +45,7 @@ export interface TitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
 export const Title = ({
   as: Component = "h2",
   children,
+  description,
   size = "large",
   weight = "semibold",
   align = "left",
@@ -52,17 +55,20 @@ export const Title = ({
   ...props
 }: TitleProps) => {
   return (
-    <Component
-      data-color={data}
-      data-size={size}
-      data-weight={weight}
-      data-align={align}
-      ref={ref}
-      className={cl(styles.title, className)}
-      {...props}
-    >
-      {children && <span className={styles.text}>{children}</span>}
-    </Component>
+    <div className={styles.wrapper}>
+      <Component
+        data-color={data}
+        data-size={size}
+        data-weight={weight}
+        data-align={align}
+        ref={ref}
+        className={cl(styles.title, className)}
+        {...props}
+      >
+        {children && <span className={styles.text}>{children}</span>}
+      </Component>
+      {description && <p className={styles.description}>{description}</p>}
+    </div>
   );
 };
 

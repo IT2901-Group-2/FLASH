@@ -280,3 +280,25 @@ export const AllVariants: Story = {
     await expect(headings).toHaveLength(6);
   },
 };
+
+// Description
+export const Description: Story = {
+  render: () => (
+    <Title description="This is a short description below the title">
+      Title With Description
+    </Title>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Description is rendered below the title", async () => {
+      const title = canvas.getByRole("heading", { level: 2 });
+      const description = canvas.getByText("This is a short description below the title");
+
+      await expect(title).toBeInTheDocument();
+      await expect(title).toHaveTextContent("Title With Description");
+
+      await expect(description).toBeInTheDocument();
+    });
+  },
+};

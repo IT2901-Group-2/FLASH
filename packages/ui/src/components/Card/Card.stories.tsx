@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Card } from "./Card";
 import { expect, within } from "storybook/test";
+import { colorNames } from "@/styles/colorType";
 
 const meta: Meta<typeof Card> = {
   title: "Byggeklosser/Komponenter/Card",
@@ -9,14 +10,7 @@ const meta: Meta<typeof Card> = {
   argTypes: {
     "data-color": {
       control: "select",
-      options: [
-        "neutral",
-        "brand-purple",
-        "accent",
-        "success",
-        "warning",
-        "background-secondary",
-      ],
+      options: colorNames,
     },
     children: { control: { type: "text" } },
   },
