@@ -94,7 +94,7 @@
   justify-content: center;
 }
 
-/* Adds a slight "overshoot" effect when the indicator moves */
+/* Adds an "overshoot" effect when the indicator moves */
 .controls:focus-within .indicator {
-  transform: translateX(var(--indicator-x, 0)) scaleX(10);
+  transform: translateX(var(--indicator-x, 20px)) scaleX(10);
 }

@@ -87,7 +87,6 @@ const DropdownControlsInner = <T extends string>(
         getOptionProps={(opt, index, active) => ({
           id: `${optionIdBase}-${index}`,
           "aria-controls": opt.content ? contentId : undefined,
-          "aria-expanded": opt.content ? active : undefined,
         })}
         className={cl(controlsStyles.embedded, expanded && controlsStyles.inactiveOption)}
       />

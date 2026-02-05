@@ -51,7 +51,7 @@ export interface ControlsProps<T extends string> extends Omit<
    */
   onChange?: (value: T) => void;
   /**
-   * Inject per-option props (e.g. aria-controls, aria-expanded, id)
+   * Inject per-option props (e.g. aria-controls, id)
    */
   getOptionProps?: (
     option: SegmentedOption<T>,

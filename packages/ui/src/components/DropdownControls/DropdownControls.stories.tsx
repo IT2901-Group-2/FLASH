@@ -70,7 +70,6 @@ export const Basic: Story = {
       expect(canvas.getByText("Additional content is visible.")).toBeInTheDocument();
 
       const region = canvas.getByRole("region");
-      await expect(enableButton).toHaveAttribute("aria-expanded", "true");
       await expect(region).toHaveAttribute(
         "aria-labelledby",
         enableButton.getAttribute("id")
@@ -177,8 +176,46 @@ export const MultipleOptions: Story = {
 
       const active = canvas.getByRole("radio", { name: /details/i });
       const region = canvas.getByRole("region");
-      await expect(active).toHaveAttribute("aria-expanded", "true");
       await expect(region).toHaveAttribute("aria-labelledby", active.getAttribute("id"));
+    });
+  },
+};
+
+// Controlled Value Update Test
+export const ControlledValueUpdate: Story = {
+  render: () => {
+    const [value, setValue] = useState<"enable" | "disable">("disable");
+
+    return (
+      <div>
+        <DropdownControls
+          options={EnableDisable}
+          value={value}
+          onChange={setValue}
+          variant="primary"
+          data-color="accent"
+        />
+        <button type="button" onClick={() => setValue("enable")}>
+          Set Enable
+        </button>
+      </div>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const user = userEvent.setup();
+
+    await step("Initial selection is Disable", async () => {
+      const disable = canvas.getByRole("radio", { name: /disable/i });
+      await expect(disable).toHaveAttribute("aria-checked", "true");
+    });
+
+    await step("External value update changes selection", async () => {
+      const setEnable = canvas.getByRole("button", { name: /set enable/i });
+      await user.click(setEnable);
+
+      const enable = canvas.getByRole("radio", { name: /enable/i });
+      await expect(enable).toHaveAttribute("aria-checked", "true");
     });
   },
 };
