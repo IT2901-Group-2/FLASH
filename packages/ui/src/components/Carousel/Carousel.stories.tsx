@@ -45,26 +45,6 @@ const meta: Meta<typeof Carousel> = {
 export default meta;
 type Story = StoryObj<typeof Carousel>;
 
-// Photo Card Component for demos
-const PhotoCard = ({ image, onClick }: { image?: string; onClick?: () => void }) => (
-  <div
-    role="button"
-    tabIndex={0}
-    onClick={onClick}
-    onKeyDown={e => e.key === "Enter" && onClick?.()}
-    style={{
-      width: "200px",
-      height: "200px",
-      borderRadius: "16px",
-      overflow: "hidden",
-      backgroundColor: image ? "transparent" : "#e0e0e0",
-      backgroundImage: image ? `url(${image})` : "none",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-    }}
-  />
-);
-
 export const AlbumGallery: Story = {
   args: {
     showIndicator: true,
