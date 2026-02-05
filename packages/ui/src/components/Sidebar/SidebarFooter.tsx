@@ -5,6 +5,9 @@ export interface SidebarFooterProps extends HTMLAttributes<HTMLElement> {
   children?: React.ReactNode;
 }
 
+/**
+ * The footer component for the sidebar
+ */
 export const SidebarFooter = ({ children, ...rest }: SidebarFooterProps) => {
   return (
     <div className={styles.sidebarFooter} {...rest}>

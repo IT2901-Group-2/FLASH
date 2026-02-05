@@ -13,6 +13,10 @@ export interface SidebarGroupProps extends HTMLAttributes<HTMLDivElement> {
   position?: "top" | "bottom" | "center";
 }
 
+/**
+ * Component to group simelar SidebarItems.
+ * @see SidebarItem
+ */
 export const SidebarGroup = ({
   title,
   position = "top",

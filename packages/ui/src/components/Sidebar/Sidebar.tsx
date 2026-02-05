@@ -8,10 +8,20 @@ import { ChevronLeft } from "lucide-react";
 import SidebarProvider, { useSidebar } from "./SidebarContext";
 
 export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
+  /**
+   * If the sidebar starts open or not
+   * @default true
+   */
   defaultOpen?: boolean;
+  /**
+   * Callback function that is called every time the sidebar opens/closes
+   */
   onOpenChange?: (open: boolean) => void;
 }
 
+/**
+ * The main container for the sidebar
+ */
 const SidebarMain = ({ children, ...rest }: HTMLAttributes<HTMLDivElement>) => {
   const { open, toggleOpen } = useSidebar();
 
@@ -25,6 +35,9 @@ const SidebarMain = ({ children, ...rest }: HTMLAttributes<HTMLDivElement>) => {
   );
 };
 
+/**
+ * The outer most compoent used in the sidebar
+ */
 export const Sidebar = ({
   defaultOpen = true,
   onOpenChange,

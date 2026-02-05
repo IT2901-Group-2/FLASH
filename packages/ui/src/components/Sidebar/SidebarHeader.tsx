@@ -5,6 +5,9 @@ export interface SidebarHeaderProps extends HTMLAttributes<HTMLElement> {
   children?: React.ReactNode;
 }
 
+/**
+ * The header component for the sidebar
+ */
 export const SidebarHeader = ({ children, ...rest }: SidebarHeaderProps) => {
   return (
     <div className={styles.sidebarHeader} {...rest}>
