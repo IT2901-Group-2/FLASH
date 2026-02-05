@@ -5,20 +5,20 @@ import { cl } from "../../util/className";
 import { ColorName } from "@/styles/colorType";
 
 export interface CarouselProps extends React.HTMLAttributes<HTMLDivElement> {
-    /** Carousel Content. */
-    children?: React.ReactNode;
-    /** Color theme */
-    "data-color"?: ColorName;
-    /** Gap between items (in rem) */
-    gap?: number;
-    /** Show scroll indicator */
-    showIndicator?: boolean;
-    /** Indicator text */
-    indicatorText?: string;
-    /** Indicator click handler */
-    onIndicatorClick?: () => void;
-    /** Show navigation arrows */
-    showArrows?: boolean;
+  /** Carousel Content. */
+  children?: React.ReactNode;
+  /** Color theme */
+  "data-color"?: ColorName;
+  /** Gap between items (in rem) */
+  gap?: number;
+  /** Show scroll indicator */
+  showIndicator?: boolean;
+  /** Indicator text */
+  indicatorText?: string;
+  /** Indicator click handler */
+  onIndicatorClick?: () => void;
+  /** Show navigation arrows */
+  showArrows?: boolean;
 }
 
 /**
@@ -49,16 +49,12 @@ export const Carousel = ({
 
   useEffect(() => {
     checkScroll();
-    window.addEventListener('resize', checkScroll);
-    return () => window.removeEventListener('resize', checkScroll);
+    window.addEventListener("resize", checkScroll);
+    return () => window.removeEventListener("resize", checkScroll);
   }, [children]);
 
   return (
-    <div
-        className={cl(styles.carouselWrapper, className)}
-        data-color={data}
-        {...rest}
-    >
+    <div className={cl(styles.carouselWrapper, className)} data-color={data} {...rest}>
       <div
         ref={scrollContainerRef}
         className={styles.carousel}
@@ -117,8 +113,4 @@ export const Carousel = ({
       )}
     </div>
   );
-}
-
-
-
-
+};
