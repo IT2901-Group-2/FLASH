@@ -41,5 +41,5 @@
 .dropdownControls[data-expanded="true"] .contentInner {
   opacity: 1;
   pointer-events: auto;
-  transition-delay: 170ms;
+  transition-delay: 150ms;
 }
