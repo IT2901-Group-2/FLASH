@@ -5,7 +5,11 @@ export interface SidebarFooterProps extends HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
 }
 
-export const SidebarFooter = ({ children }: SidebarFooterProps) => {
-  return <div className={styles.sidebarFooter}>{children}</div>;
+export const SidebarFooter = ({ children, ...rest }: SidebarFooterProps) => {
+  return (
+    <div className={styles.sidebarFooter} {...rest}>
+      {children}
+    </div>
+  );
 };
 export default SidebarFooter;

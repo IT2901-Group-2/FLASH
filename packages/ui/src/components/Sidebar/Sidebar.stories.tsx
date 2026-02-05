@@ -34,19 +34,19 @@ type Story = StoryObj<typeof Sidebar>;
 export const Default: Story = {
   render: () => (
     <Sidebar>
-      <Sidebar.Header>H</Sidebar.Header>
-      <Sidebar.Group title="M">
+      <Sidebar.Header>HEADER</Sidebar.Header>
+      <Sidebar.Group title="MAIN">
         <Sidebar.Item icon={<House />}>Desktop</Sidebar.Item>
         <Sidebar.Item icon={<Calendar />}>Event</Sidebar.Item>
         <Sidebar.Item icon={<ChartColumn />}>Analytics</Sidebar.Item>
         <Sidebar.Item icon={<Users />}>Users</Sidebar.Item>
         <Sidebar.Item icon={<Clock4 />}>Timeline</Sidebar.Item>
       </Sidebar.Group>
-      <Sidebar.Group title="C">
+      <Sidebar.Group position="bottom">
         <Sidebar.Item icon={<Settings />}>Settings</Sidebar.Item>
         <Sidebar.Item icon={<HardDrive />}>Timeline</Sidebar.Item>
       </Sidebar.Group>
-      <Sidebar.Footer>F</Sidebar.Footer>
+      <Sidebar.Footer>FOOTER</Sidebar.Footer>
     </Sidebar>
   ),
 };
