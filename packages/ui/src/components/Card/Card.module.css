@@ -3,7 +3,7 @@
   --color-hover: var(--data-color-200);
   --color-active: var(--data-color-300);
   --color-disabled: var(--data-color-200);
-  border-radius: 0.5rem;
+  border-radius: 1.5rem;
   font-size: 1.25rem;
   padding: 1.5rem;
   border: 2px solid var(--data-color-300);
