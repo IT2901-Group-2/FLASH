@@ -9,7 +9,7 @@ export const SidebarItem = ({ children, icon }: SidebarItemProps) => {
   return (
     <div className={styles.sidebarItem}>
       {icon}
-      <span>{children}</span>
+      <span className={styles.itemTitle}>{children}</span>
     </div>
   );
 };
