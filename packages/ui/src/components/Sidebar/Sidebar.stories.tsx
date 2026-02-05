@@ -20,6 +20,11 @@ const meta: Meta<typeof Sidebar> = {
   parameters: {
     layout: "left",
     chromatic: { disable: true },
+    docs: {
+      source: {
+        type: "dynamic",
+      },
+    },
   },
   decorators: [
     Story => (

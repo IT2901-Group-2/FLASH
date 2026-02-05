@@ -42,7 +42,9 @@ const SidebarMain = ({ children, ...rest }: HTMLAttributes<HTMLDivElement>) => {
 };
 
 /**
- * The outer most compoent used in the sidebar
+ * The sidebar is used in on every admin page.
+ *
+ * > _Last updated: `2026-02-05`_
  */
 export const Sidebar = ({
   defaultOpen = true,
