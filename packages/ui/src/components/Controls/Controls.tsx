@@ -174,7 +174,9 @@ const ControlsInner = <T extends string>(
           <button
             key={opt.value}
             id={optionId}
-            ref={el => (buttonRefs.current[index] = el)}
+            ref={el => {
+              buttonRefs.current[index] = el;
+            }}
             type="button"
             className={cl(styles.item, active && styles.active)}
             disabled={disabled ? true : undefined}
