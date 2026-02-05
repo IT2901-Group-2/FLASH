@@ -160,6 +160,20 @@ export const KeyboardInteraction: Story = {
       await expect(enable).toHaveFocus();
     });
 
+    await step("Arrow keys move selection", async () => {
+      const enable = canvas.getByRole("radio", { name: /enable/i });
+      const disable = canvas.getByRole("radio", { name: /disable/i });
+
+      enable.focus();
+      await userEvent.keyboard("{ArrowRight}");
+
+      await expect(disable).toHaveAttribute("aria-checked", "true");
+      await expect(enable).toHaveAttribute("aria-checked", "false");
+      await expect(disable).toHaveFocus();
+      await expect(disable).toHaveAttribute("tabindex", "0");
+      await expect(enable).toHaveAttribute("tabindex", "-1");
+    });
+
     await step("Button responds to Enter key", async () => {
       const enable = canvas.getByRole("radio", { name: /enable/i });
       enable.focus();

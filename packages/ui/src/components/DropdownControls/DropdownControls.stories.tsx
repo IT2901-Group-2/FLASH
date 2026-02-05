@@ -58,12 +58,23 @@ export const Basic: Story = {
       expect(
         canvas.queryByText("Additional content is visible.")
       ).not.toBeInTheDocument();
+
+      const region = canvas.getByRole("region");
+      const active = canvas.getByRole("radio", { name: /disable/i });
+      await expect(region).toHaveAttribute("aria-labelledby", active.getAttribute("id"));
     });
 
     await step("Select 'Enable' option", async () => {
       const enableButton = canvas.getByRole("radio", { name: /enable/i });
       await user.click(enableButton);
       expect(canvas.getByText("Additional content is visible.")).toBeInTheDocument();
+
+      const region = canvas.getByRole("region");
+      await expect(enableButton).toHaveAttribute("aria-expanded", "true");
+      await expect(region).toHaveAttribute(
+        "aria-labelledby",
+        enableButton.getAttribute("id")
+      );
     });
   },
 };
@@ -163,6 +174,11 @@ export const MultipleOptions: Story = {
 
     await step("Shows content for default option", async () => {
       await expect(canvas.getByText("Details content is visible.")).toBeInTheDocument();
+
+      const active = canvas.getByRole("radio", { name: /details/i });
+      const region = canvas.getByRole("region");
+      await expect(active).toHaveAttribute("aria-expanded", "true");
+      await expect(region).toHaveAttribute("aria-labelledby", active.getAttribute("id"));
     });
   },
 };

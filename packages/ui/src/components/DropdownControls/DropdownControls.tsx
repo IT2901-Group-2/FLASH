@@ -35,25 +35,37 @@ export interface DropdownControlsProps<T extends string> extends Omit<
  * DropdownControls builds on Controls by showing additional content
  * for the active option.
  */
-export const DropdownControls = <T extends string>({
-  options,
-  value,
-  defaultValue,
-  onChange,
-  className,
-  variant = "primary",
-  "data-color": data = "accent",
-  ...rest
-}: DropdownControlsProps<T>) => {
+const DropdownControlsInner = <T extends string>(
+  {
+    options,
+    value,
+    defaultValue,
+    onChange,
+    className,
+    variant = "primary",
+    "data-color": data = "accent",
+    ...rest
+  }: DropdownControlsProps<T>,
+  ref: React.Ref<HTMLDivElement>
+) => {
   const initial = defaultValue ?? options[0]?.value;
   const [internalValue, setInternalValue] = React.useState<T | undefined>(initial);
+
+  React.useEffect(() => {
+    if (value !== undefined) setInternalValue(value);
+  }, [value]);
 
   const activeValue = value ?? internalValue;
   const activeOption = options.find(o => o.value === activeValue);
   const expanded = Boolean(activeOption?.content);
 
+  const optionIdBase = React.useId();
+  const contentId = React.useId();
+  const activeIndex = options.findIndex(o => o.value === activeValue);
+  const activeOptionId = activeIndex >= 0 ? `${optionIdBase}-${activeIndex}` : undefined;
+
   const handleChange = (v: T) => {
-    setInternalValue(v);
+    if (value === undefined) setInternalValue(v);
     onChange?.(v);
   };
 
@@ -63,6 +75,7 @@ export const DropdownControls = <T extends string>({
       data-variant={variant}
       data-expanded={expanded}
       className={cl(styles.dropdownControls, className)}
+      ref={ref}
     >
       <Controls
         {...rest}
@@ -71,14 +84,31 @@ export const DropdownControls = <T extends string>({
         options={options}
         value={activeValue}
         onChange={handleChange}
+        getOptionProps={(opt, index, active) => ({
+          id: `${optionIdBase}-${index}`,
+          "aria-controls": opt.content ? contentId : undefined,
+          "aria-expanded": opt.content ? active : undefined,
+        })}
         className={cl(controlsStyles.embedded, expanded && controlsStyles.inactiveOption)}
       />
 
-      <div className={styles.content} role="region" aria-live="polite">
+      <div
+        id={contentId}
+        className={styles.content}
+        role="region"
+        aria-live="polite"
+        aria-labelledby={activeOptionId}
+      >
         <div className={styles.contentInner}>{activeOption?.content}</div>
       </div>
     </div>
   );
 };
+
+export const DropdownControls = React.forwardRef(DropdownControlsInner) as <
+  T extends string,
+>(
+  props: DropdownControlsProps<T> & React.RefAttributes<HTMLDivElement>
+) => React.ReactElement;
 
 export default DropdownControls;
