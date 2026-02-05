@@ -72,19 +72,6 @@
     color: var(--color-neutral-800);
     cursor: not-allowed;
   }
-
-  &[data-size="small"] {
-    font-size: 0.875rem;
-  }
-  &[data-size="medium"] {
-    font-size: 1rem;
-  }
-  &[data-size="large"] {
-    font-size: 1.25rem;
-  }
-  &[data-size="xlarge"] {
-    font-size: 1.5rem;
-  }
 }
 
 .icon {
