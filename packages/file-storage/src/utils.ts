@@ -4,12 +4,14 @@ const ROOT = upath.resolve("/");
 
 /**
  * Resolves a path as if it were a path from root and then removes the leading `/`.
+ * If the path resolves to root, `/` will be returned.
  *
  * @example
  * ```typescript
  * resolvePath("/foo/bar"); // -> "foo/bar"
  * resolvePath("foo/bar/../baz"); // -> "foo/baz"
  * resolvePath("../../foo"); // -> "foo"
+ * resolvePath("."); // -> "/"
  * ```
  *
  * @param paths The path to resolve
@@ -18,8 +20,8 @@ const ROOT = upath.resolve("/");
 export function resolvePath(...paths: string[]): string {
   return upath
     .resolve(ROOT, ...paths)
-    .replace(/^\/(.+)/, "$1")
-    .replace(new RegExp(`^${ROOT}`), "/");
+    .replace(new RegExp(`^${ROOT}`), "/")
+    .replace(/^\/(.+)/, "$1");
 }
 
 /**
