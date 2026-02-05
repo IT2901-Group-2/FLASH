@@ -5,7 +5,7 @@ import FontDecorator from "./decorators/TypeDecorator";
 import { themes } from "storybook/theming";
 import DocsTemplate from "./DocsTemplate";
 
-export const fonts = ["Nunito Sans"];
+export const fonts = ["Nunito Sans", "Verdana"];
 
 export default {
   parameters: {
