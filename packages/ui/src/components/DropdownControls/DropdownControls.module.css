@@ -19,7 +19,9 @@
 
   max-height: 0;
   padding: 0 0.75rem 0;
-  transition: max-height 200ms ease, padding 200ms ease;
+  transition:
+    max-height 200ms ease,
+    padding 200ms ease;
 }
 
 .contentInner {
@@ -28,16 +30,16 @@
   opacity: 0;
   pointer-events: none;
   transition: opacity 140ms ease;
-  transition-delay: 0ms; 
+  transition-delay: 0ms;
 }
 
 .dropdownControls[data-expanded="true"] .content {
-  max-height: 20rem;             
-  padding: 0.25rem 0.75rem 0.75rem; 
+  max-height: 20rem;
+  padding: 0.25rem 0.75rem 0.75rem;
 }
 
 .dropdownControls[data-expanded="true"] .contentInner {
   opacity: 1;
   pointer-events: auto;
-  transition-delay: 170ms; 
+  transition-delay: 170ms;
 }
