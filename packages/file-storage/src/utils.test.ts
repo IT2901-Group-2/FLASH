@@ -1,5 +1,5 @@
 import { describe, it, expect } from "@jest/globals";
-import { resolvePath } from "./utils";
+import { absolutePath, resolvePath } from "./utils";
 
 describe("resolvePath", () => {
   it("Should return the correct path", () => {
@@ -10,5 +10,17 @@ describe("resolvePath", () => {
     expect(resolvePath("/foo/bar/")).toBe("foo/bar");
     expect(resolvePath("foo/bar/../baz")).toBe("foo/baz");
     expect(resolvePath("../../foo")).toBe("foo");
+  });
+});
+
+describe("absolutePath", () => {
+  it("Should return the correct path", () => {
+    expect(absolutePath("/")).toBe("/");
+    expect(absolutePath("")).toBe("/");
+    expect(absolutePath(".")).toBe("/");
+    expect(absolutePath("/foo/bar")).toBe("/foo/bar");
+    expect(absolutePath("/foo/bar/")).toBe("/foo/bar");
+    expect(absolutePath("foo/bar/../baz")).toBe("/foo/baz");
+    expect(absolutePath("../../foo")).toBe("/foo");
   });
 });
