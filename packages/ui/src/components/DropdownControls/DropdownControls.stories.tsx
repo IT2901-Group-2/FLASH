@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DropdownControls } from "./DropdownControls";
-import { expect, fn, userEvent, within } from "storybook/test";
+import { expect, userEvent, within } from "storybook/test";
 import { colorNames } from "@/styles/colorType";
 import { useState } from "react";
 
