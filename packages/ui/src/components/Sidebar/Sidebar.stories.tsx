@@ -7,6 +7,7 @@ import {
   HardDrive,
   House,
   Settings,
+  SquareDashed,
   Users,
 } from "lucide-react";
 
@@ -21,7 +22,7 @@ const meta: Meta<typeof Sidebar> = {
   },
   decorators: [
     Story => (
-      <div style={{ height: "100vh" }}>
+      <div style={{ height: "95vh" }}>
         <Story />
       </div>
     ),
@@ -31,11 +32,55 @@ export default meta;
 
 type Story = StoryObj<typeof Sidebar>;
 
-export const Default: Story = {
+export const Simple: Story = {
+  render: () => <Sidebar />,
+};
+
+export const WithHeaderAndFooter: Story = {
   render: () => (
     <Sidebar>
-      <Sidebar.Header>HEADER</Sidebar.Header>
-      <Sidebar.Group title="MAIN">
+      <Sidebar.Header />
+      <Sidebar.Footer />
+    </Sidebar>
+  ),
+  play: async ({ canvasElement, args, step }) => {
+    await step("Sidebar opens and closes correctly", async () => {});
+  },
+};
+
+export const WithGroupAndItems: Story = {
+  render: () => (
+    <Sidebar>
+      <Sidebar.Header />
+      <Sidebar.Group title="Test Title">
+        <Sidebar.Item icon={<SquareDashed />}>Test 1</Sidebar.Item>
+        <Sidebar.Item icon={<SquareDashed />}>Test 2</Sidebar.Item>
+        <Sidebar.Item icon={<SquareDashed />}>Test 3</Sidebar.Item>
+      </Sidebar.Group>
+      <Sidebar.Footer />
+    </Sidebar>
+  ),
+};
+
+export const GroupPosition: Story = {
+  render: () => (
+    <Sidebar>
+      <Sidebar.Header />
+      <Sidebar.Group title="Test Title" position="center">
+        <Sidebar.Item icon={<SquareDashed />}>Test 1</Sidebar.Item>
+        <Sidebar.Item icon={<SquareDashed />}>Test 2</Sidebar.Item>
+        <Sidebar.Item icon={<SquareDashed />}>Test 3</Sidebar.Item>
+      </Sidebar.Group>
+      <Sidebar.Footer />
+    </Sidebar>
+  ),
+};
+
+export const FullExample: Story = {
+  render: () => (
+    <Sidebar>
+      <Sidebar.Header />
+      <Sidebar.Group title="MAIN" position="top">
         <Sidebar.Item icon={<House />}>Desktop</Sidebar.Item>
         <Sidebar.Item icon={<Calendar />}>Event</Sidebar.Item>
         <Sidebar.Item icon={<ChartColumn />}>Analytics</Sidebar.Item>
@@ -44,9 +89,9 @@ export const Default: Story = {
       </Sidebar.Group>
       <Sidebar.Group position="bottom">
         <Sidebar.Item icon={<Settings />}>Settings</Sidebar.Item>
-        <Sidebar.Item icon={<HardDrive />}>Timeline</Sidebar.Item>
+        <Sidebar.Item icon={<HardDrive />}>Storage</Sidebar.Item>
       </Sidebar.Group>
-      <Sidebar.Footer>FOOTER</Sidebar.Footer>
+      <Sidebar.Footer />
     </Sidebar>
   ),
 };

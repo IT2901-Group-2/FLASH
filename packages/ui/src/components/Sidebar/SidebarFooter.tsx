@@ -2,7 +2,7 @@ import { HTMLAttributes } from "react";
 import styles from "./Sidebar.module.css";
 
 export interface SidebarFooterProps extends HTMLAttributes<HTMLElement> {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export const SidebarFooter = ({ children, ...rest }: SidebarFooterProps) => {

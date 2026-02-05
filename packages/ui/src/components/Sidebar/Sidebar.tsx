@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, useEffect } from "react";
+import React, { HTMLAttributes } from "react";
 import styles from "./Sidebar.module.css";
 import SidebarItem, { SidebarItemProps } from "./SidebarItem";
 import SidebarGroup, { SidebarGroupProps } from "./SidebarGroup";
@@ -31,22 +31,6 @@ export const Sidebar = ({
   children,
   ...rest
 }: SidebarProps) => {
-  useEffect(() => {
-    const childrenArray = React.Children.toArray(children);
-
-    const headerCount = childrenArray.filter(
-      child => React.isValidElement(child) && child.type === SidebarHeader
-    ).length;
-
-    const footerCount = childrenArray.filter(
-      child => React.isValidElement(child) && child.type === SidebarFooter
-    ).length;
-    if (headerCount !== 1 || footerCount !== 1)
-      throw new Error(
-        `Sidebar validation failed: Expected exactly 1 header and 1 footer, but found ${headerCount} header(s) and ${footerCount} footer(s)`
-      );
-  }, [children]);
-
   return (
     <SidebarProvider defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
       <SidebarMain {...rest}>{children}</SidebarMain>
