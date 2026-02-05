@@ -117,11 +117,23 @@
   display: block;
   margin-bottom: 0.5rem;
   font-family: "Kantumruy Pro";
-  font-size: 1.5rem;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
   color: var(--color-text-primary);
+
+  &[data-size="xlarge"] {
+    font-size: 1.75rem;
+  }
+  &[data-size="large"] {
+    font-size: 1.5rem;
+  }
+  &[data-size="medium"] {
+    font-size: 1.25rem;
+  }
+  &[data-size="small"] {
+    font-size: 1rem;
+  }
 }
 
 .required {

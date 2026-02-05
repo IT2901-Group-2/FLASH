@@ -72,26 +72,49 @@ export interface FileStorage {
   ): AsyncResult<void, Error>;
 
   /**
-   * Recursively deletes a file or directory.
+   * Deletes a file. Throws an error if file does not exist.
+   *
+   * @example
+   * ```typescript
+   * // foo
+   * // ├── bar
+   * // │   └── file2.txt
+   * // ├── baz/
+   * // └── file1.txt
+   *
+   * // Deletes `foo/file1.txt`
+   * await fileStorage.rm("foo/file1.txt").getOrThrow();
+   *
+   * // Deletes `foo/bar/file2.txt`
+   * await fileStorage.rm("foo/bar/file2.txt").getOrThrow();
+   * ```
+   *
+   * @param path The path to the file
+   * @returns An empty result
+   */
+  rm(path: string): AsyncResult<void, Error>;
+
+  /**
+   * Recursively deletes a directory and its contents.
+   * Throws an error if directory does not exist.
    *
    * @example
    * ```typescript
    * // foo
    * // ├── bar
    * // │   └── file3.txt
-   * // ├── file1.txt
-   * // └── file2
+   * // ├── baz/
+   * // └── file1.txt
    *
-   * // Deletes `foo/file2`
-   * await fileStorage.rm("foo/file2").getOrThrow();
+   * // Deletes `foo/baz/`
+   * await fileStorage.rm("foo/baz").getOrThrow();
    *
    * // Deletes `foo/bar/` and `foo/bar/file3.txt`
    * await fileStorage.rm("foo/bar").getOrThrow();
-   *
    * ```
    *
-   * @param path The path to the file or directory
+   * @param path The path to the file
    * @returns An empty result
    */
-  delete(path: string): AsyncResult<void, Error>;
+  rmdir(path: string): AsyncResult<void, Error>;
 }

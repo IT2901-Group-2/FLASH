@@ -4,3 +4,4 @@ brand-purple: #60344e
 accent: #c7a18f
 success: #3d9751
 warning: #de4a50
+background-secondary: #F0E9EC
