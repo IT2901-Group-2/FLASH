@@ -18,21 +18,21 @@ export const brekkbunkter = {
   ],
 };
 
-# Brekkpunkter
+# Breakpoints
 
 <img src="figures/brekkpunkter_header.svg" alt="Illustrasjon av brekkpunkter" />
 
-Brekkpunkter er spesifikke bredder til en nettside hvor layouten og innholdet kan endre seg. Disse brekkpunktene definerer grensene for når designet skal justeres for å optimalisere brukeropplevelsen på ulike enheter og skjermstørrelser.
+Breakpoints are specific widths for a web page where the layout and content can change. These breakpoints define the limits for when the design should be adjusted to optimise the user experience on different devices and screen sizes.
 
-Brekkpunktene er mest brukt til å bestemme layoutendringer, som for eksempel å endre antall kolonner i et grid, endre størrelsen på tekst og bilder, eller skjule/vise bestemte elementer på siden. Brukeropplevelsen kan variere avhengig av enhet og skjermstørrelse, og brekkpunktene bidrar til en mer bedre og optimalisert opplevelse på tvers av disse.
+Breakpoints are most commonly used to determine layout changes, such as changing the number of columns in a grid, changing the size of text and images, or hiding/showing certain elements on the page. The user experience can vary depending on the device and screen size, and breakpoints contribute to a better and more optimised experience across these.
 
 ## Design
 
-Som designer vil brekkpunkter la deg tilpasse designet til ulike skjermstørrelser og enheter. Overgangen fra et nivå til et annet gir deg muligheten til å endre på layout, størrelser, typografi og grafikk.
+As a designer, breakpoints allow you to adapt your design to different screen sizes and devices. The transition from one level to another gives you the opportunity to change the layout, sizes, typography and graphics.
 
 <Table header={brekkbunkter.header} data={brekkbunkter.data} />
 
-## Kode
+## Code
 
 <CodeBox title="CSS" language="css">
   @media (min-width: 480px) {/* small screens */}
