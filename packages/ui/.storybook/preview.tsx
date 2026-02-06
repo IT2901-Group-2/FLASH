@@ -5,7 +5,7 @@ import FontDecorator from "./decorators/TypeDecorator";
 import { themes } from "storybook/theming";
 import DocsTemplate from "./DocsTemplate";
 
-export const fonts = ["Open Sans"];
+export const fonts = ["Nunito Sans", "Verdana"];
 
 export default {
   parameters: {
@@ -49,7 +49,7 @@ export default {
   },
   initialGlobals: {
     mode: "default",
-    font: "Source Sans 3",
+    font: fonts[0],
   },
   globalTypes: {
     // language: {
@@ -85,6 +85,7 @@ export default {
         "data-theme",
         context.globals.backgrounds.value ?? "light"
       );
+      document.body.style.setProperty("font-family", context.globals.font);
       return <Story />;
     },
   ],

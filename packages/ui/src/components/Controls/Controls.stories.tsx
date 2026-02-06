@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import React from "react";
 import { Controls } from "./Controls";
-import { expect, fn, userEvent, within } from "storybook/test";
+import { clearAllMocks, expect, fn, userEvent, within } from "storybook/test";
 import { colorNames } from "@/styles/colorType";
 
 const meta: Meta<typeof Controls> = {
@@ -133,9 +133,22 @@ export const Disabled: Story = {
     });
 
     await step("Disabled options do not trigger onChange", async () => {
+      clearAllMocks();
+
       const disable = canvas.getByRole("radio", { name: /disable/i });
       await userEvent.click(disable);
       await expect(args.onChange).not.toHaveBeenCalled();
+    });
+
+    await step("Disabled options ignore keyboard", async () => {
+      clearAllMocks();
+
+      const enable = canvas.getByRole("radio", { name: /enable/i });
+      enable.focus();
+      await userEvent.keyboard("{ArrowRight}");
+
+      await expect(args.onChange).not.toHaveBeenCalled();
+      await expect(enable).toHaveAttribute("aria-checked", "true");
     });
   },
 };
@@ -160,18 +173,73 @@ export const KeyboardInteraction: Story = {
       await expect(enable).toHaveFocus();
     });
 
-    await step("Button responds to Enter key", async () => {
+    await step("ArrowRight moves to next option", async () => {
+      const enable = canvas.getByRole("radio", { name: /enable/i });
+      const disable = canvas.getByRole("radio", { name: /disable/i });
+
+      enable.focus();
+      await userEvent.keyboard("{ArrowRight}");
+
+      await expect(disable).toHaveAttribute("aria-checked", "true");
+      await expect(disable).toHaveFocus();
+    });
+
+    await step("ArrowLeft moves to previous option", async () => {
+      const enable = canvas.getByRole("radio", { name: /enable/i });
+      const disable = canvas.getByRole("radio", { name: /disable/i });
+
+      disable.focus();
+      await userEvent.keyboard("{ArrowLeft}");
+
+      await expect(enable).toHaveAttribute("aria-checked", "true");
+      await expect(enable).toHaveFocus();
+    });
+
+    await step("Home moves to first option", async () => {
+      const enable = canvas.getByRole("radio", { name: /enable/i });
+      const disable = canvas.getByRole("radio", { name: /disable/i });
+
+      disable.focus();
+      await userEvent.keyboard("{Home}");
+
+      await expect(enable).toHaveAttribute("aria-checked", "true");
+      await expect(enable).toHaveFocus();
+    });
+
+    await step("End moves to last option", async () => {
+      const enable = canvas.getByRole("radio", { name: /enable/i });
+      const disable = canvas.getByRole("radio", { name: /disable/i });
+
+      enable.focus();
+      await userEvent.keyboard("{End}");
+
+      await expect(disable).toHaveAttribute("aria-checked", "true");
+      await expect(disable).toHaveFocus();
+    });
+
+    await step("Enter selects focused option", async () => {
       const enable = canvas.getByRole("radio", { name: /enable/i });
       enable.focus();
       await userEvent.keyboard("{Enter}");
       await expect(args.onChange).toHaveBeenCalled();
     });
 
-    await step("Button responds to Space key", async () => {
+    await step("Space selects focused option", async () => {
       const enable = canvas.getByRole("radio", { name: /enable/i });
       enable.focus();
       await userEvent.keyboard(" ");
       await expect(args.onChange).toHaveBeenCalled();
+    });
+
+    await step("Unhandled key does nothing", async () => {
+      clearAllMocks();
+
+      const enable = canvas.getByRole("radio", { name: /enable/i });
+      enable.focus();
+      await userEvent.keyboard("a");
+
+      await expect(enable).toHaveAttribute("aria-checked", "true");
+      await expect(args.onChange).not.toHaveBeenCalled();
     });
   },
 };
@@ -238,4 +306,17 @@ export const Three_Items: Story = {
       data-color="accent"
     />
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders three options", async () => {
+      const radios = canvas.getAllByRole("radio");
+      await expect(radios).toHaveLength(3);
+    });
+
+    await step("Center is selected by default", async () => {
+      const center = canvas.getByRole("radio", { name: /center/i });
+      await expect(center).toHaveAttribute("aria-checked", "true");
+    });
+  },
 };

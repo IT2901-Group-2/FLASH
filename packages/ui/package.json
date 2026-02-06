@@ -4,7 +4,7 @@
   "main": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "vite build",
+    "build": "tsc --noEmit && vite build",
     "dev": "vite build --watch",
     "test": "vitest --project=storybook --coverage",
     "storybook": "storybook dev -p 6006",

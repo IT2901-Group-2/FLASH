@@ -1,4 +1,5 @@
 neutral: #8a92a0
+foreground: #f0e9ec
 brand-purple: #60344e
 accent: #c7a18f
 success: #3d9751

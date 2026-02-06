@@ -70,7 +70,26 @@ export class FSStorage implements FileStorage {
     );
   }
 
-  delete(path: string): AsyncResult<void, Error> {
-    return Result.try(() => fs.promises.rm(this.resolvePath(path), { recursive: true }));
+  rm(path: string): AsyncResult<void, Error> {
+    const filepath = this.resolvePath(path);
+
+    return Result.try(() => fs.promises.stat(filepath))
+      .map(
+        stat =>
+          stat.isFile() || Result.error(new Error(`File ${filepath} does not exist`))
+      )
+      .mapCatching(() => fs.promises.rm(filepath));
+  }
+
+  rmdir(path: string): AsyncResult<void, Error> {
+    const dirpath = this.resolvePath(path);
+
+    return Result.try(() => fs.promises.stat(dirpath))
+      .map(
+        stat =>
+          stat.isDirectory() ||
+          Result.error(new Error(`Directory ${dirpath} does not exist`))
+      )
+      .mapCatching(() => fs.promises.rm(dirpath, { recursive: true }));
   }
 }

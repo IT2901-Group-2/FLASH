@@ -1,0 +1,160 @@
+.sidebar {
+  --color-bg: var(--data-color-500);
+  --color-bg-hover: var(--data-color-600);
+  --color-group-title: var(--color-neutral-700);
+  --border: 0.1rem solid var(--color-neutral-500);
+  --transition: 0.25s ease-in-out;
+
+  width: 12rem;
+  max-width: 12rem;
+  height: 100vh;
+  min-height: 4rem;
+  padding: 0 1rem;
+
+  display: flex;
+  flex-direction: column;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: var(--color-bg);
+  border-right: var(--border);
+
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  transition-property: width;
+  transition-duration: 0.2s;
+  transition-timing-function: linear;
+
+  > *:not(.stateButton) {
+    overflow: hidden;
+  }
+
+  &[data-open="false"] {
+    width: 2.5rem;
+    padding: 0 0.5rem;
+  }
+}
+
+.sidebarHeader {
+  height: 3.75rem;
+  align-items: center;
+  align-self: stretch;
+  border-bottom: var(--border);
+}
+
+.sidebarContent {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.sidebarGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.5rem 0.5rem;
+  align-self: stretch;
+
+  &:has(+ .sidebarFooter) {
+    margin-bottom: auto;
+  }
+
+  &[data-position="bottom"] {
+    margin-top: auto;
+    margin-bottom: 0;
+  }
+
+  &[data-position="center"] {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  .title {
+    font-size: 0.75rem;
+    color: var(--color-group-title);
+  }
+
+  [data-open="false"] & {
+    align-items: center;
+  }
+}
+
+.sidebarItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0.25rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  border: none;
+  background-color: inherit;
+
+  &:hover {
+    background-color: var(--color-bg-hover);
+  }
+
+  .itemTitle {
+    font-size: 0.875rem;
+    max-width: 12rem;
+    opacity: 1;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  [data-open="false"] & {
+    padding: 0.5rem 0.5rem;
+    gap: 0;
+    > .itemTitle {
+      opacity: 0;
+      max-width: 0;
+    }
+  }
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+    aspect-ratio: 1/1;
+  }
+}
+
+.sidebarFooter {
+  width: 100%;
+  border-top: var(--border);
+
+  .sidebarHeader + & {
+    margin-top: auto;
+  }
+}
+
+.stateButton {
+  position: absolute;
+  display: flex;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  top: 2.75rem;
+  right: -1rem;
+  background-color: var(--color-bg);
+  border: var(--border);
+
+  &:hover {
+    background-color: var(--color-bg-hover);
+  }
+
+  [data-open="false"] & {
+    svg {
+      transform: rotate(180deg);
+    }
+  }
+
+  svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    aspect-ratio: 1/2;
+
+    transition: transform var(--transition);
+  }
+}
