@@ -57,6 +57,8 @@
 }
 
 .description {
+  display: flex;
+  align-items: center;
   color: var(--color-neutral-600);
   margin: 0 0.2rem;
   &[data-size="xlarge"] {
@@ -73,6 +75,20 @@
 
   &[data-size="small"] {
     font-size: 0.6rem;
+  }
+  &[data-align="left"] {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  &[data-align="center"] {
+    justify-content: center;
+    text-align: center;
+  }
+
+  &[data-align="right"] {
+    justify-content: flex-end;
+    text-align: right;
   }
 }
 

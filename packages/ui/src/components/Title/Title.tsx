@@ -68,7 +68,11 @@ export const Title = ({
       >
         {children && <span className={styles.text}>{children}</span>}
       </Component>
-      {description && <p className={styles.description}>{description}</p>}
+      {description && (
+        <p data-align={align} data-size={size} className={styles.description}>
+          {description}
+        </p>
+      )}
     </div>
   );
 };
