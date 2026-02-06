@@ -1,5 +1,4 @@
 .wrapper {
-  --color-base: var(--data-color-800);
   display: flex;
   flex-direction: column;
 }
@@ -8,7 +7,7 @@
   display: flex;
   align-items: center;
   margin: 0;
-  color: var(--color-base);
+  color: var(--data-color-800);
   line-height: 1.2;
   font-family: inherit;
 

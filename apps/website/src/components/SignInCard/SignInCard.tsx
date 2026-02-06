@@ -9,7 +9,7 @@ const SignInCard = () => {
         size="medium"
         weight="bold"
         as="h2"
-        data-color="neutral"
+        data-color="brand-purple"
         description="Enter your credentials to access the admin panel"
       >
         Sign in
@@ -20,6 +20,8 @@ const SignInCard = () => {
         required
         type="password"
         id="passwordField"
+        visualSize="medium"
+        placeholder="*****"
       />
       <div className={styles.buttonWrapper}>
         <Button className={styles.button} data-color="brand-purple">
