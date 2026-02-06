@@ -3,7 +3,7 @@ import QRDisplay from "./QRDisplay";
 import { expect, within } from "storybook/test";
 
 const meta: Meta<typeof QRDisplay> = {
-  title: "Byggeklosser/Komponenter/QRDisplay",
+  title: "Building Blocks/Components/QRDisplay",
   component: QRDisplay,
   tags: ["autodocs"],
   argTypes: {

@@ -3,7 +3,7 @@ import { Breadcrumb } from "./Breadcrumb";
 import { expect, within } from "storybook/test";
 
 const meta: Meta<typeof Breadcrumb> = {
-  title: "Byggeklosser/Komponenter/Breadcrumb",
+  title: "Building Blocks/Components/Breadcrumb",
   component: Breadcrumb,
   tags: ["autodocs"],
   argTypes: {

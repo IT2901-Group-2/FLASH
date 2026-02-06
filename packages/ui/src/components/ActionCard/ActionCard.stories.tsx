@@ -13,7 +13,7 @@ import {
 import { expect, within } from "storybook/test";
 
 const meta: Meta<typeof ActionCard> = {
-  title: "Byggeklosser/Komponenter/ActionCard",
+  title: "Building Blocks/Components/ActionCard",
   component: ActionCard,
   tags: ["autodocs"],
   argTypes: {},

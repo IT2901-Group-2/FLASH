@@ -5,7 +5,7 @@ import { expect } from "storybook/test";
 import styles from "./ProgressDots.module.css";
 
 const meta: Meta<typeof ProgressDots> = {
-  title: "Byggeklosser/Komponenter/ProgressDots",
+  title: "Building Blocks/Components/ProgressDots",
   component: ProgressDots,
   tags: ["autodocs"],
   argTypes: {

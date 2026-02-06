@@ -5,7 +5,7 @@ import { clearAllMocks, expect, fn, userEvent, within } from "storybook/test";
 import { colorNames } from "@/styles/colorType";
 
 const meta: Meta<typeof Controls> = {
-  title: "Byggeklosser/Komponenter/Controls",
+  title: "Building Blocks/Components/Controls",
   component: Controls,
   tags: ["autodocs"],
   argTypes: {

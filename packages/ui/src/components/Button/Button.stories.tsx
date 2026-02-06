@@ -7,7 +7,7 @@ import { colorNames } from "@/styles/colorType";
 const TestIcon = <GamepadDirectional data-testid="test-icon" />;
 
 const meta: Meta<typeof Button> = {
-  title: "Byggeklosser/Komponenter/Button",
+  title: "Building Blocks/Components/Button",
   component: Button,
   tags: ["autodocs"],
   argTypes: {
