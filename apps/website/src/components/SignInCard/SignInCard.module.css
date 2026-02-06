@@ -1,14 +1,12 @@
-.card{
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; */
-    gap: 1rem;
-    max-width: 60vw;
-    
-
+.card {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  gap: 1rem;
+  max-width: 60vw;
 }
 
-.buttonWrapper{
+.buttonWrapper {
   display: flex;
   justify-content: center;
 }

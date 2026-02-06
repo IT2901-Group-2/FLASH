@@ -2,7 +2,7 @@
 import SignInCard from "@/components/SignInCard/SignInCard";
 import { Title } from "ui";
 import styles from "./login.module.css";
-import { Camera, CameraIcon } from "lucide-react";
+import { Camera } from "lucide-react";
 
 const page = () => {
   return (
