@@ -22,18 +22,14 @@ export interface BreadcrumbProps {
 }
 
 /**
- * A breadcrumb navigation component for displaying the user's location in a hierarchical structure.
- * The first item displays a home icon, middle items are clickable links, and the last item represents the current page.
- * @example
- * ```jsx
- * <Breadcrumb
- *   items={[
- *     { label: "", href: "/" },
- *     { label: "Albums", href: "/albums" },
- *     { label: "Main Gallery" }
- *   ]}
- * />
- * ```
+ * A breadcrumb navigation component for displaying the user's location in a
+ * hierarchical structure.
+ *
+ * The first item displays a home icon, middle items are clickable links, and
+ * the last item represents the current page.
+ *
+ * > _Last updated: `2026-02-07`_
+ *
  */
 export const Breadcrumb = ({
   items,
