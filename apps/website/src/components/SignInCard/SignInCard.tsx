@@ -16,18 +16,18 @@ const SignInCard = () => {
       </Title>
       <Input
         aria-label="password"
-        label="Passeword"
+        label="Password"
         required
         type="password"
         id="passwordField"
         visualSize="medium"
         placeholder="*****"
       />
-      <div className={styles.buttonWrapper}>
-        <Button className={styles.button} data-color="brand-purple">
-          Sign in
-        </Button>
-      </div>
+      {/* <div className={styles.buttonWrapper}> */}
+      <Button className={styles.buttonComponent} data-color="brand-purple">
+        Sign in
+      </Button>
+      {/* </div> */}
     </Card>
   );
 };

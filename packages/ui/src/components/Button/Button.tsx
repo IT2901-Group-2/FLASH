@@ -63,6 +63,7 @@ export const Button = ({
   "data-color": data = "neutral",
   icon,
   iconPosition = "left",
+  className,
   ...rest
 }: ButtonProps) => {
   const filterProps: React.ButtonHTMLAttributes<HTMLButtonElement> =
@@ -81,7 +82,8 @@ export const Button = ({
       className={cl(
         styles.button,
         loading && styles.loading,
-        disabled && styles.disabled
+        disabled && styles.disabled,
+        className
       )}
       disabled={disabled || loading}
     >

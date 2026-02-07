@@ -10,3 +10,8 @@
   display: flex;
   justify-content: center;
 }
+
+.buttonComponent{
+    margin: auto;
+    width: 100%;
+}
