@@ -17,8 +17,6 @@ const meta: Meta<typeof ImageCard> = {
   tags: ["autodocs"],
   argTypes: {
     variant: {
-      description:
-        "Changes design and styling. As of now there only exists styling for the primary variant",
       control: "select",
       options: ["primary", "secondary", "tertiary"],
     },
