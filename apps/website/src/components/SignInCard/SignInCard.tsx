@@ -3,7 +3,7 @@ import styles from "./SignInCard.module.css";
 
 const SignInCard = () => {
   return (
-    <Card className={styles.card}>
+    <Card data-color="foreground" className={styles.card}>
       <Title
         align="left"
         size="medium"

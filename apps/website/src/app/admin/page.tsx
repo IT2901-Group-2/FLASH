@@ -1,15 +1,13 @@
 "use client";
 import SignInCard from "@/components/SignInCard/SignInCard";
 import { Title } from "ui";
-import styles from "./login.module.css";
-import { Camera } from "lucide-react";
+import styles from "./loginAdmin.module.css";
+import CameraIcon from "@/components/CameraIcon/CameraIcon";
 
 const page = () => {
   return (
     <div className={styles.pageWrapper}>
-      <div className={styles.cameraWrapper}>
-        <Camera className={styles.camera} />
-      </div>
+      <CameraIcon />
       <Title
         align="center"
         size="large"

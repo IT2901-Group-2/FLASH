@@ -6,17 +6,17 @@
   border-radius: 1.5rem;
   font-size: 1.25rem;
   padding: 1.5rem;
-  border: 2px solid var(--data-color-300);
-  background-color: var(--data-color-600);
+  border: 1px solid var(--data-color-1000);
+  background-color: var(--data-color-500);
   color: var(--color-base);
   transition: all 0.2s ease-in-out;
   cursor: default;
-
+/* 
   &:hover {
     border-color: var(--data-color-500);
     box-shadow: 0 4px 12px rgba(96, 52, 78, 0.12);
     transform: translateY(-2px);
-  }
+  } */
 
   &:active {
     transform: translateY(0);
