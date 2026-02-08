@@ -5,6 +5,7 @@ import {
   getStoredTheme,
   getSystemTheme,
   setStoredTheme,
+  systemThemeListner,
 } from "@/lib/theme-utils";
 import { createContext, useEffect, useMemo, useState } from "react";
 
@@ -62,6 +63,10 @@ export const ThemeProvider = ({
     if (theme === "system") applyTheme(getSystemTheme());
     else applyTheme(theme);
     setStoredTheme(theme);
+  }, [theme]);
+
+  useEffect(() => {
+    systemThemeListner(theme);
   }, [theme]);
 
   return (

@@ -19,3 +19,11 @@ export const getStoredTheme = (): Theme | null => {
 export const setStoredTheme = (theme: Theme): void => {
   localStorage.setItem(THEME_STORAGE_KEY, theme);
 };
+
+export const systemThemeListner = (theme: Theme) => {
+  if (theme !== "system") return;
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  mediaQuery.addEventListener("change", () => {
+    applyTheme(getSystemTheme());
+  });
+};
