@@ -42,6 +42,23 @@ interface ThemeProviderProps {
   defaultTheme?: Theme;
 }
 
+/**
+ * ## ThemeProvider
+ *
+ * Wrap your application with this provider to expose theme state and helpers.
+ * It integrates with `localStorage` (via {@link THEME_STORAGE_KEY}) and listens to
+ * the OS color-scheme changes when the saved preference is `"system"`.
+ *
+ * Behaviour details:
+ * - On mount the provider reads the persisted preference (via {@link getStoredTheme}).
+ * - The `resolvedTheme` is computed: if `theme === "system"` the OS preference
+ * (via {@link getSystemTheme}) is used, otherwise the explicit value is used.
+ * - When `theme` changes the provider:
+ *   1. Applies the resolved theme to the document using {@link applyTheme}.
+ *   2. Persists the selected preference using {@link setStoredTheme}.
+ * - When `theme === "system"` a system listener is registered to re-apply the
+ * resolved theme when the OS preference changes.
+ */
 export const ThemeProvider = ({
   children,
   defaultTheme = "system",
