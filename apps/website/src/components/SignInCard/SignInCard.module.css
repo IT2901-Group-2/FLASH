@@ -3,11 +3,9 @@
   flex-direction: column;
   /* align-items: center; */
   gap: 1rem;
-  
 }
 
-
-.buttonComponent{
-    margin: auto;
-    width: 100%;
+.buttonComponent {
+  margin: auto;
+  width: 100%;
 }

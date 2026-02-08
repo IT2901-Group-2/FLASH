@@ -11,7 +11,7 @@
   color: var(--color-base);
   transition: all 0.2s ease-in-out;
   cursor: default;
-/* 
+  /* 
   &:hover {
     border-color: var(--data-color-500);
     box-shadow: 0 4px 12px rgba(96, 52, 78, 0.12);
