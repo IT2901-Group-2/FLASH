@@ -66,7 +66,7 @@ export const ThemeProvider = ({
   }, [theme]);
 
   useEffect(() => {
-    systemThemeListner(theme);
+    return systemThemeListner(theme);
   }, [theme]);
 
   return (
