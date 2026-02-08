@@ -1,3 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@100;200;300;400;500;600;700&display=swap");
+
+* {
+  font-family: "Kantumruy Pro", sans-serif;
+}
+
 :root {
   --text-tertiary: #474747;
   --background-primary: #f8f2f5;
