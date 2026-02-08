@@ -12,7 +12,6 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  max-width: 18.7rem;
   height: 1.25rem;
   padding: 0.875rem 1.25rem;
   border-radius: 1rem;
@@ -21,7 +20,7 @@
   position: relative;
 
   &[data-variant="primary"] {
-    background-color: #f0e9ec;
+    background-color: var(--color-foreground-500);
     outline: 0.1rem solid var(--color-base);
 
     &:focus-within:not(:has(input:disabled), .disabled).error {
@@ -94,10 +93,12 @@
 }
 
 .loaderContainer {
+  position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  right: 1rem;
 }
 
 .message {

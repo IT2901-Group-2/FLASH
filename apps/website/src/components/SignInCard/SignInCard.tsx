@@ -15,13 +15,14 @@ const SignInCard = () => {
         Sign in
       </Title>
       <Input
+        className={styles.inputComponent}
         aria-label="password"
         label="Password"
         required
         type="password"
         id="passwordField"
         visualSize="medium"
-        placeholder="*****"
+        placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
       />
       {/* <div className={styles.buttonWrapper}> */}
       <Button className={styles.buttonComponent} data-color="brand-purple">

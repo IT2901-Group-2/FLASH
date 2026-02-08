@@ -59,7 +59,6 @@
   display: flex;
   align-items: center;
   color: var(--color-neutral-600);
-  margin: 0 0.2rem;
   &[data-size="xlarge"] {
     font-size: 1.5rem;
   }
