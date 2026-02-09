@@ -1,16 +1,15 @@
 "use client";
 import JoinEventCard from "@/components/JoinEvent/JoinEventCard";
 import Logo from "@/components/Logo/Logo";
-import { Card } from "ui";
+import styles from "./JoinEvent.module.css";
 
 const Page = () => {
-
-    return (
-       <Card data-color="background-secondary">
-            <Logo />
-            <JoinEventCard />
-        </Card>
-    )
-}
+  return (
+    <div className={styles.pageWrapper}>
+      <Logo />
+      <JoinEventCard />
+    </div>
+  );
+};
 
 export default Page;
