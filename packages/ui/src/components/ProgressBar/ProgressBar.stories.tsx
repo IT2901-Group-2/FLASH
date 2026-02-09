@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Button } from "../Button";
 
 const meta: Meta<typeof ProgressBar> = {
-  title: "Byggeklosser/Komponenter/ProgressBar",
+  title: "Building Blocks/Components/ProgressBar",
   tags: ["autodocs"],
   component: ProgressBar,
   argTypes: {},

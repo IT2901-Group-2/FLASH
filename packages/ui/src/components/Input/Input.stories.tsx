@@ -5,7 +5,7 @@ import { Search, Mail, Check, X } from "lucide-react";
 import { colorNames } from "@/styles/colorType";
 
 const meta: Meta<typeof Input> = {
-  title: "Byggeklosser/Komponenter/Input",
+  title: "Building Blocks/Components/Input",
   component: Input,
   tags: ["autodocs"],
   argTypes: {

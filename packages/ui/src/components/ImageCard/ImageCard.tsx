@@ -15,16 +15,21 @@ type ImageCardState =
 
 export interface ImageCardProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
-   * Changes design and styling.
-   * As of now their only exists styling for the primary variant
+   * Changes design and styling. As of now their only exists styling for the primary variant
    * @default "primary"
    */
   variant?: "primary" | "secondary" | "tertiary";
-  /** Image source URL */
+  /**
+   * Image source URL
+   */
   src: string;
-  /** Image alt text for accessibility */
+  /**
+   * Image alt text for accessibility
+   */
   alt: string;
-  /** Card title */
+  /**
+   * Card title
+   */
   title: string;
   /**
    * Changes padding, dimensions and font-size
@@ -55,7 +60,10 @@ export interface ImageCardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 /**
- * An image card component that can be customized to show different state and perform different types of actions
+ * An image card component that can be customized to show different state and
+ * perform different types of actions.
+ *
+ * > _Last updated: `2026-02-07`_
  */
 export const ImageCard = ({
   variant = "primary",
@@ -65,14 +73,14 @@ export const ImageCard = ({
   size = "medium",
   state = "default",
   icon,
-  "data-color": data = "brand-purple",
+  "data-color": color = "brand-purple",
   onClick,
   ref,
   ...rest
 }: ImageCardProps) => {
   return (
     <div
-      data-color={data}
+      data-color={color}
       data-variant={variant}
       data-size={size}
       ref={ref}

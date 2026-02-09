@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint --max-warnings 0",
     "format": "prettier --write src/",
-    "format:check": "prettier --check src/"
+    "format:check": "prettier --check src/",
+        "test": "vitest"
   },
   "dependencies": {
     "next": "16.1.4",
@@ -18,13 +19,19 @@
     "ui": "workspace:*"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.1.2",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.4",
+    "jsdom": "^28.0.0",
     "prettier": "^3.8.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite-tsconfig-paths": "^6.1.0",
+    "vitest": "^4.0.18"
   }
 }

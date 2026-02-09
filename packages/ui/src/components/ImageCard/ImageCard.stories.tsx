@@ -12,13 +12,11 @@ const SAMPLE_IMAGE_2 =
   "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=400";
 
 const meta: Meta<typeof ImageCard> = {
-  title: "Byggeklosser/Komponenter/ImageCard",
+  title: "Building Blocks/Components/ImageCard",
   component: ImageCard,
   tags: ["autodocs"],
   argTypes: {
     variant: {
-      description:
-        "Changes design and styling. As of now there only exists styling for the primary variant",
       control: "select",
       options: ["primary", "secondary", "tertiary"],
     },
