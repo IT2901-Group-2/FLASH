@@ -124,7 +124,6 @@ describe("getStoredTheme", () => {
 });
 
 describe("setStoredTheme", () => {
-  console.log(localStorage);
   beforeEach(() => {
     localStorage.clear();
   });
