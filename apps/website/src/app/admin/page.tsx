@@ -1,10 +1,10 @@
 "use client";
 import SignInCard from "@/components/SignInCard/SignInCard";
 import { Title } from "ui";
-import styles from "./loginAdmin.module.css";
+import styles from "./adminLogin.module.css";
 import CameraIcon from "@/components/CameraIcon/CameraIcon";
 
-const page = () => {
+const AdminLogin = () => {
   return (
     <div className={styles.pageWrapper}>
       <CameraIcon />
@@ -23,4 +23,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default AdminLogin;
