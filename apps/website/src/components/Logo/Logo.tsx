@@ -1,12 +1,10 @@
 import { Camera } from "lucide-react";
-import styles from "./CameraIcon.module.css";
+import styles from "./Logo.module.css";
 
-const CameraIcon = () => {
+export default function Logo() {
   return (
     <div className={styles.cameraWrapper}>
       <Camera className={styles.camera} />
     </div>
   );
-};
-
-export default CameraIcon;
+}

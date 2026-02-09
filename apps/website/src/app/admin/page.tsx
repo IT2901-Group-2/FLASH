@@ -1,7 +1,7 @@
 "use client";
 import SignInCard from "@/components/SignInCard/SignInCard";
 import { Title } from "ui";
-import styles from "./adminLogin.module.css";
+import styles from "./AdminLogin.module.css";
 import CameraIcon from "@/components/Logo/Logo";
 
 export default function Page() {

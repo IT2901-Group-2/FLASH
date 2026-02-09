@@ -1,7 +1,7 @@
 import { Button, Card, Input, Title } from "ui";
 import styles from "./SignInCard.module.css";
 
-const SignInCard = () => {
+export default function SignInCard() {
   return (
     <Card data-color="background-secondary" className={styles.card}>
       <Title
@@ -24,13 +24,9 @@ const SignInCard = () => {
         visualSize="medium"
         placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
       />
-      {/* <div className={styles.buttonWrapper}> */}
       <Button className={styles.buttonComponent} data-color="brand-purple">
         Sign in
       </Button>
-      {/* </div> */}
     </Card>
   );
-};
-
-export default SignInCard;
+}
