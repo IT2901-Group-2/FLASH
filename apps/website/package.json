@@ -8,14 +8,14 @@
     "start": "next start",
     "lint": "eslint --max-warnings 0",
     "format": "prettier --write src/",
-    "format:check": "prettier --check src/"
+    "format:check": "prettier --check src/",
+        "test": "vitest"
   },
   "dependencies": {
     "next": "16.1.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "ui": "workspace:*",
-    "test": "vitest"
+    "ui": "workspace:*"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.1",
