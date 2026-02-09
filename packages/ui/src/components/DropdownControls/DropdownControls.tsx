@@ -32,8 +32,10 @@ export interface DropdownControlsProps<T extends string> extends Omit<
 }
 
 /**
- * DropdownControls builds on Controls by showing additional content
- * for the active option.
+ * DropdownControls builds on Controls by showing additional content for the
+ * active option.
+ *
+ * > _Last updated: `2026-02-07`_
  */
 const DropdownControlsInner = <T extends string>(
   {

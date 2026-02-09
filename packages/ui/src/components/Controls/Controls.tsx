@@ -73,6 +73,8 @@ const callAll =
 
 /**
  * Controls allows the user to select from a set of mutually-exclusive options.
+ *
+ * > _Last updated: `2026-02-07`_
  */
 const ControlsInner = <T extends string>(
   {

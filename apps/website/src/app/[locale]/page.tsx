@@ -1,7 +1,10 @@
 import Image from "next/image";
 import styles from "./page.module.css";
+import { useTranslations } from "next-intl";
 
 export default function Home() {
+  const t = useTranslations("HomePage");
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -13,6 +16,7 @@ export default function Home() {
           height={20}
           priority
         />
+        <p>{t("title")}</p>
         <div className={styles.intro}>
           <h1>To get started, edit the page.tsx file.</h1>
           <p>

@@ -37,9 +37,12 @@ export interface ActionCardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 /**
+ * An action card allows the user to interact with primary and secondary
+ * actions. This could be used for prompting the user to take an action, such
+ * as uploading a photo or taking a new one. It could also be used for routing
+ * and navigation purposes, or to save changes.
  *
- * An action card allows the user to interact with primary and secondary actions. This could be used for prompting the user to take an action, such as uploading a photo or taking a new one. It could also be used for routing and navigation purposes, or to save changes.
- *
+ * > _Last updated: `2026-02-07`_
  */
 export const ActionCard = ({
   description,

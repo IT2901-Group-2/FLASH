@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/providers/ThemeProvider";
@@ -26,7 +27,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ThemeProvider defaultTheme="system">{children}</ThemeProvider>
+        <NextIntlClientProvider>
+          <ThemeProvider defaultTheme="system">{children}</ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

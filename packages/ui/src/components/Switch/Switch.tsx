@@ -56,6 +56,19 @@ export interface SwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>,
   id?: string;
 }
 
+/**
+ * A switch is used as a toggle to change immediately between two states, often to turn a setting on or off.
+ *
+ * > _Last updated: `2026-02-07`_
+ *
+ * ### Suitable for:
+ * - Activating/deactivating a status immediately.
+ * - On/off switch for e.g. notifications.
+ *
+ * ### Not suitable for:
+ * - Replacing checkboxes or radio buttons in forms.
+ * - Statuses that are not saved immediately.
+ */
 export const Switch = ({
   children,
   className,
