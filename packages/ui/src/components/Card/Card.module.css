@@ -25,7 +25,7 @@
 }
 
 .card[data-color="background-secondary"] {
-  --color-base: var(--data-color-1000);
+  --color-base: var(--data-color-500);
 }
 
 .card[data-color="brand-purple"] {

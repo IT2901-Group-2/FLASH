@@ -2,9 +2,9 @@
 import SignInCard from "@/components/SignInCard/SignInCard";
 import { Title } from "ui";
 import styles from "./adminLogin.module.css";
-import CameraIcon from "@/components/CameraIcon/CameraIcon";
+import CameraIcon from "@/components/Logo/Logo";
 
-const AdminLogin = () => {
+export default function Page() {
   return (
     <div className={styles.pageWrapper}>
       <CameraIcon />
@@ -21,6 +21,4 @@ const AdminLogin = () => {
       <p>Self-hosted Photo Event Management System</p>
     </div>
   );
-};
-
-export default AdminLogin;
+}
