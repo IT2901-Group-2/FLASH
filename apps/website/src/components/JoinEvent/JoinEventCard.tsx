@@ -6,7 +6,7 @@ import styles from "./JoinEventCard.module.css";
 const JoinEventCard = () => {
   return (
     <Card data-color="background-secondary">
-      <Title align="center" description="Enter the event code or scan the QR code to join">
+      <Title align="center" description="Enter the event code or scan the QR code to join" as="h2">
         Join an Event
       </Title>
       <DropdownControls
