@@ -3,7 +3,7 @@ import { Loader } from "./Loader";
 import { fn } from "storybook/test";
 
 const meta: Meta<typeof Loader> = {
-  title: "Byggeklosser/Komponenter/Loader",
+  title: "Building Blocks/Components/Loader",
   tags: ["autodocs"],
   component: Loader,
   parameters: {

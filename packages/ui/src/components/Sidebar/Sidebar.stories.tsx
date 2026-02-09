@@ -13,7 +13,7 @@ import {
 import { expect, userEvent, within } from "storybook/test";
 
 const meta: Meta<typeof Sidebar> = {
-  title: "Byggeklosser/Komponenter/Sidebar",
+  title: "Building Blocks/Components/Sidebar",
   component: Sidebar,
   tags: ["autodocs"],
   argTypes: {},

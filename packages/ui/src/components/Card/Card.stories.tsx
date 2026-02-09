@@ -4,7 +4,7 @@ import { expect, within } from "storybook/test";
 import { colorNames } from "@/styles/colorType";
 
 const meta: Meta<typeof Card> = {
-  title: "Byggeklosser/Komponenter/Card",
+  title: "Building Blocks/Components/Card",
   component: Card,
   tags: ["autodocs"],
   argTypes: {

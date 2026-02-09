@@ -5,7 +5,7 @@ import { colorNames } from "@/styles/colorType";
 import { useState } from "react";
 
 const meta: Meta<typeof DropdownControls> = {
-  title: "Byggeklosser/Komponenter/DropdownControls",
+  title: "Building Blocks/Components/DropdownControls",
   component: DropdownControls,
   tags: ["autodocs"],
   argTypes: {

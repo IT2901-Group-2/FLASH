@@ -16,10 +16,10 @@ export default {
       storySort: {
         method: "alphabetical",
         order: [
-          "Grunnleggende",
-          "Byggeklosser",
-          ["Ikoner", "Komponenter", ["Oversikt"]],
-          "Mønster og Maler",
+          "Fundementals",
+          "Building Blocks",
+          ["Icons", "Components", ["Overview"]],
+          "Patterns and Templates",
         ],
       },
     },

@@ -4,7 +4,9 @@ import { cl } from "../../util/className";
 import { ColorName } from "@/styles/colorType";
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Card content. */
+  /**
+   * Card content.
+   */
   children?: React.ReactNode;
   /**
    * Overrides inherited color.
@@ -14,13 +16,8 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 /**
  * A card component for displaying content in a contained structure.
- * @example
- * ```jsx
- * <Card>
- *   <h2>Card Title</h2>
- *   <p>Card content goes here</p>
- * </Card>
- * ```
+ *
+ * > _Last updated: `2026-02-07`_
  */
 export const Card = ({
   children,

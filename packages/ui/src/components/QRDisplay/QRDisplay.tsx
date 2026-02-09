@@ -12,6 +12,13 @@ export interface QRDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
   code?: string;
 }
 
+/**
+ * Displays a high-error-correction QR code with optional supporting text.
+ *
+ * Commonly used to allow users to scan and upload photos from a mobile device.
+ *
+ * > _Last updated: `2026-02-07`_
+ */
 const QRDisplay = ({ value, code, ...rest }: QRDisplayProps) => {
   return (
     <div className={styles.container} {...rest}>

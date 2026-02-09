@@ -7,7 +7,7 @@ const DISPLAY_TEXT: string = "Send Notifications";
 const DISPLAY_DESCRIPTION: string = "We send them between 08:00 and 17:00";
 
 const meta: Meta<typeof Switch> = {
-  title: "Byggeklosser/Komponenter/Switch",
+  title: "Building Blocks/Components/Switch",
   component: Switch,
   tags: ["autodocs"],
   argTypes: {
