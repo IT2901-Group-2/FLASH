@@ -1,17 +1,16 @@
 "use client";
-import { ChartNoAxesGantt } from "lucide-react";
+import { TextAlignStart } from "lucide-react";
 import { Card, Input, Button, Title, DropdownControls, QRDisplay } from "ui";
+import { useTranslations } from "next-intl";
 import styles from "./JoinEventCard.module.css";
 
 const JoinEventCard = () => {
+  const t = useTranslations("JoinEvent");
+
   return (
     <Card data-color="background-secondary">
-      <Title
-        align="center"
-        description="Enter the event code or scan the QR code to join"
-        as="h2"
-      >
-        Join an Event
+      <Title align="center" description={t("description")} as="h2">
+        {t("title")}
       </Title>
       <DropdownControls
         className={styles.dropdownControls}
@@ -21,17 +20,17 @@ const JoinEventCard = () => {
             content: (
               <div className={styles.content}>
                 <Input
-                  label="Event code"
-                  placeholder="Enter event code... e.g. 245033"
-                  icon={<ChartNoAxesGantt size={24} />}
-                  aria-label={"event code"}
+                  label={t("eventCodeLabel")}
+                  placeholder={t("eventCodePlaceholder")}
+                  icon={<TextAlignStart size={24} />}
+                  aria-label={t("eventCodeLabel")}
                 />
                 <Button className={styles.fullWidthButton} data-color="brand-purple">
-                  Join Event
+                  {t("joinButton")}
                 </Button>
               </div>
             ),
-            label: "Enter code",
+            label: t("enterCodeTab"),
             value: "enter-code",
           },
           {
@@ -46,11 +45,11 @@ const JoinEventCard = () => {
                   variant="secondary"
                   data-color="brand-purple"
                 >
-                  Open Camera
+                  {t("openCameraButton")}
                 </Button>
               </div>
             ),
-            label: "Scan QR",
+            label: t("scanQrTab"),
             value: "scan-qr",
           },
         ]}
