@@ -58,6 +58,7 @@ export const Carousel = ({
       <div
         ref={scrollContainerRef}
         className={styles.carousel}
+        data-carousel="viewport"
         onScroll={checkScroll}
         style={{ gap: `${gap}rem` }}
       >
@@ -70,6 +71,8 @@ export const Carousel = ({
             className={styles.navButton}
             data-direction="left"
             onClick={() => {
+                            console.log("left", scrollContainerRef.current)
+
               if (scrollContainerRef.current) {
                 scrollContainerRef.current.scrollBy({
                   left: -scrollContainerRef.current.clientWidth,
@@ -87,6 +90,7 @@ export const Carousel = ({
             className={styles.navButton}
             data-direction="right"
             onClick={() => {
+              console.log("right", scrollContainerRef.current)
               if (scrollContainerRef.current) {
                 scrollContainerRef.current.scrollBy({
                   left: scrollContainerRef.current.clientWidth,
