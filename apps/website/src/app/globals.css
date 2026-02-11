@@ -4,6 +4,12 @@
   font-family: "Kantumruy Pro", sans-serif;
 }
 
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-primary);
+}
+
 :root {
   --text-tertiary: #474747;
   --background-primary: #f8f2f5;
