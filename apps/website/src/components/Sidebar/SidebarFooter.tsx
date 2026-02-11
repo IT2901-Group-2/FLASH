@@ -1,4 +1,3 @@
-import { ChevronUp } from "lucide-react";
 import styles from "./SidebarFooter.module.css";
 
 export const SidebarFooter = () => {
@@ -6,7 +5,7 @@ export const SidebarFooter = () => {
     <div className={styles.footer}>
       <div className={styles.userIcon}>A</div>
       <div className={styles.userName}>admin</div>
-      <ChevronUp />
+      {/* <ChevronUp/> */}
     </div>
   );
 };
