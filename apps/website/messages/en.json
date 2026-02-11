@@ -15,6 +15,7 @@
     "joinButton": "Join Event",
     "enterCodeTab": "Enter code",
     "scanQrTab": "Scan QR",
+    "scanQrDescription": "Use your camera to scan the event QR code",
     "openCameraButton": "Open Camera"
   }
 }

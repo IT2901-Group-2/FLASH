@@ -13,6 +13,23 @@
 .qrContainer {
   display: flex;
   justify-content: center;
+  padding: 4rem;
+  width: fit-content;
+  margin: 0 auto;
+  border-radius: 1rem;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='%23a3a3a3' stroke-width='8' stroke-dasharray='15%2c 30' stroke-dashoffset='7.5' stroke-linecap='round'/%3e%3c/svg%3e");
+}
+
+.qrContainer svg {
+  color: var(--color-neutral-400);
+}
+
+.qrText {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-neutral-600);
+  margin: 0;
+  font-weight: 600;
 }
 
 .fullWidthButton {

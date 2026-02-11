@@ -15,6 +15,7 @@
     "joinButton": "Bli med",
     "enterCodeTab": "Skriv inn kode",
     "scanQrTab": "Skann QR-kode",
+    "scanQrDescription": "Bruk kameraet ditt til å skanne QR-koden til arrangementet",
     "openCameraButton": "Åpne kamera"
   }
 

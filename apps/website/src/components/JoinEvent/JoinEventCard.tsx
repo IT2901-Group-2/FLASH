@@ -1,8 +1,9 @@
 "use client";
 import { TextAlignStart } from "lucide-react";
-import { Card, Input, Button, Title, DropdownControls, QRDisplay } from "ui";
+import { Card, Input, Button, Title, DropdownControls } from "ui";
 import { useTranslations } from "next-intl";
 import styles from "./JoinEventCard.module.css";
+import { QrCode } from "lucide-react";
 
 const JoinEventCard = () => {
   const t = useTranslations("JoinEvent");
@@ -36,10 +37,10 @@ const JoinEventCard = () => {
           {
             content: (
               <div className={styles.content}>
-                {/* TODO: Replace the hardcoded value with a dynamic one based on the event */}
                 <div className={styles.qrContainer}>
-                  <QRDisplay value="https://example.com/upload" />
+                  <QrCode size={64} />
                 </div>
+                <p className={styles.qrText}>{t("scanQrDescription")}</p>
                 <Button
                   className={styles.fullWidthButton}
                   variant="secondary"
