@@ -3,6 +3,9 @@ import { Sidebar } from "ui";
 import SidebarFooter from "./SidebarFooter";
 import { SidebarHeader } from "./SidebarHeader";
 
+/**
+ * Admin sidebar used in the /admin/dashboard pages
+ */
 export const AdminSidebar = () => {
   return (
     <Sidebar>

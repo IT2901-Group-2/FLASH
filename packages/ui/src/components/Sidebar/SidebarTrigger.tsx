@@ -4,6 +4,9 @@ import styles from "./Sidebar.module.css";
 import { HTMLAttributes } from "react";
 import { cl } from "@/util/className";
 
+/**
+ * A trigger used for opening/closeing the sidebar
+ */
 export const SidebarTrigger = ({
   className,
   ...rest

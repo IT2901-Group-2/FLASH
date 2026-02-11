@@ -2,6 +2,9 @@ import { HTMLAttributes } from "react";
 import Logo from "../Logo/Logo";
 import styles from "./SidebarHeader.module.css";
 
+/**
+ * The header of the admin sidebar.
+ */
 export const SidebarHeader = ({ ...rest }: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={styles.header} {...rest}>
