@@ -71,7 +71,7 @@ export const Carousel = ({
             className={styles.navButton}
             data-direction="left"
             onClick={() => {
-                            console.log("left", scrollContainerRef.current)
+              console.log("left", scrollContainerRef.current);
 
               if (scrollContainerRef.current) {
                 scrollContainerRef.current.scrollBy({
@@ -90,7 +90,7 @@ export const Carousel = ({
             className={styles.navButton}
             data-direction="right"
             onClick={() => {
-              console.log("right", scrollContainerRef.current)
+              console.log("right", scrollContainerRef.current);
               if (scrollContainerRef.current) {
                 scrollContainerRef.current.scrollBy({
                   left: scrollContainerRef.current.clientWidth,

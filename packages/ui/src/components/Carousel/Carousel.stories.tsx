@@ -123,24 +123,22 @@ export const AlbumGallery: Story = {
     });
 
     await step("Arrow buttons trigger scroll", async () => {
-    //   const rightArrow = canvas.getByRole("button", { name: /scroll right/i });
-    //   const leftArrow = canvas.getByRole("button", { name: /scroll left/i });
-    //   const viewport = canvasElement.querySelector(
-    //     "[data-carousel=\"viewport\"]"
-    //   ) as HTMLDivElement | null;
-
-    //   await user.click(rightArrow);
-    //   expect(rightArrow).toHaveBeenCalledTimes(1);
-
-    //   if (viewport) {
-    //     Object.defineProperty(viewport, "clientWidth", { value: 100, configurable: true });
-    //     Object.defineProperty(viewport, "scrollWidth", { value: 400, configurable: true });
-    //     viewport.scrollLeft = 100;
-    //     viewport.dispatchEvent(new Event("scroll"));
-    //     await new Promise(resolve => setTimeout(resolve, 0));
-    //   }
-    //   await user.click(leftArrow);
-    //   await expect(calls).toBe(2);
+      //   const rightArrow = canvas.getByRole("button", { name: /scroll right/i });
+      //   const leftArrow = canvas.getByRole("button", { name: /scroll left/i });
+      //   const viewport = canvasElement.querySelector(
+      //     "[data-carousel=\"viewport\"]"
+      //   ) as HTMLDivElement | null;
+      //   await user.click(rightArrow);
+      //   expect(rightArrow).toHaveBeenCalledTimes(1);
+      //   if (viewport) {
+      //     Object.defineProperty(viewport, "clientWidth", { value: 100, configurable: true });
+      //     Object.defineProperty(viewport, "scrollWidth", { value: 400, configurable: true });
+      //     viewport.scrollLeft = 100;
+      //     viewport.dispatchEvent(new Event("scroll"));
+      //     await new Promise(resolve => setTimeout(resolve, 0));
+      //   }
+      //   await user.click(leftArrow);
+      //   await expect(calls).toBe(2);
     });
 
     await step("All image cards are rendered", async () => {
