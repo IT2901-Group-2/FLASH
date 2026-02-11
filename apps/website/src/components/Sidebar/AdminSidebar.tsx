@@ -6,6 +6,7 @@ import { SidebarHeader } from "./SidebarHeader";
 export const AdminSidebar = () => {
   return (
     <Sidebar>
+      <Sidebar.Trigger />
       <Sidebar.Header>
         <SidebarHeader />
       </Sidebar.Header>
