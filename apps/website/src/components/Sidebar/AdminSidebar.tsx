@@ -6,7 +6,8 @@ import { SidebarHeader } from "./SidebarHeader";
 export const AdminSidebar = () => {
   return (
     <Sidebar>
-      <Sidebar.Trigger />
+      <Sidebar.Trigger style={{ top: "3.5rem" }} />{" "}
+      {/* Positioning. Didn't think of a better way */}
       <Sidebar.Header>
         <SidebarHeader />
       </Sidebar.Header>
