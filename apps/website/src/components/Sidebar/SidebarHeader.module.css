@@ -1,0 +1,24 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .title {
+    margin: 0;
+  }
+}
+
+@container (min-width: 4rem) {
+  .headerText {
+    display: none;
+  }
+}
