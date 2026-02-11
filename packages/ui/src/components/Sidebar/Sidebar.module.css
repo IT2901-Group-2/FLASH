@@ -73,7 +73,7 @@
   }
 
   .title {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: var(--color-group-title);
   }
 
@@ -97,7 +97,8 @@
   }
 
   .itemTitle {
-    font-size: 0.875rem;
+    font-size: 1rem;
+    font-weight: 500;
     max-width: 12rem;
     opacity: 1;
     overflow: hidden;
@@ -114,8 +115,8 @@
   }
 
   svg {
-    width: 1rem;
-    height: 1rem;
+    width: 1.5rem;
+    height: 1.5rem;
     aspect-ratio: 1/1;
   }
 }

@@ -13,7 +13,7 @@ export const AdminSidebar = () => {
         <Sidebar.Item icon={<House />}>Desktop</Sidebar.Item>
         <Sidebar.Item icon={<Calendar />}>Event</Sidebar.Item>
       </Sidebar.Group>
-      <Sidebar.Group title="MAIN" position="bottom">
+      <Sidebar.Group title="Config" position="bottom">
         <Sidebar.Item icon={<Settings />}>Settings</Sidebar.Item>
         <Sidebar.Item icon={<HardDrive />}>Storage</Sidebar.Item>
       </Sidebar.Group>
