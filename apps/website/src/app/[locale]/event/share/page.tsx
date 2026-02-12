@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import { Copy, Check, CircleAlert } from "lucide-react";
-import { Title, Controls, QRDisplay, Input } from "ui";
+import { Copy, Check, CircleAlert, QrCode, Download } from "lucide-react";
+import { Title, Controls, QRDisplay, Input, ActionCard } from "ui";
 import styles from "./ShareEvent.module.css";
 
 export default function Page() {
@@ -31,6 +31,14 @@ export default function Page() {
       setCopied(true);
       setTimeout(() => setCopied(false), 1200);
     } catch {}
+  };
+
+  const handleDownloadQr = () => {
+    // TODO: Add actual logic for downloading QR code
+  };
+
+  const handleDone = () => {
+    // TODO
   };
 
   return (
@@ -102,6 +110,39 @@ export default function Page() {
           }
           iconPosition="right"
         />
+      </div>
+
+      <div className={styles.actionCardDock}>
+        <div className={styles.actionCardInner}>
+          <ActionCard
+            style={{ padding: "1rem", borderRadius: "1.25rem" }}
+            secondaryButton={{
+              text: "Download QR code",
+              size: "small",
+              icon: (
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.375rem",
+                  }}
+                >
+                  <QrCode size={13} />
+                  <Download size={13} />
+                </span>
+              ),
+              iconPosition: "left",
+              onClick: handleDownloadQr,
+              "data-color": "brand-purple",
+            }}
+            primaryButton={{
+              text: "Done",
+              size: "small",
+              onClick: handleDone,
+              "data-color": "brand-purple",
+            }}
+          />
+        </div>
       </div>
     </div>
   );

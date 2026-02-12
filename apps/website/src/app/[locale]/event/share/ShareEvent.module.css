@@ -10,6 +10,20 @@
   justify-content: flex-start;
 
   gap: 1rem;
-  padding: 1.5rem 1.5rem 2rem;
+  padding: 1.5rem 1.5rem 1.25rem;
   box-sizing: border-box;
+}
+
+.actionCardDock {
+  position: sticky;
+  bottom: max(0.1rem, env(safe-area-inset-bottom));
+  margin-top: auto;
+  padding-top: 0.5rem;
+  z-index: 20;
+}
+
+.actionCardInner {
+  width: 100%;
+  max-width: 23rem;
+  margin: 0 auto;
 }

@@ -11,3 +11,4 @@ export * from "./Switch";
 export * from "./Title";
 export * from "./Controls";
 export * from "./QRDisplay";
+export * from "./ActionCard";
