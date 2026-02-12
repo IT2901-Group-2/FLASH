@@ -2,7 +2,8 @@
   width: clamp(16rem, 50%, 48rem);
   border: none;
   background-color: transparent;
-  margin-top: 5vh;
+  padding: 0;
+  margin-top: 2.5vh;
 
   &::backdrop {
     background-color: black;
@@ -46,8 +47,8 @@
   gap: 1rem;
 
   border-top: 1px solid var(--text-tertiary);
-  margin-top: 1rem;
-  padding-top: 1rem;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
 
   > :first-child:not(:only-child) {
     margin-right: auto;
