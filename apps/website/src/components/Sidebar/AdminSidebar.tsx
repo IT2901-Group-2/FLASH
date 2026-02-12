@@ -3,14 +3,15 @@ import { Sidebar } from "ui";
 import SidebarFooter from "./SidebarFooter";
 import { SidebarHeader } from "./SidebarHeader";
 import { useTranslations } from "next-intl";
+import { HTMLAttributes } from "react";
 
 /**
  * Admin sidebar used in the /admin/dashboard pages
  */
-export const AdminSidebar = () => {
+export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) => {
   const t = useTranslations("admin.dashboard.sidebar");
   return (
-    <Sidebar>
+    <Sidebar className={className} {...rest}>
       <Sidebar.Trigger style={{ top: "3.5rem" }} />{" "}
       {/* Positioning. Didn't think of a better way */}
       <Sidebar.Header>

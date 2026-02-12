@@ -6,6 +6,7 @@ import SidebarHeader, { SidebarHeaderProps } from "./SidebarHeader";
 import SidebarFooter, { SidebarFooterProps } from "./SidebarFooter";
 import SidebarProvider, { useSidebar } from "./SidebarContext";
 import SidebarTrigger from "./SidebarTrigger";
+import { cl } from "@/util/className";
 
 export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
   /**
@@ -22,25 +23,21 @@ export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
 /**
  * The main container for the sidebar
  */
-const SidebarMain = ({ children, ...rest }: HTMLAttributes<HTMLDivElement>) => {
+const SidebarMain = ({
+  className,
+  children,
+  ...rest
+}: HTMLAttributes<HTMLDivElement>) => {
   const { open } = useSidebar();
 
   return (
     <div
       data-color={"foreground"}
       data-open={open}
-      className={styles.sidebar}
+      className={cl(styles.sidebar, className)}
       {...rest}
       role="sidebar"
     >
-      {/* <div
-        className={styles.stateButton}
-        onClick={toggleOpen}
-        role="sidebar-button"
-        style={{ top: "--sidebar-header-height" }}
-      >
-        <ChevronLeft />
-      </div> */}
       {children}
     </div>
   );
@@ -55,11 +52,14 @@ export const Sidebar = ({
   defaultOpen = true,
   onOpenChange,
   children,
+  className,
   ...rest
 }: SidebarProps) => {
   return (
     <SidebarProvider defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
-      <SidebarMain {...rest}>{children}</SidebarMain>
+      <SidebarMain className={className} {...rest}>
+        {children}
+      </SidebarMain>
     </SidebarProvider>
   );
 };
