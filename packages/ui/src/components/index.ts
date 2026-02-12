@@ -10,3 +10,4 @@ export * from "./Switch";
 export * from "./Title";
 export * from "./Controls";
 export * from "./DropdownControls";
+export * from "./QRDisplay";
