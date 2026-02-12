@@ -2,5 +2,41 @@
   "HomePage": {
     "title": "Hello world!",
     "about": "About us"
+  },
+  "ShareEventPage": {
+    "create": {
+      "firstTitle": "Your Event has been created!",
+      "firstDescription": "You can share the QR code or send them the link in order for others to join the event and upload images.",
+      "doneText": "Finish"
+    },
+    "share": {
+      "firstTitle": "Let others join",
+      "firstDescription": "Share the QR code or link so others can join the event and upload images.",
+      "doneText": "Done"
+    },
+    "controls": {
+      "guest": "Guest",
+      "moderator": "Moderator"
+    },
+    "links": {
+      "guest": {
+        "title": "Guest Link",
+        "description": "Everyone with the link below will be able to upload images to this event"
+      },
+      "moderator": {
+        "title": "Moderator Link",
+        "description": "Everyone with the link below will be able to moderate all uploaded images"
+      }
+    },
+    "actions": {
+      "downloadQr": "Download QR code"
+    },
+    "aria": {
+      "moderatorAlert": "moderator link alert",
+      "guestLinkInput": "guest-link",
+      "moderatorLinkInput": "moderator-link",
+      "copyLink": "copy-link",
+      "copied": "copied"
+    }
   }
 }

@@ -1,28 +1,49 @@
 "use client";
 import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Copy, Check, CircleAlert, QrCode, Download } from "lucide-react";
 import { Title, Controls, QRDisplay, Input, ActionCard } from "ui";
 import styles from "./ShareEvent.module.css";
 
+type ShareOrigin = "create" | "share";
+
 export default function Page() {
+  const t = useTranslations("ShareEventPage");
+
   const [shareRole, setShareRole] = useState<"guest" | "moderator">("guest");
   const [copied, setCopied] = useState(false);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const origin: ShareOrigin = searchParams.get("from") === "share" ? "share" : "create";
 
   const eventId = "abc123"; // TODO: Replace with actual event ID
   const shareUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/event/${eventId}/${shareRole}`;
   const displayCode = `${eventId.toUpperCase()}-${shareRole.substring(0, 1).toUpperCase()}`;
 
+  const originDependentContent =
+    origin === "create"
+      ? {
+          firstTitle: t("create.firstTitle"),
+          firstDescription: t("create.firstDescription"),
+          doneText: t("create.doneText"),
+        }
+      : {
+          firstTitle: t("share.firstTitle"),
+          firstDescription: t("share.firstDescription"),
+          doneText: t("share.doneText"),
+        };
+
   const linkContent =
     shareRole === "guest"
       ? {
-          title: "Guest Link",
-          description:
-            "Everyone with the link below will be able to upload images to this event",
+          title: t("links.guest.title"),
+          description: t("links.guest.description"),
         }
       : {
-          title: "Moderator Link",
-          description:
-            "Everyone with the link below will be able to moderate all uploaded images",
+          title: t("links.moderator.title"),
+          description: t("links.moderator.description"),
         };
 
   const handleCopy = async () => {
@@ -33,12 +54,15 @@ export default function Page() {
     } catch {}
   };
 
-  const handleDownloadQr = () => {
-    // TODO: Add actual logic for downloading QR code
+  const handleDownloadQR = () => {
+    // TODO: Add logic for downloading QR code
   };
 
   const handleDone = () => {
-    // TODO
+    if (origin === "create") {
+      // TODO: route to post-create destination
+    }
+    // TODO: route back to "Event Overview" page
   };
 
   return (
@@ -48,16 +72,16 @@ export default function Page() {
         size="medium"
         as="h2"
         data-color="brand-purple"
-        description="You can share the QR code or send them the link in order for others to join the event and upload images"
+        description={originDependentContent.firstDescription}
       >
-        Let others join
+        {originDependentContent.firstTitle}
       </Title>
 
       <div style={{ alignSelf: "center" }}>
         <Controls
           options={[
-            { value: "guest", label: "Guest" },
-            { value: "moderator", label: "Moderator" },
+            { value: "guest", label: t("controls.guest") },
+            { value: "moderator", label: t("controls.moderator") },
           ]}
           value={shareRole}
           onChange={setShareRole}
@@ -82,7 +106,7 @@ export default function Page() {
           {shareRole === "moderator" && (
             <CircleAlert
               size={18}
-              aria-label="moderator link alert"
+              aria-label={t("aria.moderatorAlert")}
               style={{ color: "var(--color-warning-600)" }}
             />
           )}
@@ -91,18 +115,18 @@ export default function Page() {
 
       <div style={{ alignSelf: "center", width: "100%", maxWidth: "21.375rem" }}>
         <Input
-          aria-label={`${shareRole}-link`}
+          aria-label={shareRole === "guest" ? t("aria.guestLinkInput") : t("aria.moderatorLinkInput")}
           value={shareUrl}
           readOnly
           visualSize="large"
           data-color="accent"
           icon={
             copied ? (
-              <Check size={18} aria-label="copied" style={{ cursor: "pointer" }} />
+              <Check size={18} aria-label={t("aria.copied")} style={{ cursor: "pointer" }} />
             ) : (
               <Copy
                 size={18}
-                aria-label="copy-link"
+                aria-label={t("aria.copyLink")}
                 style={{ cursor: "pointer" }}
                 onClick={handleCopy}
               />
@@ -117,26 +141,20 @@ export default function Page() {
           <ActionCard
             style={{ padding: "1rem", borderRadius: "1.25rem" }}
             secondaryButton={{
-              text: "Download QR code",
+              text: t("actions.downloadQr"),
               size: "small",
               icon: (
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.375rem",
-                  }}
-                >
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem" }}>
                   <QrCode size={13} />
                   <Download size={13} />
                 </span>
               ),
               iconPosition: "left",
-              onClick: handleDownloadQr,
+              onClick: handleDownloadQR,
               "data-color": "brand-purple",
             }}
             primaryButton={{
-              text: "Done",
+              text: originDependentContent.doneText,
               size: "small",
               onClick: handleDone,
               "data-color": "brand-purple",
