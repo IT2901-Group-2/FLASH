@@ -2,5 +2,15 @@
   "HomePage": {
     "title": "Hello world!",
     "about": "About us"
+  },
+  "admin": {
+    "dashboard": {
+      "sidebar": {
+        "desktop": "Desktop",
+        "event": "Event",
+        "settings": "Settings",
+        "storage": "Storage"
+      }
+    }
   }
 }
