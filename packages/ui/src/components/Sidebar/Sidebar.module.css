@@ -35,6 +35,12 @@
   }
 }
 
+@media screen and (max-width: 768px) {
+  .sidebar[data-open="true"] {
+    position: absolute;
+  }
+}
+
 .sidebarHeader {
   height: min-content;
   align-items: center;
