@@ -3,6 +3,16 @@
     "title": "Hallo verden!",
     "about": "Om oss"
   },
+  "admin": {
+    "dashboard": {
+      "sidebar": {
+        "desktop": "Dashboard",
+        "event": "Events",
+        "settings": "Innstillinger",
+        "storage": "Lagring"
+      }
+    }
+  },
   "JoinEventPage": {
   "appTitle": "PhotoEvent",
   "appDescription": "Administrer fotoarrangementene dine enkelt"

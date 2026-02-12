@@ -1,11 +1,5 @@
 "use client";
-export {
-  default as Sidebar,
-  SidebarHeader,
-  SidebarGroup,
-  SidebarItem,
-  SidebarFooter,
-} from "./Sidebar";
+export { default as Sidebar } from "./Sidebar";
 export type {
   SidebarProps,
   SidebarHeaderProps,

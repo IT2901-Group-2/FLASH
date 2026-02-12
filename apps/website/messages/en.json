@@ -3,6 +3,16 @@
     "title": "Hello world!",
     "about": "About us"
   },
+  "admin": {
+    "dashboard": {
+      "sidebar": {
+        "desktop": "Desktop",
+        "event": "Event",
+        "settings": "Settings",
+        "storage": "Storage"
+      }
+    }
+  },
   "JoinEventPage": {
     "appTitle": "PhotoEvent",
     "appDescription": "Manage your photo events with ease"
