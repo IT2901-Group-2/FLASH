@@ -5,6 +5,7 @@ import { SidebarHeader } from "./SidebarHeader";
 import { useTranslations } from "next-intl";
 import { HTMLAttributes } from "react";
 import { useTheme } from "@/hooks/useTheme";
+import { capitalize } from "@/utils/string-utils";
 
 /**
  * Admin sidebar used in the /admin/dashboard pages
@@ -28,7 +29,7 @@ export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivEleme
         <Sidebar.Item icon={<Settings />}>{t("settings")}</Sidebar.Item>
         <Sidebar.Item icon={<HardDrive />}>{t("storage")}</Sidebar.Item>
         <Sidebar.Item icon={theme === "dark" ? <Sun /> : <Moon />} onClick={toggleTheme}>
-          {theme === "dark" ? "Light Mode" : "Dark Mode"}
+          {capitalize(theme)} mode
         </Sidebar.Item>
       </Sidebar.Group>
       <Sidebar.Footer>
