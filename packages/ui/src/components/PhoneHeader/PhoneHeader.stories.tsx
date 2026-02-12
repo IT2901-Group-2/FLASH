@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { PhoneHeader } from "./PhoneHeader";
-import { expect, fn, within } from "storybook/test";
+import { expect, fn, userEvent, within } from "storybook/test";
 import { ArrowLeft, Menu, User, Image } from "lucide-react";
 
 const meta: Meta<typeof PhoneHeader> = {
@@ -55,7 +55,6 @@ export const Default: Story = {
     subtitleIcon: <User />,
     leftIcon: <ArrowLeft />,
     leftAriaLabel: "Go back",
-    onLeftClick: fn(),
     rightLabel: "Live",
     rightVariant: "primary",
   },
@@ -65,10 +64,18 @@ export const Default: Story = {
     const title = canvas.getByText(/wedding/i);
     const subtitle = canvas.getByText(/nickname/i);
     const rightLabel = canvas.getByText(/live/i);
+    const backButton = canvas.getByRole("button", { name: /go back/i });
+    const originalBack = window.history.back;
+    const backMock = fn();
+
+    window.history.back = backMock as unknown as typeof window.history.back;
     await expect(header).toBeInTheDocument();
     await expect(title).toBeInTheDocument();
     await expect(subtitle).toBeInTheDocument();
     await expect(rightLabel).toBeInTheDocument();
+    await userEvent.click(backButton);
+    await expect(backMock).toHaveBeenCalledTimes(1);
+    window.history.back = originalBack;
   },
 };
 
@@ -79,11 +86,21 @@ export const BackModerate: Story = {
     subtitleIcon: <User />,
     leftIcon: <ArrowLeft />,
     leftAriaLabel: "Go back",
-    onLeftClick: fn(),
     rightLabel: "Moderate",
     rightIcon: <Image />,
     rightVariant: "secondary",
     onRightClick: fn(),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const backButton = canvas.getByRole("button", { name: /go back/i });
+    const originalBack = window.history.back;
+    const backMock = fn();
+
+    window.history.back = backMock as unknown as typeof window.history.back;
+    await userEvent.click(backButton);
+    await expect(backMock).toHaveBeenCalledTimes(1);
+    window.history.back = originalBack;
   },
 };
 

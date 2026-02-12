@@ -49,23 +49,25 @@ export const PhoneHeader = ({
   rightVariant = "primary",
   className,
 }: PhoneHeaderProps) => {
+  const handleLeftClick =
+    onLeftClick ??
+    (() => {
+      if (typeof window !== "undefined") {
+        window.history.back();
+      }
+    });
+
   return (
     <header className={cl(styles.phoneheader, styles.container, className)}>
       {leftIcon ? (
-        onLeftClick ? (
-          <button
-            type="button"
-            className={cl(styles.leftAction, styles.leftActionButton)}
-            onClick={onLeftClick}
-            aria-label={leftAriaLabel}
-          >
-            <span className={styles.iconWrapper}>{leftIcon}</span>
-          </button>
-        ) : (
-          <div className={styles.leftAction} aria-label={leftAriaLabel}>
-            <span className={styles.iconWrapper}>{leftIcon}</span>
-          </div>
-        )
+        <button
+          type="button"
+          className={cl(styles.leftAction, styles.leftActionButton)}
+          onClick={handleLeftClick}
+          aria-label={leftAriaLabel}
+        >
+          <span className={styles.iconWrapper}>{leftIcon}</span>
+        </button>
       ) : (
         <span className={styles.leftSpacer} />
       )}
