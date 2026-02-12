@@ -12,5 +12,21 @@
         "storage": "Lagring"
       }
     }
+  },
+  "JoinEventPage": {
+  "appTitle": "PhotoEvent",
+  "appDescription": "Administrer fotoarrangementene dine enkelt"
+  },
+  "JoinEvent": {
+    "title": "Bli med på et arrangement",
+    "description": "Skriv inn arrangementskoden eller skann QR-koden for å bli med",
+    "eventCodeLabel": "Arrangementskode",
+    "eventCodePlaceholder": "Skriv inn kode… f.eks. 245033",
+    "joinButton": "Bli med",
+    "enterCodeTab": "Skriv inn kode",
+    "scanQrTab": "Skann QR-kode",
+    "scanQrDescription": "Bruk kameraet ditt til å skanne QR-koden til arrangementet",
+    "openCameraButton": "Åpne kamera"
   }
+
 }
