@@ -2,7 +2,7 @@
   width: clamp(16rem, 50%, 48rem);
   border: none;
   background-color: transparent;
-  z-index: 1;
+  margin-top: 5vh;
 
   &::backdrop {
     background-color: black;
@@ -30,24 +30,12 @@
 .card {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.maxImageContainer {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
   gap: 1rem;
 
-  > span {
-    width: 200%;
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 }
 
