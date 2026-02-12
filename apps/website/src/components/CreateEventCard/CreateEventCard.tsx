@@ -3,26 +3,59 @@ import { Button, Card, Controls, Input, ProgressDots, Title } from "ui";
 import styles from "./CreateEventCard.module.css";
 import { Calendar } from "lucide-react";
 
+// TODO: This will change when create event endpoint is done
+type LocalForm = {
+  name: string;
+  description: string;
+  date: string;
+  photosPerGuest: number;
+  autoApprove: boolean;
+  code: string;
+};
+
 interface CreateEventCardProps extends RefAttributes<HTMLDialogElement> {
   onClose: () => void;
 }
 
-const Step1 = () => {
+interface StepProps {
+  formData: LocalForm;
+  updateFormData: (field: keyof LocalForm, value: string | boolean) => void;
+}
+
+const Step1 = ({ formData, updateFormData }: StepProps) => {
   return (
     <>
       <Title description="Set up a new photo event for your guests. A QR code will be generated automatically.">
         Create Event Name
       </Title>
-      <Input label="Event Name" aria-label="eventName" />
-      <Input label="Event Description" aria-label="eventDescription" />
-      <Input label="Event Date" aria-label="eventDate" type="date" icon={<Calendar />} />
+      <Input
+        value={formData.name}
+        onChange={e => updateFormData("name", e.target.value)}
+        label="Event Name"
+        aria-label="eventName"
+      />
+      <Input
+        value={formData.description}
+        onChange={e => updateFormData("description", e.target.value)}
+        label="Event Description"
+        aria-label="eventDescription"
+      />
+      <Input
+        value={formData.date}
+        onChange={e => updateFormData("date", e.target.value)}
+        label="Event Date"
+        aria-label="eventDate"
+        type="date"
+        icon={<Calendar />}
+      />
     </>
   );
 };
 
-const Step2 = () => {
+const Step2 = ({ formData, updateFormData }: StepProps) => {
   return (
     <>
+      <Title description="Configure event settings.">Event Settings</Title>
       <Controls
         options={[
           {
@@ -45,12 +78,23 @@ const Step3 = () => {
 
 export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps) => {
   const [progress, setProgress] = useState<number>(1);
+  const [formdata, setFormData] = useState<LocalForm>({
+    name: "",
+    description: "",
+    date: "",
+    photosPerGuest: 0,
+    autoApprove: false,
+    code: "",
+  });
+
+  const updateFormData = <K extends keyof LocalForm>(k: K, v: LocalForm[K]) =>
+    setFormData(prev => ({ ...prev, [k]: v }));
 
   const steps = [Step1, Step2, Step3] as const;
   const CurrentStep = steps[progress - 1];
 
   const nextStep = () => setProgress(c => c + 1);
-  const prevSteo = () => setProgress(c => c - 1);
+  const prevStep = () => setProgress(c => c - 1);
   const exitForm = () => {
     onClose();
     setProgress(1);
@@ -59,23 +103,25 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
   return (
     <dialog ref={ref} className={styles.container} {...rest} autoFocus>
       <Card className={styles.card}>
-        <ProgressDots maxValue={3} value={progress} data-color="brand-purple" />
-        <CurrentStep />
-        <div className={styles.buttonGroup}>
-          <Button variant="tertiary" onClick={exitForm}>
-            Cancel
-          </Button>
-          {progress < steps.length && (
-            <Button variant="secondary" onClick={nextStep}>
-              Next
+        {/* <ProgressDots maxValue={3} value={progress} data-color="brand-purple" /> */}
+        <form className={styles.form}>
+          <CurrentStep formData={formdata} updateFormData={updateFormData} />
+          <div className={styles.buttonGroup}>
+            <Button variant="tertiary" onClick={exitForm}>
+              Cancel
             </Button>
-          )}
-          {progress >= steps.length && (
-            <Button variant="primary" data-color="brand-purple" onClick={exitForm}>
-              Finish
-            </Button>
-          )}
-        </div>
+            {progress < steps.length && (
+              <Button variant="secondary" onClick={nextStep}>
+                Next
+              </Button>
+            )}
+            {progress >= steps.length && (
+              <Button variant="primary" data-color="brand-purple" onClick={exitForm}>
+                Finish
+              </Button>
+            )}
+          </div>
+        </form>
       </Card>
     </dialog>
   );
