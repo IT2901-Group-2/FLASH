@@ -1,0 +1,15 @@
+.pageWrapper {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 26rem;
+  min-height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+
+  gap: 1rem;
+  padding: 1.5rem 1.5rem 2rem;
+  box-sizing: border-box;
+}
