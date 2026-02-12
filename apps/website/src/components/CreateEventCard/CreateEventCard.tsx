@@ -1,5 +1,5 @@
 import { RefAttributes, useState } from "react";
-import { Button, Card, Controls, Input, ProgressDots, Title } from "ui";
+import { Button, Card, Controls, DropdownControls, Input, Switch, Title } from "ui";
 import styles from "./CreateEventCard.module.css";
 import { Calendar } from "lucide-react";
 
@@ -19,7 +19,7 @@ interface CreateEventCardProps extends RefAttributes<HTMLDialogElement> {
 
 interface StepProps {
   formData: LocalForm;
-  updateFormData: (field: keyof LocalForm, value: string | boolean) => void;
+  updateFormData: (field: keyof LocalForm, value: string | number | boolean) => void;
 }
 
 const Step1 = ({ formData, updateFormData }: StepProps) => {
@@ -53,21 +53,55 @@ const Step1 = ({ formData, updateFormData }: StepProps) => {
 };
 
 const Step2 = ({ formData, updateFormData }: StepProps) => {
+  const [limitMode, setLimitMode] = useState<"limited" | "unlimited">("limited");
+  const [autoGenerateCode, setAutoGenerateCode] = useState<boolean>(true);
+
   return (
     <>
       <Title description="Configure event settings.">Event Settings</Title>
-      <Controls
+      <DropdownControls
+        onChange={setLimitMode}
         options={[
           {
-            label: "Enable",
-            value: "enable",
+            content: (
+              <div className={styles.maxImageContainer}>
+                <span>Set max uploads to:</span>
+                <Input
+                  aria-label="maxImages"
+                  type="number"
+                  min={0}
+                  value={formData.photosPerGuest}
+                  onChange={e =>
+                    updateFormData(
+                      "photosPerGuest",
+                      limitMode === "limited" ? e.target.value : 9999
+                    )
+                  }
+                />
+              </div>
+            ),
+            label: "Limited",
+            value: "limited",
           },
           {
-            label: "Disable",
-            value: "disable",
+            label: "Unlimited",
+            value: "unlimited",
           },
         ]}
       />
+      <Switch position="right">
+        <b>Auto-Approve Photos</b>
+      </Switch>
+      <Switch
+        position="right"
+        checked={autoGenerateCode}
+        onChange={e => setAutoGenerateCode(e.target.checked)}
+      >
+        <b>Auto Generate Code</b>
+      </Switch>
+      {!autoGenerateCode && (
+        <Input visualSize="small" label="Custom Entry Code" aria-label="manualCode" />
+      )}
     </>
   );
 };

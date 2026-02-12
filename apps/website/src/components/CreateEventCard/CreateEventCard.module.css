@@ -39,6 +39,18 @@
   gap: 2rem;
 }
 
+.maxImageContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+
+  > span {
+    width: 200%;
+  }
+}
+
 .buttonGroup {
   display: flex;
   flex-direction: row;
