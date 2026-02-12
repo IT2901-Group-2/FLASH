@@ -9,3 +9,5 @@ export * from "./ImageCard";
 export * from "./Sidebar";
 export * from "./Switch";
 export * from "./Title";
+export * from "./Breadcrumb";
+export * from "./PhoneHeader";

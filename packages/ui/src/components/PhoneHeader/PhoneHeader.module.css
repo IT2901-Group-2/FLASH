@@ -1,0 +1,116 @@
+.phoneheader {
+  --phoneheader-bg: var(--color-foreground-400);
+  --phoneheader-text: var(--color-brand-purple-800);
+  --phoneheader-border: var(--color-foreground-600);
+  --phoneheader-subtitle: var(--color-neutral-700);
+  --phoneheader-focus: var(--color-brand-purple-500);
+  --phoneheader-right-primary-bg: var(--color-brand-purple-800);
+  --phoneheader-right-primary-text: var(--color-foreground-100);
+  --phoneheader-right-secondary-bg: var(--color-brand-purple-500);
+  --phoneheader-right-secondary-text: var(--color-foreground-100);
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: var(--phoneheader-bg);
+  color: var(--phoneheader-text);
+  border-bottom: 1px solid var(--phoneheader-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.leftAction,
+.rightAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+}
+
+.leftAction {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+}
+
+.leftActionButton,
+.rightActionButton {
+  cursor: pointer;
+}
+
+.leftActionButton:focus-visible,
+.rightActionButton:focus-visible {
+  outline: 2px solid var(--phoneheader-focus);
+  outline-offset: 2px;
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.subtitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--phoneheader-subtitle);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.rightAction {
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.1;
+  border: 1px solid transparent;
+}
+
+.rightPrimary {
+  background: var(--phoneheader-right-primary-bg);
+  color: var(--phoneheader-right-primary-text);
+}
+
+.rightSecondary {
+  background: var(--phoneheader-right-secondary-bg);
+  color: var(--phoneheader-right-secondary-text);
+}
+
+.iconWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconWrapper svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.leftSpacer,
+.rightSpacer {
+  width: 2.5rem;
+  height: 2.5rem;
+}
