@@ -3,16 +3,24 @@
     "title": "Hello world!",
     "about": "About us"
   },
-  "AdminLogin": {
-    "title": "PhotoEvent Admin",
-    "description": "Manage your photo events with ease",
-    "undertext": "Self-hosted Photo Event Management System"
-    },
-  "SignInCard": {
-    "title": "Sign in",
-    "titleDescription": "Enter your credentials to access the admin panel",
-    "buttonTitle": "Sign in",
-    "inputLabel": "Password"
-
+  "admin": {
+    "dashboard": {
+      "sidebar": {
+        "desktop": "Desktop",
+        "event": "Event",
+        "settings": "Settings",
+        "storage": "Storage"
+      },
+    "AdminLogin": {
+      "title": "PhotoEvent Admin",
+      "description": "Manage your photo events with ease",
+      "undertext": "Self-hosted Photo Event Management System"
+      },
+    "SignInCard": {
+      "title": "Sign in",
+      "titleDescription": "Enter your credentials to access the admin panel",
+      "buttonTitle": "Sign in",
+      "inputLabel": "Password"
+      }
   }
 }

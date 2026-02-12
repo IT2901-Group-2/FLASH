@@ -3,16 +3,25 @@
     "title": "Hallo verden!",
     "about": "Om oss"
   },
-  "AdminLogin": {
-    "title": "FotoArrangemang Administrator",
-    "description": "Administrer fotoarrangementene dine enkelt",
-    "undertext": "Selvhostet system for adminstrasjon av fotoarrangementer"
-  },
-  "SignInCard": {
-    "title": "Logg inn",
-    "titleDescription": "Skriv inn legitimasjonen din for å få tilgang til administrasjonspanelet",
-    "buttonTitle": "Logg inn",
-    "inputLabel": "Passord"
+  "admin": {
+    "dashboard": {
+      "sidebar": {
+        "desktop": "Dashboard",
+        "event": "Events",
+        "settings": "Innstillinger",
+        "storage": "Lagring"
+      }
+    },
+    "AdminLogin": {
+      "title": "FotoArrangemang Administrator",
+      "description": "Administrer fotoarrangementene dine enkelt",
+      "undertext": "Selvhostet system for adminstrasjon av fotoarrangementer"
+    },
+    "SignInCard": {
+      "title": "Logg inn",
+      "titleDescription": "Skriv inn legitimasjonen din for å få tilgang til administrasjonspanelet",
+      "buttonTitle": "Logg inn",
+      "inputLabel": "Passord"
+    }
   }
-
 }
