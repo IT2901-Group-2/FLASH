@@ -61,7 +61,7 @@ describe("JoinEventCard", () => {
 
   test("uses correct translation keys", () => {
     render(<JoinEventCard />);
-    
+
     // Verify all expected translation keys are requested
     expect(translationKeys).toContain("title");
     expect(translationKeys).toContain("description");

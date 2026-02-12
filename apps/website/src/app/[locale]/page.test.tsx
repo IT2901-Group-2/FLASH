@@ -49,7 +49,7 @@ describe("Page", () => {
 
   test("renders all main components together", () => {
     render(<Page />);
-    
+
     // Verify both Logo and JoinEventCard are present
     expect(screen.getByTestId("logo")).toBeDefined();
     expect(screen.getByTestId("join-event-card")).toBeDefined();
@@ -57,7 +57,7 @@ describe("Page", () => {
 
   test("uses correct translation keys", () => {
     render(<Page />);
-    
+
     // Verify that the component requests the correct translation keys
     expect(translationKeys).toContain("appTitle");
     expect(translationKeys).toContain("appDescription");
@@ -65,7 +65,7 @@ describe("Page", () => {
 
   test("displays translated content", () => {
     render(<Page />);
-    
+
     // Verify the translated text appears in the document
     expect(screen.getByText("PhotoEvent")).toBeDefined();
     expect(screen.getByText("Join and share photos from events")).toBeDefined();
