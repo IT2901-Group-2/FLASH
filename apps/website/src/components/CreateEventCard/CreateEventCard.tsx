@@ -4,7 +4,7 @@ import styles from "./CreateEventCard.module.css";
 import { Calendar } from "lucide-react";
 
 interface CreateEventCardProps extends RefAttributes<HTMLDialogElement> {
-  onClose?: () => void;
+  onClose: () => void;
 }
 
 const Step1 = () => {
@@ -39,11 +39,22 @@ const Step2 = () => {
   );
 };
 
-export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps) => {
-  const [progress, setProgress] = useState<number>(2);
+const Step3 = () => {
+  return <></>;
+};
 
-  const steps = [Step1, Step2] as const;
+export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps) => {
+  const [progress, setProgress] = useState<number>(1);
+
+  const steps = [Step1, Step2, Step3] as const;
   const CurrentStep = steps[progress - 1];
+
+  const nextStep = () => setProgress(c => c + 1);
+  const prevSteo = () => setProgress(c => c - 1);
+  const exitForm = () => {
+    onClose();
+    setProgress(1);
+  };
 
   return (
     <dialog ref={ref} className={styles.container} {...rest} autoFocus>
@@ -51,10 +62,19 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
         <ProgressDots maxValue={3} value={progress} data-color="brand-purple" />
         <CurrentStep />
         <div className={styles.buttonGroup}>
-          <Button variant="tertiary" onClick={onClose}>
+          <Button variant="tertiary" onClick={exitForm}>
             Cancel
           </Button>
-          {progress < steps.length && <Button variant="secondary">Next</Button>}
+          {progress < steps.length && (
+            <Button variant="secondary" onClick={nextStep}>
+              Next
+            </Button>
+          )}
+          {progress >= steps.length && (
+            <Button variant="primary" data-color="brand-purple" onClick={exitForm}>
+              Finish
+            </Button>
+          )}
         </div>
       </Card>
     </dialog>
