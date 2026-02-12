@@ -3,7 +3,7 @@ import styles from "./SignInCard.module.css";
 import { useTranslations } from "next-intl";
 
 export default function SignInCard() {
-  const t = useTranslations("SignInCard");
+  const t = useTranslations("admin.login.signIn");
   return (
     <Card data-color="background-secondary" className={styles.card}>
       <Title

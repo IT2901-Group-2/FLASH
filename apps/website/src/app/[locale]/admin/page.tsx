@@ -6,7 +6,7 @@ import CameraIcon from "@/components/Logo/Logo";
 import { useTranslations } from "next-intl";
 
 export default function Page() {
-  const t = useTranslations("AdminLogin");
+  const t = useTranslations("admin.login");
   return (
     <div className={styles.pageWrapper}>
       <CameraIcon data-testid="camera-icon" />

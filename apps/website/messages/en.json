@@ -10,17 +10,18 @@
         "event": "Event",
         "settings": "Settings",
         "storage": "Storage"
-      },
-    "AdminLogin": {
+      }
+    },
+    "login": {
       "title": "PhotoEvent Admin",
       "description": "Manage your photo events with ease",
-      "undertext": "Self-hosted Photo Event Management System"
-      },
-    "SignInCard": {
-      "title": "Sign in",
-      "titleDescription": "Enter your credentials to access the admin panel",
-      "buttonTitle": "Sign in",
-      "inputLabel": "Password"
-      }
+      "undertext": "Self-hosted Photo Event Management System",
+      "signIn": {
+        "title": "Sign in",
+        "titleDescription": "Enter your credentials to access the admin panel",
+        "buttonTitle": "Sign in",
+        "inputLabel": "Password"
+      }  
+    }
   }
 }
