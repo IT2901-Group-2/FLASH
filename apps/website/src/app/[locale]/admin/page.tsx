@@ -9,8 +9,9 @@ export default function Page() {
   const t = useTranslations("AdminLogin");
   return (
     <div className={styles.pageWrapper}>
-      <CameraIcon />
+      <CameraIcon data-testid="camera-icon" />
       <Title
+        data-testid="title"
         align="center"
         size="large"
         as="h1"
@@ -19,7 +20,7 @@ export default function Page() {
       >
         {t("title")}
       </Title>
-      <SignInCard />
+      <SignInCard data-testid="sign-in-card" />
       <p>{t("undertext")}</p>
     </div>
   );
