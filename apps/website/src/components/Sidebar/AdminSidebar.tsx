@@ -10,6 +10,7 @@ import { HTMLAttributes } from "react";
  */
 export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) => {
   const t = useTranslations("admin.dashboard.sidebar");
+
   return (
     <Sidebar className={className} {...rest}>
       <Sidebar.Trigger style={{ top: "3.5rem" }} />{" "}

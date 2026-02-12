@@ -34,7 +34,7 @@ const SidebarMain = ({
     <div
       data-color={"foreground"}
       data-open={open}
-      className={cl(styles.sidebar, className)}
+      className={cl(className, styles.sidebar)}
       {...rest}
       role="sidebar"
     >
