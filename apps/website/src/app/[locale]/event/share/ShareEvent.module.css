@@ -16,7 +16,7 @@
 
 .actionCardDock {
   position: sticky;
-  bottom: max(1.5rem, env(safe-area-inset-bottom));
+  bottom: max(2rem, env(safe-area-inset-bottom));
   margin-top: auto;
   padding-top: 0.5rem;
   z-index: 20;

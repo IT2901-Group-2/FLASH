@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Copy, Check, CircleAlert, QrCode, Download } from "lucide-react";
 import { Title, Controls, QRDisplay, Input, ActionCard } from "ui";
@@ -14,7 +14,6 @@ export default function Page() {
   const [shareRole, setShareRole] = useState<"guest" | "moderator">("guest");
   const [copied, setCopied] = useState(false);
 
-  const router = useRouter();
   const searchParams = useSearchParams();
   const origin: ShareOrigin = searchParams.get("from") === "share" ? "share" : "create";
 
@@ -115,14 +114,22 @@ export default function Page() {
 
       <div style={{ alignSelf: "center", width: "100%", maxWidth: "21.375rem" }}>
         <Input
-          aria-label={shareRole === "guest" ? t("aria.guestLinkInput") : t("aria.moderatorLinkInput")}
+          aria-label={
+            shareRole === "guest"
+              ? t("aria.guestLinkInput")
+              : t("aria.moderatorLinkInput")
+          }
           value={shareUrl}
           readOnly
           visualSize="large"
           data-color="accent"
           icon={
             copied ? (
-              <Check size={18} aria-label={t("aria.copied")} style={{ cursor: "pointer" }} />
+              <Check
+                size={18}
+                aria-label={t("aria.copied")}
+                style={{ cursor: "pointer" }}
+              />
             ) : (
               <Copy
                 size={18}
@@ -144,7 +151,13 @@ export default function Page() {
               text: t("actions.downloadQr"),
               size: "small",
               icon: (
-                <span style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem" }}>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.375rem",
+                  }}
+                >
                   <QrCode size={13} />
                   <Download size={13} />
                 </span>
