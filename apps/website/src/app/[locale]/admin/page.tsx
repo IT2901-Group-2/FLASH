@@ -9,7 +9,7 @@ export default function Page() {
   const t = useTranslations("admin.login");
   return (
     <div className={styles.pageWrapper}>
-      <CameraIcon data-testid="camera-icon" />
+      <CameraIcon />
       <Title
         data-testid="title"
         align="center"
@@ -20,7 +20,7 @@ export default function Page() {
       >
         {t("title")}
       </Title>
-      <SignInCard data-testid="sign-in-card" />
+      <SignInCard />
       <p>{t("undertext")}</p>
     </div>
   );

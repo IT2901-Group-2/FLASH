@@ -5,16 +5,18 @@ import { NextIntlClientProvider } from "next-intl";
 
 // Mock translations
 const messages = {
-  AdminLogin: {
-    title: "PhotoEvent Admin",
-    description: "Manage your photo events with ease",
-    undertext: "Some undertext",
-  },
-  SignInCard: {
-    title: "Sign In",
-    titleDescription: "Enter your credentials",
-    inputLabel: "Password",
-    buttonTitle: "Sign In",
+  admin: {
+    login: {
+      title: "PhotoEvent Admin",
+      description: "Manage your photo events with ease",
+      undertext: "Self-hosted Photo Event Management System",
+      signIn: {
+        title: "Sign in",
+        titleDescription: "Enter your credentials to access the admin panel",
+        buttonTitle: "Sign in",
+        inputLabel: "Password",
+      },
+    },
   },
 };
 
@@ -57,7 +59,7 @@ describe("AdminLogin Page", () => {
   });
 
   it("passes correct props to Title component", () => {
-    const { container } = renderWithIntl(<Page />);
+    renderWithIntl(<Page />);
     const h1 = screen.getByTestId("title");
 
     expect(h1.getAttribute("data-color")).toBe("brand-purple");
