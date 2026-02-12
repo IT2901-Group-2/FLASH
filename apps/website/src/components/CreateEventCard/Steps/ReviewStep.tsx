@@ -4,25 +4,25 @@ import { Title, Controls, QRDisplay, Button, Input } from "ui";
 import { generateRandomString } from "@/utils/string-utils";
 import { Copy, Download } from "lucide-react";
 import styles from "./Steps.module.css";
+import { useTranslations } from "next-intl";
 
 const ReviewStep = ({ formData }: StepProps) => {
+  const t = useTranslations("admin.dashboard.event.create.review");
+
   // TODO: When endpoint is made, make this load until data is fetched.
   const [view, setView] = useState<string>("guest");
 
   return (
     <>
-      <Title
-        size="medium"
-        description="You can share the QR code or send them the link in order for others to join the event and upload images."
-      >
-        Let others join!
+      <Title size="medium" description={t("description")}>
+        {t("title")}
       </Title>
       <Controls
         onChange={setView}
         value={view}
         options={[
-          { label: "Guest", value: "guest" },
-          { label: "Moderator", value: "moderator" },
+          { label: t("guest.name"), value: "guest" },
+          { label: t("moderator.name"), value: "moderator" },
         ]}
       />
       <div className={styles.infoContainer}>
@@ -32,15 +32,12 @@ const ReviewStep = ({ formData }: StepProps) => {
             code={`${formData.code || generateRandomString(5)}${view === "moderator" ? "-MOD" : ""}`}
           />
           <Button variant="secondary" icon={<Download />}>
-            Download
+            {t("download")}
           </Button>
         </div>
         <div className={styles.linkContainer}>
-          <Title
-            size="medium"
-            description="Everyone with the link below will be able to uploaded images to this event"
-          >
-            Guest Link
+          <Title size="medium" description={t("guest.linkDescription")}>
+            {t("guest.linkTitle")}
           </Title>
           <Input
             aria-label="link"

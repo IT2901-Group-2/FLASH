@@ -2,21 +2,24 @@ import { useState } from "react";
 import { StepProps } from "../CreateEventCard";
 import { Title, DropdownControls, Input, Switch } from "ui";
 import styles from "./Steps.module.css";
+import { useTranslations } from "next-intl";
 
 export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
+  const t = useTranslations("admin.dashboard.event.create.options");
+
   const [limitMode, setLimitMode] = useState<"limited" | "unlimited">("limited");
   const [autoGenerateCode, setAutoGenerateCode] = useState<boolean>(true);
 
   return (
     <>
-      <Title description="Configure event settings.">Event Settings</Title>
+      <Title description={t("description")}>{t("title")}</Title>
       <DropdownControls
         onChange={setLimitMode}
         options={[
           {
             content: (
               <div className={styles.maxImageContainer}>
-                <span>Set max uploads to:</span>
+                <span>{t("input.uploads.title")}</span>
                 <Input
                   aria-label="maxImages"
                   type="number"
@@ -31,24 +34,24 @@ export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
                 />
               </div>
             ),
-            label: "Limited",
+            label: t("input.uploads.limited"),
             value: "limited",
           },
           {
-            label: "Unlimited",
+            label: t("input.uploads.unlimited"),
             value: "unlimited",
           },
         ]}
       />
       <Switch position="right">
-        <b>Auto-Approve Photos</b>
+        <b>{t("input.autoApprove")}</b>
       </Switch>
       <Switch
         position="right"
         checked={autoGenerateCode}
         onChange={e => setAutoGenerateCode(e.target.checked)}
       >
-        <b>Auto Generate Code</b>
+        <b>{t("input.autoGenerate")}</b>
       </Switch>
       {!autoGenerateCode && (
         <Input

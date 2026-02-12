@@ -1,29 +1,30 @@
 import { Calendar } from "lucide-react";
 import { Title, Input } from "ui";
 import { StepProps } from "../CreateEventCard";
+import { useTranslations } from "next-intl";
 
 export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
+  const t = useTranslations("admin.dashboard.event.create.basicInfo");
+
   return (
     <>
-      <Title description="Set up a new photo event for your guests. A QR code will be generated automatically.">
-        Create Event Name
-      </Title>
+      <Title description={t("description")}>{t("title")}</Title>
       <Input
         value={formData.name}
         onChange={e => updateFormData("name", e.target.value)}
-        label="Event Name"
+        label={t("input.name")}
         aria-label="eventName"
       />
       <Input
         value={formData.description}
         onChange={e => updateFormData("description", e.target.value)}
-        label="Event Description"
+        label={t("input.description")}
         aria-label="eventDescription"
       />
       <Input
         value={formData.date}
         onChange={e => updateFormData("date", e.target.value)}
-        label="Event Date"
+        label={t("input.date")}
         aria-label="eventDate"
         type="date"
         icon={<Calendar />}

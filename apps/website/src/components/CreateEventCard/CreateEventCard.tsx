@@ -2,6 +2,7 @@ import { RefAttributes, useState } from "react";
 import { Button, Card, ProgressDots } from "ui";
 import styles from "./CreateEventCard.module.css";
 import { BasicInfoStep, OptionsStep, ReviewStep } from "./Steps";
+import { useTranslations } from "next-intl";
 
 // TODO: This will change when create event endpoint is done
 type LocalForm = {
@@ -12,7 +13,7 @@ type LocalForm = {
   autoApprove: boolean;
   code: string;
 };
-
+// TODO: This will change when create event endpoint is done
 const DefaultFormData = {
   name: "",
   description: "",
@@ -32,6 +33,8 @@ export interface StepProps {
 }
 
 export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps) => {
+  const t = useTranslations("admin.dashboard.event.create");
+
   const [progress, setProgress] = useState<number>(1);
   const [formdata, setFormData] = useState<LocalForm>(DefaultFormData);
   const updateFormData = <K extends keyof LocalForm>(k: K, v: LocalForm[K]) =>
@@ -61,17 +64,17 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
           <div className={styles.buttonGroup}>
             {isMiddleStep && (
               <Button variant="secondary" onClick={prevStep}>
-                Previous
+                {t("previous")}
               </Button>
             )}
             {!isLastStep && (
               <Button variant="tertiary" onClick={exitForm}>
-                Cancel
+                {t("cancel")}
               </Button>
             )}
             {!isLastStep && (
               <Button variant="secondary" onClick={nextStep}>
-                Next
+                {t("next")}
               </Button>
             )}
             {isLastStep && (
@@ -83,7 +86,7 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
                   console.log(formdata);
                 }}
               >
-                Finish
+                {t("finish")}
               </Button>
             )}
           </div>
