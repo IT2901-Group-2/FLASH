@@ -11,8 +11,8 @@
   color: var(--color-neutral-000);
   font-size: 1.5rem;
   transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+    background-color 1s ease,
+    color 1s ease;
 
   z-index: 1;
 
@@ -45,7 +45,7 @@
   width: 100%;
   background-color: var(--data-color-500);
   transform: translateX(calc((var(--progress) * 100%) - 100%));
-  transition: transform 0.3s ease;
+  transition: transform 1s ease;
 }
 
 .progressDots {
