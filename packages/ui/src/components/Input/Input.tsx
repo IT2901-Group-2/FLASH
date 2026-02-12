@@ -112,7 +112,8 @@ export const Input = ({
           loading && styles.loading,
           disabled && styles.disabled,
           error && styles.error,
-          success && styles.success
+          success && styles.success,
+          className
         )}
         data-color={data}
         data-variant={variant}

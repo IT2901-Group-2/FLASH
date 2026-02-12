@@ -3,6 +3,7 @@ import styles from "./page.module.css";
 import { useTranslations } from "next-intl";
 
 export default function Home() {
+  return <div></div>;
   const t = useTranslations("HomePage");
 
   return (

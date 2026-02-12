@@ -12,6 +12,7 @@
     "test": "vitest --coverage"
   },
   "dependencies": {
+    "lucide-react": "^0.562.0",
     "next": "16.1.4",
     "next-intl": "^4.8.2",
     "react": "19.2.3",

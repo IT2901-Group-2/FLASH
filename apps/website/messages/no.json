@@ -2,5 +2,15 @@
   "HomePage": {
     "title": "Hallo verden!",
     "about": "Om oss"
+  },
+  "admin": {
+    "dashboard": {
+      "sidebar": {
+        "desktop": "Dashboard",
+        "event": "Events",
+        "settings": "Innstillinger",
+        "storage": "Lagring"
+      }
+    }
   }
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./Title.module.css";
 import { cl } from "../../util/className";
+import { ColorName } from "@/styles/colorType";
 
 export interface TitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   /** Title Content. */
@@ -30,7 +31,7 @@ export interface TitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   /**
    * Overrides inherited color.
    */
-  "data-color"?: "accent" | "neutral" | "brand-purple";
+  "data-color"?: ColorName;
   /**
    * Ref to the heading element
    */
@@ -67,7 +68,11 @@ export const Title = ({
       >
         {children && <span className={styles.text}>{children}</span>}
       </Component>
-      {description && <p className={styles.description}>{description}</p>}
+      {description && (
+        <p data-align={align} data-size={size} className={styles.description}>
+          {description}
+        </p>
+      )}
     </div>
   );
 };
