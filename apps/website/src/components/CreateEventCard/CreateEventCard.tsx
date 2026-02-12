@@ -1,5 +1,14 @@
 import { RefAttributes, useState } from "react";
-import { Button, Card, Controls, DropdownControls, Input, Switch, Title } from "ui";
+import {
+  Button,
+  Card,
+  Controls,
+  DropdownControls,
+  Input,
+  ProgressDots,
+  Switch,
+  Title,
+} from "ui";
 import styles from "./CreateEventCard.module.css";
 import { Calendar } from "lucide-react";
 
@@ -107,7 +116,20 @@ const Step2 = ({ formData, updateFormData }: StepProps) => {
 };
 
 const Step3 = () => {
-  return <></>;
+  // TODO: When endpoint is made, make this load until data is fetched.
+  return (
+    <>
+      <Title description="You can share the QR code or send them the link in order for others to join the event and upload images.">
+        Your Event has been created!
+      </Title>
+      <Controls
+        options={[
+          { label: "Guest", value: "guest" },
+          { label: "Moderator", value: "moderator" },
+        ]}
+      />
+    </>
+  );
 };
 
 export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps) => {
@@ -137,7 +159,7 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
   return (
     <dialog ref={ref} className={styles.container} {...rest} autoFocus>
       <Card className={styles.card}>
-        {/* <ProgressDots maxValue={3} value={progress} data-color="brand-purple" /> */}
+        <ProgressDots maxValue={3} value={progress} data-color="brand-purple" />
         <form className={styles.form}>
           <CurrentStep formData={formdata} updateFormData={updateFormData} />
           <div className={styles.buttonGroup}>
