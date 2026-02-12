@@ -12,7 +12,7 @@ import { capitalize } from "@/utils/string-utils";
  */
 export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) => {
   const t = useTranslations("admin.dashboard.sidebar");
-  const { theme, toggleTheme } = useTheme();
+  const { resolvedTheme, toggleTheme } = useTheme();
 
   return (
     <Sidebar className={className} {...rest}>
@@ -28,8 +28,11 @@ export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivEleme
       <Sidebar.Group title="Config" position="bottom">
         <Sidebar.Item icon={<Settings />}>{t("settings")}</Sidebar.Item>
         <Sidebar.Item icon={<HardDrive />}>{t("storage")}</Sidebar.Item>
-        <Sidebar.Item icon={theme === "dark" ? <Sun /> : <Moon />} onClick={toggleTheme}>
-          {capitalize(theme)} mode
+        <Sidebar.Item
+          icon={resolvedTheme === "dark" ? <Sun /> : <Moon />}
+          onClick={toggleTheme}
+        >
+          {capitalize(resolvedTheme)} mode
         </Sidebar.Item>
       </Sidebar.Group>
       <Sidebar.Footer>
