@@ -12,13 +12,11 @@ body {
 
 @media screen and (max-width: 768px) {
   :root {
-    font-size: 8px;
+    font-size: 12px;
   }
 }
 
 :root {
-  font-size: 12px;
-
   --text-tertiary: #474747;
   --background-primary: #f8f2f5;
 }
