@@ -10,7 +10,7 @@
   justify-content: flex-start;
 
   gap: 1rem;
-  padding: 1.5rem 1.5rem 1.25rem;
+  padding: 1.5rem 1.5rem calc(2.5rem + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 
