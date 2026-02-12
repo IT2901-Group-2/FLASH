@@ -18,10 +18,10 @@
     transform: translateY(-2px);
   } */
 
-  &:active {
+  /* &:active {
     transform: translateY(0);
     box-shadow: 0 2px 6px rgba(96, 52, 78, 0.08);
-  }
+  } */
 }
 
 .card[data-color="background-secondary"] {
