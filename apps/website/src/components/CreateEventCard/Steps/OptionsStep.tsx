@@ -20,7 +20,7 @@ export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
                 <Input
                   aria-label="maxImages"
                   type="number"
-                  min={0}
+                  min={1}
                   value={formData.photosPerGuest}
                   onChange={e =>
                     updateFormData(
@@ -51,7 +51,12 @@ export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
         <b>Auto Generate Code</b>
       </Switch>
       {!autoGenerateCode && (
-        <Input visualSize="small" label="Custom Entry Code" aria-label="manualCode" />
+        <Input
+          visualSize="small"
+          label="Custom Entry Code"
+          aria-label="manualCode"
+          onChange={e => updateFormData("code", e.target.value)}
+        />
       )}
     </>
   );

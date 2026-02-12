@@ -13,7 +13,7 @@
 .infoContainer {
   display: flex;
   flex-direction: row;
-  gap: 1rem;
+  gap: 2rem;
 }
 
 .QRCodeContainer {
@@ -29,6 +29,6 @@
 .linkContainer {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: start;
   justify-content: center;
 }

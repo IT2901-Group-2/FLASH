@@ -13,6 +13,15 @@ type LocalForm = {
   code: string;
 };
 
+const DefaultFormData = {
+  name: "",
+  description: "",
+  date: "",
+  photosPerGuest: 1,
+  autoApprove: false,
+  code: "",
+};
+
 interface CreateEventCardProps extends RefAttributes<HTMLDialogElement> {
   onClose: () => void;
 }
@@ -24,14 +33,7 @@ export interface StepProps {
 
 export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps) => {
   const [progress, setProgress] = useState<number>(1);
-  const [formdata, setFormData] = useState<LocalForm>({
-    name: "",
-    description: "",
-    date: "",
-    photosPerGuest: 0,
-    autoApprove: false,
-    code: "",
-  });
+  const [formdata, setFormData] = useState<LocalForm>(DefaultFormData);
   const updateFormData = <K extends keyof LocalForm>(k: K, v: LocalForm[K]) =>
     setFormData(prev => ({ ...prev, [k]: v }));
 
@@ -41,9 +43,14 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
   const nextStep = () => setProgress(c => c + 1);
   const prevStep = () => setProgress(c => c - 1);
   const exitForm = () => {
-    onClose();
+    setFormData(DefaultFormData);
     setProgress(1);
+    onClose();
   };
+
+  const isFirstStep = progress <= 1;
+  const isLastStep = progress >= steps.length;
+  const isMiddleStep = !isFirstStep && !isLastStep;
 
   return (
     <dialog ref={ref} className={styles.container} {...rest} autoFocus>
@@ -52,16 +59,30 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
         <form className={styles.form}>
           <CurrentStep formData={formdata} updateFormData={updateFormData} />
           <div className={styles.buttonGroup}>
-            <Button variant="tertiary" onClick={exitForm}>
-              Cancel
-            </Button>
-            {progress < steps.length && (
+            {isMiddleStep && (
+              <Button variant="secondary" onClick={prevStep}>
+                Previous
+              </Button>
+            )}
+            {!isLastStep && (
+              <Button variant="tertiary" onClick={exitForm}>
+                Cancel
+              </Button>
+            )}
+            {!isLastStep && (
               <Button variant="secondary" onClick={nextStep}>
                 Next
               </Button>
             )}
-            {progress >= steps.length && (
-              <Button variant="primary" data-color="brand-purple" onClick={exitForm}>
+            {isLastStep && (
+              <Button
+                variant="primary"
+                data-color="brand-purple"
+                onClick={() => {
+                  exitForm();
+                  console.log(formdata);
+                }}
+              >
                 Finish
               </Button>
             )}

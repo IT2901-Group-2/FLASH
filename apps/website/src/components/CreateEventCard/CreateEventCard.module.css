@@ -44,4 +44,12 @@
   flex-direction: row;
   justify-content: end;
   gap: 1rem;
+
+  border-top: 1px solid var(--text-tertiary);
+  margin-top: 1rem;
+  padding-top: 1rem;
+
+  > :first-child:not(:only-child) {
+    margin-right: auto;
+  }
 }
