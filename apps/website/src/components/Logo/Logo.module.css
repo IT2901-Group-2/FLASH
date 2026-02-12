@@ -2,6 +2,7 @@
   display: flex;
   width: 3.5rem;
   height: 3.5rem;
+  aspect-ratio: 1/1;
   align-items: center;
   border-radius: 0.5rem;
   background: var(--text-tertiary);
