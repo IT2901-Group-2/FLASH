@@ -13,7 +13,7 @@ export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivEleme
 
   return (
     <Sidebar className={className} {...rest}>
-      <Sidebar.Trigger style={{ top: "3.5rem" }} />{" "}
+      <Sidebar.Trigger style={{ top: "3.5rem" }} />
       {/* Positioning. Didn't think of a better way */}
       <Sidebar.Header>
         <SidebarHeader />
