@@ -10,6 +10,54 @@
         "event": "Event",
         "settings": "Settings",
         "storage": "Storage"
+      },
+      "event": {
+        "create": {
+          "previous": "Previous",
+          "cancel": "Cancel",
+          "next": "Next",
+          "finish": "Finish",
+          "basicInfo": {
+            "title": "Create Event Name",
+            "description": "Set up a new photo event for your guests. A QR code will be generated automatically.",
+            "input": {
+              "name": "Event Name",
+              "description": "Event Description",
+              "date": "Event Date"
+            }
+          },
+          "options": {
+            "title": "Event Settings",
+            "description": "Configure event settings.",
+            "input": {
+              "uploads": {
+                "title": "Set max uploads to",
+                "limited": "Limited",
+                "unlimited": "Unlimited"
+              },
+              "autoApprove": "Auto-Approve Photos",
+              "autoGenerate": "Auto-Generate Code"
+            }
+          },
+          "review": {
+            "title": "Let others join!",
+            "description": "You can share the QR code or send them the link in order for others to join the event and upload images.",
+            "download": "Download",
+            "guest": {
+              "name": "Guest",
+              "linkTitle": "Guest Link",
+              "linkDescription": "Everyone with the link below will be able to uploaded images to this event"
+            },
+            "moderator": {
+              "name": "Moderator"
+            }
+          }
+        },
+        "page": {
+          "title": "Event",
+          "description": "Manage your events.",
+          "createNew": "Create New Event"
+        }
       }
     }
   },

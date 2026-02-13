@@ -5,7 +5,6 @@
   --color-text: var(--data-color-1000);
   --color-text-inactive: var(--data-color-800);
 
-  width: max-content;
   min-width: 21.375rem;
 
   background: var(--color-surface);
