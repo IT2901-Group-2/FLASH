@@ -78,14 +78,7 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
               </Button>
             )}
             {isLastStep && (
-              <Button
-                variant="primary"
-                data-color="brand-purple"
-                onClick={() => {
-                  exitForm();
-                  console.log(formdata);
-                }}
-              >
+              <Button variant="primary" data-color="brand-purple" onClick={exitForm}>
                 {t("finish")}
               </Button>
             )}
