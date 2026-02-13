@@ -6,7 +6,7 @@ import CreateEventCard from "@/components/CreateEventCard/CreateEventCard";
 import { useRef } from "react";
 import { useTranslations } from "next-intl";
 
-export const Page = () => {
+const Page = () => {
   const t = useTranslations("admin.dashboard.event.page");
   const dialogRef = useRef<HTMLDialogElement>(null);
 
