@@ -22,8 +22,17 @@ p {
   font-family: "Nunito Sans", sans-serif;
 }
 
+.sbdocs {
+  padding-right: 25%;
+}
+
+@media (max-width: 768px) {
+  .sbdocs {
+    padding-right: 0;
+  }
+}
+
 .docs-story {
-  background-color: red;
   background-color: var(--canvas-bg-inverted);
 
   > div {

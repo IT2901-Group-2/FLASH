@@ -1,0 +1,20 @@
+.table {
+  width: 100%;
+  text-align: left;
+
+  .tableHeader {
+    border-bottom: 2px solid var(--docs-color-outline);
+  }
+}
+
+tbody {
+  background-color: transparent;
+
+  tr:hover {
+    background-color: color-mix(in srgb, var(--docs-color-background) 75%, white);
+  }
+
+  .datacell {
+    border-bottom: 1px solid var(--docs-color-outline);
+  }
+}

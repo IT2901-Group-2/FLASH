@@ -1,4 +1,4 @@
-import React from "react";
+import styles from "./Table.module.css";
 
 export type TableData = {
   header: string[];
@@ -9,11 +9,13 @@ export const Table = ({ header, data }: TableData) => {
   const dataKeys = data.length > 0 ? Object.keys(data[0]) : [];
 
   return (
-    <table style={{ width: "100%", textAlign: "left" }}>
+    <table className={styles.table}>
       <thead>
         <tr>
           {header.map((headerItem, index) => (
-            <th key={index}>{headerItem}</th>
+            <th className={styles.tableHeader} key={index}>
+              {headerItem}
+            </th>
           ))}
         </tr>
       </thead>
@@ -21,7 +23,9 @@ export const Table = ({ header, data }: TableData) => {
         {data.map((row, i) => (
           <tr key={i}>
             {dataKeys.map((key, index) => (
-              <td key={index}>{row[key]}</td>
+              <td className={styles.datacell} key={index}>
+                {row[key]}
+              </td>
             ))}
           </tr>
         ))}
