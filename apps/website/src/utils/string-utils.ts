@@ -1,3 +1,7 @@
+const alphabet = new TextEncoder().encode(
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+);
+
 /**
  * Capitalzes the first letter in the given string.
  *
@@ -16,13 +20,8 @@ export const capitalize = (string: string) => {
  * @returns A random string of the specified length
  */
 export function generateRandomString(length: number): string {
-  const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  let result = "";
-
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    result += characters[randomIndex];
-  }
-
-  return result;
+  if (length < 0) return "";
+  return new TextDecoder().decode(
+    crypto.getRandomValues(new Uint8Array(length)).map(b => alphabet[b % alphabet.length])
+  );
 }
