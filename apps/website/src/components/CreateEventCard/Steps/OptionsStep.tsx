@@ -28,7 +28,7 @@ export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
                   onChange={e =>
                     updateFormData(
                       "photosPerGuest",
-                      limitMode === "limited" ? e.target.value : 9999
+                      limitMode === "limited" ? e.target.value : Infinity
                     )
                   }
                 />
