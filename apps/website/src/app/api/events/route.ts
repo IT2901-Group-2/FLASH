@@ -14,6 +14,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     .map(data => eventService.createEvent(data))
     .fold(
       event => NextResponse.json(event),
-      err => new NextResponse(err.message, { status: 500 })
+      err => NextResponse.json({ message: err.message }, { status: 500 })
     );
 }

@@ -13,7 +13,7 @@ export async function PATCH(
     .map(data => eventService.updateEvent(eventId, data))
     .fold(
       event => NextResponse.json(event),
-      err => new NextResponse(err.message, { status: 500 })
+      err => NextResponse.json({ message: err.message }, { status: 500 })
     );
 }
 
@@ -25,6 +25,6 @@ export async function DELETE(
 
   return eventService.deleteEvent(eventId).fold(
     () => new NextResponse(null, { status: 200 }),
-    err => new NextResponse(err.message, { status: 500 })
+    err => NextResponse.json({ message: err.message }, { status: 500 })
   );
 }
