@@ -1,14 +1,14 @@
-import { dbService } from "@/services/databaseService";
+import { eventService } from "@/services/eventService";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(_: NextRequest): Promise<NextResponse> {
-  const events = await dbService.getEvents().getOrThrow();
+  const events = await eventService.getEvents().getOrThrow();
 
   return NextResponse.json(events);
 }
 
 export async function POST(_: NextRequest): Promise<NextResponse> {
-  const event = await dbService.createEvent({ name: "eventname" }).getOrThrow();
+  const event = await eventService.createEvent({ name: "eventname" }).getOrThrow();
 
   return NextResponse.json(event);
 }
