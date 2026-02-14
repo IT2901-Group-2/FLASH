@@ -1,11 +1,11 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "45aedcd5-2839-46ec-bd26-a2a7df1e228e",
+  "id": "6bae9a58-c597-4696-ba4a-d6691148693c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "test_table": {
-      "name": "test_table",
+    "events": {
+      "name": "events",
       "columns": {
         "id": {
           "name": "id",
@@ -14,15 +14,51 @@
           "notNull": true,
           "autoincrement": false
         },
-        "val": {
-          "name": "val",
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "uploadLimit": {
+          "name": "uploadLimit",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "guestCode": {
+          "name": "guestCode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "adminCode": {
+          "name": "adminCode",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "events_guestCode_unique": {
+          "name": "events_guestCode_unique",
+          "columns": [
+            "guestCode"
+          ],
+          "isUnique": true
+        },
+        "events_adminCode_unique": {
+          "name": "events_adminCode_unique",
+          "columns": [
+            "adminCode"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},

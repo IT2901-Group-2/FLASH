@@ -9,7 +9,8 @@
     "lint": "eslint --max-warnings 0",
     "format": "prettier --write src/",
     "format:check": "prettier --check src/",
-    "test": "vitest --coverage"
+    "test": "vitest --coverage",
+    "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
     "better-sqlite3": "^12.6.2",
@@ -23,6 +24,7 @@
     "react-dom": "19.2.3",
     "typescript-result": "^3.5.2",
     "ui": "workspace:*",
+    "ulid": "^3.0.2",
     "upath": "^2.0.1"
   },
   "devDependencies": {

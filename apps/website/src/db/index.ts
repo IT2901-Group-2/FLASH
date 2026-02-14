@@ -1,31 +1,17 @@
-import { migrate } from "drizzle-orm/better-sqlite3/migrator";
-import { drizzle } from "drizzle-orm/better-sqlite3";
-import { AsyncResult } from "typescript-result";
-import { FileStorage } from "file-storage";
-import Sqlite from "better-sqlite3";
-import upath from "upath";
-
-import * as schema from "./schema";
-export default schema;
 export * from "./schema";
+
+import * as schema from "./schema/events";
+export { schema };
+
+import upath from "upath";
+import { Result } from "typescript-result";
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import { migrate as drizzleMigrate } from "drizzle-orm/better-sqlite3/migrator";
+
+const migrationsFolder = upath.join(process.cwd(), "drizzle");
 
 export type Database = ReturnType<typeof drizzle<typeof schema>>;
 
-const migrationsFolder = upath.join(process.cwd(), "drizzle");
-const DBFILE = "index.db" as const;
-
-export function getDatabase(storage: FileStorage): AsyncResult<Database, Error> {
-  return storage
-    .read(DBFILE)
-    .map(buf => new Sqlite(buf))
-    .recover(() => new Sqlite(":memory:"))
-    .map(client => drizzle(client, { schema }))
-    .mapCatching(db => migrate(db, { migrationsFolder }));
-}
-
-export function backupDatabase(
-  storage: FileStorage,
-  db: Database
-): AsyncResult<void, Error> {
-  return storage.write(DBFILE, db.$client.serialize());
+export function migrate(db: Database): Result<Database, Error> {
+  return Result.try(() => drizzleMigrate(db, { migrationsFolder })).map(() => db);
 }
