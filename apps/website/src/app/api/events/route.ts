@@ -1,14 +1,19 @@
+import { createEventSchema } from "@/db";
+import { parseRequestBody } from "@/lib/request";
 import { eventService } from "@/services/eventService";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(_: NextRequest): Promise<NextResponse> {
+export async function GET(): Promise<NextResponse> {
   const events = await eventService.getEvents().getOrThrow();
 
   return NextResponse.json(events);
 }
 
-export async function POST(_: NextRequest): Promise<NextResponse> {
-  const event = await eventService.createEvent({ name: "eventname" }).getOrThrow();
-
-  return NextResponse.json(event);
+export async function POST(req: NextRequest): Promise<NextResponse> {
+  return parseRequestBody(req, createEventSchema)
+    .map(data => eventService.createEvent(data))
+    .fold(
+      event => NextResponse.json(event),
+      err => new NextResponse(err.message, { status: 500 })
+    );
 }

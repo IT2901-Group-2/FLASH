@@ -25,7 +25,8 @@
     "typescript-result": "^3.5.2",
     "ui": "workspace:*",
     "ulid": "^3.0.2",
-    "upath": "^2.0.1"
+    "upath": "^2.0.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.1",

@@ -38,6 +38,7 @@ export class FSStorage implements FileStorage {
    * @returns An empty result
    */
   private makeDir(dirpath: string): AsyncResult<void, Error> {
+    const r = Result.try(() => 1)
     return Result.try(() => fs.promises.mkdir(dirpath, { recursive: true })).map(
       Result.ok
     );

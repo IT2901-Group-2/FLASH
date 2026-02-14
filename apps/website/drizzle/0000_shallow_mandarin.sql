@@ -1,5 +1,5 @@
 CREATE TABLE `events` (
-	`id` integer PRIMARY KEY NOT NULL,
+	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
 	`uploadLimit` integer,
 	`guestCode` text NOT NULL,
