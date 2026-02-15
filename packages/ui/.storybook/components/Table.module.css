@@ -2,19 +2,32 @@
   width: 100%;
   text-align: left;
 
-  .tableHeader {
+  thead {
     border-bottom: 2px solid var(--docs-color-outline);
+
+    th {
+      border: none !important;
+    }
+  }
+  tbody {
+    background-color: transparent;
   }
 }
 
-tbody {
-  background-color: transparent;
+tr {
+  background-color: transparent !important;
+  border-top: none !important;
+  border-bottom: 1px solid var(--docs-color-outline);
 
-  tr:hover {
-    background-color: color-mix(in srgb, var(--docs-color-background) 75%, white);
+  &:hover {
+    background-color: color-mix(
+      in srgb,
+      var(--docs-color-background) 75%,
+      white
+    ) !important;
   }
 
-  .datacell {
-    border-bottom: 1px solid var(--docs-color-outline);
+  td {
+    border: none !important;
   }
 }

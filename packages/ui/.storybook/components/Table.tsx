@@ -13,9 +13,7 @@ export const Table = ({ header, data }: TableData) => {
       <thead>
         <tr>
           {header.map((headerItem, index) => (
-            <th className={styles.tableHeader} key={index}>
-              {headerItem}
-            </th>
+            <th key={index}>{headerItem}</th>
           ))}
         </tr>
       </thead>
@@ -23,9 +21,7 @@ export const Table = ({ header, data }: TableData) => {
         {data.map((row, i) => (
           <tr key={i}>
             {dataKeys.map((key, index) => (
-              <td className={styles.datacell} key={index}>
-                {row[key]}
-              </td>
+              <td key={index}>{row[key]}</td>
             ))}
           </tr>
         ))}
