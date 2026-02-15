@@ -6,9 +6,7 @@ export function parseRequestBody<T>(
   request: NextRequest,
   schema: z.ZodType<T>
 ): AsyncResult<T, Error> {
-  return Result.try(request.json).mapCatching(body =>
-    z.parseAsync(schema, body)
-  ) as AsyncResult<T, Error>;
+  return Result.try(async () => z.parseAsync(schema, await request.json()));
 }
 
 export function parseSearchParams<T>(
