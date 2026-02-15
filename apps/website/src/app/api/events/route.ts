@@ -4,9 +4,10 @@ import { eventService } from "@/services/eventService";
 import { createEventSchema } from "@/db";
 
 export async function GET(): Promise<NextResponse> {
-  const events = await eventService.getEvents().getOrThrow();
-
-  return NextResponse.json(events);
+  return eventService.getEvents().fold(
+    events => NextResponse.json(events),
+    err => NextResponse.json({ message: err.message }, { status: 500 })
+  );
 }
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
