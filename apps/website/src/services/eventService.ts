@@ -1,6 +1,7 @@
+import { Database, DatabaseService, dbService } from "./databaseService";
 import { CreateEvent, Event, eventTable, UpdateEvent } from "@/db";
 import { AsyncResult, Result } from "typescript-result";
-import { Database, DatabaseService, dbService } from "./databaseService";
+import { getFirstRow } from "@/lib/utils/sql";
 import { eq } from "drizzle-orm";
 
 export class EventService {
@@ -18,39 +19,24 @@ export class EventService {
 
   createEvent(data: CreateEvent): AsyncResult<Event, Error> {
     return Result.try(() => this.db.insert(eventTable).values(data).returning())
-      .map(rows =>
-        rows[0] ? Result.ok(rows[0]) : Result.error(new Error("Could not create event"))
-      )
-      .map(event => {
-        this.dbService.flush();
-        return event;
-      });
+      .map(rows => getFirstRow(rows, "Unable to create event"))
+      .onSuccess(() => this.dbService.flush());
   }
 
   updateEvent(eventId: string, data: UpdateEvent): AsyncResult<Event, Error> {
     return Result.try(() =>
       this.db.update(eventTable).set(data).where(eq(eventTable.id, eventId)).returning()
     )
-      .map(rows =>
-        rows[0] ? Result.ok(rows[0]) : Result.error(new Error("Could not update event"))
-      )
-      .map(event => {
-        this.dbService.flush();
-        return event;
-      });
+      .map(rows => getFirstRow(rows, "Unable to update event"))
+      .onSuccess(() => this.dbService.flush());
   }
 
   deleteEvent(eventId: string): AsyncResult<Event, Error> {
     return Result.try(() =>
       this.db.delete(eventTable).where(eq(eventTable.id, eventId)).returning()
     )
-      .map(rows =>
-        rows[0] ? Result.ok(rows[0]) : Result.error(new Error("Could not delete event"))
-      )
-      .map(event => {
-        this.dbService.flush();
-        return event;
-      });
+      .map(rows => getFirstRow(rows, "Unable to delete event"))
+      .onSuccess(() => this.dbService.flush());
   }
 }
 

@@ -1,7 +1,7 @@
-import { createEventSchema } from "@/db";
-import { parseRequestBody } from "@/lib/request";
-import { eventService } from "@/services/eventService";
+import { parseRequestBody } from "@/lib/utils/validation";
 import { NextRequest, NextResponse } from "next/server";
+import { eventService } from "@/services/eventService";
+import { createEventSchema } from "@/db";
 
 export async function GET(): Promise<NextResponse> {
   const events = await eventService.getEvents().getOrThrow();
