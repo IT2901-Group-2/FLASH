@@ -5,6 +5,12 @@
 
   --canvas-bg-inverted: #222325;
   --canvas-bg: #ffffff;
+
+  --gray: #6b7280;
+  --blue: #3b82f6;
+  --green: #10b981;
+  --yellow: #f59e0b;
+  --red: #ef4444;
 }
 
 [data-theme="dark"] {
@@ -40,4 +46,20 @@ p {
     background-color: var(--canvas-bg);
     max-width: calc(100% - 2.75rem);
   }
+}
+
+[data-color="gray"] {
+  --data-color: var(--gray);
+}
+[data-color="blue"] {
+  --data-color: var(--blue);
+}
+[data-color="green"] {
+  --data-color: var(--green);
+}
+[data-color="yellow"] {
+  --data-color: var(--yellow);
+}
+[data-color="red"] {
+  --data-color: var(--red);
 }

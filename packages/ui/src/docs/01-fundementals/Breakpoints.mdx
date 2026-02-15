@@ -2,6 +2,7 @@ import { DocsContext, Meta } from "@storybook/addon-docs/blocks";
 import { Table } from "@docs-components/Table";
 import { InfoBox } from "@docs-components/InfoBox";
 import { CodeBox } from "@docs-components/CodeBox";
+import {Lightbulb} from "lucide-react"
 
 <Meta title="Fundementals/Styling/Breakpoints" />
 # Breakpoints
@@ -31,8 +32,8 @@ As a designer, breakpoints allow you to adapt your design to different screen si
 ## Code
 
 <CodeBox title="CSS" language="css">
-  @media (min-width: 480px) {/* small screens */}
-  @media (min-width: 768px) {/* medium screens */}
-  @media (min-width: 1024px) {/* large screens */}
-  @media (min-width: 1280px) {/* extra-large screens */}
+  {`@media (min-width: 480px)
+  @media (min-width: 768px)
+  @media (min-width: 1024px)
+  @media (min-width: 1280px)`}
 </CodeBox>
