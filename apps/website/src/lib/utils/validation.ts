@@ -10,3 +10,17 @@ export function parseRequestBody<T>(
     z.parseAsync(schema, body)
   ) as AsyncResult<T, Error>;
 }
+
+export function parseSearchParams<T>(
+  searchParams: URLSearchParams,
+  schema: z.ZodType<T>
+): AsyncResult<T, Error> {
+  const params = searchParams
+    .keys()
+    .reduce(
+      (acc, key) => ({ ...acc, [key]: searchParams.getAll(key) }),
+      {} as Record<string, unknown[]>
+    );
+
+  return Result.try(() => z.parseAsync(schema, params));
+}

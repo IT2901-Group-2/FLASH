@@ -1,8 +1,8 @@
 import { Database, DatabaseService, dbService } from "./databaseService";
-import { CreateEvent, Event, eventTable, UpdateEvent } from "@/db";
+import { CreateEvent, Event, eventTable, GetEvent, UpdateEvent } from "@/db";
 import { AsyncResult, Result } from "typescript-result";
 import { getFirstRow } from "@/lib/utils/sql";
-import { eq } from "drizzle-orm";
+import { and, eq, like, inArray } from "drizzle-orm";
 
 export class EventService {
   private readonly dbService: DatabaseService;
@@ -13,8 +13,20 @@ export class EventService {
     this.db = dbService.db;
   }
 
-  getEvents(): AsyncResult<Event[], Error> {
-    return Result.try(() => this.db.select().from(eventTable));
+  getEvents({ id, name, guestCode, adminCode }: GetEvent): AsyncResult<Event[], Error> {
+    return Result.try(() =>
+      this.db
+        .select()
+        .from(eventTable)
+        .where(
+          and(
+            id !== undefined ? inArray(eventTable.id, id) : undefined,
+            name !== undefined ? like(eventTable.name, `%${name}%`) : undefined,
+            guestCode !== undefined ? eq(eventTable.guestCode, guestCode) : undefined,
+            adminCode !== undefined ? eq(eventTable.adminCode, adminCode) : undefined
+          )
+        )
+    );
   }
 
   createEvent(data: CreateEvent): AsyncResult<Event, Error> {

@@ -10,6 +10,22 @@ export const eventTable = sqliteTable("events", {
   adminCode: text().unique().notNull().$defaultFn(ulid),
 });
 
+export const getEventSchema = z.object({
+  id: z.string().array().min(1).optional(),
+  name: z
+    .tuple([z.string()])
+    .transform(([str]) => str)
+    .optional(),
+  guestCode: z
+    .tuple([z.string()])
+    .transform(([str]) => str)
+    .optional(),
+  adminCode: z
+    .tuple([z.string()])
+    .transform(([str]) => str)
+    .optional(),
+});
+
 export const createEventSchema = z.object({
   name: z.string(),
   uploadLimit: z.number().positive().optional(),
@@ -21,5 +37,6 @@ export const updateEventSchema = z.object({
 });
 
 export type Event = typeof eventTable.$inferSelect;
+export type GetEvent = z.infer<typeof getEventSchema>;
 export type CreateEvent = z.infer<typeof createEventSchema>;
 export type UpdateEvent = z.infer<typeof updateEventSchema>;

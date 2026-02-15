@@ -1,13 +1,15 @@
-import { parseRequestBody } from "@/lib/utils/validation";
+import { parseRequestBody, parseSearchParams } from "@/lib/utils/validation";
+import { createEventSchema, getEventSchema } from "@/db";
 import { NextRequest, NextResponse } from "next/server";
 import { eventService } from "@/services/eventService";
-import { createEventSchema } from "@/db";
 
-export async function GET(): Promise<NextResponse> {
-  return eventService.getEvents().fold(
-    events => NextResponse.json(events),
-    err => NextResponse.json({ message: err.message }, { status: 500 })
-  );
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  return parseSearchParams(req.nextUrl.searchParams, getEventSchema)
+    .map(filters => eventService.getEvents(filters))
+    .fold(
+      events => NextResponse.json(events),
+      err => NextResponse.json({ message: err.message }, { status: 500 })
+    );
 }
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
