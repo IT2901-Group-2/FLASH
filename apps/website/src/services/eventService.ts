@@ -1,12 +1,15 @@
-import { CreateEvent, Database, db, Event, eventTable, UpdateEvent } from "@/db";
+import { CreateEvent, Event, eventTable, UpdateEvent } from "@/db";
 import { AsyncResult, Result } from "typescript-result";
+import { Database, DatabaseService, dbService } from "./databaseService";
 import { eq } from "drizzle-orm";
 
 export class EventService {
+  private readonly dbService: DatabaseService;
   private readonly db: Database;
 
-  constructor(db: Database) {
-    this.db = db;
+  constructor(dbService: DatabaseService) {
+    this.dbService = dbService;
+    this.db = dbService.db;
   }
 
   getEvents(): AsyncResult<Event[], Error> {
@@ -18,8 +21,8 @@ export class EventService {
       .map(rows =>
         rows[0] ? Result.ok(rows[0]) : Result.error(new Error("Could not create event"))
       )
-      .map(async event => {
-        await this.db.sync();
+      .map(event => {
+        this.dbService.flush();
         return event;
       });
   }
@@ -31,8 +34,8 @@ export class EventService {
       .map(rows =>
         rows[0] ? Result.ok(rows[0]) : Result.error(new Error("Could not update event"))
       )
-      .map(async event => {
-        await this.db.sync();
+      .map(event => {
+        this.dbService.flush();
         return event;
       });
   }
@@ -44,11 +47,11 @@ export class EventService {
       .map(rows =>
         rows[0] ? Result.ok(rows[0]) : Result.error(new Error("Could not delete event"))
       )
-      .map(async event => {
-        await this.db.sync();
+      .map(event => {
+        this.dbService.flush();
         return event;
       });
   }
 }
 
-export const eventService = new EventService(db);
+export const eventService = new EventService(dbService);
