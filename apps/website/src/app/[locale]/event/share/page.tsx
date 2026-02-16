@@ -18,7 +18,7 @@ export default function Page() {
 
   const eventId = "abc123"; // TODO: Replace with actual event ID
   const sharePath = `/event/${eventId}/${shareRole}`;
-  const shareUrl = `${origin}${sharePath}`;
+  const shareUrl = `${window.location.origin}${sharePath}`;
   const displayCode = `${eventId.toUpperCase()}-${shareRole.substring(0, 1).toUpperCase()}`;
 
   const [copied, setCopied] = useState(false);
