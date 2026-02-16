@@ -1,7 +1,9 @@
 import { Button, Card, Input, Title } from "ui";
 import styles from "./SignInCard.module.css";
+import { useTranslations } from "next-intl";
 
 export default function SignInCard() {
+  const t = useTranslations("admin.login.signIn");
   return (
     <Card data-color="background-secondary" className={styles.card}>
       <Title
@@ -10,14 +12,14 @@ export default function SignInCard() {
         weight="bold"
         as="h2"
         data-color="brand-purple"
-        description="Enter your credentials to access the admin panel"
+        description={t("titleDescription")}
       >
-        Sign in
+        {t("title")}
       </Title>
       <Input
         className={styles.inputComponent}
         aria-label="password"
-        label="Password"
+        label={t("inputLabel")}
         required
         type="password"
         id="passwordField"
@@ -25,7 +27,7 @@ export default function SignInCard() {
         placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
       />
       <Button className={styles.buttonComponent} data-color="brand-purple">
-        Sign in
+        {t("buttonTitle")}
       </Button>
     </Card>
   );
