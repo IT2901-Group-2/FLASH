@@ -69,12 +69,12 @@
         "titleDescription": "Skriv inn legitimasjonen din for å få tilgang til administrasjonspanelet",
         "buttonTitle": "Logg inn",
         "inputLabel": "Passord"
-    }
+      }
     }
   },
   "JoinEventPage": {
-  "appTitle": "PhotoEvent",
-  "appDescription": "Administrer fotoarrangementene dine enkelt"
+    "appTitle": "PhotoEvent",
+    "appDescription": "Administrer fotoarrangementene dine enkelt"
   },
   "JoinEvent": {
     "title": "Bli med på et arrangement",
@@ -86,6 +86,44 @@
     "scanQrTab": "Skann QR-kode",
     "scanQrDescription": "Bruk kameraet ditt til å skanne QR-koden til arrangementet",
     "openCameraButton": "Åpne kamera"
+  },
+  "ShareEventPage": {
+    "create": {
+      "firstTitle": "Arrangementet ditt er opprettet!",
+      "firstDescription": "Du kan dele QR-koden eller sende lenken slik at andre kan bli med og laste opp bilder.",
+      "doneText": "Fullfør"
+    },
+    "share": {
+      "firstTitle": "La andre bli med",
+      "firstDescription": "Del QR-koden eller lenken slik at andre kan bli med og laste opp bilder.",
+      "doneText": "Ferdig"
+    },
+    "controls": {
+      "guest": "Gjest",
+      "moderator": "Moderator"
+    },
+    "links": {
+      "guest": {
+        "title": "Gjestelenke",
+        "description": "Alle med lenken under kan laste opp bilder til arrangementet"
+      },
+      "moderator": {
+        "title": "Moderatorlenke",
+        "description": "Alle med lenken under kan moderere alle opplastede bilder"
+      }
+    },
+    "actions": {
+      "downloadQr": "Last ned QR-kode"
+    },
+    "errors": {
+      "copyFailed": "Klarte ikke å kopiere lenken til utklippstavlen"
+    },
+    "aria": {
+      "moderatorAlert": "moderatorlenke-varsel",
+      "guestLinkInput": "gjest-lenke",
+      "moderatorLinkInput": "moderator-lenke",
+      "copyLink": "kopier-lenke",
+      "copied": "Kopiert!"
+    }
   }
-
 }

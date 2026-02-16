@@ -69,7 +69,7 @@
         "titleDescription": "Enter your credentials to access the admin panel",
         "buttonTitle": "Sign in",
         "inputLabel": "Password"
-      }  
+      }
     }
   },
   "JoinEventPage": {
@@ -86,5 +86,55 @@
     "scanQrTab": "Scan QR",
     "scanQrDescription": "Use your camera to scan the event QR code",
     "openCameraButton": "Open Camera"
+  },
+  "login": {
+    "title": "PhotoEvent Admin",
+    "description": "Manage your photo events with ease",
+    "undertext": "Self-hosted Photo Event Management System",
+    "signIn": {
+      "title": "Sign in",
+      "titleDescription": "Enter your credentials to access the admin panel",
+      "buttonTitle": "Sign in",
+      "inputLabel": "Password"
+    }
+  },
+  "ShareEventPage": {
+    "create": {
+      "firstTitle": "Your Event has been created!",
+      "firstDescription": "You can share the QR code or send them the link in order for others to join the event and upload images.",
+      "doneText": "Finish"
+    },
+    "share": {
+      "firstTitle": "Let others join",
+      "firstDescription": "Share the QR code or link so others can join the event and upload images.",
+      "doneText": "Done"
+    },
+    "controls": {
+      "guest": "Guest",
+      "moderator": "Moderator"
+    },
+    "links": {
+      "guest": {
+        "title": "Guest Link",
+        "description": "Everyone with the link below will be able to upload images to this event"
+      },
+      "moderator": {
+        "title": "Moderator Link",
+        "description": "Everyone with the link below will be able to moderate all uploaded images"
+      }
+    },
+    "actions": {
+      "downloadQr": "Download QR code"
+    },
+    "errors": {
+      "copyFailed": "Failed to copy link to clipboard"
+    },
+    "aria": {
+      "moderatorAlert": "moderator link alert",
+      "guestLinkInput": "guest-link",
+      "moderatorLinkInput": "moderator-link",
+      "copyLink": "copy-link",
+      "copied": "Copied successfully!"
+    }
   }
 }
