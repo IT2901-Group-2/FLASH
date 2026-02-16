@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Copy, Check, CircleAlert, QrCode, Download } from "lucide-react";
@@ -49,9 +49,8 @@ export default function Page() {
           description: t("links.moderator.description"),
         };
 
-   const handleCopy = async () => {
+  const handleCopy = async () => {
     setCopyError(null);
-
     if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
 
     try {
@@ -152,6 +151,7 @@ export default function Page() {
           }
           iconPosition="right"
         />
+        {copyError ? <p className={styles.copyError}>{copyError}</p> : null}
       </div>
 
       <div className={styles.actionCardDock}>

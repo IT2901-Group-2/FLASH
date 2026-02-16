@@ -115,12 +115,15 @@
     "actions": {
       "downloadQr": "Last ned QR-kode"
     },
+    "errors": {
+      "copyFailed": "Klarte ikke å kopiere lenken til utklippstavlen"
+    },
     "aria": {
       "moderatorAlert": "moderatorlenke-varsel",
       "guestLinkInput": "gjest-lenke",
       "moderatorLinkInput": "moderator-lenke",
       "copyLink": "kopier-lenke",
-      "copied": "kopiert"
+      "copied": "Kopiert!"
     }
   }
 }

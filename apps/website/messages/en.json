@@ -126,12 +126,15 @@
     "actions": {
       "downloadQr": "Download QR code"
     },
+    "errors": {
+      "copyFailed": "Failed to copy link to clipboard"
+    },
     "aria": {
       "moderatorAlert": "moderator link alert",
       "guestLinkInput": "guest-link",
       "moderatorLinkInput": "moderator-link",
       "copyLink": "copy-link",
-      "copied": "copied"
+      "copied": "Copied successfully!"
     }
   }
 }
