@@ -58,7 +58,7 @@
   z-index: 1;
 }
 
-.item {
+.controlItem {
   position: relative;
   z-index: 2;
   border: none;
