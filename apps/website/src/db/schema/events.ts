@@ -48,9 +48,9 @@ export const getEventSchema = z.object({
     .transform(([str]) => str)
     .optional(),
   archived: z
-    .tuple([z.boolean()])
-    .transform(([bool]) => bool)
-    .default(false),
+    .tuple([z.enum(["true", "false", "all"])])
+    .transform(([str]) => (str === "all" ? undefined : str === "true"))
+    .prefault(["false"]),
 });
 
 export const createEventSchema = z.object({
@@ -59,6 +59,7 @@ export const createEventSchema = z.object({
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
   uploadLimit: z.number().positive().optional(),
+  isArchived: z.boolean().optional(),
 });
 
 export const updateEventSchema = z.object({
@@ -66,6 +67,7 @@ export const updateEventSchema = z.object({
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
   uploadLimit: z.number().optional(),
+  isArchived: z.boolean().optional(),
 });
 
 export type Event = typeof eventTable.$inferSelect;
