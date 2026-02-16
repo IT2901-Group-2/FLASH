@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Copy, Check, CircleAlert, QrCode, Download } from "lucide-react";
 import { Title, Controls, QRDisplay, Input, ActionCard } from "ui";
 import styles from "./ShareEvent.module.css";
+import { useIsMounted } from "@/hooks/useIsMounted";
 
 type ShareOrigin = "create" | "share";
 
@@ -16,9 +17,11 @@ export default function Page() {
   const searchParams = useSearchParams();
   const origin: ShareOrigin = searchParams.get("from") === "share" ? "share" : "create";
 
+  const mounted = useIsMounted(); // For avoiding hydration error caused by window.location usage on initial render. Open for alternative solutions
+
   const eventId = "abc123"; // TODO: Replace with actual event ID
   const sharePath = `/event/${eventId}/${shareRole}`;
-  const shareUrl = `${window.location.origin}${sharePath}`;
+  const shareUrl = mounted ? `${window.location.origin}${sharePath}` : sharePath;
   const displayCode = `${eventId.toUpperCase()}-${shareRole.substring(0, 1).toUpperCase()}`;
 
   const [copied, setCopied] = useState(false);
@@ -54,7 +57,8 @@ export default function Page() {
     if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
 
     try {
-      await navigator.clipboard.writeText(shareUrl);
+      const absoluteShareUrl = `${window.location.origin}${sharePath}`;
+      await navigator.clipboard.writeText(absoluteShareUrl);
       setCopied(true);
       timeoutRef.current = window.setTimeout(() => setCopied(false), 1200);
     } catch {
