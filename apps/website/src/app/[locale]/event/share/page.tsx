@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Copy, Check, CircleAlert, QrCode, Download } from "lucide-react";
@@ -12,14 +12,18 @@ export default function Page() {
   const t = useTranslations("ShareEventPage");
 
   const [shareRole, setShareRole] = useState<"guest" | "moderator">("guest");
-  const [copied, setCopied] = useState(false);
 
   const searchParams = useSearchParams();
   const origin: ShareOrigin = searchParams.get("from") === "share" ? "share" : "create";
 
   const eventId = "abc123"; // TODO: Replace with actual event ID
-  const shareUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/event/${eventId}/${shareRole}`;
+  const sharePath = `/event/${eventId}/${shareRole}`;
+  const shareUrl = `${origin}${sharePath}`;
   const displayCode = `${eventId.toUpperCase()}-${shareRole.substring(0, 1).toUpperCase()}`;
+
+  const [copied, setCopied] = useState(false);
+  const [copyError, setCopyError] = useState<string | null>(null);
+  const timeoutRef = useRef<number | null>(null);
 
   const originDependentContent =
     origin === "create"
@@ -45,12 +49,19 @@ export default function Page() {
           description: t("links.moderator.description"),
         };
 
-  const handleCopy = async () => {
+   const handleCopy = async () => {
+    setCopyError(null);
+
+    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
-      setTimeout(() => setCopied(false), 1200);
-    } catch {}
+      timeoutRef.current = window.setTimeout(() => setCopied(false), 1200);
+    } catch {
+      setCopied(false);
+      setCopyError(t("errors.copyFailed"));
+    }
   };
 
   const handleDownloadQR = () => {
