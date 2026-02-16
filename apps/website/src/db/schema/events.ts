@@ -1,13 +1,16 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { ulid } from "ulid";
 import { z } from "zod";
+import ShortUniqueId from "short-unique-id";
+
+const uid = new ShortUniqueId();
+const code = new ShortUniqueId({ length: 6, dictionary: "alphanum_upper" });
 
 export const eventTable = sqliteTable("events", {
-  id: text().primaryKey().$defaultFn(ulid),
+  id: text().primaryKey().$defaultFn(uid.rnd),
   name: text().notNull(),
   uploadLimit: integer(),
-  guestCode: text().unique().notNull().$defaultFn(ulid),
-  adminCode: text().unique().notNull().$defaultFn(ulid),
+  guestCode: text().unique().notNull().$defaultFn(code.rnd),
+  adminCode: text().unique().notNull().$defaultFn(code.rnd),
 });
 
 export const getEventSchema = z.object({
