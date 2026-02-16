@@ -4,8 +4,9 @@ import SidebarItem, { SidebarItemProps } from "./SidebarItem";
 import SidebarGroup, { SidebarGroupProps } from "./SidebarGroup";
 import SidebarHeader, { SidebarHeaderProps } from "./SidebarHeader";
 import SidebarFooter, { SidebarFooterProps } from "./SidebarFooter";
-import { ChevronLeft } from "lucide-react";
 import SidebarProvider, { useSidebar } from "./SidebarContext";
+import SidebarTrigger from "./SidebarTrigger";
+import { cl } from "@/util/className";
 
 export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
   /**
@@ -22,20 +23,21 @@ export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
 /**
  * The main container for the sidebar
  */
-const SidebarMain = ({ children, ...rest }: HTMLAttributes<HTMLDivElement>) => {
-  const { open, toggleOpen } = useSidebar();
+const SidebarMain = ({
+  className,
+  children,
+  ...rest
+}: HTMLAttributes<HTMLDivElement>) => {
+  const { open } = useSidebar();
 
   return (
     <div
       data-color={"foreground"}
       data-open={open}
-      className={styles.sidebar}
+      className={cl(className, styles.sidebar)}
       {...rest}
       role="sidebar"
     >
-      <div className={styles.stateButton} onClick={toggleOpen} role="sidebar-button">
-        <ChevronLeft />
-      </div>
       {children}
     </div>
   );
@@ -50,11 +52,14 @@ export const Sidebar = ({
   defaultOpen = true,
   onOpenChange,
   children,
+  className,
   ...rest
 }: SidebarProps) => {
   return (
     <SidebarProvider defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
-      <SidebarMain {...rest}>{children}</SidebarMain>
+      <SidebarMain className={className} {...rest}>
+        {children}
+      </SidebarMain>
     </SidebarProvider>
   );
 };
@@ -63,6 +68,7 @@ Sidebar.Header = SidebarHeader;
 Sidebar.Group = SidebarGroup;
 Sidebar.Item = SidebarItem;
 Sidebar.Footer = SidebarFooter;
+Sidebar.Trigger = SidebarTrigger;
 
 export default Sidebar;
 export { SidebarHeader, SidebarGroup, SidebarItem, SidebarFooter };

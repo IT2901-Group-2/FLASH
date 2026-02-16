@@ -1,0 +1,17 @@
+.cameraWrapper {
+  display: flex;
+  width: 3.5rem;
+  height: 3.5rem;
+  aspect-ratio: 1/1;
+  align-items: center;
+  border-radius: 0.5rem;
+  background: var(--text-tertiary);
+  box-shadow: 0 0.25rem 0.25rem 0 rgba(0, 0, 0, 0.25);
+}
+
+.camera {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: auto;
+  color: var(--background-primary);
+}

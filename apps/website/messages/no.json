@@ -2,5 +2,90 @@
   "HomePage": {
     "title": "Hallo verden!",
     "about": "Om oss"
+  },
+  "admin": {
+    "dashboard": {
+      "sidebar": {
+        "desktop": "Dashboard",
+        "event": "Events",
+        "settings": "Innstillinger",
+        "storage": "Lagring"
+      },
+      "event": {
+        "create": {
+          "basicInfo": {
+            "description": "Sett opp en ny foto-event for gjestene dine. En QR-kode vil genereres automatisk.",
+            "input": {
+              "date": "Hendelsesdato",
+              "description": "Beskrivelse",
+              "name": "Navn på hendelse"
+            },
+            "title": "Opprett event"
+          },
+          "cancel": "Kanseler",
+          "finish": "Fullfør",
+          "next": "Neste",
+          "options": {
+            "description": "Konfigurer hendelsesinnstillinger.",
+            "input": {
+              "autoApprove": "Autogodkjenn bilder",
+              "autoGenerate": "Auto-generer kode",
+              "uploads": {
+                "limited": "Begrenset",
+                "title": "Sett maks antall opplastinger til",
+                "unlimited": "Ubegrenset"
+              }
+            },
+            "title": "Hendelsesinnstillinger"
+          },
+          "previous": "Tidligere",
+          "review": {
+            "description": "Du kan dele QR-koden eller sende dem lenken slik at andre kan bli med på arrangementet og laste opp bilder.",
+            "download": "Last ned",
+            "guest": {
+              "linkDescription": "Alle med lenken nedenfor vil kunne laste opp bilder til dette arrangementet",
+              "linkTitle": "Gjestelenke",
+              "name": "Gjest"
+            },
+            "moderator": {
+              "name": "Moderator"
+            },
+            "title": "La andre bli med!"
+          }
+        },
+        "page": {
+          "description": "Administrer hendelsene dine.",
+          "title": "Events",
+          "createNew": "Lag ny hendelse"
+        }
+      }
+    },
+    "login": {
+      "title": "FotoArrangemang Administrator",
+      "description": "Administrer fotoarrangementene dine enkelt",
+      "undertext": "Selvhostet system for adminstrasjon av fotoarrangementer",
+      "signIn": {
+        "title": "Logg inn",
+        "titleDescription": "Skriv inn legitimasjonen din for å få tilgang til administrasjonspanelet",
+        "buttonTitle": "Logg inn",
+        "inputLabel": "Passord"
+    }
+    }
+  },
+  "JoinEventPage": {
+  "appTitle": "PhotoEvent",
+  "appDescription": "Administrer fotoarrangementene dine enkelt"
+  },
+  "JoinEvent": {
+    "title": "Bli med på et arrangement",
+    "description": "Skriv inn arrangementskoden eller skann QR-koden for å bli med",
+    "eventCodeLabel": "Arrangementskode",
+    "eventCodePlaceholder": "Skriv inn kode… f.eks. 245033",
+    "joinButton": "Bli med",
+    "enterCodeTab": "Skriv inn kode",
+    "scanQrTab": "Skann QR-kode",
+    "scanQrDescription": "Bruk kameraet ditt til å skanne QR-koden til arrangementet",
+    "openCameraButton": "Åpne kamera"
   }
+
 }
