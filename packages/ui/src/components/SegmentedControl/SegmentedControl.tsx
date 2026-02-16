@@ -1,8 +1,10 @@
-import React, { HTMLAttributes } from "react";
+import React, { HTMLAttributes, useId } from "react";
 import { ColorName } from "@/styles/colorType";
 import ControlItem from "./parts/ControlItem";
 import { cl } from "@/util/className";
 import styles from "./SegmentedControl.module.css";
+import { SegmentedControlsProvider } from "./SegmentedControl.context";
+import { useSegmentedControls } from "./useSegmentedControl";
 
 export interface SegmentedControlProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -50,17 +52,49 @@ export interface SegmentedControlProps extends Omit<
  * > _Last updated: `2026-02-07`_
  */
 const SegmentedControl = ({
+  defaultValue,
+  value,
   children,
   onChange,
   className,
+  label,
+  fill = false,
+  size,
   "data-color": color = "accent",
 }: SegmentedControlProps) => {
+  const SegmentedControlsContext = useSegmentedControls({
+    defaultValue,
+    value,
+    onChange,
+  });
+
+  const context = {
+    ...SegmentedControlsContext,
+    size,
+  };
+
+  const lableID = useId();
+
+  if (!value && !defaultValue)
+    console.error("ToggleGroup without value or defaultvalue is not allowed");
+
   return (
-    <div className={cl(styles.container, className)} data-color={color}>
-      <div role="radiogroup" className={styles.toggleGroup}>
-        {children}
+    <SegmentedControlsProvider {...context}>
+      <div
+        className={cl(styles.container, className)}
+        data-color={color}
+        data-fill={fill}
+      >
+        {label && (
+          <div id={lableID} className={styles.label}>
+            {label}
+          </div>
+        )}
+        <div role="radiogroup" className={styles.toggleGroup}>
+          {children}
+        </div>
       </div>
-    </div>
+    </SegmentedControlsProvider>
   );
 };
 

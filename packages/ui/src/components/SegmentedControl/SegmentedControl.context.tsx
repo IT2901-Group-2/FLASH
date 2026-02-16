@@ -1,11 +1,11 @@
-import { createContext, PropsWithChildren } from "react";
+import { createContext, Dispatch, PropsWithChildren, SetStateAction } from "react";
 import { SegmentedControlProps } from "./SegmentedControl";
 import { useSegmentedControls } from "./useSegmentedControl";
 
 interface SegmentedControlContextType {
   size: "medium" | "small";
   focusedValue: string;
-  setFocusedValue: (_: string) => string;
+  setFocusedValue: Dispatch<SetStateAction<string>>;
 }
 
 const SegmentedControlContext = createContext<SegmentedControlContextType | undefined>(
@@ -20,10 +20,10 @@ export const SegmentedControlsProvider = ({
   children,
   focusedValue,
   setFocusedValue,
-  size,
+  size: specifiedSize,
 }: SegmentedControlProviderProps) => {
   const value: SegmentedControlContextType = {
-    size: "medium",
+    size: specifiedSize ?? "medium",
     focusedValue,
     setFocusedValue,
   };

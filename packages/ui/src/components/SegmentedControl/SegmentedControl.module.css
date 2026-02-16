@@ -2,21 +2,36 @@
   --color-bg: var(--color-neutral-000);
   --color-boder: var(--color-neutral-500);
   --color-bg-active: var(--data-color-500);
-  --color-bg-hover: var(--data-color-400);
+  --color-bg-hover: var(--data-color-200);
 
   --color-text: var(--color-neutral-1000);
   --color-text-active: var(--color-neutral-000);
-  --color-text-hover: var(--color-neutral-500);
+  --color-text-hover: var(--color-neutral-700);
 
   display: grid;
   gap: 0.5rem;
   justify-items: start;
+
+  width: min-content;
+
+  &[data-fill="true"] {
+    min-width: 100%;
+  }
+
+  .label {
+    font-size: 1.125rem;
+    font-weight: bold;
+    letter-spacing: 0;
+    line-height: 1.5rem;
+    margin: 0;
+  }
 }
 
 .toggleGroup {
   color: var(--color-text);
+  width: 100%;
 
-  border-radius: 1rem;
+  border-radius: 3rem;
   background-color: var(--color-bg);
   grid-auto-columns: 1fr;
   grid-auto-flow: column;
@@ -27,12 +42,13 @@
 }
 
 .controlButton {
-  padding: 0.25rem 0.75rem;
+  margin: 0.125rem 0.125rem;
+  padding: 0 0.5rem;
   cursor: pointer;
   min-height: 3rem;
   font-weight: bold;
   color: var(--color-text);
-  border-radius: 1rem;
+  border-radius: 3rem;
   background-color: transparent;
   border: none;
 
@@ -44,12 +60,13 @@
   position: relative;
 
   &:hover {
-    background-color: var(--data-color-600);
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-hover);
   }
 
   &[data-selected="true"] {
-    background-color: var(--data-color-500);
-    color: var(--color-neutral-1000);
+    background-color: var(--color-bg-active);
+    color: var(--color-text-active);
   }
 }
 
