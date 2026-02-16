@@ -18,7 +18,7 @@ export class EventService {
     name,
     guestCode,
     moderatorCode,
-    type,
+    status,
     archived,
   }: GetEvent): AsyncResult<Event[], Error> {
     const now = new Date();
@@ -36,11 +36,11 @@ export class EventService {
               ? eq(eventTable.moderatorCode, moderatorCode)
               : undefined,
             archived !== undefined ? eq(eventTable.isArchived, archived) : undefined,
-            type === "coming" ? gt(eventTable.startDate, now) : undefined,
-            type === "active"
+            status === "upcoming" ? gt(eventTable.startDate, now) : undefined,
+            status === "active"
               ? and(lte(eventTable.startDate, now), gte(eventTable.endDate, now))
               : undefined,
-            type === "finished" ? lt(eventTable.endDate, now) : undefined
+            status === "finished" ? lt(eventTable.endDate, now) : undefined
           )
         )
     );
