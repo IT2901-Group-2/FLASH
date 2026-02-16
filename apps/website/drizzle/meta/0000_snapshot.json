@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "45b36861-4ef6-4f0f-b12f-360024e9e89f",
+  "id": "9b4783d6-7c6e-4599-a522-b3a41aa96b92",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "events": {
@@ -21,6 +21,28 @@
           "notNull": true,
           "autoincrement": false
         },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "startDate": {
+          "name": "startDate",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "endDate": {
+          "name": "endDate",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "uploadLimit": {
           "name": "uploadLimit",
           "type": "integer",
@@ -35,12 +57,34 @@
           "notNull": true,
           "autoincrement": false
         },
-        "adminCode": {
-          "name": "adminCode",
+        "moderatorCode": {
+          "name": "moderatorCode",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "isArchived": {
+          "name": "isArchived",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
         }
       },
       "indexes": {
@@ -51,10 +95,10 @@
           ],
           "isUnique": true
         },
-        "events_adminCode_unique": {
-          "name": "events_adminCode_unique",
+        "events_moderatorCode_unique": {
+          "name": "events_moderatorCode_unique",
           "columns": [
-            "adminCode"
+            "moderatorCode"
           ],
           "isUnique": true
         }
@@ -62,7 +106,12 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {}
+      "checkConstraints": {
+        "dateConstraint": {
+          "name": "dateConstraint",
+          "value": "\"events\".\"startDate\" <= \"events\".\"endDate\""
+        }
+      }
     }
   },
   "views": {},
