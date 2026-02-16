@@ -43,13 +43,11 @@
   border-radius: 999px;
 }
 
-.leftActionButton,
-.rightActionButton {
+.leftActionButton {
   cursor: pointer;
 }
 
-.leftActionButton:focus-visible,
-.rightActionButton:focus-visible {
+.leftActionButton:focus-visible {
   outline: 2px solid var(--phoneheader-focus);
   outline-offset: 2px;
 }
@@ -78,6 +76,13 @@
   font-weight: 600;
 }
 
+.uploadsInfo {
+  display: none;
+  font-size: 0.875rem;
+  color: var(--phoneheader-subtitle);
+  font-weight: 500;
+}
+
 .rightAction {
   padding: 0.45rem 1rem;
   border-radius: 999px;
@@ -86,16 +91,6 @@
   font-weight: 700;
   line-height: 1.1;
   border: 1px solid transparent;
-}
-
-.rightPrimary {
-  background: var(--phoneheader-right-primary-bg);
-  color: var(--phoneheader-right-primary-text);
-}
-
-.rightSecondary {
-  background: var(--phoneheader-right-secondary-bg);
-  color: var(--phoneheader-right-secondary-text);
 }
 
 .iconWrapper {
@@ -113,4 +108,31 @@
 .rightSpacer {
   width: 2.5rem;
   height: 2.5rem;
+}
+
+/* Desktop actions */
+.desktopActions {
+  display: none;
+}
+
+/* Show desktop actions on larger screens */
+@media (min-width: 768px) {
+  .desktopActions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .uploadsInfo {
+    display: block;
+  }
+
+  /* Hide the mobile right action on desktop */
+  .rightAction {
+    display: none !important;
+  }
+
+  .rightSpacer {
+    display: none;
+  }
 }

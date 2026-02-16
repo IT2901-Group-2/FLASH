@@ -1,14 +1,14 @@
 import type { ReactNode } from "react";
+import { User, Camera, Upload } from "lucide-react";
 import { cl } from "../../util/className";
 import styles from "./PhoneHeader.module.css";
+import { Button } from "../Button";
 
 export interface PhoneHeaderProps {
   /** The title to display in the phone header. */
   title: string;
   /** Optional subtitle shown beneath the title. */
-  subtitle?: string;
-  /** Optional icon to display before the subtitle text. */
-  subtitleIcon?: ReactNode;
+  subtitle: string;
   /** Optional icon for the left action (back/menu). */
   leftIcon?: ReactNode;
   /** Accessible label for the left action button. */
@@ -27,6 +27,8 @@ export interface PhoneHeaderProps {
   rightVariant?: "primary" | "secondary";
   /** Optional CSS class name for custom styling. */
   className?: string;
+  /** Number of uploads remaining (shown on desktop only). */
+  uploadsRemaining?: number;
 }
 
 /**
@@ -38,7 +40,6 @@ export interface PhoneHeaderProps {
 export const PhoneHeader = ({
   title,
   subtitle,
-  subtitleIcon,
   leftIcon,
   leftAriaLabel = "Go back",
   onLeftClick,
@@ -48,6 +49,7 @@ export const PhoneHeader = ({
   onRightClick,
   rightVariant = "primary",
   className,
+  uploadsRemaining,
 }: PhoneHeaderProps) => {
   const handleLeftClick =
     onLeftClick ??
@@ -76,41 +78,62 @@ export const PhoneHeader = ({
         <h1 className={styles.title}>{title}</h1>
         {subtitle ? (
           <div className={styles.subtitle}>
-            {subtitleIcon ? (
-              <span className={styles.iconWrapper}>{subtitleIcon}</span>
-            ) : null}
+            <span className={styles.iconWrapper}>
+              <User />
+            </span>
             <span>{subtitle}</span>
           </div>
         ) : null}
+        {uploadsRemaining !== undefined && (
+          <div className={styles.uploadsInfo}>
+            You have {uploadsRemaining} uploads remaining
+          </div>
+        )}
+      </div>
+
+      {/* Desktop additional actions - only show on larger screens */}
+      <div className={styles.desktopActions}>
+        {rightLabel === "Moderate" && (
+          <Button
+            variant="secondary"
+            data-color="brand-purple"
+            icon={rightIcon}
+            iconPosition="right"
+            onClick={onRightClick}
+          >
+            {rightLabel}
+          </Button>
+        )}
+        <Button
+          variant="secondary"
+          data-color="brand-purple"
+          icon={<Camera />}
+          iconPosition="right"
+        >
+          Take Photo
+        </Button>
+        <Button
+          variant="primary"
+          data-color="brand-purple"
+          icon={<Upload />}
+          iconPosition="right"
+        >
+          Upload Image
+        </Button>
       </div>
 
       {rightLabel ? (
-        onRightClick ? (
-          <button
-            type="button"
-            className={cl(
-              styles.rightAction,
-              rightVariant === "secondary" ? styles.rightSecondary : styles.rightPrimary,
-              styles.rightActionButton
-            )}
-            onClick={onRightClick}
-            aria-label={rightAriaLabel ?? rightLabel}
-          >
-            <span>{rightLabel}</span>
-            {rightIcon ? <span className={styles.iconWrapper}>{rightIcon}</span> : null}
-          </button>
-        ) : (
-          <div
-            className={cl(
-              styles.rightAction,
-              rightVariant === "secondary" ? styles.rightSecondary : styles.rightPrimary
-            )}
-            aria-label={rightAriaLabel ?? rightLabel}
-          >
-            <span>{rightLabel}</span>
-            {rightIcon ? <span className={styles.iconWrapper}>{rightIcon}</span> : null}
-          </div>
-        )
+        <Button
+          variant={rightVariant}
+          data-color="brand-purple"
+          icon={rightIcon}
+          iconPosition="right"
+          onClick={onRightClick}
+          className={styles.rightAction}
+          aria-label={rightAriaLabel ?? rightLabel}
+        >
+          {rightLabel}
+        </Button>
       ) : (
         <span className={styles.rightSpacer} />
       )}

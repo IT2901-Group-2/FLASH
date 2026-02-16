@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { PhoneHeader } from "./PhoneHeader";
 import { expect, fn, userEvent, within } from "storybook/test";
-import { ArrowLeft, Menu, User, Image } from "lucide-react";
+import { ArrowLeft, Menu, Image } from "lucide-react";
 
 const meta: Meta<typeof PhoneHeader> = {
   title: "Building Blocks/Components/PhoneHeader",
@@ -29,6 +29,10 @@ const meta: Meta<typeof PhoneHeader> = {
       control: "select",
       options: ["primary", "secondary"],
     },
+    uploadsRemaining: {
+      description: "Number of uploads remaining (shown on desktop only).",
+      control: "number",
+    },
     className: {
       description: "Optional CSS class name for custom styling.",
       control: "text",
@@ -52,11 +56,11 @@ export const Default: Story = {
   args: {
     title: "Wedding",
     subtitle: "Nickname",
-    subtitleIcon: <User />,
     leftIcon: <ArrowLeft />,
     leftAriaLabel: "Go back",
     rightLabel: "Live",
     rightVariant: "primary",
+    uploadsRemaining: 5,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -83,13 +87,13 @@ export const BackModerate: Story = {
   args: {
     title: "Wedding",
     subtitle: "Nickname",
-    subtitleIcon: <User />,
     leftIcon: <ArrowLeft />,
     leftAriaLabel: "Go back",
     rightLabel: "Moderate",
     rightIcon: <Image />,
     rightVariant: "secondary",
     onRightClick: fn(),
+    uploadsRemaining: 10,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -108,7 +112,6 @@ export const MenuModerate: Story = {
   args: {
     title: "Wedding",
     subtitle: "Nickname",
-    subtitleIcon: <User />,
     leftIcon: <Menu />,
     leftAriaLabel: "Open menu",
     onLeftClick: fn(),
@@ -116,5 +119,6 @@ export const MenuModerate: Story = {
     rightIcon: <Image />,
     rightVariant: "secondary",
     onRightClick: fn(),
+    uploadsRemaining: 3,
   },
 };
