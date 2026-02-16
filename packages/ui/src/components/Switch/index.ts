@@ -1,2 +1,2 @@
 "use client";
-export { default as SwitchBar, type SwitchProps } from "./Switch";
+export { default as Switch, type SwitchProps } from "./Switch";
