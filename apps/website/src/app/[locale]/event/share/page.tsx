@@ -163,9 +163,7 @@ export default function Page() {
           <ActionCard
             style={{ padding: "1rem", borderRadius: "1.25rem" }}
             secondaryButton={{
-              text: t("actions.downloadQr"),
-              size: "small",
-              icon: (
+              text: (
                 <span
                   style={{
                     display: "inline-flex",
@@ -173,10 +171,12 @@ export default function Page() {
                     gap: "0.375rem",
                   }}
                 >
-                  <QrCode size={13} />
-                  <Download size={13} />
+                  {t("actions.downloadQr")}
+                  <Download size={18} />
                 </span>
               ),
+              size: "small",
+              icon: <QrCode size={18} />,
               iconPosition: "left",
               onClick: handleDownloadQR,
               "data-color": "brand-purple",
