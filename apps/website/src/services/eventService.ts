@@ -18,7 +18,7 @@ export class EventService {
     moderatorCode,
     status,
     archived,
-  }: GetEvent): AsyncResult<Event[], Error> {
+  }: GetEvent = {}): AsyncResult<Event[], Error> {
     const now = new Date();
 
     return Result.try(() =>

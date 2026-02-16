@@ -50,7 +50,8 @@ export const getEventSchema = z.object({
   archived: z
     .tuple([z.enum(["true", "false", "all"])])
     .transform(([str]) => (str === "all" ? undefined : str === "true"))
-    .prefault(["false"]),
+    .prefault(["false"])
+    .optional(),
 });
 
 export const createEventSchema = z.object({
