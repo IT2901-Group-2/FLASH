@@ -43,6 +43,14 @@ export const getEventSchema = z.object({
     .tuple([z.string()])
     .transform(([str]) => str)
     .optional(),
+  type: z
+    .tuple([z.enum(["coming", "active", "finished"])])
+    .transform(([str]) => str)
+    .optional(),
+  archived: z
+    .tuple([z.boolean()])
+    .transform(([bool]) => bool)
+    .default(false),
 });
 
 export const createEventSchema = z.object({

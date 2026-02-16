@@ -2,7 +2,7 @@ import { Database, DatabaseService, dbService } from "./databaseService";
 import { CreateEvent, Event, eventTable, GetEvent, UpdateEvent } from "@/db";
 import { AsyncResult, Result } from "typescript-result";
 import { getFirstRow } from "@/lib/utils/sql";
-import { sql, and, eq, like, inArray } from "drizzle-orm";
+import { sql, and, eq, like, inArray, lt, lte, gte, gt } from "drizzle-orm";
 
 export class EventService {
   private readonly dbService: DatabaseService;
@@ -18,7 +18,11 @@ export class EventService {
     name,
     guestCode,
     moderatorCode,
+    type,
+    archived,
   }: GetEvent): AsyncResult<Event[], Error> {
+    const now = new Date();
+
     return Result.try(() =>
       this.db
         .select()
@@ -30,7 +34,13 @@ export class EventService {
             guestCode !== undefined ? eq(eventTable.guestCode, guestCode) : undefined,
             moderatorCode !== undefined
               ? eq(eventTable.moderatorCode, moderatorCode)
-              : undefined
+              : undefined,
+            archived !== undefined ? eq(eventTable.isArchived, archived) : undefined,
+            type === "coming" ? gt(eventTable.startDate, now) : undefined,
+            type === "active"
+              ? and(lte(eventTable.startDate, now), gte(eventTable.endDate, now))
+              : undefined,
+            type === "finished" ? lt(eventTable.endDate, now) : undefined
           )
         )
     );
