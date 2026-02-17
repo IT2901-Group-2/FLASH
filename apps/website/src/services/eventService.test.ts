@@ -10,33 +10,33 @@ const NOW = new Date();
 
 const mockEvents: (typeof eventTable.$inferInsert)[] = [
   {
-    id: "test-event-1",
+    id: "birthday-1",
     name: "Birthday",
     startDate: setHours(NOW, 11),
     endDate: setHours(NOW, 14),
     uploadLimit: 5,
   },
   {
-    id: "test-event-2",
+    id: "wedding-1",
     name: "Wedding 1",
     startDate: addDays(NOW, 10),
     endDate: addDays(NOW, 11),
     uploadLimit: 10,
   },
   {
-    id: "test-event-3",
+    id: "wedding-2",
     name: "Wedding 2",
     startDate: subDays(NOW, 5),
     endDate: subDays(NOW, 4),
   },
   {
-    id: "test-event-4",
+    id: "lowercase-1",
     name: "lowercase",
     startDate: subDays(NOW, 1),
     endDate: subDays(NOW, 1),
   },
   {
-    id: "test-event-5",
+    id: "uppercase-1",
     name: "UPPERCASE",
     startDate: subHours(NOW, 1),
     endDate: addHours(NOW, 1),
@@ -60,40 +60,63 @@ describe("EventService getEvents", () => {
     expect(await eventService.getEvents().getOrThrow()).toHaveLength(mockEvents.length);
   });
 
+  it("Should correctly filter by id", async () => {
+    expect(
+      await eventService
+        .getEvents({ id: ["unknown-id"] })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set([]));
+
+    expect(
+      await eventService
+        .getEvents({ id: ["wedding-1"] })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["wedding-1"]));
+
+    expect(
+      await eventService
+        .getEvents({ id: ["uppercase-1", "birthday-1"] })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["uppercase-1", "birthday-1"]));
+  });
+
   it("Should correctly filter by name", async () => {
     expect(
       await eventService
         .getEvents({ name: "Birthday" })
-        .map(rows => new Set(rows.map(row => row.name)))
+        .map(rows => new Set(rows.map(row => row.id)))
         .getOrThrow()
-    ).toStrictEqual(new Set(["Birthday"]));
+    ).toStrictEqual(new Set(["birthday-1"]));
 
     expect(
       await eventService
         .getEvents({ name: "eddi" })
-        .map(rows => new Set(rows.map(row => row.name)))
+        .map(rows => new Set(rows.map(row => row.id)))
         .getOrThrow()
-    ).toStrictEqual(new Set(["Wedding 1", "Wedding 2"]));
+    ).toStrictEqual(new Set(["wedding-1", "wedding-2"]));
 
     expect(
       await eventService
         .getEvents({ name: "gibberish" })
-        .map(rows => new Set(rows.map(row => row.name)))
+        .map(rows => new Set(rows.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set([]));
 
     expect(
       await eventService
         .getEvents({ name: "LOwErCaSE" })
-        .map(rows => new Set(rows.map(row => row.name)))
+        .map(rows => new Set(rows.map(row => row.id)))
         .getOrThrow()
-    ).toStrictEqual(new Set(["lowercase"]));
+    ).toStrictEqual(new Set(["lowercase-1"]));
 
     expect(
       await eventService
         .getEvents({ name: "uppercase" })
-        .map(rows => new Set(rows.map(row => row.name)))
+        .map(rows => new Set(rows.map(row => row.id)))
         .getOrThrow()
-    ).toStrictEqual(new Set(["UPPERCASE"]));
+    ).toStrictEqual(new Set(["uppercase-1"]));
   });
 });
