@@ -29,8 +29,6 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
     const files = event.target.files;
     if (files && files.length > 0) {
       onFilesSelected?.(files);
-      // TODO: Link with backend upload logic to handle the selected files
-      console.log("Selected files:", files);
     }
     // Reset input value to allow selecting the same file again if needed
     if (event.target) {
