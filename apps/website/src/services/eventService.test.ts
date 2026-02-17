@@ -385,7 +385,7 @@ describe("eventService updateEvent", () => {
   it("Should flush after updating event", async () => {
     const flush = vi.spyOn(DatabaseService.prototype, "flush");
 
-    await eventService.createEvent({ name: "newEvent", startDate: NOW, endDate: NOW });
+    await eventService.updateEvent("birthday-1", { description: "new desc" });
 
     expect(flush).toHaveBeenCalledOnce();
   });
@@ -398,5 +398,33 @@ describe("eventService deleteEvent", () => {
     });
 
     Result.assertError(await eventService.deleteEvent("birthday-1"));
+  });
+
+  it("Should correctly delete event", async () => {
+    const deletedEvent = await eventService.deleteEvent("birthday-1").getOrThrow();
+
+    expect(deletedEvent.name).toBe("Birthday 1");
+    expect(deletedEvent.description).toBe("");
+    expect(deletedEvent.uploadLimit).toBe(5);
+    expect(deletedEvent.isArchived).toBe(false);
+    expect(deletedEvent.guestCode).toBe("birthday-1-guest");
+    expect(deletedEvent.moderatorCode).toBe("birthday-1-moderator");
+
+    expect(
+      await eventService["dbService"].db
+        .select()
+        .from(eventTable)
+        .then(rows => new Set(rows.map(row => row.id)))
+    ).toStrictEqual(
+      new Set(["birthday-2", "wedding-1", "wedding-2", "lowercase-1", "uppercase-1"])
+    );
+  });
+
+  it("Should flush after deleting event", async () => {
+    const flush = vi.spyOn(DatabaseService.prototype, "flush");
+
+    await eventService.deleteEvent("birthday-1");
+
+    expect(flush).toHaveBeenCalledOnce();
   });
 });
