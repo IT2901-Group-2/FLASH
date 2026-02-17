@@ -41,7 +41,7 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
     setFormData(prev => ({ ...prev, [k]: v }));
 
   const steps = [BasicInfoStep, OptionsStep, ReviewStep] as const;
-  const CurrentStep = steps[progress - 1];
+  const CurrentStep = steps[progress - 1]!;
 
   const nextStep = () => setProgress(c => c + 1);
   const prevStep = () => setProgress(c => c - 1);

@@ -22,6 +22,8 @@ export const capitalize = (string: string) => {
 export function generateRandomString(length: number): string {
   if (length < 0) return "";
   return new TextDecoder().decode(
-    crypto.getRandomValues(new Uint8Array(length)).map(b => alphabet[b % alphabet.length])
+    crypto
+      .getRandomValues(new Uint8Array(length))
+      .map(b => alphabet[b % alphabet.length]!)
   );
 }
