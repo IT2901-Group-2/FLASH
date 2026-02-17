@@ -29,6 +29,8 @@ export interface PhoneHeaderProps {
   className?: string;
   /** Number of uploads remaining (shown on desktop only). */
   uploadsRemaining?: number;
+  /** Click handler for the Upload Image button (desktop only). */
+  onUploadClick?: () => void;
 }
 
 /**
@@ -50,6 +52,7 @@ export const PhoneHeader = ({
   rightVariant = "primary",
   className,
   uploadsRemaining,
+  onUploadClick,
 }: PhoneHeaderProps) => {
   const handleLeftClick =
     onLeftClick ??
@@ -117,6 +120,7 @@ export const PhoneHeader = ({
           data-color="brand-purple"
           icon={<Upload />}
           iconPosition="right"
+          onClick={onUploadClick}
         >
           Upload Image
         </Button>
