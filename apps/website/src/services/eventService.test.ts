@@ -4,7 +4,7 @@ import { DatabaseService } from "./databaseService";
 import { Result } from "typescript-result";
 import { EventService } from "./eventService";
 import { eventTable } from "@/db";
-import { subDays, addDays, subHours, addHours } from "date-fns";
+import { subDays, addDays, subHours, addHours, setMilliseconds } from "date-fns";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 
 const NOW = new Date();
@@ -69,6 +69,7 @@ let eventService: EventService;
 beforeEach(async () => {
   const dbService = await DatabaseService.create({
     read: vi.fn(() => Result.error(new Error())),
+    write: vi.fn(() => Result.ok()),
   } as never).getOrThrow();
 
   await dbService.db.insert(eventTable).values(mockEvents);
@@ -288,6 +289,44 @@ describe("eventService createEvent", () => {
         startDate: new Date(),
         endDate: new Date(),
       })
+    );
+  });
+
+  it("Should correctly create event", async () => {
+    const startDate = setMilliseconds(subHours(NOW, 1), 0);
+    const endDate = setMilliseconds(addHours(NOW, 1), 0);
+
+    const newEvent = await eventService
+      .createEvent({
+        name: "newEvent",
+        description: "desc",
+        startDate,
+        endDate,
+      })
+      .getOrThrow();
+
+    expect(newEvent.name).toBe("newEvent");
+    expect(newEvent.description).toBe("desc");
+    expect(newEvent.startDate).toStrictEqual(startDate);
+    expect(newEvent.endDate).toStrictEqual(endDate);
+    expect(newEvent.uploadLimit).toBeNull();
+    expect(newEvent.isArchived).toBe(false);
+
+    expect(
+      await eventService["dbService"].db
+        .select()
+        .from(eventTable)
+        .then(rows => new Set(rows.map(row => row.id)))
+    ).toStrictEqual(
+      new Set([
+        "birthday-1",
+        "birthday-2",
+        "wedding-1",
+        "wedding-2",
+        "lowercase-1",
+        "uppercase-1",
+        newEvent.id,
+      ])
     );
   });
 });
