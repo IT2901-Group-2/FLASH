@@ -15,6 +15,8 @@ const mockEvents: (typeof eventTable.$inferInsert)[] = [
     startDate: setHours(NOW, 11),
     endDate: setHours(NOW, 14),
     uploadLimit: 5,
+    guestCode: "birthday-1-guest",
+    moderatorCode: "birthday-1-moderator",
   },
   {
     id: "wedding-1",
@@ -22,24 +24,32 @@ const mockEvents: (typeof eventTable.$inferInsert)[] = [
     startDate: addDays(NOW, 10),
     endDate: addDays(NOW, 11),
     uploadLimit: 10,
+    guestCode: "wedding-1-guest",
+    moderatorCode: "wedding-1-moderator",
   },
   {
     id: "wedding-2",
     name: "Wedding 2",
     startDate: subDays(NOW, 5),
     endDate: subDays(NOW, 4),
+    guestCode: "wedding-2-guest",
+    moderatorCode: "wedding-2-moderator",
   },
   {
     id: "lowercase-1",
     name: "lowercase",
     startDate: subDays(NOW, 1),
     endDate: subDays(NOW, 1),
+    guestCode: "lowercase-1-guest",
+    moderatorCode: "lowercase-1-moderator",
   },
   {
     id: "uppercase-1",
     name: "UPPERCASE",
     startDate: subHours(NOW, 1),
     endDate: addHours(NOW, 1),
+    guestCode: "uppercase-1-guest",
+    moderatorCode: "uppercase-1-moderator",
   },
 ];
 
@@ -118,5 +128,37 @@ describe("EventService getEvents", () => {
         .map(rows => new Set(rows.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["uppercase-1"]));
+  });
+
+  it("Should correctly filter by guest code", async () => {
+    expect(
+      await eventService
+        .getEvents({ guestCode: "birthday-1-moderator" })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set([]));
+
+    expect(
+      await eventService
+        .getEvents({ guestCode: "birthday-1-guest" })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["birthday-1"]));
+  });
+
+  it("Should correctly filter by moderator code", async () => {
+    expect(
+      await eventService
+        .getEvents({ moderatorCode: "wedding-2-guest" })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set([]));
+
+    expect(
+      await eventService
+        .getEvents({ moderatorCode: "wedding-2-moderator" })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["wedding-2"]));
   });
 });
