@@ -1,10 +1,11 @@
 // @vitest-environment node
-import { describe, it, beforeEach, expect, vi } from "vitest";
+import { describe, it, beforeEach, expect, vi, afterEach } from "vitest";
 import { DatabaseService } from "./databaseService";
 import { Result } from "typescript-result";
 import { EventService } from "./eventService";
 import { eventTable } from "@/db";
 import { subDays, addDays, subHours, addHours } from "date-fns";
+import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 
 const NOW = new Date();
 
@@ -75,7 +76,19 @@ beforeEach(async () => {
   eventService = new EventService(dbService);
 });
 
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
 describe("EventService getEvents", () => {
+  it("Should return Err when database call fails", async () => {
+    vi.spyOn(BetterSQLite3Database.prototype, "select").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(await eventService.getEvents());
+  });
+
   it("Should correctly filter by id", async () => {
     expect(
       await eventService
@@ -260,5 +273,43 @@ describe("EventService getEvents", () => {
         .map(rows => new Set(rows.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["birthday-2"]));
+  });
+});
+
+describe("eventService createEvent", () => {
+  it("Should return Err when database call fails", async () => {
+    vi.spyOn(BetterSQLite3Database.prototype, "insert").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(
+      await eventService.createEvent({
+        name: "newEvent",
+        startDate: new Date(),
+        endDate: new Date(),
+      })
+    );
+  });
+});
+
+describe("eventService updateEvent", () => {
+  it("Should return Err when database call fails", async () => {
+    vi.spyOn(BetterSQLite3Database.prototype, "update").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(
+      await eventService.updateEvent("birthday-1", { name: "Not birthday" })
+    );
+  });
+});
+
+describe("eventService deleteEvent", () => {
+  it("Should return Err when database call fails", async () => {
+    vi.spyOn(BetterSQLite3Database.prototype, "delete").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(await eventService.deleteEvent("birthday-1"));
   });
 });
