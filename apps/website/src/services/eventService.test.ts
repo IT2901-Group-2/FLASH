@@ -224,4 +224,41 @@ describe("EventService getEvents", () => {
       new Set(["birthday-1", "wedding-1", "wedding-2", "lowercase-1", "uppercase-1"])
     );
   });
+
+  it("Should correctly filter by combination", async () => {
+    expect(
+      await eventService
+        .getEvents({ status: "active", archived: false })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["uppercase-1"]));
+
+    expect(
+      await eventService
+        .getEvents({ status: "finished", name: "d" })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["birthday-1", "wedding-2"]));
+
+    expect(
+      await eventService
+        .getEvents({ status: "finished", name: "1", guestCode: "birthday-1-guest" })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["birthday-1"]));
+
+    expect(
+      await eventService
+        .getEvents({ status: "finished", id: ["lowercase-1"] })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["lowercase-1"]));
+
+    expect(
+      await eventService
+        .getEvents({ name: "birthday", id: ["wedding-1", "lowercase-1", "birthday-2"] })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["birthday-2"]));
+  });
 });
