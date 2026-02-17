@@ -65,6 +65,7 @@ export const createEventSchema = z.object({
 
 export const updateEventSchema = z.object({
   name: z.string().optional(),
+  description: z.string().optional(),
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
   uploadLimit: z.number().optional(),

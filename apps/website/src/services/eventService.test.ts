@@ -6,6 +6,7 @@ import { EventService } from "./eventService";
 import { eventTable } from "@/db";
 import { subDays, addDays, subHours, addHours, setMilliseconds } from "date-fns";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
+import { eq } from "drizzle-orm";
 
 const NOW = new Date();
 
@@ -286,8 +287,8 @@ describe("eventService createEvent", () => {
     Result.assertError(
       await eventService.createEvent({
         name: "newEvent",
-        startDate: new Date(),
-        endDate: new Date(),
+        startDate: NOW,
+        endDate: NOW,
       })
     );
   });
@@ -329,6 +330,14 @@ describe("eventService createEvent", () => {
       ])
     );
   });
+
+  it("Should flush after creating event", async () => {
+    const flush = vi.spyOn(DatabaseService.prototype, "flush");
+
+    await eventService.createEvent({ name: "newEvent", startDate: NOW, endDate: NOW });
+
+    expect(flush).toHaveBeenCalledOnce();
+  });
 });
 
 describe("eventService updateEvent", () => {
@@ -340,6 +349,45 @@ describe("eventService updateEvent", () => {
     Result.assertError(
       await eventService.updateEvent("birthday-1", { name: "Not birthday" })
     );
+  });
+
+  it("Should correctly update event", async () => {
+    const startDate = setMilliseconds(subHours(NOW, 1), 0);
+    const endDate = setMilliseconds(addHours(NOW, 1), 0);
+
+    const updatedEvent = await eventService
+      .updateEvent("birthday-1", {
+        name: "Not birthday",
+        description: "new description",
+        startDate,
+        endDate,
+        uploadLimit: 999,
+        isArchived: true,
+      })
+      .getOrThrow();
+
+    expect(updatedEvent.name).toBe("Not birthday");
+    expect(updatedEvent.description).toBe("new description");
+    expect(updatedEvent.startDate).toStrictEqual(startDate);
+    expect(updatedEvent.endDate).toStrictEqual(endDate);
+    expect(updatedEvent.uploadLimit).toBe(999);
+    expect(updatedEvent.isArchived).toBe(true);
+
+    expect(
+      await eventService["dbService"].db
+        .select()
+        .from(eventTable)
+        .where(eq(eventTable.id, "birthday-1"))
+        .then(rows => rows?.[0]?.name)
+    ).toBe("Not birthday");
+  });
+
+  it("Should flush after updating event", async () => {
+    const flush = vi.spyOn(DatabaseService.prototype, "flush");
+
+    await eventService.createEvent({ name: "newEvent", startDate: NOW, endDate: NOW });
+
+    expect(flush).toHaveBeenCalledOnce();
   });
 });
 
