@@ -11,6 +11,14 @@ export class EventService {
     this.dbService = dbService;
   }
 
+  /**
+   * Fetches all events in the database that match the given filters.
+   * All combinations of filters are supported.
+   * If multiple filters are present they are combined with `and`.
+   *
+   * @param filters The filters to apply to the query.
+   * @returns A result with a list of events or an error.
+   */
   getEvents({
     id,
     name,
@@ -44,12 +52,27 @@ export class EventService {
     );
   }
 
+  /**
+   * Creates a new event in the database.
+   * Returns the newly created event.
+   *
+   * @param data The data of the event to create.
+   * @returns A result with the newly created event or an error.
+   */
   createEvent(data: CreateEvent): AsyncResult<Event, Error> {
     return Result.try(() => this.dbService.db.insert(eventTable).values(data).returning())
       .map(rows => getFirstRow(rows, "Unable to create event"))
       .onSuccess(() => this.dbService.flush());
   }
 
+  /**
+   * Updates an existing event in the database.
+   * Returns the updated event.
+   *
+   * @param eventId The id of the event to update.
+   * @param data The data of the event to update.
+   * @returns A result with the updated event or an error.
+   */
   updateEvent(eventId: string, data: UpdateEvent): AsyncResult<Event, Error> {
     return Result.try(() =>
       this.dbService.db
@@ -62,6 +85,13 @@ export class EventService {
       .onSuccess(() => this.dbService.flush());
   }
 
+  /**
+   * Deletes an event from the database.
+   * Returns the deleted event.
+   *
+   * @param eventId The id of the event to delete.
+   * @return A result with the deleted event or an error.
+   */
   deleteEvent(eventId: string): AsyncResult<Event, Error> {
     return Result.try(() =>
       this.dbService.db.delete(eventTable).where(eq(eventTable.id, eventId)).returning()
