@@ -4,7 +4,7 @@ import { DatabaseService } from "./databaseService";
 import { Result } from "typescript-result";
 import { EventService } from "./eventService";
 import { eventTable } from "@/db";
-import { subDays, addDays, setHours, subHours, addHours } from "date-fns";
+import { subDays, addDays, subHours, addHours } from "date-fns";
 
 const NOW = new Date();
 
@@ -12,8 +12,8 @@ const mockEvents: (typeof eventTable.$inferInsert)[] = [
   {
     id: "birthday-1",
     name: "Birthday 1",
-    startDate: setHours(NOW, 11),
-    endDate: setHours(NOW, 14),
+    startDate: subHours(NOW, 6),
+    endDate: subHours(NOW, 5),
     uploadLimit: 5,
     guestCode: "birthday-1-guest",
     moderatorCode: "birthday-1-moderator",
@@ -21,8 +21,8 @@ const mockEvents: (typeof eventTable.$inferInsert)[] = [
   {
     id: "birthday-2",
     name: "Birthday 2",
-    startDate: setHours(NOW, 11),
-    endDate: setHours(NOW, 14),
+    startDate: subHours(NOW, 2),
+    endDate: addHours(NOW, 10),
     uploadLimit: 5,
     guestCode: "birthday-2-guest",
     moderatorCode: "birthday-2-moderator",
@@ -166,6 +166,29 @@ describe("EventService getEvents", () => {
         .map(rows => new Set(rows.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["wedding-2"]));
+  });
+
+  it("Should correctly filter by status", async () => {
+    expect(
+      await eventService
+        .getEvents({ status: "finished" })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["birthday-1", "wedding-2", "lowercase-1"]));
+
+    expect(
+      await eventService
+        .getEvents({ status: "active" })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["birthday-2", "uppercase-1"]));
+
+    expect(
+      await eventService
+        .getEvents({ status: "upcoming" })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["wedding-1"]));
   });
 
   it("Should correctly filter by isArchived", async () => {
