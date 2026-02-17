@@ -49,7 +49,7 @@ export interface SegmentedControlProps extends Omit<
 /**
  * Controls allows the user to select from a set of mutually-exclusive options.
  *
- * > _Last updated: `2026-02-07`_
+ * > _Last updated: `2026-02-16`_
  */
 const SegmentedControl = ({
   defaultValue,

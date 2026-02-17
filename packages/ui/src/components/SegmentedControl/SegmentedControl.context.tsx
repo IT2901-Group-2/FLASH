@@ -8,9 +8,9 @@ interface SegmentedControlContextType {
   setFocusedValue: Dispatch<SetStateAction<string>>;
 }
 
-const SegmentedControlContext = createContext<SegmentedControlContextType | undefined>(
-  undefined
-);
+export const SegmentedControlContext = createContext<
+  SegmentedControlContextType | undefined
+>(undefined);
 
 type SegmentedControlProviderProps = ReturnType<typeof useSegmentedControls> &
   Pick<SegmentedControlProps, "size"> &
