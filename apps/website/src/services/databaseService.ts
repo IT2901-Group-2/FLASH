@@ -1,10 +1,10 @@
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import { AsyncResult, Result } from "typescript-result";
-import { FileStorage, FSStorage } from "file-storage";
+import { FileStorage } from "file-storage";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import Sqlite from "better-sqlite3";
+import { storage } from "@/config";
 import * as schema from "@/db";
-import { tmpdir } from "os";
 import upath from "upath";
 
 export type Database = ReturnType<typeof drizzle<typeof schema>>;
@@ -84,5 +84,4 @@ export class DatabaseService {
   }
 }
 
-const storage = new FSStorage(upath.join(tmpdir(), "foto-app"));
 export const dbService = await DatabaseService.create(storage).getOrThrow();
