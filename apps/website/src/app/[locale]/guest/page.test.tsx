@@ -92,22 +92,4 @@ describe("Guest Upload Page", () => {
     expect(consoleSpy).toHaveBeenCalledWith("Selected files:", mockFileList);
     consoleSpy.mockRestore();
   });
-
-  it("should execute onTakePhotoClick callback when Take Photo is clicked", () => {
-    const consoleSpy = vi.spyOn(console, "log");
-    render(<Page />);
-
-    // Get the onTakePhotoClick callback that was passed to PhoneHeader
-    const phoneHeaderCall = vi.mocked(PhoneHeader).mock.calls[0];
-    const props = phoneHeaderCall?.[0];
-    const onTakePhotoClick = props?.onTakePhotoClick;
-
-    // Call it
-    if (onTakePhotoClick) {
-      onTakePhotoClick();
-    }
-
-    expect(consoleSpy).toHaveBeenCalledWith("Take photo clicked");
-    consoleSpy.mockRestore();
-  });
 });

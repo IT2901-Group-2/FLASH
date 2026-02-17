@@ -29,7 +29,6 @@ export default function Page() {
         leftAriaLabel="back-button"
         uploadsRemaining={uploadsRemaining}
         onUploadClick={openFilePicker}
-        onTakePhotoClick={() => console.log("Take photo clicked")}
       ></PhoneHeader>
       <ActionCard
         className={styles.mobileOnly}
