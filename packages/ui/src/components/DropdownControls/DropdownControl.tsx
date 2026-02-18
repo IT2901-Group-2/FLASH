@@ -1,16 +1,14 @@
-import React from "react";
-import styles from "./DropdownControls.module.css";
+import React, { useState } from "react";
+import styles from "./DropdownControl.module.css";
 import { cl } from "@/util/helpers/";
 import { SegmentedControl, SegmentedControlProps } from "../SegmentedControl";
+import DropdownControlItem, { DropdownControlItemProps } from "./DropdownControl.Item";
 
 export type DropdownOption = SegmentedControlProps & {
   content?: React.ReactNode;
 };
 
-export interface DropdownControlsProps extends Omit<
-  SegmentedControlProps,
-  "options" | "value" | "onChange"
-> {
+export interface DropdownControlsProps extends SegmentedControlProps {
   /**
    * The currently selected value
    */
@@ -22,15 +20,15 @@ export interface DropdownControlsProps extends Omit<
   /**
    * Called when the selected value changes
    */
-  onChange?: (value: string) => void;
+  onChange: (value: string) => void;
   /**
    * The options in the dropdown
    */
-  children?: React.ReactNode;
+  children: React.ReactNode;
   /**
    *
    */
-  ref: React.Ref<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
 }
 
 /**
@@ -40,8 +38,7 @@ export interface DropdownControlsProps extends Omit<
  * > _Last updated: `2026-02-07`_
  */
 const DropdownControl = ({
-  options,
-  value,
+  value: controlledValue,
   defaultValue,
   onChange,
   className,
@@ -49,6 +46,25 @@ const DropdownControl = ({
   ref,
   ...rest
 }: DropdownControlsProps) => {
+  const [internalValue, setInternalValue] = useState<string>(defaultValue ?? "");
+
+  const selectedValue = controlledValue ?? internalValue;
+
+  const handleChange = (val: string) => {
+    if (controlledValue === undefined) setInternalValue(val);
+    onChange?.(val);
+  };
+
+  // Collect only DropdownControl.Item children
+  const items = React.Children.toArray(rest.children).filter(
+    (child): child is React.ReactElement<DropdownControlItemProps> =>
+      React.isValidElement(child) &&
+      (child.type as React.FC).displayName === "DropdownControl.Item"
+  );
+
+  const activeContent = items.find(item => item.props.value === selectedValue)?.props
+    .content;
+
   return (
     <div
       ref={ref}
@@ -56,17 +72,22 @@ const DropdownControl = ({
       data-color={data}
       {...rest}
     >
-      <SegmentedControl
-        options={options.map(({ content, ...option }) => option)}
-        value={value}
-        defaultValue={defaultValue}
-        onChange={onChange}
-      />
-      <div className={styles.dropdownContent}>
-        {options.find(option => option.value === value)?.content}
-      </div>
+      <SegmentedControl {...rest} value={selectedValue} onChange={handleChange} fill>
+        {items.map(item => (
+          <SegmentedControl.Item
+            key={item.props.value}
+            value={item.props.value}
+            label={item.props.label}
+            icon={item.props.icon}
+            disabled={item.props.disabled}
+          />
+        ))}
+      </SegmentedControl>
+      {activeContent && <div className={styles.panel}>{activeContent}</div>}
     </div>
   );
 };
+
+DropdownControl.Item = DropdownControlItem;
 
 export default DropdownControl;

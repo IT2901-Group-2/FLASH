@@ -2,7 +2,7 @@ import { cl, omit } from "@/util/helpers/";
 import styles from "../SegmentedControl.module.css";
 import { useControlItem } from "./useControlItem";
 
-type BaseProps = Omit<React.HTMLAttributes<HTMLButtonElement>, "children"> & {
+interface BaseProps extends Omit<React.HTMLAttributes<HTMLButtonElement>, "children"> {
   /**
    * Value for state-handling.
    */
@@ -15,9 +15,9 @@ type BaseProps = Omit<React.HTMLAttributes<HTMLButtonElement>, "children"> & {
    * Foreward referance
    */
   ref?: React.ForwardedRef<HTMLButtonElement>;
-};
+}
 
-type LabelProps = {
+interface LabelProps {
   children?: never;
   /**
    * Item label.
@@ -27,9 +27,9 @@ type LabelProps = {
    * Item Icon.
    */
   icon?: React.ReactNode;
-};
+}
 
-type IconProps = {
+interface IconProps {
   children?: never;
   /**
    * Item label.
@@ -39,9 +39,9 @@ type IconProps = {
    * Item Icon.
    */
   icon: React.ReactNode;
-};
+}
 
-export type ControlItemProps = BaseProps & (LabelProps | IconProps);
+export type SegmentedControlItemProps = BaseProps & (LabelProps | IconProps);
 
 const ControlItem = ({
   value,
@@ -52,7 +52,7 @@ const ControlItem = ({
   ref,
   disabled = false,
   ...rest
-}: ControlItemProps) => {
+}: SegmentedControlItemProps) => {
   const { ...itemProps } = useControlItem({
     ref,
     value,

@@ -3,12 +3,21 @@ import DropdownControl from "./DropdownControl";
 import { expect, userEvent, within } from "storybook/test";
 import { colorNames } from "@/styles/colorType";
 import { useState } from "react";
+import { Settings, User } from "lucide-react";
+import { Input } from "../Input";
 
 const meta: Meta<typeof DropdownControl> = {
   title: "Building Blocks/Components/DropdownControl",
   component: DropdownControl,
   tags: ["autodocs"],
   argTypes: {},
+  parameters: {
+    docs: {
+      source: {
+        type: "dynamic",
+      },
+    },
+  },
 } satisfies Meta<typeof DropdownControl>;
 
 export default meta;
@@ -16,8 +25,37 @@ type Story = StoryObj<typeof DropdownControl>;
 
 export const Basic: Story = {
   render: () => (
-    <DropdownControl></DropdownControl>;
+    <DropdownControl defaultValue="disable" onChange={console.log}>
+      <DropdownControl.Item
+        value="enable"
+        label="Enable"
+        content={<p>Additional content is visible.</p>}
+      />
+      <DropdownControl.Item value="disable" label="Disable" />
+    </DropdownControl>
   ),
+};
+
+export const WithInput: Story = {
+  render: () => {
+    const [text, setText] = useState("");
+
+    return (
+      <DropdownControl defaultValue="unlimited" onChange={console.log}>
+        <DropdownControl.Item
+          value="limit"
+          label="Limit"
+          content={
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <span>Set maximum uploads to:</span>
+              <Input aria-label="limit-input" />
+            </div>
+          }
+        />
+        <DropdownControl.Item value="unlimited" label="Unlimited" />
+      </DropdownControl>
+    );
+  },
 };
 
 // const EnableDisable = [
