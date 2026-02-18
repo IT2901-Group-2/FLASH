@@ -68,4 +68,41 @@ describe("useEventsQuery", () => {
 
     expect(result.current.error).toBeInstanceOf(Error);
   });
+
+  it("passes query params to fetch", async () => {
+    const fetchMock = vi.fn<typeof fetch>(
+      async () => new Response(JSON.stringify([]), { status: 200 })
+    );
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderHook(() => useEventsQuery({ status: "active" }), {
+      wrapper: createWrapper(),
+    });
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+
+    expect(fetchMock.mock.calls[0]?.[0]).toContain("status=active");
+  });
+
+  it("extracts error message from JSON response", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify({ message: "Testing custom error" }), {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+          })
+      )
+    );
+
+    const { result } = renderHook(() => useEventsQuery(), {
+      wrapper: createWrapper(),
+    });
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+
+    expect(result.current.error?.message).toBe("Testing custom error");
+  });
 });
