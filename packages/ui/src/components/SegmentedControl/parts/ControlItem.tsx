@@ -1,4 +1,4 @@
-import { cl } from "@/util/className";
+import { cl } from "@/util/helpers/";
 import styles from "../SegmentedControl.module.css";
 
 type BaseProps = Omit<React.HTMLAttributes<HTMLButtonElement>, "children"> & {

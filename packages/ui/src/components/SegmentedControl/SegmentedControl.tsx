@@ -1,7 +1,7 @@
 import React, { HTMLAttributes, useId } from "react";
 import { ColorName } from "@/styles/colorType";
 import ControlItem from "./parts/ControlItem";
-import { cl } from "@/util/className";
+import { cl } from "@/util/helpers/";
 import styles from "./SegmentedControl.module.css";
 import { SegmentedControlsProvider } from "./SegmentedControl.context";
 import { useSegmentedControls } from "./useSegmentedControl";

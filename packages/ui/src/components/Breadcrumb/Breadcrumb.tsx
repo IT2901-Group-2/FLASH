@@ -1,6 +1,6 @@
 import { Home, ChevronRight } from "lucide-react";
 import styles from "./Breadcrumb.module.css";
-import { cl } from "../../util/className";
+import { cl } from "../../util/helpers/className";
 import { ColorName } from "@/styles/colorType";
 
 export interface BreadcrumbItem {
