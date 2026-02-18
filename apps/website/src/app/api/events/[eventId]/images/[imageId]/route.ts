@@ -9,7 +9,12 @@ export async function GET(
 
   return imageService.downloadImage(eventId, imageId).fold(
     image =>
-      new NextResponse(Buffer.from(image), { headers: { "Content-Type": "image/webp" } }),
+      new NextResponse(Buffer.from(image), {
+        headers: {
+          "Content-Type": "image/webp",
+          "Cache-Control": `max-age=${10 * 60 * 60} public`,
+        },
+      }),
     err => NextResponse.json({ message: err.message }, { status: 500 })
   );
 }

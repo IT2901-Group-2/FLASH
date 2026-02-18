@@ -19,6 +19,12 @@ export class ImageService {
     this.storage = storage;
   }
 
+  private convertImage(image: Blob): AsyncResult<Buffer<ArrayBufferLike>, Error> {
+    return Result.try(() => image.bytes()).mapCatching(buf =>
+      sharp(buf).webp().toBuffer()
+    );
+  }
+
   getImages(eventId: string): AsyncResult<Image[], Error> {
     return Result.try(() =>
       this.dbService.db.select().from(imageTable).where(eq(imageTable.eventId, eventId))
@@ -44,15 +50,14 @@ export class ImageService {
   uploadImage(eventId: string, image: Blob): AsyncResult<Image, Error> {
     const id = uid.rnd();
 
-    return Result.try(() => image.bytes())
-      .mapCatching(buf => sharp(buf).webp().toBuffer())
+    return this.convertImage(image)
       .map(image => this.storage.write(`${id}.webp`, image))
       .mapCatching(() =>
         this.dbService.db.insert(imageTable).values({ id, eventId }).returning()
       )
+      .map(rows => getFirstRow(rows, "Unable to upload image"))
       .onSuccess(() => this.dbService.flush())
-      .onFailure(() => this.storage.rm(`${id}.webp`).getOrThrow())
-      .map(rows => getFirstRow(rows, "Unable to upload image"));
+      .onFailure(() => this.storage.rm(`${id}.webp`).getOrThrow());
   }
 }
 
