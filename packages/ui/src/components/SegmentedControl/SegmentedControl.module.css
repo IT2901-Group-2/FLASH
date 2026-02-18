@@ -64,6 +64,9 @@
     background-color: var(--color-bg-hover);
     color: var(--color-text-hover);
   }
+  &[data-size="small"] {
+    min-height: 1.5rem;
+  }
 }
 
 .inner {
@@ -90,8 +93,8 @@
   view-transition-name: segmented-control-backdrop;
 }
 
-::view-transition-old(segmented-control-backdrop),
-::view-transition-new(segmented-control-backdrop) {
+::view-transition-old(segmented-control-backdrop-*),
+::view-transition-new(segmented-control-backdrop-*) {
   animation-duration: 200ms;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }

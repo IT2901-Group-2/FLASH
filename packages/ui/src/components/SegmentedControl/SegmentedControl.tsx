@@ -73,13 +73,16 @@ const SegmentedControl = ({
   const descendants = useSegmentedControlDescendants();
   const labelId = useId();
 
+  const transitionId = `segmented-control-transition-${labelId}`;
+
   return (
     <SegmentedControlDescendantsProvider manager={descendants}>
-      <SegmentedControlProvider value={{ ...context, size }}>
+      <SegmentedControlProvider value={{ ...context, size, transitionId }}>
         <div
           className={cl(styles.container, className)}
           data-color={color}
           data-fill={fill}
+          data-size={size}
         >
           {label && (
             <div id={labelId} className={styles.label}>

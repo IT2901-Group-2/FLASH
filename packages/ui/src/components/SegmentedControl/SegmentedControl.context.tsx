@@ -13,7 +13,9 @@ export const [
 
 // State context — selected/focused value + setters.
 type SegmentedControlContextValue = ReturnType<typeof useSegmentedControl> &
-  Pick<SegmentedControlProps, "size">;
+  Pick<SegmentedControlProps, "size"> & {
+    transitionId?: string;
+  };
 
 export const {
   Provider: SegmentedControlProvider,

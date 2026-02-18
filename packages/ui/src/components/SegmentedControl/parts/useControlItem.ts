@@ -23,8 +23,14 @@ export function useControlItem({
   onKeyDown: _onKeyDown,
   ref,
 }: UseControlItemProps) {
-  const { selectedValue, setSelectedValue, focusedValue, setFocusedValue } =
-    useSegmentedControlContext();
+  const {
+    selectedValue,
+    setSelectedValue,
+    focusedValue,
+    setFocusedValue,
+    size,
+    transitionId,
+  } = useSegmentedControlContext();
 
   const { register, descendants } = useSegmentedControlDescendant({
     value,
@@ -75,5 +81,7 @@ export function useControlItem({
     ),
     onFocus: disabled ? undefined : composeEventHandlers(_onFocus, onFocus),
     onKeyDown: composeEventHandlers(_onKeyDown, onKeyDown),
+    "data-size": size,
+    transitionId,
   };
 }

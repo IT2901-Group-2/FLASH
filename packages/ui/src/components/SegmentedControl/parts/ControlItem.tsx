@@ -57,6 +57,8 @@ const ControlItem = ({
   const {
     isSelected,
     isFocused: _,
+    "data-size": size,
+    transitionId,
     ...itemProps
   } = useControlItem({
     ref,
@@ -76,8 +78,11 @@ const ControlItem = ({
       className={cl(className, styles.controlButton)}
       type="button"
       role="radio"
+      data-size={size}
     >
-      {isSelected && <div className={styles.backdrop} />}
+      {isSelected && (
+        <div className={styles.backdrop} style={{ viewTransitionName: transitionId }} />
+      )}
       <span className={styles.inner} style={{ viewTransitionName: innerTransitionName }}>
         {children ?? (
           <>
