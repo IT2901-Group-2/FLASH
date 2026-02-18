@@ -62,6 +62,9 @@ const SegmentedControl = ({
   size,
   "data-color": color = "accent",
 }: SegmentedControlProps) => {
+  if (!value && !defaultValue)
+    console.error("ToggleGroup without value or defaultvalue is not allowed");
+
   const SegmentedControlsContext = useSegmentedControls({
     defaultValue,
     value,
@@ -74,9 +77,6 @@ const SegmentedControl = ({
   };
 
   const lableID = useId();
-
-  if (!value && !defaultValue)
-    console.error("ToggleGroup without value or defaultvalue is not allowed");
 
   return (
     <SegmentedControlsProvider {...context}>
