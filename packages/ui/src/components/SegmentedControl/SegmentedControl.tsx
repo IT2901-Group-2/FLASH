@@ -63,7 +63,7 @@ const SegmentedControl = ({
   className,
   label,
   fill = false,
-  size,
+  size = "medium",
   "data-color": color = "accent",
 }: SegmentedControlProps) => {
   if (!value && !defaultValue)

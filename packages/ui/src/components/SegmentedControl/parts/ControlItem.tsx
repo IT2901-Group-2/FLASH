@@ -1,13 +1,15 @@
 import { cl } from "@/util/helpers/";
 import styles from "../SegmentedControl.module.css";
 import { useControlItem } from "./useControlItem";
+import { useSegmentedControlContext } from "../SegmentedControl.context";
+import { useId } from "react";
 
 type BaseProps = Omit<React.HTMLAttributes<HTMLButtonElement>, "children"> & {
   /**
    * Value for state-handling.
    */
   value: string;
-  disabled: boolean;
+  disabled?: boolean;
   ref?: React.ForwardedRef<HTMLButtonElement>;
 };
 
@@ -44,10 +46,14 @@ const ControlItem = ({
   children,
   className,
   ref,
-  disabled,
+  disabled = false,
   ...rest
 }: ControlItemProps) => {
-  const itemProps = useControlItem({
+  const {
+    isSelected,
+    isFocused: _,
+    ...itemProps
+  } = useControlItem({
     ref,
     value,
     disabled,
@@ -63,6 +69,7 @@ const ControlItem = ({
       type="button"
       role="radio"
     >
+      {isSelected && <span className={styles.backdrop} aria-hidden />}
       <span className={styles.inner}>
         {children ?? (
           <>

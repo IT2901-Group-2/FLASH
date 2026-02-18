@@ -66,9 +66,9 @@ export function useControlItem({
 
   return {
     ref: refs,
+    isSelected,
     isFocused: focusedValue === value,
     "aria-checked": isSelected,
-    "data-selected": isSelected,
     onClick: composeEventHandlers(
       onClick,
       () => selectedValue !== value && setSelectedValue(value)
