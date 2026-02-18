@@ -1,7 +1,7 @@
 import React from "react";
 import { Loader } from "../Loader/Loader";
 import styles from "./ImageCard.module.css";
-import { cl } from "../../util/helpers/className";
+import { cl } from "@/util/helpers/";
 import { ColorName } from "@/styles/colorType";
 import { CheckCheck, CircleCheckBig, CircleX, LoaderIcon, Timer, X } from "lucide-react";
 

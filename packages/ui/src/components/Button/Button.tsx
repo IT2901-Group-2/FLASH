@@ -1,7 +1,7 @@
 import React from "react";
 import { Loader } from "../Loader/Loader";
 import styles from "./Button.module.css";
-import { cl } from "../../util/helpers/className";
+import { cl } from "@/util/helpers/";
 import { omit } from "@/util/helpers";
 import { ColorName } from "@/styles/colorType";
 
