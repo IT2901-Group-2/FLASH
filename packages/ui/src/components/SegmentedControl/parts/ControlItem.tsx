@@ -1,8 +1,6 @@
 import { cl } from "@/util/helpers/";
 import styles from "../SegmentedControl.module.css";
 import { useControlItem } from "./useControlItem";
-import { useSegmentedControlContext } from "../SegmentedControl.context";
-import { useId } from "react";
 
 type BaseProps = Omit<React.HTMLAttributes<HTMLButtonElement>, "children"> & {
   /**
