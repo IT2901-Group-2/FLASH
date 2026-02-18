@@ -54,7 +54,7 @@
   justify-content: center;
   align-items: center;
 
-  min-width: fit-content;
+  min-width: max-content;
   position: relative;
   isolation: isolate;
 

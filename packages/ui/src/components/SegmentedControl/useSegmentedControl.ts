@@ -5,7 +5,7 @@ import { SegmentedControlProps } from "./SegmentedControl";
 
 export function useSegmentedControl({
   value,
-  defaultValue = "",
+  defaultValue,
   onChange,
 }: Pick<SegmentedControlProps, "value" | "defaultValue" | "onChange">) {
   const [focusedValue, setFocusedValue] = useState(defaultValue);

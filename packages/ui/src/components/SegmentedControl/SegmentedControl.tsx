@@ -83,6 +83,7 @@ const SegmentedControl = ({
           data-color={color}
           data-fill={fill}
           data-size={size}
+          role="segmentedControl"
         >
           {label && (
             <div id={labelId} className={styles.label}>
