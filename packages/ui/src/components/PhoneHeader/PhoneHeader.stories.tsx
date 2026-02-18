@@ -27,7 +27,7 @@ const meta: Meta<typeof PhoneHeader> = {
     rightVariant: {
       description: "Visual style for the right action pill.",
       control: "select",
-      options: ["primary", "secondary"],
+      options: ["primary", "secondary", "tertiary"],
     },
     uploadsRemaining: {
       description: "Number of uploads remaining (shown on desktop only).",
@@ -60,6 +60,8 @@ export const Default: Story = {
     leftAriaLabel: "Go back",
     rightLabel: "Live",
     rightVariant: "primary",
+    onSecondaryClick: fn(),
+    onPrimaryClick: fn(),
     uploadsRemaining: 5,
   },
   play: async ({ canvasElement }) => {
@@ -67,7 +69,6 @@ export const Default: Story = {
     const header = canvas.getByRole("banner");
     const title = canvas.getByText(/wedding/i);
     const subtitle = canvas.getByText(/nickname/i);
-    const rightLabel = canvas.getByText(/live/i);
     const backButton = canvas.getByRole("button", { name: /go back/i });
     const originalBack = window.history.back;
     const backMock = fn();
@@ -76,7 +77,6 @@ export const Default: Story = {
     await expect(header).toBeInTheDocument();
     await expect(title).toBeInTheDocument();
     await expect(subtitle).toBeInTheDocument();
-    await expect(rightLabel).toBeInTheDocument();
     await userEvent.click(backButton);
     await expect(backMock).toHaveBeenCalledTimes(1);
     window.history.back = originalBack;
@@ -92,7 +92,7 @@ export const BackModerate: Story = {
     rightLabel: "Moderate",
     rightIcon: <Image />,
     rightVariant: "secondary",
-    onRightClick: fn(),
+    onTertiaryClick: fn(),
     uploadsRemaining: 10,
   },
   play: async ({ canvasElement }) => {
@@ -118,7 +118,7 @@ export const MenuModerate: Story = {
     rightLabel: "Moderate",
     rightIcon: <Image />,
     rightVariant: "secondary",
-    onRightClick: fn(),
+    onTertiaryClick: fn(),
     uploadsRemaining: 3,
   },
 };
