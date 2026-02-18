@@ -12,7 +12,7 @@ import {
  * Normalizes a date value to an ISO 8601 string for API serialization.
  * Returns undefined if no value is provided.
  */
-function toIso(value: Date | string | undefined): string | undefined {
+function toIso(value?: Date): string | undefined {
   if (value === undefined) return undefined;
   return value instanceof Date ? value.toISOString() : value;
 }
@@ -24,21 +24,21 @@ function toIso(value: Date | string | undefined): string | undefined {
  */
 async function readResponseError(res: Response): Promise<string> {
   try {
-    const data = (await res.json()) as unknown;
+    const data = await res.clone().json();
     if (data && typeof data === "object" && "message" in data) {
       const msg = (data as { message?: unknown }).message;
-      if (typeof msg === "string" && msg.trim().length > 0) return msg;
+      if (typeof msg === "string" && msg.trim()) return msg;
     }
   } catch {
     // ignore
   }
   try {
-    const text = await res.text();
-    if (text.trim().length > 0) return text;
+    const text = await res.clone().text();
+    if (text.trim()) return text;
   } catch {
     // ignore
   }
-  return `Request failed with status ${res.status}`;
+  return `Request failed with status ${res.status} ${res.statusText}`;
 }
 
 /**
@@ -49,6 +49,7 @@ async function readResponseError(res: Response): Promise<string> {
 async function fetchJson<T>(input: RequestInfo | URL, init?: RequestInit): Promise<T> {
   const res = await fetch(input, init);
   if (!res.ok) throw new Error(await readResponseError(res));
+  if (res.status === 204) return undefined as T;
   return (await res.json()) as T;
 }
 
@@ -103,7 +104,7 @@ export function useEventsQuery(params?: EventsQueryParams) {
     queryKey: eventsKeys.list(params),
     queryFn: async () => {
       const url = `/api/events${toEventsSearchParams(params)}`;
-      return fetchJson<EventDto[]>(url, { cache: "no-store" });
+      return fetchJson<EventDto[]>(url);
     },
   });
 }

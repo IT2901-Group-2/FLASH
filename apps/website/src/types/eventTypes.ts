@@ -20,11 +20,11 @@ export type EventDto = Omit<
 };
 
 export type CreateEventInput = Omit<CreateEvent, "startDate" | "endDate"> & {
-  startDate: Date | string;
-  endDate: Date | string;
+  startDate: Date;
+  endDate: Date;
 };
 
 export type UpdateEventInput = Omit<UpdateEvent, "startDate" | "endDate"> & {
-  startDate?: Date | string;
-  endDate?: Date | string;
+  startDate?: Date;
+  endDate?: Date;
 };
