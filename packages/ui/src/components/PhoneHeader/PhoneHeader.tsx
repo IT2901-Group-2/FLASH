@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
-import { User, Camera, Upload } from "lucide-react";
+import { useState } from "react";
+import { User, Camera, Upload, QrCode } from "lucide-react";
 import { cl } from "../../util/className";
 import styles from "./PhoneHeader.module.css";
 import { Button } from "../Button";
+import QRDisplay from "../QRDisplay/QRDisplay";
 
 export interface PhoneHeaderProps {
   /** The title to display in the phone header. */
@@ -33,6 +35,10 @@ export interface PhoneHeaderProps {
   className?: string;
   /** Number of uploads remaining (shown on desktop only). */
   uploadsRemaining?: number;
+  /** Optional value to encode in the QR code shown by the tertiary action. Defaults to current location if available. */
+  qrValue?: string;
+  /** Optional children rendered beneath the header (e.g., Breadcrumb). */
+  children?: ReactNode;
 }
 
 /**
@@ -53,96 +59,155 @@ export const PhoneHeader = ({
   onTertiaryClick,
   onSecondaryClick,
   onPrimaryClick,
+  rightVariant = "primary",
   className,
   uploadsRemaining,
+  qrValue,
+  children,
 }: PhoneHeaderProps) => {
   const handleLeftClick =
     onLeftClick ??
     (() => {
       if (typeof window !== "undefined") {
-        window.history.back();
       }
     });
+  const [showQr, setShowQr] = useState(false);
 
   return (
     <header className={cl(styles.phoneheader, styles.container, className)}>
-      {leftIcon ? (
-        <button
-          type="button"
-          className={cl(styles.leftAction, styles.leftActionButton)}
-          onClick={handleLeftClick}
-          aria-label={leftAriaLabel}
-        >
-          <span className={styles.iconWrapper}>{leftIcon}</span>
-        </button>
-      ) : (
-        <span className={styles.leftSpacer} />
-      )}
-
-      <div className={styles.titleBlock}>
-        <h1 className={styles.title}>{title}</h1>
-        {subtitle ? (
-          <div className={styles.subtitle}>
-            <span className={styles.iconWrapper}>
-              <User />
-            </span>
-            <span>{subtitle}</span>
-          </div>
-        ) : null}
-        {uploadsRemaining !== undefined && (
-          <div className={styles.uploadsInfo}>
-            You have {uploadsRemaining} uploads remaining
-          </div>
+      <div className={styles.headerRow}>
+        {leftIcon ? (
+          <button
+            type="button"
+            className={cl(styles.leftAction, styles.leftActionButton)}
+            onClick={handleLeftClick}
+            aria-label={leftAriaLabel}
+          >
+            <span className={styles.iconWrapper}>{leftIcon}</span>
+          </button>
+        ) : (
+          <span className={styles.leftSpacer} />
         )}
-      </div>
 
-      {/* Desktop additional actions - only show on larger screens */}
-      <div className={styles.desktopActions}>
-        {rightLabel === "Moderate" && (
+        <div className={styles.titleBlock}>
+          <h1 className={styles.title}>{title}</h1>
+          {subtitle ? (
+            <div className={styles.subtitle}>
+              <span className={styles.iconWrapper}>
+                <User />
+              </span>
+              <span>{subtitle}</span>
+            </div>
+          ) : null}
+          {uploadsRemaining !== undefined && (
+            <div className={styles.uploadsInfo}>
+              You have {uploadsRemaining} uploads remaining
+            </div>
+          )}
+        </div>
+
+        {/* Desktop additional actions - only show on larger screens */}
+        <div className={styles.desktopActions}>
+          {rightLabel === "Moderate" ? (
+            <Button
+              variant="secondary"
+              data-color="brand-purple"
+              icon={rightIcon}
+              iconPosition="right"
+              onClick={onTertiaryClick}
+            >
+              {rightLabel}
+            </Button>
+          ) : (
+            <Button
+              variant="secondary"
+              data-color="brand-purple"
+              icon={<QrCode />}
+              iconPosition="right"
+              onClick={() => {
+                setShowQr(true);
+                onTertiaryClick?.();
+              }}
+              aria-label="show-qr"
+            />
+          )}
+          <Button
+            variant="secondary"
+            data-color="brand-purple"
+            icon={<Camera />}
+            iconPosition="right"
+            onClick={onSecondaryClick}
+          >
+            Take Photo
+          </Button>
+          <Button
+            variant="primary"
+            data-color="brand-purple"
+            icon={<Upload />}
+            iconPosition="right"
+            onClick={onPrimaryClick}
+          >
+            Upload Image
+          </Button>
+        </div>
+
+        {rightLabel === "Moderate" ? (
           <Button
             variant="secondary"
             data-color="brand-purple"
             icon={rightIcon}
             iconPosition="right"
             onClick={onTertiaryClick}
+            className={styles.rightAction}
+            aria-label={rightAriaLabel ?? rightLabel}
           >
             {rightLabel}
           </Button>
+        ) : (
+          <Button
+            variant="secondary"
+            data-color="brand-purple"
+            icon={<QrCode />}
+            iconPosition="right"
+            onClick={() => {
+              // open internal QR display and also call external handler if provided
+              setShowQr(true);
+              onTertiaryClick?.();
+            }}
+            className={styles.rightAction}
+            aria-label={rightAriaLabel ?? "show-qr"}
+          />
         )}
-        <Button
-          variant="secondary"
-          data-color="brand-purple"
-          icon={<Camera />}
-          iconPosition="right"
-          onClick={onSecondaryClick}
-        >
-          Take Photo
-        </Button>
-        <Button
-          variant="primary"
-          data-color="brand-purple"
-          icon={<Upload />}
-          iconPosition="right"
-          onClick={onPrimaryClick}
-        >
-          Upload Image
-        </Button>
       </div>
 
-      {rightLabel === "Moderate" ? (
-        <Button
-          variant="secondary"
-          data-color="brand-purple"
-          icon={rightIcon}
-          iconPosition="right"
-          onClick={onTertiaryClick}
-          className={styles.rightAction}
-          aria-label={rightAriaLabel ?? rightLabel}
+      {children ? <div className={styles.childrenWrapper}>{children}</div> : null}
+
+      {showQr && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className={styles.qrOverlay}
+          onClick={() => setShowQr(false)}
         >
-          {rightLabel}
-        </Button>
-      ) : (
-        <span className={styles.rightSpacer} />
+          <div
+            className={styles.qrDialog}
+            role="document"
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              className={styles.qrClose}
+              aria-label="Close QR"
+              onClick={() => setShowQr(false)}
+            >
+              ✕
+            </button>
+            <QRDisplay
+              value={
+                qrValue ?? (typeof window !== "undefined" ? window.location.href : "https://example.com")
+              }
+            />
+          </div>
+        </div>
       )}
     </header>
   );
