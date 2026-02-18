@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SegmentedControlProps } from "./SegmentedControl";
 
-export function useSegmentedControls({
+export function useSegmentedControl({
   onChange,
   value,
   defaultValue = "",
