@@ -1,8 +1,7 @@
 import React from "react";
 import { Loader } from "../Loader/Loader";
 import styles from "./Button.module.css";
-import { cl } from "@/util/helpers/";
-import { omit } from "@/util/helpers";
+import { cl, omit } from "@/util/helpers/";
 import { ColorName } from "@/styles/colorType";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
