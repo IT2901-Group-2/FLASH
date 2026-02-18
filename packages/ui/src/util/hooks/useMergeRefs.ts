@@ -8,11 +8,8 @@ type ReactRef<T> = Ref<T> | RefObject<T> | RefCallback<T>;
 function assignRef<T>(ref: ReactRef<T> | null | undefined, value: T) {
   if (ref == null) return;
 
-  if (typeof ref === "function") {
-    ref(value);
-  } else {
-    (ref as RefObject<T>).current = value;
-  }
+  if (typeof ref === "function") ref(value);
+  else (ref as RefObject<T>).current = value;
 }
 
 /**

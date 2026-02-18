@@ -1,3 +1,8 @@
+/**
+ * Inspired by https://github.com/navikt/aksel/tree/main/%40navikt/core/react/src/utils/hooks
+ * Rewritten and simplified for our use-case.
+ */
+
 import {
   createContext,
   useCallback,
