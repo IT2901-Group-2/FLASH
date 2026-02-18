@@ -1,5 +1,5 @@
 .container {
-  --color-bg: var(--color-neutral-000);
+  --color-bg: var(--color-background-secondary-500);
   --color-boder: var(--color-neutral-500);
   --color-bg-active: var(--data-color-500);
   --color-bg-hover: var(--data-color-200);
@@ -44,7 +44,7 @@
   color: var(--color-text);
   width: max(100%, 7.5rem);
 
-  border-radius: 3rem;
+  border-radius: 1rem;
   background-color: var(--color-bg);
   display: grid;
   grid-template-columns: repeat(var(--item-count), 1fr);
@@ -61,9 +61,9 @@
   min-height: 2.5rem;
   min-width: max-content;
 
-  padding: 0 0.5rem;
+  padding: 0 1.5rem;
   margin: var(--inset-distance);
-  border-radius: 3rem;
+  border-radius: inherit;
   border: none;
   cursor: pointer;
 
@@ -108,5 +108,5 @@
   width: var(--backdrop-width);
   left: var(--backdrop-pos);
 
-  transition: left 0.25s ease-in-out;
+  transition: left 0.2s ease-in-out;
 }
