@@ -1,26 +1,16 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import type { Event } from "@/db";
-
-export type EventsQueryParams = {
-  id?: string[];
-  name?: string;
-  guestCode?: string;
-  moderatorCode?: string;
-  status?: "upcoming" | "active" | "finished";
-  archived?: boolean | "all";
-};
-
-export type EventDto = Omit<
-  Event,
-  "startDate" | "endDate" | "createdAt" | "updatedAt"
-> & {
-  startDate: string;
-  endDate: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  EventsQueryParams,
+  EventDto,
+  CreateEventInput,
+  UpdateEventInput,
+} from "@/types/eventTypes";
+function toIso(value: Date | string | undefined): string | undefined {
+  if (value === undefined) return undefined;
+  return value instanceof Date ? value.toISOString() : value;
+}
 
 /*
 Creates readable error message from failed HTTP response 
@@ -90,6 +80,61 @@ export function useEventsQuery(params?: EventsQueryParams) {
     queryFn: async () => {
       const url = `/api/events${toEventsSearchParams(params)}`;
       return fetchJson<EventDto[]>(url, { cache: "no-store" });
+    },
+  });
+}
+
+export function useCreateEventMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: CreateEventInput) => {
+      return fetchJson<EventDto>("/api/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...input,
+          startDate: toIso(input.startDate),
+          endDate: toIso(input.endDate),
+        }),
+      });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: eventsKeys.all });
+    },
+  });
+}
+
+export function useUpdateEventMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ eventId, data }: { eventId: string; data: UpdateEventInput }) => {
+      return fetchJson<EventDto>(`/api/events/${eventId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...data,
+          startDate: toIso(data.startDate),
+          endDate: toIso(data.endDate),
+        }),
+      });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: eventsKeys.all });
+    },
+  });
+}
+
+export function useDeleteEventMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ eventId }: { eventId: string }) => {
+      return fetchJson<unknown>(`/api/events/${eventId}`, { method: "DELETE" });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: eventsKeys.all });
     },
   });
 }
