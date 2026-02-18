@@ -1,38 +1,79 @@
 import { useCallback } from "react";
-import { useSegmentedControls } from "../useSegmentedControl";
+import { composeEventHandlers } from "@/util/helpers";
+import { useMergeRefs } from "@/util/hooks";
+import {
+  useSegmentedControlContext,
+  useSegmentedControlDescendant,
+} from "../SegmentedControl.context";
 
-export interface UseToggleItemProps {
-  /**
-   * If `true`, the `ToggleItem` won't be toggleable
-   * @default false
-   */
-  onClick?: React.MouseEventHandler;
-  onFocus?: React.FocusEventHandler;
-  onKeyDown?: React.KeyboardEventHandler;
+export interface UseControlItemProps {
   value: string;
+  disabled?: boolean;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  onFocus?: React.FocusEventHandler<HTMLButtonElement>;
+  onKeyDown?: React.KeyboardEventHandler<HTMLButtonElement>;
+  ref?: React.ForwardedRef<HTMLButtonElement>;
 }
 
-export const useToggleItem = <P extends UseToggleItemProps>({
+export function useControlItem({
   value,
-  onFocus: _onFocus,
+  disabled = false,
   onClick,
+  onFocus: _onFocus,
   onKeyDown: _onKeyDown,
-}: P) => {
-  const { focusedValue, setFocusedValue, selectedValue, setSelectedValue } =
-    useSegmentedControls();
+  ref,
+}: UseControlItemProps) {
+  const { selectedValue, setSelectedValue, focusedValue, setFocusedValue } =
+    useSegmentedControlContext();
+
+  const { register, descendants } = useSegmentedControlDescendant({
+    value,
+    disabled,
+  });
 
   const isSelected = value === selectedValue;
+
   const onFocus = () => setFocusedValue(value);
+
   const onKeyDown = useCallback(
-    (event: React.KeyboardEvent) => {},
-    [focusedValue, selectedValue, setSelectedValue]
+    (event: React.KeyboardEvent) => {
+      // Find the index of the currently focused item in the sorted list.
+      const idx = descendants.values().findIndex(d => d.value === focusedValue);
+
+      const focusItem = (item?: { node: HTMLButtonElement }) => item?.node?.focus();
+
+      const keyMap: Record<string, () => void> = {
+        ArrowRight: () => focusItem(descendants.nextEnabled(idx, false)),
+        ArrowLeft: () => focusItem(descendants.prevEnabled(idx, false)),
+        Home: () => focusItem(descendants.firstEnabled()),
+        End: () => focusItem(descendants.lastEnabled()),
+      };
+
+      const hasModifiers =
+        event.shiftKey || event.ctrlKey || event.altKey || event.metaKey;
+      const action = keyMap[event.key];
+
+      if (action && !hasModifiers) {
+        event.preventDefault();
+        action();
+      } else if (event.key === "Tab" && selectedValue)
+        setTimeout(() => setFocusedValue(selectedValue));
+    },
+    [descendants, focusedValue, selectedValue, setFocusedValue]
   );
 
+  const refs = useMergeRefs(register, ref);
+
   return {
-    isSelected,
+    ref: refs,
     isFocused: focusedValue === value,
-    onClick,
-    onFocus,
-    onKeyDown,
+    "aria-checked": isSelected,
+    "data-selected": isSelected,
+    onClick: composeEventHandlers(
+      onClick,
+      () => selectedValue !== value && setSelectedValue(value)
+    ),
+    onFocus: disabled ? undefined : composeEventHandlers(_onFocus, onFocus),
+    onKeyDown: composeEventHandlers(_onKeyDown, onKeyDown),
   };
-};
+}

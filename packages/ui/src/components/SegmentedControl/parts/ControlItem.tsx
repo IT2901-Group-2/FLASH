@@ -1,11 +1,14 @@
 import { cl } from "@/util/helpers/";
 import styles from "../SegmentedControl.module.css";
+import { useControlItem } from "./useControlItem";
 
 type BaseProps = Omit<React.HTMLAttributes<HTMLButtonElement>, "children"> & {
   /**
    * Value for state-handling.
    */
   value: string;
+  disabled: boolean;
+  ref?: React.ForwardedRef<HTMLButtonElement>;
 };
 
 type LabelProps = {
@@ -40,11 +43,22 @@ const ControlItem = ({
   label,
   children,
   className,
+  ref,
+  disabled,
   ...rest
 }: ControlItemProps) => {
+  const itemProps = useControlItem({
+    ref,
+    value,
+    disabled,
+    ...rest,
+  });
+
   return (
     <button
       {...rest}
+      {...itemProps}
+      disabled={disabled}
       className={cl(className, styles.controlButton)}
       type="button"
       role="radio"
@@ -60,4 +74,5 @@ const ControlItem = ({
     </button>
   );
 };
+ControlItem.displayName = "SegmentedControl.Item";
 export default ControlItem;

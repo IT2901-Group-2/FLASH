@@ -1,36 +1,24 @@
-import { createContext, Dispatch, PropsWithChildren, SetStateAction } from "react";
+import { createDescendantContext } from "@/util/hooks/";
+import { createStrictContext } from "@/util/helpers";
+import { useSegmentedControl } from "./useSegmentedControl";
 import { SegmentedControlProps } from "./SegmentedControl";
-import { useSegmentedControls } from "./useSegmentedControl";
 
-interface SegmentedControlContextType {
-  size: "medium" | "small";
-  focusedValue: string;
-  setFocusedValue: Dispatch<SetStateAction<string>>;
-}
+// Descendant context — gives each item access to the ordered registry.
+export const [
+  SegmentedControlDescendantsProvider,
+  useSegmentedControlDescendantsContext,
+  useSegmentedControlDescendants,
+  useSegmentedControlDescendant,
+] = createDescendantContext<HTMLButtonElement, { value: string }>();
 
-export const SegmentedControlContext = createContext<
-  SegmentedControlContextType | undefined
->(undefined);
+// State context — selected/focused value + setters.
+type SegmentedControlContextValue = ReturnType<typeof useSegmentedControl> &
+  Pick<SegmentedControlProps, "size">;
 
-type SegmentedControlProviderProps = ReturnType<typeof useSegmentedControls> &
-  Pick<SegmentedControlProps, "size"> &
-  PropsWithChildren;
-
-export const SegmentedControlsProvider = ({
-  children,
-  focusedValue,
-  setFocusedValue,
-  size: specifiedSize,
-}: SegmentedControlProviderProps) => {
-  const value: SegmentedControlContextType = {
-    size: specifiedSize ?? "medium",
-    focusedValue,
-    setFocusedValue,
-  };
-
-  return (
-    <SegmentedControlContext.Provider value={value}>
-      {children}
-    </SegmentedControlContext.Provider>
-  );
-};
+export const {
+  Provider: SegmentedControlProvider,
+  useContext: useSegmentedControlContext,
+} = createStrictContext<SegmentedControlContextValue>({
+  name: "SegmentedControlContext",
+  errorMessage: "<SegmentedControl.Item> must be wrapped within <SegmentedControl>",
+});

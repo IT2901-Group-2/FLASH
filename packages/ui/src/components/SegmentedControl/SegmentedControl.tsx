@@ -3,8 +3,12 @@ import { ColorName } from "@/styles/colorType";
 import ControlItem from "./parts/ControlItem";
 import { cl } from "@/util/helpers/";
 import styles from "./SegmentedControl.module.css";
-import { SegmentedControlsProvider } from "./SegmentedControl.context";
-import { useSegmentedControls } from "./useSegmentedControl";
+import {
+  SegmentedControlDescendantsProvider,
+  SegmentedControlProvider,
+  useSegmentedControlDescendants,
+} from "./SegmentedControl.context";
+import { useSegmentedControl } from "./useSegmentedControl";
 
 export interface SegmentedControlProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -65,36 +69,33 @@ const SegmentedControl = ({
   if (!value && !defaultValue)
     console.error("ToggleGroup without value or defaultvalue is not allowed");
 
-  const SegmentedControlsContext = useSegmentedControls({
-    defaultValue,
-    value,
-    onChange,
-  });
-
-  const context = {
-    ...SegmentedControlsContext,
-    size,
-  };
-
-  const lableID = useId();
+  const context = useSegmentedControl({ defaultValue, value, onChange });
+  const descendants = useSegmentedControlDescendants();
+  const labelId = useId();
 
   return (
-    <SegmentedControlsProvider {...context}>
-      <div
-        className={cl(styles.container, className)}
-        data-color={color}
-        data-fill={fill}
-      >
-        {label && (
-          <div id={lableID} className={styles.label}>
-            {label}
+    <SegmentedControlDescendantsProvider manager={descendants}>
+      <SegmentedControlProvider value={{ ...context, size }}>
+        <div
+          className={cl(styles.container, className)}
+          data-color={color}
+          data-fill={fill}
+        >
+          {label && (
+            <div id={labelId} className={styles.label}>
+              {label}
+            </div>
+          )}
+          <div
+            role="radiogroup"
+            aria-labelledby={label ? labelId : undefined}
+            className={styles.toggleGroup}
+          >
+            {children}
           </div>
-        )}
-        <div role="radiogroup" className={styles.toggleGroup}>
-          {children}
         </div>
-      </div>
-    </SegmentedControlsProvider>
+      </SegmentedControlProvider>
+    </SegmentedControlDescendantsProvider>
   );
 };
 
