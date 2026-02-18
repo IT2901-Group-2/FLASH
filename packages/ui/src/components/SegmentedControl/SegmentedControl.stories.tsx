@@ -15,7 +15,7 @@ type Story = StoryObj<typeof SegmentedControl>;
 
 export const ItemLabel: Story = {
   render: () => (
-    <SegmentedControl onChange={console.log}>
+    <SegmentedControl defaultValue="center" onChange={console.log}>
       <SegmentedControl.Item value="left" label="Left" />
       <SegmentedControl.Item value="center" label="Center" />
       <SegmentedControl.Item value="right" label="Right" />
@@ -25,7 +25,7 @@ export const ItemLabel: Story = {
 
 export const GroupLabel: Story = {
   render: () => (
-    <SegmentedControl onChange={console.log} label="Select">
+    <SegmentedControl defaultValue="center" onChange={console.log} label="Select">
       <SegmentedControl.Item value="left" label="Left" />
       <SegmentedControl.Item value="center" label="Center" />
       <SegmentedControl.Item value="right" label="Right" />
@@ -35,7 +35,7 @@ export const GroupLabel: Story = {
 
 export const Size: Story = {
   render: () => (
-    <SegmentedControl onChange={console.log}>
+    <SegmentedControl defaultValue="center" onChange={console.log}>
       <SegmentedControl.Item value="left" label="Left" icon={<TextAlignStart />} />
       <SegmentedControl.Item value="center" label="Center" icon={<TextAlignCenter />} />
       <SegmentedControl.Item value="right" label="Right" icon={<TextAlignEnd />} />
@@ -45,7 +45,11 @@ export const Size: Story = {
 
 export const Colors: Story = {
   render: () => (
-    <SegmentedControl onChange={console.log} data-color="brand-purple">
+    <SegmentedControl
+      defaultValue="center"
+      onChange={console.log}
+      data-color="brand-purple"
+    >
       <SegmentedControl.Item value="left" label="Left" icon={<TextAlignStart />} />
       <SegmentedControl.Item value="center" label="Center" icon={<TextAlignCenter />} />
       <SegmentedControl.Item value="right" label="Right" icon={<TextAlignEnd />} />
@@ -56,7 +60,7 @@ export const Colors: Story = {
 export const Fill: Story = {
   render: () => (
     <div style={{ width: "30rem" }}>
-      <SegmentedControl onChange={console.log} fill>
+      <SegmentedControl defaultValue="center" onChange={console.log} fill>
         <SegmentedControl.Item value="left" label="Left" />
         <SegmentedControl.Item value="center" label="Center" />
         <SegmentedControl.Item value="right" label="Right" />
