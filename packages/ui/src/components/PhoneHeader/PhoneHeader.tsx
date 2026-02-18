@@ -21,10 +21,14 @@ export interface PhoneHeaderProps {
   rightIcon?: ReactNode;
   /** Accessible label for the right action. */
   rightAriaLabel?: string;
-  /** Click handler for the right action. */
-  onRightClick?: () => void;
+  /** Click handler for the tertiary desktop action (left-most). */
+  onTertiaryClick?: () => void;
+  /** Click handler for the secondary desktop action (middle). */
+  onSecondaryClick?: () => void;
+  /** Click handler for the primary desktop action (right-most). */
+  onPrimaryClick?: () => void;
   /** Visual style for the right action pill. */
-  rightVariant?: "primary" | "secondary";
+  rightVariant?: "primary" | "secondary" | "tertiary";
   /** Optional CSS class name for custom styling. */
   className?: string;
   /** Number of uploads remaining (shown on desktop only). */
@@ -48,8 +52,9 @@ export const PhoneHeader = ({
   rightLabel,
   rightIcon,
   rightAriaLabel,
-  onRightClick,
-  rightVariant = "primary",
+  onTertiaryClick,
+  onSecondaryClick,
+  onPrimaryClick,
   className,
   uploadsRemaining,
   onUploadClick,
@@ -102,7 +107,7 @@ export const PhoneHeader = ({
             data-color="brand-purple"
             icon={rightIcon}
             iconPosition="right"
-            onClick={onRightClick}
+            onClick={onTertiaryClick}
           >
             {rightLabel}
           </Button>
@@ -112,6 +117,7 @@ export const PhoneHeader = ({
           data-color="brand-purple"
           icon={<Camera />}
           iconPosition="right"
+          onClick={onSecondaryClick}
         >
           Take Photo
         </Button>
@@ -120,19 +126,19 @@ export const PhoneHeader = ({
           data-color="brand-purple"
           icon={<Upload />}
           iconPosition="right"
-          onClick={onUploadClick}
+          onClick={onPrimaryClick}
         >
           Upload Image
         </Button>
       </div>
 
-      {rightLabel ? (
+      {rightLabel === "Moderate" ? (
         <Button
-          variant={rightVariant}
+          variant="secondary"
           data-color="brand-purple"
           icon={rightIcon}
           iconPosition="right"
-          onClick={onRightClick}
+          onClick={onTertiaryClick}
           className={styles.rightAction}
           aria-label={rightAriaLabel ?? rightLabel}
         >
