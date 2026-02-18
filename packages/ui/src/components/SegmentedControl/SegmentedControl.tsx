@@ -73,17 +73,23 @@ const SegmentedControl = ({
   const descendants = useSegmentedControlDescendants();
   const labelId = useId();
 
-  const transitionId = `segmented-control-transition-${labelId}`;
+  const cssVars = {
+    "--n-items": React.Children.count(children),
+    "--selected-index": descendants
+      .values()
+      .findIndex(d => d.value === context.selectedValue),
+  } as React.CSSProperties;
 
   return (
     <SegmentedControlDescendantsProvider manager={descendants}>
-      <SegmentedControlProvider value={{ ...context, size, transitionId }}>
+      <SegmentedControlProvider value={{ ...context, size }}>
         <div
           className={cl(styles.container, className)}
           data-color={color}
           data-fill={fill}
           data-size={size}
           role="segmentedControl"
+          style={cssVars}
         >
           {label && (
             <div id={labelId} className={styles.label}>
@@ -95,6 +101,7 @@ const SegmentedControl = ({
             aria-labelledby={label ? labelId : undefined}
             className={styles.toggleGroup}
           >
+            <div className={styles.backdrop} />
             {children}
           </div>
         </div>

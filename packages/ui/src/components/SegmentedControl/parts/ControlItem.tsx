@@ -1,7 +1,6 @@
 import { cl } from "@/util/helpers/";
 import styles from "../SegmentedControl.module.css";
 import { useControlItem } from "./useControlItem";
-import { useId } from "react";
 
 type BaseProps = Omit<React.HTMLAttributes<HTMLButtonElement>, "children"> & {
   /**
@@ -58,7 +57,6 @@ const ControlItem = ({
     isSelected,
     isFocused: _,
     "data-size": size,
-    transitionId,
     ...itemProps
   } = useControlItem({
     ref,
@@ -66,9 +64,6 @@ const ControlItem = ({
     disabled,
     ...rest,
   });
-
-  const innerId = useId();
-  const innerTransitionName = `segmented-control-inner-${innerId}`;
 
   return (
     <button
@@ -80,10 +75,7 @@ const ControlItem = ({
       role="radio"
       data-size={size}
     >
-      {isSelected && (
-        <div className={styles.backdrop} style={{ viewTransitionName: transitionId }} />
-      )}
-      <span className={styles.inner} style={{ viewTransitionName: innerTransitionName }}>
+      <span className={styles.inner}>
         {children ?? (
           <>
             {icon}

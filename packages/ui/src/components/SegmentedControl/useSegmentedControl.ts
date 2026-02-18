@@ -10,7 +10,7 @@ export function useSegmentedControl({
 }: Pick<SegmentedControlProps, "value" | "defaultValue" | "onChange">) {
   const [focusedValue, setFocusedValue] = useState(defaultValue);
 
-  const [selectedValue, _setSelectedValue] = useControllableState({
+  const [selectedValue, setSelectedValue] = useControllableState({
     defaultValue,
     value,
     onChange,
@@ -18,14 +18,6 @@ export function useSegmentedControl({
 
   // Keep focusedValue in sync when value is controlled externally.
   if (value != null && value !== focusedValue) setFocusedValue(value);
-
-  const setSelectedValue = useCallback(
-    (next: string) => {
-      if (!document.startViewTransition) return _setSelectedValue(next);
-      document.startViewTransition(() => flushSync(() => _setSelectedValue(next)));
-    },
-    [_setSelectedValue]
-  );
 
   return {
     selectedValue,

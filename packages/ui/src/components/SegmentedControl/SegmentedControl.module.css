@@ -8,9 +8,16 @@
   --color-text-active: var(--color-neutral-000);
   --color-text-hover: var(--color-neutral-700);
 
-  display: grid;
-  gap: 0.5rem;
+  --inset-distance: 0.25rem;
+  --backdrop-width: calc(100% / var(--n-items));
+  --backdrop-pos: calc(
+    (var(--backdrop-width) - var(--inset-distance)) * var(--selected-index)
+  );
+
+  display: flex;
+  flex-direction: column;
   justify-items: start;
+  gap: 0.5rem;
 
   width: max-content;
 
@@ -40,27 +47,28 @@
 }
 
 .controlButton {
-  margin: 0.125rem 0.125rem;
-  padding: 0 0.5rem;
-  cursor: pointer;
-  min-height: 2.5rem;
-  font-weight: bold;
   color: var(--color-text);
-  border-radius: 3rem;
+  font-weight: bold;
   background-color: transparent;
+
+  min-height: 2.5rem;
+  min-width: max-content;
+
+  padding: 0 0.5rem;
+  margin: var(--inset-distance);
+  border-radius: 3rem;
   border: none;
+  cursor: pointer;
 
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  flex: 1;
 
-  min-width: max-content;
   position: relative;
   isolation: isolate;
 
-  flex: 1;
-
-  &:hover {
+  &:hover:not(&[aria-checked="true"]) {
     background-color: var(--color-bg-hover);
     color: var(--color-text-hover);
   }
@@ -83,18 +91,15 @@
 }
 
 .backdrop {
+  margin: var(--inset-distance);
   position: absolute;
   inset: 0;
   border-radius: inherit;
   background-color: var(--color-bg-active);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 
-  z-index: -1;
-  view-transition-name: segmented-control-backdrop;
-}
+  width: var(--backdrop-width);
+  left: var(--backdrop-pos);
 
-::view-transition-old(segmented-control-backdrop-*),
-::view-transition-new(segmented-control-backdrop-*) {
-  animation-duration: 200ms;
-  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition: left 0.25s ease-in-out;
 }
