@@ -52,12 +52,14 @@ export class ImageService {
 
     return this.convertImage(image)
       .map(image => this.storage.write(`${id}.webp`, image))
-      .mapCatching(() =>
-        this.dbService.db.insert(imageTable).values({ id, eventId }).returning()
-      )
-      .map(rows => getFirstRow(rows, "Unable to upload image"))
-      .onSuccess(() => this.dbService.flush())
-      .onFailure(() => this.storage.rm(`${id}.webp`).getOrThrow());
+      .map(() =>
+        Result.try(() =>
+          this.dbService.db.insert(imageTable).values({ id, eventId }).returning()
+        )
+          .map(rows => getFirstRow(rows, "Unable to upload image"))
+          .onFailure(() => this.storage.rm(`${id}.webp`).getOrThrow())
+          .onSuccess(() => this.dbService.flush())
+      );
   }
 }
 
