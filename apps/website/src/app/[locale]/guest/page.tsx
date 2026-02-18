@@ -28,7 +28,7 @@ export default function Page() {
         leftIcon={<ArrowLeft />}
         leftAriaLabel="back-button"
         uploadsRemaining={uploadsRemaining}
-        onUploadClick={openFilePicker}
+        onPrimaryClick={openFilePicker}
       ></PhoneHeader>
       <ActionCard
         className={styles.mobileOnly}
