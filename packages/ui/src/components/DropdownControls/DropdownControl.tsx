@@ -42,7 +42,7 @@ const DropdownControl = ({
   defaultValue,
   onChange,
   className,
-  "data-color": data = "accent",
+  "data-color": color = "accent",
   ref,
   ...rest
 }: DropdownControlsProps) => {
@@ -69,10 +69,16 @@ const DropdownControl = ({
     <div
       ref={ref}
       className={cl(styles.dropdownControls, className)}
-      data-color={data}
+      data-color={color}
       {...rest}
     >
-      <SegmentedControl {...rest} value={selectedValue} onChange={handleChange} fill>
+      <SegmentedControl
+        {...rest}
+        data-color={color}
+        value={selectedValue}
+        onChange={handleChange}
+        fill
+      >
         {items.map(item => (
           <SegmentedControl.Item
             key={item.props.value}
