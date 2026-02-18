@@ -74,7 +74,7 @@ const SegmentedControl = ({
   const labelId = useId();
 
   const cssVars = {
-    "--n-items": React.Children.count(children),
+    "--item-count": React.Children.count(children),
     "--selected-index": descendants
       .values()
       .findIndex(d => d.value === context.selectedValue),

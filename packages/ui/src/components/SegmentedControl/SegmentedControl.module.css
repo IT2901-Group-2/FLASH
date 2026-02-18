@@ -8,11 +8,17 @@
   --color-text-active: var(--color-neutral-000);
   --color-text-hover: var(--color-neutral-700);
 
+  /* Base layout values */
   --inset-distance: 0.25rem;
-  --backdrop-width: calc(100% / var(--n-items));
-  --backdrop-pos: calc(
-    (var(--backdrop-width) - var(--inset-distance)) * var(--selected-index)
-  );
+  --inset-total: calc(var(--inset-distance) * var(--item-count) * 2);
+
+  /* Derived sizes */
+  --available-width: calc(100% - var(--inset-total));
+  --backdrop-width: calc(var(--available-width) / var(--item-count));
+
+  /* Positioning */
+  --item-width: calc(100% / var(--item-count));
+  --backdrop-pos: calc(var(--item-width) * var(--selected-index));
 
   display: flex;
   flex-direction: column;
