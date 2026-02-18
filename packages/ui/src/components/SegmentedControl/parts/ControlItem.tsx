@@ -1,4 +1,4 @@
-import { cl } from "@/util/helpers/";
+import { cl, omit } from "@/util/helpers/";
 import styles from "../SegmentedControl.module.css";
 import { useControlItem } from "./useControlItem";
 
@@ -53,12 +53,7 @@ const ControlItem = ({
   disabled = false,
   ...rest
 }: ControlItemProps) => {
-  const {
-    isSelected,
-    isFocused: _,
-    "data-size": size,
-    ...itemProps
-  } = useControlItem({
+  const { ...itemProps } = useControlItem({
     ref,
     value,
     disabled,
@@ -68,12 +63,11 @@ const ControlItem = ({
   return (
     <button
       {...rest}
-      {...itemProps}
+      {...omit({ ...itemProps }, ["isFocused", "isSelected"])}
       disabled={disabled}
       className={cl(className, styles.controlButton)}
       type="button"
       role="radio"
-      data-size={size}
     >
       <span className={styles.inner}>
         {children ?? (
