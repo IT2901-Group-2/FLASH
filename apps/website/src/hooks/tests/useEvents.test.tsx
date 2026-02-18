@@ -1,7 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
-import { useEventsQuery } from "../useEvents";
+import {
+  eventsKeys,
+  useCreateEventMutation,
+  useDeleteEventMutation,
+  useEventsQuery,
+  useUpdateEventMutation,
+} from "../useEvents";
 
 function createWrapper() {
   const queryClient = new QueryClient({
@@ -11,9 +17,11 @@ function createWrapper() {
       },
     },
   });
-  return ({ children }: { children: React.ReactNode }) => (
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
+
+  return { wrapper, queryClient };
 }
 
 describe("useEventsQuery", () => {
@@ -36,7 +44,7 @@ describe("useEventsQuery", () => {
     );
 
     const { result } = renderHook(() => useEventsQuery(), {
-      wrapper: createWrapper(),
+      wrapper: createWrapper().wrapper,
     });
 
     await waitFor(() => {
@@ -59,7 +67,7 @@ describe("useEventsQuery", () => {
     );
 
     const { result } = renderHook(() => useEventsQuery(), {
-      wrapper: createWrapper(),
+      wrapper: createWrapper().wrapper,
     });
 
     await waitFor(() => {
@@ -77,7 +85,7 @@ describe("useEventsQuery", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     renderHook(() => useEventsQuery({ status: "active" }), {
-      wrapper: createWrapper(),
+      wrapper: createWrapper().wrapper,
     });
 
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
@@ -98,11 +106,104 @@ describe("useEventsQuery", () => {
     );
 
     const { result } = renderHook(() => useEventsQuery(), {
-      wrapper: createWrapper(),
+      wrapper: createWrapper().wrapper,
     });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
 
     expect(result.current.error?.message).toBe("Testing custom error");
+  });
+});
+
+describe("useCreateEventMutation", () => {
+  it("creates an event and invalidates cache", async () => {
+    const { wrapper, queryClient } = createWrapper();
+
+    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+
+    const fetchMock = vi.fn<typeof fetch>(
+      async () => new Response(JSON.stringify({ id: "1" }), { status: 200 })
+    );
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useCreateEventMutation(), { wrapper });
+
+    const input = {
+      name: "Test",
+      startDate: new Date("2025-01-01"),
+      endDate: new Date("2025-01-02"),
+    };
+
+    result.current.mutate(input);
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(fetchMock).toHaveBeenCalled();
+
+    const call = fetchMock.mock.calls[0];
+    expect(call).toBeDefined();
+    const [, init] = call!;
+    const body = JSON.parse(init!.body as string);
+
+    expect(body.startDate).toContain("2025");
+    expect(body.endDate).toContain("2025");
+
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: eventsKeys.all,
+    });
+  });
+});
+
+describe("useUpdateEventMutation", () => {
+  it("updates an event and invalidates cache", async () => {
+    const { wrapper, queryClient } = createWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+
+    const fetchMock = vi.fn<typeof fetch>(
+      async () => new Response(JSON.stringify({ id: "1" }), { status: 200 })
+    );
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useUpdateEventMutation(), { wrapper });
+
+    result.current.mutate({
+      eventId: "123",
+      data: { name: "Updated" },
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(fetchMock.mock.calls[0]?.[0]).toContain("/api/events/123");
+
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: eventsKeys.all,
+    });
+  });
+});
+
+describe("useDeleteEventMutation", () => {
+  it("deletes an event and invalidates cache", async () => {
+    const { wrapper, queryClient } = createWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+
+    const fetchMock = vi.fn<typeof fetch>(
+      async () => new Response(null, { status: 204 })
+    );
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useDeleteEventMutation(), { wrapper });
+
+    result.current.mutate({ eventId: "999" });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(fetchMock.mock.calls[0]?.[0]).toContain("/api/events/999");
+
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: eventsKeys.all,
+    });
   });
 });
