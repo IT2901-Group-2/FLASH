@@ -7,7 +7,13 @@ type BaseProps = Omit<React.HTMLAttributes<HTMLButtonElement>, "children"> & {
    * Value for state-handling.
    */
   value: string;
+  /**
+   * If an option is disabled
+   */
   disabled?: boolean;
+  /**
+   * Foreward referance
+   */
   ref?: React.ForwardedRef<HTMLButtonElement>;
 };
 
@@ -67,7 +73,6 @@ const ControlItem = ({
       type="button"
       role="radio"
     >
-      {isSelected && <span className={styles.backdrop} aria-hidden />}
       <span className={styles.inner}>
         {children ?? (
           <>

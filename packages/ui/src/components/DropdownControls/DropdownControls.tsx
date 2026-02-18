@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./DropdownControls.module.css";
 import { cl } from "@/util/helpers/";
-import controlsStyles from "../Controls/Controls.module.css";
+// import controlsStyles from "../Controls/Controls.module.css";
 
 // export type DropdownOption<T extends string> = SegmentedOption<T> & {
 //   content?: React.ReactNode;
