@@ -1,5 +1,4 @@
-import { flushSync } from "react-dom";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useControllableState } from "@/util/hooks";
 import { SegmentedControlProps } from "./SegmentedControl";
 
