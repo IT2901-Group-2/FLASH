@@ -1,5 +1,2 @@
 "use client";
-export {
-  default as DropdownControls,
-  type DropdownControlsProps,
-} from "./DropdownControls";
+export { default as DropdownControl, type DropdownControlProps } from "./DropdownControl";
