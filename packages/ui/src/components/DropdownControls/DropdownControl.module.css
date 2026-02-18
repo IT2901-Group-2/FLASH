@@ -17,4 +17,15 @@
   color: var(--color-text);
   padding: 0.5rem 1rem;
   overflow: hidden;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 250ms ease-in-out;
+
+  &[data-open="true"] {
+    grid-template-rows: 1fr;
+  }
+}
+
+.panelInner {
+  overflow: hidden;
 }
