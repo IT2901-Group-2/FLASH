@@ -23,7 +23,7 @@ export type EventsQueryParams = {
  * because JSON serialization converts Date objects to ISO strings over HTTP, so this type accurately
  * reflects what the frontend actually receives from fetch.
  */
-export type EventDto = Omit<
+export type EventDTO = Omit<
   Event,
   "startDate" | "endDate" | "createdAt" | "updatedAt"
 > & {
