@@ -27,7 +27,7 @@ const ReviewStep = ({ status, result }: StepProps) => {
       <div className={styles.infoContainer}>
         <div className={styles.QRCodeContainer}>
           <QRDisplay
-            value={`${window.location.origin}/${result?.guestCode}`}
+            value={`${window.location.origin}/event/${result?.guestCode}`}
             code={`${result?.guestCode}`}
           />
           <Button variant="secondary" icon={<Download />}>
@@ -41,7 +41,7 @@ const ReviewStep = ({ status, result }: StepProps) => {
           <Input
             aria-label="link"
             readOnly
-            value={`${window.location.origin}/${result?.guestCode}`}
+            value={`${window.location.origin}/event/${result?.guestCode}`}
             icon={<Copy />}
             iconPosition="right"
           />
