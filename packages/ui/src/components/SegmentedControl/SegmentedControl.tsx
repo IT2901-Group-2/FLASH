@@ -99,7 +99,7 @@ const SegmentedControl = ({
           data-color={color}
           data-fill={fill}
           data-size={size}
-          test-id="segmentedControl"
+          data-testid="segmentedControl"
           style={cssVars}
         >
           {label && (
