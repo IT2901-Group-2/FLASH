@@ -37,7 +37,7 @@ export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivEleme
         </Sidebar.Item>
         <Sidebar.Item
           icon={<Calendar />}
-          onClick={() => navigation.push("/admin/dashboard/event")}
+          onClick={() => navigation.push("/admin/dashboard/events")}
         >
           {t("event")}
         </Sidebar.Item>

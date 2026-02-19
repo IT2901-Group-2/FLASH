@@ -7,7 +7,7 @@
     "dashboard": {
       "sidebar": {
         "desktop": "Desktop",
-        "event": "Event",
+        "event": "Events",
         "settings": "Settings",
         "storage": "Storage"
       },
