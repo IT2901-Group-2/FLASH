@@ -59,7 +59,6 @@ export const PhoneHeader = ({
   onTertiaryClick,
   onSecondaryClick,
   onPrimaryClick,
-  rightVariant = "primary",
   className,
   uploadsRemaining,
   qrValue,
@@ -68,7 +67,12 @@ export const PhoneHeader = ({
   const handleLeftClick =
     onLeftClick ??
     (() => {
-      if (typeof window !== "undefined") {
+      if (
+        typeof window !== "undefined" &&
+        window.history &&
+        typeof window.history.back === "function"
+      ) {
+        window.history.back();
       }
     });
   const [showQr, setShowQr] = useState(false);
@@ -203,7 +207,10 @@ export const PhoneHeader = ({
             </button>
             <QRDisplay
               value={
-                qrValue ?? (typeof window !== "undefined" ? window.location.href : "https://example.com")
+                qrValue ??
+                (typeof window !== "undefined"
+                  ? window.location.href
+                  : "https://example.com")
               }
             />
           </div>
