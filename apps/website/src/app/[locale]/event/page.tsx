@@ -3,8 +3,10 @@ import { ArrowLeft, Camera, Upload } from "lucide-react";
 import styles from "./UploadImage.module.css";
 import { ActionCard, PhoneHeader } from "ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
+import { useTranslations } from "next-intl";
 
 export default function Page() {
+  const t = useTranslations("EventPage");
   const eventName = "Event Name"; // This should be dynamically fetched based on the event the guest is joining
   const nickname = "GuestNickname"; // This should be dynamically fetched based on the guest's information
   const uploadsRemaining = 5; // This should be dynamically fetched based on the guest's upload status
@@ -29,6 +31,8 @@ export default function Page() {
         leftAriaLabel="back-button"
         uploadsRemaining={uploadsRemaining}
         onPrimaryClick={openFilePicker}
+        primaryText={t("actions.uploadImage")}
+        secondaryText={t("actions.takePhoto")}
       ></PhoneHeader>
       <ActionCard
         className={styles.mobileOnly}
@@ -36,14 +40,14 @@ export default function Page() {
           "data-color": "brand-purple",
           icon: <Upload size={18} />,
           iconPosition: "right",
-          text: "Upload Image",
+          text: t("actions.uploadImage"),
           onClick: openFilePicker,
         }}
         secondaryButton={{
           "data-color": "brand-purple",
           icon: <Camera size={18} />,
           iconPosition: "right",
-          text: "Take Photo",
+          text: t("actions.takePhoto"),
         }}
       />
     </div>

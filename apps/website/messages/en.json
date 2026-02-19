@@ -136,5 +136,11 @@
       "copyLink": "copy-link",
       "copied": "Copied successfully!"
     }
+  },
+  "EventPage": {
+    "actions": {
+      "uploadImage": "Upload Image",
+      "takePhoto": "Take Photo"
+    }
   }
 }

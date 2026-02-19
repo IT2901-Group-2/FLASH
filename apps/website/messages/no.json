@@ -125,5 +125,11 @@
       "copyLink": "kopier-lenke",
       "copied": "Kopiert!"
     }
+  },
+  "EventPage": {
+    "actions": {
+      "uploadImage": "Last opp bilde",
+      "takePhoto": "Ta bilde"
+    }
   }
 }

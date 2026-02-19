@@ -29,6 +29,12 @@ export interface PhoneHeaderProps {
   onSecondaryClick?: () => void;
   /** Click handler for the primary desktop action (right-most). */
   onPrimaryClick?: () => void;
+  /** Label/text (or node) for the primary desktop action. Defaults to English 'Upload Image'. */
+  primaryText?: ReactNode;
+  /** Label/text (or node) for the secondary desktop action. Defaults to English 'Take Photo'. */
+  secondaryText?: ReactNode;
+  /** Label/text (or node) for the tertiary desktop action (left-most) if applicable. */
+  tertiaryText?: ReactNode;
   /** Visual style for the right action pill. */
   rightVariant?: "primary" | "secondary" | "tertiary";
   /** Optional CSS class name for custom styling. */
@@ -59,6 +65,9 @@ export const PhoneHeader = ({
   onTertiaryClick,
   onSecondaryClick,
   onPrimaryClick,
+  primaryText,
+  secondaryText,
+  tertiaryText,
   className,
   uploadsRemaining,
   qrValue,
@@ -116,7 +125,7 @@ export const PhoneHeader = ({
               iconPosition="right"
               onClick={onTertiaryClick}
             >
-              {rightLabel}
+              {tertiaryText ?? rightLabel}
             </Button>
           ) : (
             <Button
@@ -138,7 +147,7 @@ export const PhoneHeader = ({
             iconPosition="right"
             onClick={onSecondaryClick}
           >
-            Take Photo
+            {secondaryText ?? "Take Photo"}
           </Button>
           <Button
             variant="primary"
@@ -147,7 +156,7 @@ export const PhoneHeader = ({
             iconPosition="right"
             onClick={onPrimaryClick}
           >
-            Upload Image
+            {primaryText ?? "Upload Image"}
           </Button>
         </div>
 
