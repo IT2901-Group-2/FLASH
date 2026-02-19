@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Copy, Check, CircleAlert, QrCode, Download } from "lucide-react";
-import { Title, Controls, QRDisplay, Input, ActionCard } from "ui";
+import { Title, SegmentedControl, QRDisplay, Input, ActionCard } from "ui";
 import styles from "./ShareEvent.module.css";
 import { useIsMounted } from "@/hooks/useIsMounted";
 
@@ -91,16 +91,14 @@ export default function Page() {
       </Title>
 
       <div style={{ alignSelf: "center" }}>
-        <Controls
-          options={[
-            { value: "guest", label: t("controls.guest") },
-            { value: "moderator", label: t("controls.moderator") },
-          ]}
+        <SegmentedControl
           value={shareRole}
-          onChange={setShareRole}
-          variant="primary"
+          onChange={s => setShareRole(s as "guest" | "moderator")}
           data-color="accent"
-        />
+        >
+          <SegmentedControl.Item value="guest" label={t("controls.guest")} />
+          <SegmentedControl.Item value="moderator" label={t("controls.moderator")} />
+        </SegmentedControl>
       </div>
 
       <div style={{ alignSelf: "center", margin: "0.5rem 0 0.25rem" }}>
