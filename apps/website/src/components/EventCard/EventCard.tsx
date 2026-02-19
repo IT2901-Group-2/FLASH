@@ -1,16 +1,50 @@
 import { EventDto } from "@/types/eventTypes";
-import { Calendar, Users } from "lucide-react";
+import { Calendar, Image as ImageIcon, Users } from "lucide-react";
 import { Card } from "ui";
+import styles from "./EventCard.module.css";
+import { cl } from "@/utils/className";
 
-const EventCard = ({ name, startDate, uploadLimit }: EventDto) => {
+export interface EventCardProps extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * Event name.
+   */
+  data: EventDto;
+}
+
+const EventCard = ({ data, ...rest }: EventCardProps) => {
+  const { name, startDate, uploadLimit } = data;
   return (
-    <Card data-color="neutral">
-      <h3>{name}</h3>
-      <Calendar />
-      <span>{startDate}</span>
-      <hr />
-      <Users />
-      <span>{uploadLimit} photos/person</span>
+    <Card {...rest} className={styles.card}>
+      <div className={styles.column}>
+        <h3 className={styles.title}>{name}</h3>
+        <div className={styles.row}>
+          <Calendar size={16} />
+          <span>
+            {new Date(startDate).toLocaleString(undefined, {
+              dateStyle: "medium",
+              timeStyle: "short",
+            })}
+          </span>
+        </div>
+      </div>
+      <div className={styles.info}>
+        <div className={cl(styles.column, styles.soft)}>
+          Total Photos
+          <span className={styles.row}>
+            <ImageIcon size={16} /> 0
+          </span>
+        </div>
+        <div className={cl(styles.column, styles.soft)}>
+          Approved <span>0</span>
+        </div>
+        <div className={cl(styles.column, styles.soft)}>
+          Pending <span>0</span>
+        </div>
+      </div>
+      <div className={cl(styles.row, styles.uploadLimit)}>
+        <Users size={16} />
+        <span>{uploadLimit} photos/person</span>
+      </div>
     </Card>
   );
 };

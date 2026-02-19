@@ -7,9 +7,11 @@ import { useRef } from "react";
 import { useTranslations } from "next-intl";
 import { useEventsQuery } from "@/hooks/useEvents";
 import EventCard from "@/components/EventCard/EventCard";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const t = useTranslations("admin.dashboard.event.page");
+  const navigation = useRouter();
 
   const { data } = useEventsQuery();
 
@@ -31,7 +33,11 @@ const Page = () => {
       <h3>Events</h3>
       <div className={styles.eventsContainer}>
         {data?.map(event => (
-          <EventCard key={event.id} {...event} />
+          <EventCard
+            key={event.id}
+            data={event}
+            onClick={() => navigation.push(`./event/${event.id}`)}
+          />
         ))}
       </div>
     </>

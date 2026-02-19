@@ -1,0 +1,33 @@
+.goToEventButton {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+
+  .headerItem {
+    display: flex;
+    gap: 1rem;
+  }
+}
+
+.back {
+  margin-top: 0.15rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-neutral-100);
+  }
+
+  &:active {
+    background-color: var(--color-neutral-200);
+  }
+}

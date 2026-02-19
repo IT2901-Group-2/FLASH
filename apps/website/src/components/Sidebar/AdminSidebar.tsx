@@ -9,11 +9,13 @@ import { HTMLAttributes } from "react";
 import { useTheme } from "@/hooks/useTheme";
 import { capitalize } from "@/utils/string-utils";
 import { useIsMounted } from "@/hooks/useIsMounted";
+import { useRouter } from "next/navigation";
 
 /**
  * Admin sidebar used in the /admin/dashboard pages
  */
 export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) => {
+  const navigation = useRouter();
   const t = useTranslations("admin.dashboard.sidebar");
   const { resolvedTheme, toggleTheme } = useTheme();
 
@@ -27,8 +29,18 @@ export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivEleme
         <SidebarHeader />
       </Sidebar.Header>
       <Sidebar.Group title="MAIN">
-        <Sidebar.Item icon={<House />}>{t("desktop")}</Sidebar.Item>
-        <Sidebar.Item icon={<Calendar />}>{t("event")}</Sidebar.Item>
+        <Sidebar.Item
+          icon={<House />}
+          onClick={() => navigation.push("/admin/dashboard")}
+        >
+          {t("desktop")}
+        </Sidebar.Item>
+        <Sidebar.Item
+          icon={<Calendar />}
+          onClick={() => navigation.push("/admin/dashboard/event")}
+        >
+          {t("event")}
+        </Sidebar.Item>
       </Sidebar.Group>
       <Sidebar.Group title="Config" position="bottom">
         <Sidebar.Item icon={<Settings />}>{t("settings")}</Sidebar.Item>
