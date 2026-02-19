@@ -4,7 +4,7 @@ import styles from "./CreateEventCard.module.css";
 import { BasicInfoStep, OptionsStep, ReviewStep } from "./Steps";
 import { useTranslations } from "next-intl";
 import { useCreateEventMutation } from "@/hooks/useEvents";
-import { CreateEventInput, EventDto } from "@/types/eventTypes";
+import { CreateEventInput, EventDTO } from "@/types/eventTypes";
 
 const DefaultFormData: CreateEventInput = {
   name: "",
@@ -25,7 +25,7 @@ export interface StepProps {
     value: CreateEventInput[keyof CreateEventInput]
   ) => void;
   status?: "idle" | "pending" | "success" | "error";
-  result?: EventDto | null;
+  result?: EventDTO | null;
 }
 
 export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps) => {
@@ -34,7 +34,7 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
 
   const [progress, setProgress] = useState<number>(1);
   const [formdata, setFormData] = useState<CreateEventInput>(DefaultFormData);
-  const [eventResult, setEventResult] = useState<EventDto | null>(null);
+  const [eventResult, setEventResult] = useState<EventDTO | null>(null);
 
   const updateFormData = <K extends keyof CreateEventInput>(
     k: K,
