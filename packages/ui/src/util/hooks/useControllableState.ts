@@ -23,7 +23,7 @@ export function useControllableState<T>({
   const [internalValue, setInternalValue] = useState<T | undefined>(defaultValue);
 
   const isControlled = controlledValue !== undefined;
-  const value = (isControlled ? controlledValue : internalValue) as T;
+  const value = isControlled ? controlledValue : internalValue;
 
   const setValue = useCallback(
     (next: T) => {
