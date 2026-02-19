@@ -36,7 +36,7 @@ const Page = () => {
           <EventCard
             key={event.id}
             data={event}
-            onClick={() => navigation.push(`./event/${event.id}`)}
+            onClick={() => navigation.push(`./events/${event.id}`)}
           />
         ))}
       </div>

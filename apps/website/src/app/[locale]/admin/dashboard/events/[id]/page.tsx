@@ -22,7 +22,7 @@ const Page = () => {
         className={styles.goToEventButton}
         icon={<ArrowRight />}
         iconPosition="right"
-        onClick={() => navigation.push(`/event/${eventData?.id}`)}
+        onClick={() => navigation.push(`/events/${eventData?.id}`)}
       >
         Open Event
       </Button>
