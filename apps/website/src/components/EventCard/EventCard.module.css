@@ -1,0 +1,47 @@
+.card {
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--data-color-500);
+  }
+
+  &:active {
+    background-color: var(--data-color-600);
+  }
+}
+
+.title {
+  margin: 0;
+}
+
+.uploadLimit {
+  border-top: 1px solid var(--color-border);
+  padding-top: 1rem;
+}
+
+.info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.soft {
+  color: var(--color-neutral-600);
+
+  > span {
+    color: var(--color-neutral-1000);
+  }
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
