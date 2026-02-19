@@ -68,7 +68,8 @@ export const PhoneHeader = ({
   const handleLeftClick =
     onLeftClick ??
     (() => {
-      if (typeof window !== "undefined") {
+      if (typeof window !== "undefined" && window.history && window.history.back) {
+        window.history.back();
       }
     });
   const [showQr, setShowQr] = useState(false);
