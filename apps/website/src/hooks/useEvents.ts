@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   EventsQueryParams,
-  EventDto,
+  EventDTO,
   CreateEventInput,
   UpdateEventInput,
 } from "@/types/eventTypes";
@@ -104,7 +104,7 @@ export function useEventsQuery(params?: EventsQueryParams) {
     queryKey: eventsKeys.list(params),
     queryFn: async () => {
       const url = `/api/events${toEventsSearchParams(params)}`;
-      return fetchJson<EventDto[]>(url);
+      return fetchJson<EventDTO[]>(url);
     },
   });
 }
@@ -118,7 +118,7 @@ export function useCreateEventMutation() {
 
   return useMutation({
     mutationFn: (input: CreateEventInput) => {
-      return fetchJson<EventDto>("/api/events", {
+      return fetchJson<EventDTO>("/api/events", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -144,7 +144,7 @@ export function useUpdateEventMutation() {
 
   return useMutation({
     mutationFn: ({ eventId, data }: { eventId: string; data: UpdateEventInput }) => {
-      return fetchJson<EventDto>(`/api/events/${eventId}`, {
+      return fetchJson<EventDTO>(`/api/events/${eventId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
