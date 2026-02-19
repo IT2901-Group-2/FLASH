@@ -20,7 +20,7 @@ export interface DropdownControlProps extends SegmentedControlProps {
   /**
    * Called when the selected value changes
    */
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   /**
    * The options in the dropdown
    */

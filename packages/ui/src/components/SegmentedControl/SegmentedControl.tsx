@@ -34,7 +34,7 @@ export interface SegmentedControlProps extends Omit<
   /**
    * Callback for selected toggle.
    */
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   /**
    * Label describing SegmentedControl.
    */
