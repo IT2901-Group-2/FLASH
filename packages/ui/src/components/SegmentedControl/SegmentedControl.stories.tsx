@@ -131,7 +131,7 @@ export const Colors: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const segmentedControl = canvas.getAllByTestId("segmentedControl");
+    const segmentedControl = canvas.getByTestId("segmentedControl");
     expect(segmentedControl).toHaveAttribute("data-color", "brand-purple");
     expect(canvas.getByRole("radio", { name: "Center" })).toBeChecked();
   },
