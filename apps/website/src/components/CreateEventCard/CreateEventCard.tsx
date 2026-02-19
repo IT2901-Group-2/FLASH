@@ -62,14 +62,14 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
         <form className={styles.form}>
           <CurrentStep formData={formdata} updateFormData={updateFormData} />
           <div className={styles.buttonGroup}>
-            {isMiddleStep && (
-              <Button variant="secondary" onClick={prevStep}>
-                {t("previous")}
-              </Button>
-            )}
             {!isLastStep && (
               <Button variant="tertiary" onClick={exitForm}>
                 {t("cancel")}
+              </Button>
+            )}
+            {isMiddleStep && (
+              <Button variant="secondary" onClick={prevStep}>
+                {t("previous")}
               </Button>
             )}
             {!isLastStep && (
