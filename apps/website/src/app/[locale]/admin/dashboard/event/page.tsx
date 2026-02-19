@@ -5,9 +5,14 @@ import styles from "./page.module.css";
 import CreateEventCard from "@/components/CreateEventCard/CreateEventCard";
 import { useRef } from "react";
 import { useTranslations } from "next-intl";
+import { useEventsQuery } from "@/hooks/useEvents";
+import EventCard from "@/components/EventCard/EventCard";
 
 const Page = () => {
   const t = useTranslations("admin.dashboard.event.page");
+
+  const { data } = useEventsQuery();
+
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   return (
@@ -22,6 +27,12 @@ const Page = () => {
         >
           {t("createNew")}
         </Button>
+      </div>
+      <h3>Events</h3>
+      <div className={styles.eventsContainer}>
+        {data?.map(event => (
+          <EventCard key={event.id} {...event} />
+        ))}
       </div>
     </>
   );
