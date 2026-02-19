@@ -8,7 +8,6 @@ export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
   const t = useTranslations("admin.dashboard.event.create.options");
 
   const [limitMode, setLimitMode] = useState<string>("limited");
-  // const [limitMode, setLimitMode] = useState<"limited" | "unlimited">("limited");
 
   useEffect(() => {
     if (limitMode === "unlimited") updateFormData("uploadLimit", undefined);
