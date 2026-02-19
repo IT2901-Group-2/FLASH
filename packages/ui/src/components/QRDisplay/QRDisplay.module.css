@@ -17,6 +17,18 @@
   box-shadow: 0 0.25rem 0.25rem 0 rgba(0, 0, 0, 0.25);
 }
 
+.container-small {
+  min-width: min(10rem, calc(100vw - 3rem));
+}
+
+.container-medium {
+  min-width: min(12rem, calc(100vw - 3rem));
+}
+
+.container-large {
+  min-width: min(20rem, calc(100vw - 3rem));
+}
+
 .qrCode {
   /* base responsive behavior for the svg */
   max-width: 100%;
@@ -26,18 +38,24 @@
 }
 
 .qr-small {
-  width: 8rem;
-  height: 8rem;
+  min-width: 8rem;
+  min-height: 8rem;
+  max-width: 8rem;
+  max-height: 8rem;
 }
 
 .qr-medium {
-  width: 10rem; /* current default */
-  height: 10rem;
+  min-width: 10rem; /* current default */
+  min-height: 10rem;
+  max-width: 10rem;
+  max-height: 10rem;
 }
 
 .qr-large {
-  width: 18rem;
-  height: 18rem;
+  min-width: 18rem;
+  min-height: 18rem;
+  max-width: 18rem;
+  max-height: 18rem;
 }
 
 .text {

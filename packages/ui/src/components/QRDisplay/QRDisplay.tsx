@@ -25,10 +25,12 @@ export interface QRDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
  *
  * > _Last updated: `2026-02-07`_
  */
-const QRDisplay = ({ value, code, size, ...rest }: QRDisplayProps) => {
-  const sizeClass = styles[`qr-${size ?? "medium"}`];
+const QRDisplay = ({ value, code, size, className, ...rest }: QRDisplayProps) => {
+  const selectedSize = size ?? "medium";
+  const sizeClass = styles[`qr-${selectedSize}`];
+  const containerSizeClass = styles[`container-${selectedSize}`];
   return (
-    <div className={styles.container} {...rest}>
+    <div className={cl(styles.container, containerSizeClass, className)} {...rest}>
       <QRCode
         value={value}
         level="H"
