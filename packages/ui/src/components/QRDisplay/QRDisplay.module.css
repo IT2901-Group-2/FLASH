@@ -1,5 +1,7 @@
 .container {
-  width: 14rem;
+  /* Let the container size to its content (QR + padding) but never overflow viewport */
+  width: auto;
+  max-width: calc(100vw - 3rem);
   height: min-content;
   padding-inline: 1rem;
   padding-block: 3rem 1.5rem;
@@ -16,9 +18,26 @@
 }
 
 .qrCode {
-  width: 10rem;
-  height: 10rem;
+  /* base responsive behavior for the svg */
+  max-width: 100%;
+  height: auto;
+  display: block;
   aspect-ratio: 1/1;
+}
+
+.qr-small {
+  width: 8rem;
+  height: 8rem;
+}
+
+.qr-medium {
+  width: 10rem; /* current default */
+  height: 10rem;
+}
+
+.qr-large {
+  width: 18rem;
+  height: 18rem;
 }
 
 .text {
