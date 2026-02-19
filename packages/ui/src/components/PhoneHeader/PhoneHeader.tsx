@@ -59,7 +59,6 @@ export const PhoneHeader = ({
   onTertiaryClick,
   onSecondaryClick,
   onPrimaryClick,
-  rightVariant = "primary",
   className,
   uploadsRemaining,
   qrValue,
