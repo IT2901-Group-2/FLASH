@@ -63,6 +63,7 @@ export const Button = ({
   icon,
   iconPosition = "left",
   className,
+  type = "button",
   ...rest
 }: ButtonProps) => {
   const filterProps: React.ButtonHTMLAttributes<HTMLButtonElement> =
@@ -85,6 +86,7 @@ export const Button = ({
         className
       )}
       disabled={disabled || loading}
+      type={type}
     >
       {icon && iconPosition === "left" && <span className={styles.icon}>{icon}</span>}
       {loading && <Loader size={size} />}

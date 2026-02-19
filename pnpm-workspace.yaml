@@ -3,9 +3,14 @@ packages:
   - packages/*
 
 ignoredBuiltDependencies:
+  - '@parcel/watcher'
+  - '@swc/core'
   - cpu-features
   - esbuild
   - protobufjs
   - sharp
   - ssh2
   - unrs-resolver
+
+onlyBuiltDependencies:
+  - better-sqlite3
