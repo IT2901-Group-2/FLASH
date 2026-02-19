@@ -10,10 +10,32 @@ import {
 } from "./SegmentedControl.context";
 import { useSegmentedControl } from "./useSegmentedControl";
 
-export interface SegmentedControlProps extends Omit<
+type ControlledProps = {
+  /**
+   * Controlled selected value.
+   */
+  value: string;
+  /**
+   * If not controlled, a default-value needs to be set.
+   */
+  defaultValue?: never;
+};
+
+type UncontrolledProps = {
+  /**
+   * Controlled selected value.
+   */
+  value?: never;
+  /**
+   * If not controlled, a default-value needs to be set.
+   */
+  defaultValue: string;
+};
+
+export type SegmentedControlProps = Omit<
   HTMLAttributes<HTMLDivElement>,
   "onChange" | "dir"
-> {
+> & {
   /**
    * SegmentedControl.Item elements.
    */
@@ -23,14 +45,6 @@ export interface SegmentedControlProps extends Omit<
    * @default "medium"
    */
   size?: "medium" | "small";
-  /**
-   * Controlled selected value.
-   */
-  value?: string;
-  /**
-   * If not controlled, a default-value needs to be set.
-   */
-  defaultValue?: string;
   /**
    * Callback for selected toggle.
    */
@@ -48,7 +62,7 @@ export interface SegmentedControlProps extends Omit<
    * @default false
    */
   fill?: boolean;
-}
+} & (ControlledProps | UncontrolledProps);
 
 /**
  * Controls allows the user to select from a set of mutually-exclusive options.
@@ -66,9 +80,6 @@ const SegmentedControl = ({
   size = "medium",
   "data-color": color = "accent",
 }: SegmentedControlProps) => {
-  if (!value && !defaultValue)
-    console.error("ToggleGroup without value or defaultvalue is not allowed");
-
   const context = useSegmentedControl({ defaultValue, value, onChange });
   const descendants = useSegmentedControlDescendants();
   const labelId = useId();
