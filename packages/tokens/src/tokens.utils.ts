@@ -52,46 +52,6 @@ export type StyleDictionaryToken<T extends TokenTypes> = {
    * Group the token belongs to. Used for auto-documentation and categorization in Figma.
    */
   group?: TokenGroup;
-  /**
-   * Optional comment for the token. Will be included in the generated documentation and in Figma.
-   */
-  comment?: string;
-  /**
-   * Optional extra scopes for the token.
-   * Token will include all default scopes based on `type`, and any extra specified here.
-   */
-  scopes?: (
-    | "ALL_SCOPES"
-    | "TEXT_CONTENT"
-    | "CORNER_RADIUS"
-    | "WIDTH_HEIGHT"
-    | "GAP"
-    | "ALL_FILLS"
-    | "FRAME_FILL"
-    | "SHAPE_FILL"
-    | "TEXT_FILL"
-    | "STROKE_COLOR"
-    | "STROKE_FLOAT"
-    | "EFFECT_FLOAT"
-    | "EFFECT_COLOR"
-    | "OPACITY"
-    | "FONT_FAMILY"
-    | "FONT_STYLE"
-    | "FONT_WEIGHT"
-    | "FONT_SIZE"
-    | "LINE_HEIGHT"
-    | "LETTER_SPACING"
-    | "PARAGRAPH_SPACING"
-    | "PARAGRAPH_INDENT"
-  )[];
-  /**
-   * In some cases, we want to hide tokens from the Figma plugin.
-   */
-  figmaIgnore?: boolean;
-  /**
-   * In some cases, we want to hide tokens from Token documentation
-   */
-  docsIgnore?: boolean;
 };
 
 export type StyleDictionaryTokenConfig<T extends TokenTypes> = {

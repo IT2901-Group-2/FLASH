@@ -1,26 +1,22 @@
 {
   "name": "tokens",
   "version": "0.1.0",
-  "description": "Design-tokens for the application",
+  "description": "TypeScript-first CSS design token system with data-color support",
   "main": "dist/index.es.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
-    "build": "tsc --noEmit && vite build",
-    "test": "vitest --project=tokens --coverage",
+    "build": "tsx ./src",
+    "test": "vitest",
     "test:watch": "vitest watch",
     "lint": "eslint --max-warnings 0",
     "format": "prettier --write src/",
     "format:check": "prettier --check src/"
   },
   "devDependencies": {
+    "lodash": "^4.17.23",
     "@types/lodash": "^4.17.23",
-    "colorjs.io": "^0.6.0",
-    "esbuild": "^0.27.2",
-    "lightningcss": "^1.30.1",
-    "lodash": "4.17.23",
     "style-dictionary": "^4.1.1",
-    "tsx": "^4.20.6",
-    "typescript": "5.9.3",
-    "vitest": "4.0.18"
+    "tsx": "^4.20.6"
   }
 }

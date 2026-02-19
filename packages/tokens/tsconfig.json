@@ -1,21 +1,21 @@
 {
   "compilerOptions": {
-    "target": "es2021",
+    "target": "ES2022",
     "module": "preserve",
-    "lib": ["es2021", "DOM"],
-    "jsx": "react-jsx",
+    "moduleResolution": "bundler",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
     "declaration": true,
     "declarationMap": true,
-    "outDir": "./dist",
-    "rootDir": ".",
-    "strict": true,
-    "moduleResolution": "Bundler",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
+    "sourceMap": true,
+    "lib": ["ES2022"],
     "paths": {
-      "@/*": ["./src/*"],
-      "@types": ["./types"]
+      "@/*": ["./src/*"]
     }
   },
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*.ts", "types.ts"],
+  "exclude": ["node_modules", "dist", "dist-esm"]
 }

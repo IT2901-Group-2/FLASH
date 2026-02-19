@@ -1,4 +1,4 @@
-import { ColorRole } from "./types";
+import { ColorRole } from "../types";
 
 type GlobalColorScale =
   | "100"

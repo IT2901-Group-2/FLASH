@@ -37,3 +37,22 @@ type DynamicStatefulBackgroundToken =
 type ColoredStatelessBackgroundToken = `${ColorRole}-${DynamicStatelessBackgroundToken}`;
 
 type ColoredStatefulBackgroundToken = `${ColorRole}-${DynamicStatefulBackgroundToken}`;
+
+/* ------------------------------ Breakpoints tokens ------------------------ */
+export type BreakpointToken =
+  | "xs"
+  | "sm"
+  | "sm-down"
+  | "md"
+  | "md-down"
+  | "lg"
+  | "lg-down"
+  | "xl"
+  | "xl-down"
+  | "2xl"
+  | "2xl-down";
+
+/* ------------------------------ Shadow tokens ----------------------------- */
+type ShadowToken = "dialog";
+
+export type { ShadowToken };
