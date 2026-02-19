@@ -136,3 +136,51 @@
     display: none;
   }
 }
+
+/* Row wrapper for header content to keep buttons aligned horizontally */
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+/* Children wrapper renders beneath the header row and is inside the header background */
+.childrenWrapper {
+  width: 100%;
+  padding: 0 1.5rem 0.75rem;
+  box-sizing: border-box;
+}
+
+/* QR modal overlay */
+.qrOverlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+}
+
+.qrDialog {
+  background: var(--phoneheader-bg);
+  color: var(--phoneheader-text);
+  padding: 2.25rem 2.25rem 2.25rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.qrClose {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 1.25rem;
+  cursor: pointer;
+  z-index: 20;
+}
