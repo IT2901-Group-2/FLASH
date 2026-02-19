@@ -2,7 +2,7 @@ import { HTMLAttributes } from "react";
 import styles from "./Sidebar.module.css";
 import { useSidebar } from "./SidebarContext";
 
-export interface SidebarItemProps extends HTMLAttributes<HTMLDivElement> {
+export interface SidebarItemProps extends HTMLAttributes<HTMLButtonElement> {
   /**
    * The icon to the left of the (optional) text for the links to other pages
    * in the sidebar. This icon is the only thing shown for the link to the page
@@ -18,13 +18,9 @@ export const SidebarItem = ({ children, icon, ...rest }: SidebarItemProps) => {
   const { open } = useSidebar();
 
   return (
-    <button className={styles.sidebarItem}>
+    <button className={styles.sidebarItem} {...rest}>
       {icon}
-      {open && (
-        <span className={styles.itemTitle} {...rest}>
-          {children}
-        </span>
-      )}
+      {open && <span className={styles.itemTitle}>{children}</span>}
     </button>
   );
 };

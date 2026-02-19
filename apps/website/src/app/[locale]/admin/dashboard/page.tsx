@@ -1,6 +1,6 @@
 "use client";
 
-export const Page = () => {
+const Page = () => {
   return (
     <div style={{ height: "200vh" }}>
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum quod similique

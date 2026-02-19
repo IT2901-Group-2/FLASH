@@ -4,7 +4,8 @@ import createNextIntlPlugin from "next-intl/plugin";
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
-  transpilePackages: ["ui"],
+  transpilePackages: ["ui", "file-storage"],
+  serverExternalPackages: ["better-sqlite3"],
 };
 
 const withNextIntl = createNextIntlPlugin();
