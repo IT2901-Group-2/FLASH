@@ -12,7 +12,7 @@ type ShareOrigin = "create" | "share";
 export default function Page() {
   const t = useTranslations("ShareEventPage");
 
-  const [shareRole, setShareRole] = useState<"guest" | "moderator">("guest");
+  const [shareRole, setShareRole] = useState<string>("guest");
 
   const searchParams = useSearchParams();
   const origin: ShareOrigin = searchParams.get("from") === "share" ? "share" : "create";
@@ -94,7 +94,7 @@ export default function Page() {
         <SegmentedControl
           fill
           value={shareRole}
-          onChange={s => setShareRole(s as "guest" | "moderator")}
+          onChange={setShareRole}
           data-color="accent"
         >
           <SegmentedControl.Item value="guest" label={t("controls.guest")} />

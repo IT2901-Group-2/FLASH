@@ -7,16 +7,13 @@ import { useTranslations } from "next-intl";
 export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
   const t = useTranslations("admin.dashboard.event.create.options");
 
-  const [limitMode, setLimitMode] = useState<"limited" | "unlimited">("limited");
+  const [limitMode, setLimitMode] = useState<string>("limited");
   const [autoGenerateCode, setAutoGenerateCode] = useState<boolean>(true);
 
   return (
     <>
       <Title description={t("description")}>{t("title")}</Title>
-      <DropdownControl
-        value={limitMode}
-        onChange={val => setLimitMode(val as "limited" | "unlimited")}
-      >
+      <DropdownControl value={limitMode} onChange={setLimitMode}>
         <DropdownControl.Item
           value="limited"
           label={t("input.uploads.limited")}

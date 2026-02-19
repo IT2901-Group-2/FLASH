@@ -169,7 +169,7 @@ export const MultipleOptions: Story = {
 
 export const ControlledValueUpdate: Story = {
   render: () => {
-    const [value, setValue] = useState<"enable" | "disable">("disable");
+    const [value, setValue] = useState<string>("disable");
 
     return (
       <div
@@ -180,7 +180,7 @@ export const ControlledValueUpdate: Story = {
           alignItems: "center",
         }}
       >
-        <DropdownControl value={value} onChange={setValue as (value: string) => void}>
+        <DropdownControl value={value} onChange={setValue}>
           <DropdownControl.Item
             value="enable"
             label="Enable"
