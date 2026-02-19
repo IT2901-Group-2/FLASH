@@ -22,10 +22,18 @@ export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
         aria-label="eventDescription"
       />
       <Input
-        value={formData.date}
-        onChange={e => updateFormData("date", e.target.value)}
-        label={t("input.date")}
-        aria-label="eventDate"
+        value={formData.startDate.toISOString().split("T")[0]}
+        onChange={e => updateFormData("startDate", new Date(e.target.value))}
+        label={t("input.startDate")}
+        aria-label="eventStartDate"
+        type="date"
+        icon={<Calendar />}
+      />
+      <Input
+        value={formData.endDate.toISOString().split("T")[0]}
+        onChange={e => updateFormData("endDate", new Date(e.target.value))}
+        label={t("input.endDate")}
+        aria-label="eventEndDate"
         type="date"
         icon={<Calendar />}
       />
