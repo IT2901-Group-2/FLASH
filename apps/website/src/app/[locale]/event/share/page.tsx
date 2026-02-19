@@ -92,6 +92,7 @@ export default function Page() {
 
       <div style={{ alignSelf: "center" }}>
         <SegmentedControl
+          fill
           value={shareRole}
           onChange={s => setShareRole(s as "guest" | "moderator")}
           data-color="accent"
