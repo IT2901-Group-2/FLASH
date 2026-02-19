@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/providers/ThemeProvider";
+import ReactQueryProvider from "@/providers/ReactQueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +29,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <NextIntlClientProvider>
-          <ThemeProvider defaultTheme="system">{children}</ThemeProvider>
+          <ReactQueryProvider>
+            <ThemeProvider defaultTheme="system">{children}</ThemeProvider>
+          </ReactQueryProvider>
         </NextIntlClientProvider>
       </body>
     </html>
