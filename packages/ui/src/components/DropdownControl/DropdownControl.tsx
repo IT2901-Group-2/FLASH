@@ -8,7 +8,7 @@ export type DropdownOption = SegmentedControlProps & {
   content?: React.ReactNode;
 };
 
-export interface DropdownControlProps extends SegmentedControlProps {
+export type DropdownControlProps = SegmentedControlProps & {
   /**
    * The currently selected value
    */
@@ -29,7 +29,7 @@ export interface DropdownControlProps extends SegmentedControlProps {
    *
    */
   ref?: React.Ref<HTMLDivElement>;
-}
+};
 
 /**
  * DropdownControls builds on Controls by showing additional content for the
