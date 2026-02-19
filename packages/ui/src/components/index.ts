@@ -13,3 +13,4 @@ export * from "./PhoneHeader";
 export * from "./Controls";
 export * from "./DropdownControls";
 export * from "./QRDisplay";
+export * from "./ActionCard";
