@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { StepProps } from "../CreateEventCard";
-import { Title, DropdownControls, Input, Switch } from "ui";
+import { Title, DropdownControl, Input, Switch } from "ui";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 
@@ -13,36 +13,33 @@ export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
   return (
     <>
       <Title description={t("description")}>{t("title")}</Title>
-      <DropdownControls
-        onChange={setLimitMode}
-        options={[
-          {
-            content: (
-              <div className={styles.maxImageContainer}>
-                <span>{t("input.uploads.title")}</span>
-                <Input
-                  aria-label="maxImages"
-                  type="number"
-                  min={1}
-                  value={formData.photosPerGuest}
-                  onChange={e =>
-                    updateFormData(
-                      "photosPerGuest",
-                      limitMode === "limited" ? e.target.value : Infinity
-                    )
-                  }
-                />
-              </div>
-            ),
-            label: t("input.uploads.limited"),
-            value: "limited",
-          },
-          {
-            label: t("input.uploads.unlimited"),
-            value: "unlimited",
-          },
-        ]}
-      />
+      <DropdownControl
+        value={limitMode}
+        onChange={val => setLimitMode(val as "limited" | "unlimited")}
+      >
+        <DropdownControl.Item
+          value="limited"
+          label={t("input.uploads.limited")}
+          content={
+            <div className={styles.maxImageContainer}>
+              <span>{t("input.uploads.title")}</span>
+              <Input
+                aria-label="maxImages"
+                type="number"
+                min={1}
+                value={formData.photosPerGuest}
+                onChange={e =>
+                  updateFormData(
+                    "photosPerGuest",
+                    limitMode === "limited" ? e.currentTarget.value : Infinity
+                  )
+                }
+              />
+            </div>
+          }
+        />
+        <DropdownControl.Item value="unlimited" label={t("input.uploads.unlimited")} />
+      </DropdownControl>
       <Switch position="right">
         <b>{t("input.autoApprove")}</b>
       </Switch>
