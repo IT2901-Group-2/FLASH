@@ -88,7 +88,7 @@ const SegmentedControl = ({
           data-color={color}
           data-fill={fill}
           data-size={size}
-          role="segmentedControl"
+          test-id="segmentedControl"
           style={cssVars}
         >
           {label && (

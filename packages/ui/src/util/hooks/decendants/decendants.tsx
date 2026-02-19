@@ -8,8 +8,8 @@ import {
   useCallback,
   useContext,
   useLayoutEffect,
+  useReducer,
   useRef,
-  useState,
   type ReactNode,
 } from "react";
 
@@ -57,7 +57,7 @@ function useDescendantsManager<
   T extends HTMLElement,
   M extends object,
 >(): DescendantsManager<T, M> {
-  const [, rerender] = useState(0);
+  const [, dispatch] = useReducer(state => state + 1, 0);
   const mapRef = useRef(new Map<T, DescendantMeta<M>>());
 
   /**
@@ -70,7 +70,7 @@ function useDescendantsManager<
     const map = mapRef.current;
     if (!map.has(node)) {
       map.set(node, meta);
-      rerender(n => n + 1);
+      dispatch();
     } else Object.assign(map.get(node)!, meta);
   }, []);
 
@@ -80,10 +80,7 @@ function useDescendantsManager<
    * @param node - The descendant element to unregister.
    */
   const unregister = useCallback((node: T) => {
-    if (mapRef.current.has(node)) {
-      mapRef.current.delete(node);
-      rerender(n => n + 1);
-    }
+    if (mapRef.current.delete(node)) dispatch();
   }, []);
 
   /**
@@ -97,7 +94,7 @@ function useDescendantsManager<
         a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1
       )
       .map((node, index) => ({
-        ...(mapRef.current.get(node) as DescendantMeta<M>),
+        ...mapRef.current.get(node)!,
         node,
         index,
       }));

@@ -111,7 +111,7 @@ export const Size: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const segmentedControls = canvas.getAllByRole("segmentedControl");
+    const segmentedControls = canvas.getAllByTestId("segmentedControl");
     expect(segmentedControls).toHaveLength(2);
   },
 };
@@ -131,7 +131,7 @@ export const Colors: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const segmentedControl = canvas.getByRole("segmentedControl");
+    const segmentedControl = canvas.getAllByTestId("segmentedControl");
     expect(segmentedControl).toHaveAttribute("data-color", "brand-purple");
     expect(canvas.getByRole("radio", { name: "Center" })).toBeChecked();
   },
