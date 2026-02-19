@@ -1,34 +1,20 @@
 .card {
-  --color-base: var(--data-color-100);
-  --color-hover: var(--data-color-200);
-  --color-active: var(--data-color-300);
-  --color-disabled: var(--data-color-200);
-  border-radius: 1.5rem;
-  font-size: 1.25rem;
+  --color-bg: var(--data-color-200);
+  --color-border: var(--data-color-600);
+
+  border-radius: 1rem;
   padding: 1.5rem;
-  border: 1px solid var(--data-color-1000);
-  background-color: var(--data-color-500);
-  color: var(--color-base);
-  transition: all 0.2s ease-in-out;
-  cursor: default;
-}
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  box-shadow: 0 0.25rem 0.25rem 0 rgba(0, 0, 0, 0.25);
+  color: var(--color-neutral-1000);
 
-.card[data-color="background-secondary"] {
-  --color-base: var(--data-color-500);
-}
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 
-.card[data-color="brand-purple"] {
-  --color-base: var(--data-color-100);
-}
-
-[data-theme="dark"] .card[data-color="brand-purple"] {
-  --color-base: var(--data-color-1000);
-}
-
-[data-theme="dark"] .card[data-color="background-secondary"] {
-  --color-base: var(--data-color-100);
-}
-
-[data-theme="dark"] .card p {
-  color: var(--data-color-300);
+  &[data-color="neutral"] {
+    --color-bg: var(--color-neutral-000);
+    --color-border: var(--color-neutral-100);
+  }
 }

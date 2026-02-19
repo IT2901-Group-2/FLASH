@@ -7,7 +7,7 @@
     "dashboard": {
       "sidebar": {
         "desktop": "Desktop",
-        "event": "Event",
+        "event": "Events",
         "settings": "Settings",
         "storage": "Storage"
       },
@@ -16,6 +16,7 @@
           "previous": "Previous",
           "cancel": "Cancel",
           "next": "Next",
+          "create": "Create",
           "finish": "Finish",
           "basicInfo": {
             "title": "Create Event Name",
@@ -23,7 +24,8 @@
             "input": {
               "name": "Event Name",
               "description": "Event Description",
-              "date": "Event Date"
+              "startDate": "Start Date",
+              "endDate": "End Date"
             }
           },
           "options": {
