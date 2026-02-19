@@ -9,6 +9,10 @@ vi.mock("ui", () => ({
   ActionCard: vi.fn(() => <div data-testid="action-card">ActionCard</div>),
 }));
 
+vi.mock("next-intl", () => ({
+  useTranslations: vi.fn(() => (key: string) => key),
+}));
+
 const mockOpenFilePicker = vi.fn();
 const mockFileInput = () => <input type="file" data-testid="file-input" />;
 
