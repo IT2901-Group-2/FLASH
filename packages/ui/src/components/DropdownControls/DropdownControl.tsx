@@ -8,7 +8,7 @@ export type DropdownOption = SegmentedControlProps & {
   content?: React.ReactNode;
 };
 
-export interface DropdownControlsProps extends SegmentedControlProps {
+export interface DropdownControlProps extends SegmentedControlProps {
   /**
    * The currently selected value
    */
@@ -45,7 +45,7 @@ const DropdownControl = ({
   "data-color": color = "accent",
   ref,
   ...rest
-}: DropdownControlsProps) => {
+}: DropdownControlProps) => {
   const [internalValue, setInternalValue] = useState<string>(defaultValue ?? "");
 
   const selectedValue = controlledValue ?? internalValue;
@@ -89,7 +89,9 @@ const DropdownControl = ({
           />
         ))}
       </SegmentedControl>
-      {activeContent && <div className={styles.panel}>{activeContent}</div>}
+      <div className={styles.panel} data-open={!!activeContent}>
+        <div className={styles.panelInner}>{activeContent}</div>
+      </div>
     </div>
   );
 };

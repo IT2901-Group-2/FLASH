@@ -1,16 +1,22 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import DropdownControl from "./DropdownControl";
-import { expect, userEvent, within } from "storybook/test";
-import { colorNames } from "@/styles/colorType";
 import { useState } from "react";
-import { Settings, User } from "lucide-react";
 import { Input } from "../Input";
+import { expect, userEvent, within } from "storybook/test";
+import { Button } from "../Button";
 
 const meta: Meta<typeof DropdownControl> = {
   title: "Building Blocks/Components/DropdownControl",
   component: DropdownControl,
   tags: ["autodocs"],
   argTypes: {},
+  decorators: [
+    Story => (
+      <div style={{ width: "30rem" }}>
+        <Story />
+      </div>
+    ),
+  ],
   parameters: {
     docs: {
       source: {
@@ -34,6 +40,25 @@ export const Basic: Story = {
       <DropdownControl.Item value="disable" label="Disable" />
     </DropdownControl>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const enableButton = canvas.getByRole("radio", { name: /enable/i });
+    const disableButton = canvas.getByRole("radio", { name: /disable/i });
+
+    await step("Verify initial state", async () => {
+      expect(canvas.getByText("Disable")).toBeInTheDocument();
+      expect(disableButton).toHaveAttribute("aria-checked", "true");
+      expect(
+        canvas.queryByText("Additional content is visible.")
+      ).not.toBeInTheDocument();
+    });
+
+    await step("Select 'Enable' option", async () => {
+      await userEvent.click(enableButton);
+      expect(enableButton).toHaveFocus();
+      expect(canvas.queryByText("Additional content is visible.")).toBeInTheDocument();
+    });
+  },
 };
 
 export const WithInput: Story = {
@@ -46,9 +71,20 @@ export const WithInput: Story = {
           value="limit"
           label="Limit"
           content={
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                justifyContent: "space-between",
+              }}
+            >
               <span>Set maximum uploads to:</span>
-              <Input aria-label="limit-input" />
+              <Input
+                aria-label="limit-input"
+                value={text}
+                onChange={e => setText(e.currentTarget.value)}
+              />
             </div>
           }
         />
@@ -56,205 +92,126 @@ export const WithInput: Story = {
       </DropdownControl>
     );
   },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const user = userEvent.setup();
+    const unlimited = canvas.getByRole("radio", { name: /unlimited/i });
+    const limit = canvas.getByRole("radio", { name: /^limit$/i });
+
+    await step("Default option is selected", async () => {
+      await expect(unlimited).toHaveAttribute("aria-checked", "true");
+    });
+
+    await step("Input is hidden until Limit is selected", async () => {
+      await expect(canvas.queryByLabelText("limit-input")).not.toBeInTheDocument();
+    });
+
+    await step("Limit option shows input and accepts typing", async () => {
+      await user.click(limit);
+
+      const input = canvas.getByLabelText("limit-input");
+      await user.type(input, "10");
+      await expect(input).toHaveValue("10");
+    });
+  },
 };
 
-// const EnableDisable = [
-//   { value: "enable", label: "Enable", content: <p>Additional content is visible.</p> },
-//   { value: "disable", label: "Disable" },
-// ] as const;
+export const MultipleOptions: Story = {
+  render: () => (
+    <DropdownControl defaultValue="details" onChange={console.log}>
+      <DropdownControl.Item
+        value="details"
+        label="Details"
+        content={<p>Details content is visible.</p>}
+      />
+      <DropdownControl.Item
+        value="settings"
+        label="Settings"
+        content={<p>Settings content is visible.</p>}
+      />
+      <DropdownControl.Item
+        value="help"
+        label="Help"
+        content={<p>Help content is visible.</p>}
+      />
+    </DropdownControl>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
 
-// const ThreeOptions = [
-//   {
-//     value: "details",
-//     label: "Details",
-//     content: <p>Details content is visible.</p>,
-//   },
-//   {
-//     value: "settings",
-//     label: "Settings",
-//     content: <p>Settings content is visible.</p>,
-//   },
-//   {
-//     value: "help",
-//     label: "Help",
-//     content: <p>Help content is visible.</p>,
-//   },
-// ] as const;
+    const details = canvas.getByRole("radio", { name: /details/i });
+    const settings = canvas.getByRole("radio", { name: /settings/i });
+    const help = canvas.getByRole("radio", { name: /help/i });
 
-// // Basic State Test
-// export const Basic: Story = {
-//   args: {
-//     options: EnableDisable,
-//     defaultValue: "disable",
-//     "data-color": "accent",
-//   },
-//   play: async ({ canvasElement, step }) => {
-//     const canvas = within(canvasElement);
-//     const user = userEvent.setup();
+    await step("Renders three options", async () => {
+      const radios = canvas.getAllByRole("radio");
+      await expect(radios).toHaveLength(3);
+    });
 
-//     await step("Verify initial state", async () => {
-//       expect(canvas.getByText("Disable")).toBeInTheDocument();
-//       expect(
-//         canvas.queryByText("Additional content is visible.")
-//       ).not.toBeInTheDocument();
+    await step("Shows content for default option", async () => {
+      await expect(details).toBeInTheDocument();
+      await expect(details).toHaveAttribute("aria-checked", "true");
+    });
 
-//       const region = canvas.getByRole("region");
-//       const active = canvas.getByRole("radio", { name: /disable/i });
-//       await expect(region).toHaveAttribute("aria-labelledby", active.getAttribute("id"));
-//     });
+    await step("Shows content for settings option", async () => {
+      await userEvent.click(settings);
+      await expect(canvas.getByText("Settings content is visible.")).toBeInTheDocument();
+      await expect(settings).toHaveAttribute("aria-checked", "true");
+    });
 
-//     await step("Select 'Enable' option", async () => {
-//       const enableButton = canvas.getByRole("radio", { name: /enable/i });
-//       await user.click(enableButton);
-//       expect(canvas.getByText("Additional content is visible.")).toBeInTheDocument();
+    await step("Shows content for help option", async () => {
+      await userEvent.click(help);
+      await expect(canvas.getByText("Help content is visible.")).toBeInTheDocument();
+      await expect(help).toHaveAttribute("aria-checked", "true");
+    });
+  },
+};
 
-//       const region = canvas.getByRole("region");
-//       await expect(region).toHaveAttribute(
-//         "aria-labelledby",
-//         enableButton.getAttribute("id")
-//       );
-//     });
-//   },
-// };
+export const ControlledValueUpdate: Story = {
+  render: () => {
+    const [value, setValue] = useState<"enable" | "disable">("disable");
 
-// // Dropdown w/Input Test
-// export const WithInput: Story = {
-//   render: () => {
-//     const [text, setText] = useState("");
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "1rem",
+          alignItems: "center",
+        }}
+      >
+        <DropdownControl value={value} onChange={setValue as (value: string) => void}>
+          <DropdownControl.Item
+            value="enable"
+            label="Enable"
+            content={<p>Additional content is visible.</p>}
+          />
+          <DropdownControl.Item value="disable" label="Disable" />
+        </DropdownControl>
+        <Button type="button" onClick={() => setValue("enable")}>
+          Set Enable
+        </Button>
+      </div>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
 
-//     const OptionsWithInput = [
-//       {
-//         value: "limit",
-//         label: "Limit",
-//         content: (
-//           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-//             <span>Set maximum uploads to:</span>
-//             <div
-//               style={{
-//                 display: "flex",
-//                 alignItems: "center",
-//                 height: "2rem",
-//                 padding: "0 0.75rem",
-//                 border: "1px solid var(--color-text)",
-//                 borderRadius: "1.5rem",
-//                 background: "var(--color-surface)",
-//               }}
-//             >
-//               <input
-//                 aria-label="limit-input"
-//                 value={text}
-//                 onChange={e => setText(e.currentTarget.value)}
-//                 style={{
-//                   width: "6rem",
-//                   border: "none",
-//                   outline: "none",
-//                   background: "transparent",
-//                   color: "var(--color-text)",
-//                   fontSize: "1.1rem",
-//                   textAlign: "center",
-//                 }}
-//               />
-//             </div>
-//           </div>
-//         ),
-//       },
-//       { value: "unlimited", label: "Unlimited" },
-//     ] as const;
+    const setEnabledButton = canvas.getByRole("button", { name: /set enable/i });
 
-//     return (
-//       <DropdownControl
-//         options={OptionsWithInput}
-//         defaultValue="unlimited"
-//         variant="primary"
-//         data-color="accent"
-//       />
-//     );
-//   },
-//   play: async ({ canvasElement, step }) => {
-//     const canvas = within(canvasElement);
-//     const user = userEvent.setup();
+    await step("Initial selection is Disable", async () => {
+      const disable = canvas.getByRole("radio", { name: /disable/i });
+      await expect(disable).toHaveAttribute("aria-checked", "true");
+    });
 
-//     await step("Default option is selected", async () => {
-//       const unlimited = canvas.getByRole("radio", { name: /unlimited/i });
-//       await expect(unlimited).toHaveAttribute("aria-checked", "true");
-//     });
+    await step("External value update changes selection", async () => {
+      await userEvent.click(setEnabledButton);
 
-//     await step("Input is hidden until Limit is selected", async () => {
-//       await expect(canvas.queryByLabelText("limit-input")).not.toBeInTheDocument();
-//     });
-
-//     await step("Limit option shows input and accepts typing", async () => {
-//       const limit = canvas.getByRole("radio", { name: /^limit$/i });
-//       await user.click(limit);
-
-//       const input = canvas.getByLabelText("limit-input");
-//       await user.type(input, "10");
-//       await expect(input).toHaveValue("10");
-//     });
-//   },
-// };
-
-// // Multiple Dropdown Options Test
-// export const MultipleOptions: Story = {
-//   args: {
-//     options: ThreeOptions,
-//     defaultValue: "details",
-//     variant: "primary",
-//     "data-color": "accent",
-//   },
-//   play: async ({ canvasElement, step }) => {
-//     const canvas = within(canvasElement);
-
-//     await step("Renders three options", async () => {
-//       const radios = canvas.getAllByRole("radio");
-//       await expect(radios).toHaveLength(3);
-//     });
-
-//     await step("Shows content for default option", async () => {
-//       await expect(canvas.getByText("Details content is visible.")).toBeInTheDocument();
-
-//       const active = canvas.getByRole("radio", { name: /details/i });
-//       const region = canvas.getByRole("region");
-//       await expect(region).toHaveAttribute("aria-labelledby", active.getAttribute("id"));
-//     });
-//   },
-// };
-
-// // Controlled Value Update Test
-// export const ControlledValueUpdate: Story = {
-//   render: () => {
-//     const [value, setValue] = useState<"enable" | "disable">("disable");
-
-//     return (
-//       <div>
-//         <DropdownControl
-//           options={EnableDisable}
-//           value={value}
-//           onChange={setValue}
-//           variant="primary"
-//           data-color="accent"
-//         />
-//         <button type="button" onClick={() => setValue("enable")}>
-//           Set Enable
-//         </button>
-//       </div>
-//     );
-//   },
-//   play: async ({ canvasElement, step }) => {
-//     const canvas = within(canvasElement);
-//     const user = userEvent.setup();
-
-//     await step("Initial selection is Disable", async () => {
-//       const disable = canvas.getByRole("radio", { name: /disable/i });
-//       await expect(disable).toHaveAttribute("aria-checked", "true");
-//     });
-
-//     await step("External value update changes selection", async () => {
-//       const setEnable = canvas.getByRole("button", { name: /set enable/i });
-//       await user.click(setEnable);
-
-//       const enable = canvas.getByRole("radio", { name: /enable/i });
-//       await expect(enable).toHaveAttribute("aria-checked", "true");
-//     });
-//   },
-// };
+      const enable = canvas.getByRole("radio", { name: /enable/i });
+      await expect(enable).toHaveAttribute("aria-checked", "true");
+      await expect(
+        canvas.getByText("Additional content is visible.")
+      ).toBeInTheDocument();
+    });
+  },
+};
