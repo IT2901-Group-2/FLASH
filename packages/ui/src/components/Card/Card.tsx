@@ -21,12 +21,12 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
  */
 export const Card = ({
   children,
-  "data-color": data = "background-secondary",
+  "data-color": color = "neutral",
   className,
   ...rest
 }: CardProps) => {
   return (
-    <div data-color={data} className={cl(styles.card, className)} {...rest}>
+    <div data-color={color} className={cl(styles.card, className)} {...rest}>
       {children}
     </div>
   );
