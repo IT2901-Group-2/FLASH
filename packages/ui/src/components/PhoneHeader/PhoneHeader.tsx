@@ -1,10 +1,23 @@
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { User, Camera, Upload, QrCode } from "lucide-react";
 import { cl } from "../../util/className";
 import styles from "./PhoneHeader.module.css";
 import { Button } from "../Button";
 import QRDisplay from "../QRDisplay/QRDisplay";
+import type { QRDisplayProps } from "../QRDisplay/QRDisplay";
+
+const getResponsiveQrSize = (width: number): QRDisplayProps["size"] => {
+  if (width >= 1200) {
+    return "large";
+  }
+
+  if (width >= 768) {
+    return "medium";
+  }
+
+  return "small";
+};
 
 export interface PhoneHeaderProps {
   /** The title to display in the phone header. */
@@ -76,11 +89,34 @@ export const PhoneHeader = ({
   const handleLeftClick =
     onLeftClick ??
     (() => {
-      if (typeof window !== "undefined" && window.history && window.history.back) {
+      if (
+        typeof window !== "undefined" &&
+        window.history &&
+        typeof window.history.back === "function"
+      ) {
         window.history.back();
       }
     });
   const [showQr, setShowQr] = useState(false);
+  const [qrSize, setQrSize] = useState<QRDisplayProps["size"]>("medium");
+
+  // Update QR size based on window width
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const updateQrSize = () => {
+      setQrSize(getResponsiveQrSize(window.innerWidth));
+    };
+
+    updateQrSize();
+    window.addEventListener("resize", updateQrSize);
+
+    return () => {
+      window.removeEventListener("resize", updateQrSize);
+    };
+  }, []);
 
   return (
     <header className={cl(styles.phoneheader, styles.container, className)}>
@@ -217,6 +253,7 @@ export const PhoneHeader = ({
                   ? window.location.href
                   : "https://example.com")
               }
+              size={qrSize}
             />
           </div>
         </div>
