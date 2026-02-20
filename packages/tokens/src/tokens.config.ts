@@ -1,4 +1,5 @@
 import { mergeConfigs } from "./tokens.utils";
+import { breakpointTokenConfig } from "./tokens/breakpoints";
 import { radiusTokenConfig } from "./tokens/radius";
 import { shadowTokenConfig } from "./tokens/shadow";
 
@@ -15,12 +16,12 @@ export const lightModeTokens = (withSemanticRoles = true) => {
 };
 
 export const scaleTokens = () => {
-  const config = [radiusTokenConfig];
+  const config = [radiusTokenConfig, breakpointTokenConfig];
 
   return mergeConfigs(config);
 };
 
-export const allTokens = () => {
+export const nonColorTokens = () => {
   const config = [scaleTokens()];
 
   return mergeConfigs(config);

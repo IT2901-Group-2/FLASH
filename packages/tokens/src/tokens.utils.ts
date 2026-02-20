@@ -1,5 +1,5 @@
-import _ from "lodash";
 import type { ColorRole } from "./types";
+import { merge } from "./utils/merge";
 
 export type GlobalColorEntry = {
   value: string;
@@ -61,5 +61,5 @@ export type StyleDictionaryTokenConfig<T extends TokenTypes> = {
 export const mergeConfigs = (
   configs: StyleDictionaryTokenConfig<TokenTypes>[]
 ): StyleDictionaryTokenConfig<TokenTypes> => {
-  return configs.reduce((acc, config) => _.merge(acc, config), {});
+  return configs.reduce((acc, config) => merge(acc, config), {});
 };
