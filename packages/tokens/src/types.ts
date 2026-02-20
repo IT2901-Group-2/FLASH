@@ -53,6 +53,7 @@ export type BreakpointToken =
   | "2xl-down";
 
 /* ------------------------------ Shadow tokens ----------------------------- */
-type ShadowToken = "dialog";
+export type ShadowToken = "dialog";
 
-export type { ShadowToken };
+/* ------------------------------ Border Radius tokens --------------------- */
+export type BorderRadiusToken = "2" | "4" | "8" | "12" | "16" | "full";

@@ -1,11 +1,10 @@
 import StyleDictionary from "style-dictionary";
 import { DesignTokens, Filter } from "style-dictionary/types";
 import { transformCSS } from "./style-dictionary.formats";
-import { lightModeTokens } from "./tokens.config";
+import { allTokens, lightModeTokens } from "./tokens.config";
 
 const OUT_DIST_DIR = "./dist/";
 
-/* Global accumulator for built CSS-files */
 const bundledCSSFiles: string[] = [];
 
 main();
@@ -15,7 +14,11 @@ async function main() {
     tokens: lightModeTokens(false),
     filename: "semantic-light-tokens.css",
     selector: ":root, :host, .light",
-    filter: async token => token.type !== "global-color",
+  });
+  await buildCSSBundleForTokens({
+    tokens: allTokens(),
+    filename: "scale-tokens.css",
+    selector: ":root, :host",
   });
 }
 
@@ -32,7 +35,6 @@ async function buildCSSBundleForTokens({
 }) {
   const SDictionary = new StyleDictionary({
     tokens,
-    /* Since we end up filtering out references for some tokens, we filter out warnings */
     log: { warnings: "disabled" },
     platforms: {
       [filename]: {
