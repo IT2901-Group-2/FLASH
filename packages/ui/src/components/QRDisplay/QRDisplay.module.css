@@ -1,6 +1,7 @@
 .container {
-  /* Make the modal/card larger but remain responsive to small viewports */
-  width: min(34rem, calc(100vw - 3rem));
+  /* Let the container size to its content (QR + padding) but never overflow viewport */
+  width: auto;
+  max-width: calc(100vw - 3rem);
   height: min-content;
   padding-inline: 1.5rem;
   padding-block: 4rem 2rem;
@@ -16,12 +17,45 @@
   box-shadow: 0 0.75rem 1rem rgba(0, 0, 0, 0.18);
 }
 
+.container-small {
+  min-width: min(10rem, calc(100vw - 3rem));
+}
+
+.container-medium {
+  min-width: min(12rem, calc(100vw - 3rem));
+}
+
+.container-large {
+  min-width: min(20rem, calc(100vw - 3rem));
+}
+
 .qrCode {
-  /* Responsive, larger QR: scales with viewport but caps at a comfortable maximum */
-  width: clamp(16rem, 40vw, 26rem);
+  /* base responsive behavior for the svg */
   max-width: 100%;
   height: auto;
-  display: block; /* ensure svg behaves responsively */
+  display: block;
+  aspect-ratio: 1/1;
+}
+
+.qr-small {
+  min-width: 8rem;
+  min-height: 8rem;
+  max-width: 8rem;
+  max-height: 8rem;
+}
+
+.qr-medium {
+  min-width: 10rem; /* current default */
+  min-height: 10rem;
+  max-width: 10rem;
+  max-height: 10rem;
+}
+
+.qr-large {
+  min-width: 18rem;
+  min-height: 18rem;
+  max-width: 18rem;
+  max-height: 18rem;
 }
 
 .text {

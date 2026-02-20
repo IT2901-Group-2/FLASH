@@ -3,24 +3,15 @@ import { Button, Card, ProgressDots } from "ui";
 import styles from "./CreateEventCard.module.css";
 import { BasicInfoStep, OptionsStep, ReviewStep } from "./Steps";
 import { useTranslations } from "next-intl";
+import { useCreateEventMutation } from "@/hooks/useEvents";
+import { CreateEventInput, EventDTO } from "@/types/eventTypes";
 
-// TODO: This will change when create event endpoint is done
-type LocalForm = {
-  name: string;
-  description: string;
-  date: string;
-  photosPerGuest: number;
-  autoApprove: boolean;
-  code: string;
-};
-// TODO: This will change when create event endpoint is done
-const DefaultFormData = {
+const DefaultFormData: CreateEventInput = {
   name: "",
   description: "",
-  date: "",
-  photosPerGuest: 1,
-  autoApprove: false,
-  code: "",
+  uploadLimit: 1,
+  startDate: new Date(),
+  endDate: new Date(),
 };
 
 interface CreateEventCardProps extends RefAttributes<HTMLDialogElement> {
@@ -28,20 +19,36 @@ interface CreateEventCardProps extends RefAttributes<HTMLDialogElement> {
 }
 
 export interface StepProps {
-  formData: LocalForm;
-  updateFormData: (field: keyof LocalForm, value: string | number | boolean) => void;
+  formData: CreateEventInput;
+  updateFormData: (
+    field: keyof CreateEventInput,
+    value: CreateEventInput[keyof CreateEventInput]
+  ) => void;
+  status?: "idle" | "pending" | "success" | "error";
+  result?: EventDTO | null;
 }
 
 export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps) => {
   const t = useTranslations("admin.dashboard.event.create");
+  const { mutateAsync, status } = useCreateEventMutation();
 
   const [progress, setProgress] = useState<number>(1);
-  const [formdata, setFormData] = useState<LocalForm>(DefaultFormData);
-  const updateFormData = <K extends keyof LocalForm>(k: K, v: LocalForm[K]) =>
-    setFormData(prev => ({ ...prev, [k]: v }));
+  const [formdata, setFormData] = useState<CreateEventInput>(DefaultFormData);
+  const [eventResult, setEventResult] = useState<EventDTO | null>(null);
+
+  const updateFormData = <K extends keyof CreateEventInput>(
+    k: K,
+    v: CreateEventInput[K]
+  ) => setFormData(prev => ({ ...prev, [k]: v }));
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    nextStep();
+    await mutateAsync(formdata).then(setEventResult);
+  };
 
   const steps = [BasicInfoStep, OptionsStep, ReviewStep] as const;
-  const CurrentStep = steps[progress - 1];
+  const CurrentStep = steps[progress - 1]!;
 
   const nextStep = () => setProgress(c => c + 1);
   const prevStep = () => setProgress(c => c - 1);
@@ -54,27 +61,37 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
   const isFirstStep = progress <= 1;
   const isLastStep = progress >= steps.length;
   const isMiddleStep = !isFirstStep && !isLastStep;
-
+  const isSecondToLastStep = progress === steps.length - 1;
   return (
     <dialog ref={ref} className={styles.container} {...rest} autoFocus>
       <Card className={styles.card}>
         <ProgressDots maxValue={3} value={progress} data-color="brand-purple" />
         <form className={styles.form}>
-          <CurrentStep formData={formdata} updateFormData={updateFormData} />
+          <CurrentStep
+            formData={formdata}
+            updateFormData={updateFormData}
+            status={status}
+            result={eventResult}
+          />
           <div className={styles.buttonGroup}>
-            {isMiddleStep && (
-              <Button variant="secondary" onClick={prevStep}>
-                {t("previous")}
-              </Button>
-            )}
             {!isLastStep && (
               <Button variant="tertiary" onClick={exitForm}>
                 {t("cancel")}
               </Button>
             )}
-            {!isLastStep && (
+            {isMiddleStep && (
+              <Button variant="secondary" onClick={prevStep}>
+                {t("previous")}
+              </Button>
+            )}
+            {!isLastStep && !isSecondToLastStep && (
               <Button variant="secondary" onClick={nextStep}>
                 {t("next")}
+              </Button>
+            )}
+            {isSecondToLastStep && (
+              <Button variant="secondary" onClick={handleSubmit}>
+                {t("create")}
               </Button>
             )}
             {isLastStep && (
