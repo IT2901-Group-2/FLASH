@@ -7,9 +7,70 @@
     "dashboard": {
       "sidebar": {
         "desktop": "Desktop",
-        "event": "Event",
+        "event": "Events",
         "settings": "Settings",
         "storage": "Storage"
+      },
+      "event": {
+        "create": {
+          "previous": "Previous",
+          "cancel": "Cancel",
+          "next": "Next",
+          "create": "Create",
+          "finish": "Finish",
+          "basicInfo": {
+            "title": "Create Event Name",
+            "description": "Set up a new photo event for your guests. A QR code will be generated automatically.",
+            "input": {
+              "name": "Event Name",
+              "description": "Event Description",
+              "startDate": "Start Date",
+              "endDate": "End Date"
+            }
+          },
+          "options": {
+            "title": "Event Settings",
+            "description": "Configure event settings.",
+            "input": {
+              "uploads": {
+                "title": "Set max uploads to",
+                "limited": "Limited",
+                "unlimited": "Unlimited"
+              },
+              "autoApprove": "Auto-Approve Photos",
+              "autoGenerate": "Auto-Generate Code"
+            }
+          },
+          "review": {
+            "title": "Let others join!",
+            "description": "You can share the QR code or send them the link in order for others to join the event and upload images.",
+            "download": "Download",
+            "guest": {
+              "name": "Guest",
+              "linkTitle": "Guest Link",
+              "linkDescription": "Everyone with the link below will be able to uploaded images to this event"
+            },
+            "moderator": {
+              "name": "Moderator"
+            }
+          }
+        },
+        "page": {
+          "title": "Event",
+          "description": "Manage your events.",
+          "createNew": "Create New Event"
+        }
+      }
+    },
+    "login": {
+      "title": "PhotoEvent Admin",
+      "description": "Manage your photo events with ease",
+      "undertext": "Self-hosted Photo Event Management System",
+      "signIn": {
+        "title": "Sign in",
+        "titleDescription": "Enter your credentials to access the admin panel",
+        "buttonTitle": "Sign in",
+        "inputLabel": "Password"
       }
     }
   },
@@ -27,5 +88,55 @@
     "scanQrTab": "Scan QR",
     "scanQrDescription": "Use your camera to scan the event QR code",
     "openCameraButton": "Open Camera"
+  },
+  "login": {
+    "title": "PhotoEvent Admin",
+    "description": "Manage your photo events with ease",
+    "undertext": "Self-hosted Photo Event Management System",
+    "signIn": {
+      "title": "Sign in",
+      "titleDescription": "Enter your credentials to access the admin panel",
+      "buttonTitle": "Sign in",
+      "inputLabel": "Password"
+    }
+  },
+  "ShareEventPage": {
+    "create": {
+      "firstTitle": "Your Event has been created!",
+      "firstDescription": "You can share the QR code or send them the link in order for others to join the event and upload images.",
+      "doneText": "Finish"
+    },
+    "share": {
+      "firstTitle": "Let others join",
+      "firstDescription": "Share the QR code or link so others can join the event and upload images.",
+      "doneText": "Done"
+    },
+    "controls": {
+      "guest": "Guest",
+      "moderator": "Moderator"
+    },
+    "links": {
+      "guest": {
+        "title": "Guest Link",
+        "description": "Everyone with the link below will be able to upload images to this event"
+      },
+      "moderator": {
+        "title": "Moderator Link",
+        "description": "Everyone with the link below will be able to moderate all uploaded images"
+      }
+    },
+    "actions": {
+      "downloadQr": "Download QR code"
+    },
+    "errors": {
+      "copyFailed": "Failed to copy link to clipboard"
+    },
+    "aria": {
+      "moderatorAlert": "moderator link alert",
+      "guestLinkInput": "guest-link",
+      "moderatorLinkInput": "moderator-link",
+      "copyLink": "copy-link",
+      "copied": "Copied successfully!"
+    }
   }
 }

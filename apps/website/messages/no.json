@@ -10,12 +10,73 @@
         "event": "Events",
         "settings": "Innstillinger",
         "storage": "Lagring"
+      },
+      "event": {
+        "create": {
+          "basicInfo": {
+            "description": "Sett opp en ny foto-event for gjestene dine. En QR-kode vil genereres automatisk.",
+            "input": {
+              "startDate": "Hendelsesdato",
+              "endDate": "Sluttdato",
+              "description": "Beskrivelse",
+              "name": "Navn på hendelse"
+            },
+            "title": "Opprett event"
+          },
+          "cancel": "Kanseler",
+          "finish": "Fullfør",
+          "next": "Neste",
+          "options": {
+            "description": "Konfigurer hendelsesinnstillinger.",
+            "input": {
+              "autoApprove": "Autogodkjenn bilder",
+              "autoGenerate": "Auto-generer kode",
+              "uploads": {
+                "limited": "Begrenset",
+                "title": "Sett maks antall opplastinger til",
+                "unlimited": "Ubegrenset"
+              }
+            },
+            "title": "Hendelsesinnstillinger"
+          },
+          "previous": "Tidligere",
+          "review": {
+            "description": "Du kan dele QR-koden eller sende dem lenken slik at andre kan bli med på arrangementet og laste opp bilder.",
+            "download": "Last ned",
+            "guest": {
+              "linkDescription": "Alle med lenken nedenfor vil kunne laste opp bilder til dette arrangementet",
+              "linkTitle": "Gjestelenke",
+              "name": "Gjest"
+            },
+            "moderator": {
+              "name": "Moderator"
+            },
+            "title": "La andre bli med!"
+          },
+          "create": "Opprett"
+        },
+        "page": {
+          "description": "Administrer hendelsene dine.",
+          "title": "Events",
+          "createNew": "Lag ny hendelse"
+        }
+      }
+    },
+    "login": {
+      "title": "FotoArrangemang Administrator",
+      "description": "Administrer fotoarrangementene dine enkelt",
+      "undertext": "Selvhostet system for adminstrasjon av fotoarrangementer",
+      "signIn": {
+        "title": "Logg inn",
+        "titleDescription": "Skriv inn legitimasjonen din for å få tilgang til administrasjonspanelet",
+        "buttonTitle": "Logg inn",
+        "inputLabel": "Passord"
       }
     }
   },
   "JoinEventPage": {
-  "appTitle": "PhotoEvent",
-  "appDescription": "Administrer fotoarrangementene dine enkelt"
+    "appTitle": "PhotoEvent",
+    "appDescription": "Administrer fotoarrangementene dine enkelt"
   },
   "JoinEvent": {
     "title": "Bli med på et arrangement",
@@ -27,6 +88,44 @@
     "scanQrTab": "Skann QR-kode",
     "scanQrDescription": "Bruk kameraet ditt til å skanne QR-koden til arrangementet",
     "openCameraButton": "Åpne kamera"
+  },
+  "ShareEventPage": {
+    "create": {
+      "firstTitle": "Arrangementet ditt er opprettet!",
+      "firstDescription": "Du kan dele QR-koden eller sende lenken slik at andre kan bli med og laste opp bilder.",
+      "doneText": "Fullfør"
+    },
+    "share": {
+      "firstTitle": "La andre bli med",
+      "firstDescription": "Del QR-koden eller lenken slik at andre kan bli med og laste opp bilder.",
+      "doneText": "Ferdig"
+    },
+    "controls": {
+      "guest": "Gjest",
+      "moderator": "Moderator"
+    },
+    "links": {
+      "guest": {
+        "title": "Gjestelenke",
+        "description": "Alle med lenken under kan laste opp bilder til arrangementet"
+      },
+      "moderator": {
+        "title": "Moderatorlenke",
+        "description": "Alle med lenken under kan moderere alle opplastede bilder"
+      }
+    },
+    "actions": {
+      "downloadQr": "Last ned QR-kode"
+    },
+    "errors": {
+      "copyFailed": "Klarte ikke å kopiere lenken til utklippstavlen"
+    },
+    "aria": {
+      "moderatorAlert": "moderatorlenke-varsel",
+      "guestLinkInput": "gjest-lenke",
+      "moderatorLinkInput": "moderator-lenke",
+      "copyLink": "kopier-lenke",
+      "copied": "Kopiert!"
+    }
   }
-
 }
