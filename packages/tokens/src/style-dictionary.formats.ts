@@ -1,6 +1,6 @@
 import { PlatformConfig, TransformedToken } from "style-dictionary";
 import { Transform } from "style-dictionary/types";
-import { kebabCase } from "./config/kebabCase";
+import { kebabCase } from "./utils/kebabCase";
 
 export const transformCSS: Transform = {
   name: "name/alpha-suffix",
