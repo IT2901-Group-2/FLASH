@@ -5,7 +5,7 @@ import {
   FontWeightKeys,
 } from "@/internal-types";
 import { StyleDictionaryToken } from "@/tokens.utils";
-import { pxToRem } from "@/utils/pxToRem";
+import { pxToRem } from "@/utils/pxtoRem";
 
 export const fontTokenConfig = {
   font: {
