@@ -1,12 +1,7 @@
 import StyleDictionary from "style-dictionary";
 import { DesignTokens, Filter } from "style-dictionary/types";
 import { transformCSS } from "./style-dictionary.formats";
-import {
-  nonColorTokens,
-  lightModeTokens,
-  scaleTokens,
-  fontTokens,
-} from "./tokens.config";
+import { lightModeTokens, scaleTokens, fontTokens } from "./tokens.config";
 
 const OUT_DIST_DIR = "./dist/";
 
