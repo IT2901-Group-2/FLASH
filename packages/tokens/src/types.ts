@@ -19,24 +19,19 @@ export type { ColorTheme, ColorRole, MainColorRole, StatusColorRole, BrandColorR
 
 type RootBackgroundToken = "default" | "input" | "raised" | "sunken" | "overlay";
 
-type DynamicStatelessBackgroundToken =
-  | "soft"
-  | "softA"
-  | "moderate"
-  | "moderateA"
-  | "strong";
+type StatelessBackgroundToken = "soft" | "softT" | "moderate" | "moderateT" | "strong";
 
-type DynamicStatefulBackgroundToken =
+type StatefulBackgroundToken =
   | "moderate-hover"
-  | "moderate-hoverA"
+  | "moderate-hoverT"
   | "moderate-pressed"
-  | "moderate-pressedA"
+  | "moderate-pressedT"
   | "strong-hover"
   | "strong-pressed";
 
-type ColoredStatelessBackgroundToken = `${ColorRole}-${DynamicStatelessBackgroundToken}`;
+type ColoredStatelessBackgroundToken = `${ColorRole}-${StatelessBackgroundToken}`;
 
-type ColoredStatefulBackgroundToken = `${ColorRole}-${DynamicStatefulBackgroundToken}`;
+type ColoredStatefulBackgroundToken = `${ColorRole}-${StatefulBackgroundToken}`;
 
 /* ------------------------------ Breakpoints tokens ------------------------ */
 export type BreakpointToken =

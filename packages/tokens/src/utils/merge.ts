@@ -1,10 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
- * Recursively merges own and inherited enumerable properties of source objects
- * into the destination object, skipping source properties that resolve to
- * undefined. Array and plain object properties are merged recursively. Other
- * objects and value types are overridden by assignment. Source objects are
- * applied from left to right. Subsequent sources overwrite property
- * assignments of previous sources.
+ * Merges the source objects into the destination object. The merge is
+ * performed recursively, meaning that nested objects will also be merged.
+ * Arrays are concatenated. Undefined values in the source objects are
+ * ignored and do not overwrite existing values in the destination object.
  *
  * @param T — The type of the source objects.
  * @param object — The destination object.
