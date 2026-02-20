@@ -52,35 +52,36 @@ export const fontTokenConfig = {
     },
 
     "size-heading-2xlarge": {
-      value: getFontSize(40),
+      value: getFontSize(48),
       type: "font",
     },
     "size-heading-xlarge": {
-      value: getFontSize(32),
+      value: getFontSize(40),
       type: "font",
     },
     "size-heading-large": {
-      value: getFontSize(28),
+      value: getFontSize(36),
       type: "font",
     },
     "size-heading-medium": {
-      value: getFontSize(24),
+      value: getFontSize(32),
       type: "font",
     },
     "size-heading-small": {
-      value: getFontSize(20),
+      value: getFontSize(24),
       type: "font",
     },
     "size-heading-xsmall": {
-      value: getFontSize(18),
-      type: "font",
-    },
-    "size-xlarge": {
       value: getFontSize(20),
       type: "font",
     },
+
+    "size-xlarge": {
+      value: getFontSize(24),
+      type: "font",
+    },
     "size-large": {
-      value: getFontSize(18),
+      value: getFontSize(20),
       type: "font",
     },
     "size-medium": {
@@ -89,6 +90,10 @@ export const fontTokenConfig = {
     },
     "size-small": {
       value: getFontSize(14),
+      type: "font",
+    },
+    "size-xsmall": {
+      value: getFontSize(12),
       type: "font",
     },
 

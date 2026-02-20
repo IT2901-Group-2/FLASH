@@ -37,7 +37,8 @@ export type FontSizeKeys =
   | "size-xlarge"
   | "size-large"
   | "size-medium"
-  | "size-small";
+  | "size-small"
+  | "size-xsmall";
 
 export type FontLineHeightKeys =
   | "line-height-heading-2xlarge"
