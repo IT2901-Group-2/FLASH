@@ -9,13 +9,13 @@ export type GlobalColorEntry = {
 
 export type TokenTypes =
   | "color"
+  | "global-color"
   | "shadow"
   | "opacity"
-  | "global-color"
-  | "global-radius"
-  | "global-space"
-  | "global-breakpoint"
-  | "global-font";
+  | "radius"
+  | "space"
+  | "breakpoint"
+  | "font";
 
 export type SemanticTokenGroups = "background" | "border" | "text";
 
@@ -48,10 +48,6 @@ export type StyleDictionaryToken<T extends TokenTypes> = {
    * Token type
    */
   type: T;
-  /**
-   * Group the token belongs to. Used for auto-documentation and categorization in Figma.
-   */
-  group?: TokenGroup;
 };
 
 export type StyleDictionaryTokenConfig<T extends TokenTypes> = {

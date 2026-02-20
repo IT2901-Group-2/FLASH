@@ -1,7 +1,12 @@
 import StyleDictionary from "style-dictionary";
 import { DesignTokens, Filter } from "style-dictionary/types";
 import { transformCSS } from "./style-dictionary.formats";
-import { nonColorTokens, lightModeTokens } from "./tokens.config";
+import {
+  nonColorTokens,
+  lightModeTokens,
+  scaleTokens,
+  fontTokens,
+} from "./tokens.config";
 
 const OUT_DIST_DIR = "./dist/";
 
@@ -16,8 +21,13 @@ async function main() {
     selector: ":root, :host, .light",
   });
   await buildCSSBundleForTokens({
-    tokens: nonColorTokens(),
-    filename: "non-color-tokens.css",
+    tokens: scaleTokens(),
+    filename: "scale-tokens.css",
+    selector: ":root, :host",
+  });
+  await buildCSSBundleForTokens({
+    tokens: fontTokens(),
+    filename: "font-tokens.css",
     selector: ":root, :host",
   });
 }

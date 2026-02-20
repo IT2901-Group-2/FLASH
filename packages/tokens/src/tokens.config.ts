@@ -1,5 +1,6 @@
 import { mergeConfigs } from "./tokens.utils";
 import { breakpointTokenConfig } from "./tokens/breakpoints";
+import { fontTokenConfig } from "./tokens/font";
 import { radiusTokenConfig } from "./tokens/radius";
 import { shadowTokenConfig } from "./tokens/shadow";
 
@@ -21,8 +22,14 @@ export const scaleTokens = () => {
   return mergeConfigs(config);
 };
 
+export const fontTokens = () => {
+  const config = [fontTokenConfig];
+
+  return mergeConfigs(config);
+};
+
 export const nonColorTokens = () => {
-  const config = [scaleTokens()];
+  const config = [scaleTokens(), fontTokens()];
 
   return mergeConfigs(config);
 };

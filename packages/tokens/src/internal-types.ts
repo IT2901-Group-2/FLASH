@@ -21,7 +21,13 @@ type GlobalColorKeys =
   | `${Extract<ColorRole, "neutral">}-${Extract<GlobalColorScale, "000">}`
   | `${ColorRole}-${Exclude<GlobalColorScale, "000">}`;
 
-type FontSizeKeys =
+export type { GlobalColorScale, GlobalColorKeys };
+
+/*------------------------ Font Family ---------------------- */
+
+export type FontFamilyKeys = "family";
+
+export type FontSizeKeys =
   | "size-heading-2xlarge"
   | "size-heading-xlarge"
   | "size-heading-large"
@@ -33,7 +39,7 @@ type FontSizeKeys =
   | "size-medium"
   | "size-small";
 
-type FontLineHeightKeys =
+export type FontLineHeightKeys =
   | "line-height-heading-2xlarge"
   | "line-height-heading-xlarge"
   | "line-height-heading-large"
@@ -45,5 +51,3 @@ type FontLineHeightKeys =
   | "line-height-medium";
 
 export type FontWeightKeys = "weight-bold" | "weight-regular";
-
-export type { GlobalColorScale, GlobalColorKeys, FontSizeKeys, FontLineHeightKeys };
