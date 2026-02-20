@@ -30,10 +30,13 @@ export const merge = <T extends Record<string, any>>(
   return object;
 };
 
-function isPlainObject(value: Record<string, any>) {
-  return (
-    Object.prototype.toString.call(value) === "[object Object]" &&
-    (Object.getPrototypeOf(value) === null ||
-      Object.getPrototypeOf(value) === Object.prototype)
-  );
-}
+/**
+ * Checks if the provided value is a plain object (i.e., an object created by the Object constructor or with a null prototype).
+ *
+ * @param value - The value to check.
+ * @returns True if the value is a plain object, false otherwise.
+ */
+const isPlainObject = (value: Record<string, any>) =>
+  Object.prototype.toString.call(value) === "[object Object]" &&
+  (Object.getPrototypeOf(value) === null ||
+    Object.getPrototypeOf(value) === Object.prototype);

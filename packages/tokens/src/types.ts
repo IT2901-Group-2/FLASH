@@ -2,7 +2,8 @@
 type ColorTheme = "light" | "dark";
 
 /* ------------------------------ Main colors ----------------------------- */
-type MainColorRole = "neutral" | "accent";
+type MainColorRole = "neutral";
+// | "accent";
 
 /* ------------------------------ Status colors ----------------------------- */
 type StatusColorRole = "success" | "warning" | "danger";
@@ -11,7 +12,9 @@ type StatusColorRole = "success" | "warning" | "danger";
 type BrandColorRole = "brand-purple";
 
 /* ------------------------------- All colors ------------------------------- */
-type ColorRole = MainColorRole | StatusColorRole | BrandColorRole;
+type ColorRole = MainColorRole;
+// | StatusColorRole
+// | BrandColorRole;
 
 export type { ColorTheme, ColorRole, MainColorRole, StatusColorRole, BrandColorRole };
 

@@ -1,24 +1,18 @@
-import { GlobalColorScale } from "@/internal-types";
-import { GlobalColorEntry } from "@/tokens.utils";
+import { ColorScale } from "@/internal-types";
+import { ColorEntry } from "@/tokens.utils";
 import { ColorRole } from "@/types";
 
-export type GlobalConfigWithAlpha = Record<
+export type ColorConfigWithAlpha = Record<
   Extract<ColorRole, "neutral">,
-  Record<GlobalColorScale, GlobalColorEntry>
+  Record<ColorScale, ColorEntry>
 > &
-  Record<
-    Exclude<ColorRole, "neutral">,
-    Record<Exclude<GlobalColorScale, "000">, GlobalColorEntry>
-  >;
+  Record<Exclude<ColorRole, "neutral">, Record<Exclude<ColorScale, "000">, ColorEntry>>;
 
-export type GlobalConfigWithoutAlpha = Record<
+export type ColorConfigWithoutAlpha = Record<
   ColorRole,
-  Record<
-    Exclude<GlobalColorScale, "000" | "100A" | "200A" | "300A" | "400A">,
-    GlobalColorEntry
-  >
+  Record<Exclude<ColorScale, "000" | "100A" | "200A" | "300A" | "400A">, ColorEntry>
 > & {
   neutral: {
-    [key in Extract<GlobalColorScale, "000">]: GlobalColorEntry;
+    [key in Extract<ColorScale, "000">]: ColorEntry;
   };
 };

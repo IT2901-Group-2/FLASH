@@ -1,7 +1,12 @@
 import StyleDictionary from "style-dictionary";
 import { DesignTokens, Filter } from "style-dictionary/types";
 import { transformCSS } from "./style-dictionary.formats";
-import { lightModeTokens, scaleTokens, fontTokens } from "./tokens.config";
+import {
+  lightModeTokens,
+  scaleTokens,
+  fontTokens,
+  darkModeTokens,
+} from "./tokens.config";
 
 const OUT_DIST_DIR = "./dist/";
 
@@ -12,8 +17,13 @@ main();
 async function main() {
   await buildCSSBundleForTokens({
     tokens: lightModeTokens(false),
-    filename: "semantic-light-tokens.css",
+    filename: "light-tokens.css",
     selector: ":root, :host, .light",
+  });
+  await buildCSSBundleForTokens({
+    tokens: darkModeTokens(false),
+    filename: "dark-tokens.css",
+    selector: ':root[data-theme="dark"], :host[data-theme="dark"], .dark',
   });
   await buildCSSBundleForTokens({
     tokens: scaleTokens(),

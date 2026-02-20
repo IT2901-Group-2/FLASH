@@ -1,5 +1,6 @@
 import { mergeConfigs } from "./tokens.utils";
 import { breakpointTokenConfig } from "./tokens/breakpoints";
+import { DarkTokens, LightTokens } from "./tokens/colors/colors.tokens";
 import { fontTokenConfig } from "./tokens/font";
 import { opacityTokenConfig } from "./tokens/opacity";
 import { radiusTokenConfig } from "./tokens/radius";
@@ -11,7 +12,19 @@ export const lightModeTokens = (withSemanticRoles = true) => {
     opacityTokenConfig("light"),
     // withSemanticRoles ? semanticTokensForAllRoles() : {},
     // semanticRootTokens("light"),
-    // globalLightTokens,
+    LightTokens,
+  ];
+
+  return mergeConfigs(config);
+};
+
+export const darkModeTokens = (withSemanticRoles = true) => {
+  const config = [
+    shadowTokenConfig("dark"),
+    opacityTokenConfig("dark"),
+    // withSemanticRoles ? semanticTokensForAllRoles() : {},
+    // semanticRootTokens("dark"),
+    DarkTokens,
   ];
 
   return mergeConfigs(config);
@@ -19,18 +32,15 @@ export const lightModeTokens = (withSemanticRoles = true) => {
 
 export const scaleTokens = () => {
   const config = [radiusTokenConfig, breakpointTokenConfig];
-
   return mergeConfigs(config);
 };
 
 export const fontTokens = () => {
   const config = [fontTokenConfig];
-
   return mergeConfigs(config);
 };
 
 export const nonColorTokens = () => {
   const config = [scaleTokens(), fontTokens()];
-
   return mergeConfigs(config);
 };

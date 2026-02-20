@@ -1,15 +1,13 @@
 import type { ColorRole } from "./types";
 import { merge } from "./utils/merge";
 
-export type GlobalColorEntry = {
+export type ColorEntry = {
   value: string;
-  type: "global-color";
-  group: ColorRole;
+  type: "color";
 };
 
 export type TokenTypes =
   | "color"
-  | "global-color"
   | "shadow"
   | "opacity"
   | "radius"

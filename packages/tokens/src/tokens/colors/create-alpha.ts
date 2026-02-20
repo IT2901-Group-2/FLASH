@@ -1,7 +1,43 @@
 import Color, { type Coords } from "colorjs.io";
-import { ColorTheme } from "@/types";
+import { ColorRole, ColorTheme } from "@/types";
+import { ColorConfigWithAlpha, ColorConfigWithoutAlpha } from "./colors.types";
+
+export function globalConfigWithAlphaTokens({
+  config: globalConfig,
+  theme,
+}: {
+  config: ColorConfigWithoutAlpha;
+  theme: ColorTheme;
+}): ColorConfigWithAlpha {
+  const localConfig = structuredClone(globalConfig) as ColorConfigWithAlpha;
+
+  Object.keys(globalConfig).forEach(key => {
+    const _key = key as ColorRole;
+    const scopedConfig = localConfig[_key];
+
+    scopedConfig["100A"] = {
+      ...scopedConfig?.["100"],
+      value: createAlphaColor(scopedConfig["100"].value, theme),
+    };
+    scopedConfig["200A"] = {
+      ...scopedConfig["200"],
+      value: createAlphaColor(scopedConfig["200"].value, theme),
+    };
+    scopedConfig["300A"] = {
+      ...scopedConfig["300"],
+      value: createAlphaColor(scopedConfig["300"].value, theme),
+    };
+    scopedConfig["400A"] = {
+      ...scopedConfig["400"],
+      value: createAlphaColor(scopedConfig["400"].value, theme),
+    };
+  });
+
+  return localConfig;
+}
 
 const createAlphaColor = (targetColor: string, theme: ColorTheme): string => {
+  console.log(targetColor, theme);
   const backgroundColor = theme;
 
   const targetCoords = new Color(targetColor).to("srgb").coords;

@@ -1,6 +1,6 @@
 import { ColorRole } from "./types";
 
-type GlobalColorScale =
+type ColorScale =
   | "100"
   | "200"
   | "300"
@@ -18,10 +18,10 @@ type GlobalColorScale =
   | "400A";
 
 type GlobalColorKeys =
-  | `${Extract<ColorRole, "neutral">}-${Extract<GlobalColorScale, "000">}`
-  | `${ColorRole}-${Exclude<GlobalColorScale, "000">}`;
+  | `${Extract<ColorRole, "neutral">}-${Extract<ColorScale, "000">}`
+  | `${ColorRole}-${Exclude<ColorScale, "000">}`;
 
-export type { GlobalColorScale, GlobalColorKeys };
+export type { ColorScale, GlobalColorKeys };
 
 /*------------------------ Font Family ---------------------- */
 
