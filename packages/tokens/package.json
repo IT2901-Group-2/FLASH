@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "build": "tsx ./src",
-    "test": "vitest",
+    "test": "vitest --coverage",
     "test:watch": "vitest watch",
     "lint": "eslint --max-warnings 0",
     "format": "prettier --write src/",
@@ -15,10 +15,12 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
+    "colorjs.io": "^0.6.1",
     "eslint": "^9.39.2",
     "style-dictionary": "^4.1.1",
     "tsx": "^4.20.6",
     "typescript-eslint": "^8.53.1",
-    "colorjs.io": "^0.6.1"
+    "vitest": "^4.0.18",
+    "@vitest/coverage-istanbul": "^4.0.18"
   }
 }

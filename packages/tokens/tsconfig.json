@@ -4,7 +4,7 @@
     "module": "preserve",
     "moduleResolution": "bundler",
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "strict": true,
     "jsx": "react-jsx",
     "noUncheckedIndexedAccess": true,
@@ -16,9 +16,15 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@utils": ["./src/utils"]
     }
   },
-  "include": ["src/**/*.ts", "types.ts"],
+  "include": [
+    "src/**/*.ts",
+    "types.ts",
+    "__test__/kebabCase.test.ts",
+    "__test__/merge.test.ts"
+  ],
   "exclude": ["node_modules", "dist", "dist-esm"]
 }
