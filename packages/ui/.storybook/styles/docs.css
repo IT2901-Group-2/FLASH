@@ -28,12 +28,12 @@ p {
   font-family: "Nunito Sans", sans-serif;
 }
 
-.sbdocs {
+.sbdocs-content {
   padding-right: 25%;
 }
 
 @media (max-width: 768px) {
-  .sbdocs {
+  .sbdocs-content {
     padding-right: 0;
   }
 }
