@@ -1,7 +1,9 @@
 import Color, { type Coords } from "colorjs.io";
 import { ColorRole, ColorTheme } from "@/types";
 import { ColorConfigWithAlpha, ColorConfigWithoutAlpha } from "./color.types";
-import { semanticRootTokens } from "./root.tokens";
+import { semanticRootTokens } from "./roles/root.tokens";
+
+const ALPHA_LEVELS = ["100", "200", "300", "400"] as const;
 
 export function globalConfigWithAlphaTokens({
   config: globalConfig,
@@ -13,25 +15,13 @@ export function globalConfigWithAlphaTokens({
   const localConfig = structuredClone(globalConfig) as ColorConfigWithAlpha;
 
   Object.keys(globalConfig).forEach(key => {
-    const _key = key as ColorRole;
-    const scopedConfig = localConfig[_key];
-
-    scopedConfig["100T"] = {
-      ...scopedConfig?.["100"],
-      value: createAlphaColor(scopedConfig["100"].value, theme),
-    };
-    scopedConfig["200T"] = {
-      ...scopedConfig["200"],
-      value: createAlphaColor(scopedConfig["200"].value, theme),
-    };
-    scopedConfig["300T"] = {
-      ...scopedConfig["300"],
-      value: createAlphaColor(scopedConfig["300"].value, theme),
-    };
-    scopedConfig["400T"] = {
-      ...scopedConfig["400"],
-      value: createAlphaColor(scopedConfig["400"].value, theme),
-    };
+    const scopedConfig = localConfig[key as ColorRole];
+    ALPHA_LEVELS.forEach(level => {
+      scopedConfig[`${level}T`] = {
+        ...scopedConfig[level],
+        value: createAlphaColor(scopedConfig[level].value, theme),
+      };
+    });
   });
 
   return localConfig;
@@ -54,14 +44,10 @@ const createAlphaColor = (targetColor: string, theme: ColorTheme): string => {
 };
 
 function parseAndValidateCoords(coords: Coords): number[] {
-  const parsedCoords: number[] = [];
-
-  for (const coord of coords) {
+  return coords.map(coord => {
     if (coord === null) throw new Error(`Color coordinate is undefined: ${coord}`);
-    parsedCoords.push(coord);
-  }
-
-  return parsedCoords;
+    return coord;
+  });
 }
 
 function getAlphaColor(
@@ -74,6 +60,10 @@ function getAlphaColor(
   const [tr, tg, tb] = targetRgb.map(c => Math.round(c * rgbPrecision));
   const [br, bg, bb] = backgroundRgb.map(c => Math.round(c * rgbPrecision));
 
+  //? For some reason this does not work with type checking...
+  // if ([tr, tg, tb, br, bg, bb].some(c => c === undefined))
+  //   throw Error("Color is undefined");
+
   if (
     tr === undefined ||
     tg === undefined ||
@@ -81,19 +71,15 @@ function getAlphaColor(
     br === undefined ||
     bg === undefined ||
     bb === undefined
-  ) {
+  )
     throw Error("Color is undefined");
-  }
 
   // Is the background color lighter, RGB-wise, than target color?
   // Decide whether we want to add as little color or as much color as possible,
   // darkening or lightening the background respectively.
   // If at least one of the bits of the target RGB value
   // is lighter than the background, we want to lighten it.
-  let desiredRgb = 0;
-  if (tr > br) desiredRgb = rgbPrecision;
-  else if (tg > bg) desiredRgb = rgbPrecision;
-  else if (tb > bb) desiredRgb = rgbPrecision;
+  const desiredRgb = tr > br || tg > bg || tb > bb ? rgbPrecision : 0;
 
   const alphaR = (tr - br) / (desiredRgb - br);
   const alphaG = (tg - bg) / (desiredRgb - bg);
@@ -115,38 +101,23 @@ function getAlphaColor(
   const maxAlpha = targetAlpha ?? Math.max(alphaR, alphaG, alphaB);
 
   const A = clampA(Math.ceil(maxAlpha * alphaPrecision)) / alphaPrecision;
-  let R = clampRgb(((br * (1 - A) - tr) / A) * -1);
-  let G = clampRgb(((bg * (1 - A) - tg) / A) * -1);
-  let B = clampRgb(((bb * (1 - A) - tb) / A) * -1);
+  const correct = (t: number, b: number, channel: number): number => {
+    const blended = blendAlpha(channel, A, b);
+    return t !== blended ? (t > blended ? channel + 1 : channel - 1) : channel;
+  };
 
-  R = Math.ceil(R);
-  G = Math.ceil(G);
-  B = Math.ceil(B);
+  const channels = [
+    { t: tr, b: br },
+    { t: tg, b: bg },
+    { t: tb, b: bb },
+  ].map(({ t, b }) => {
+    let ch = Math.ceil(clampRgb((t - b * (1 - A)) / A));
+    const shouldCorrect = desiredRgb === 0 ? t <= b : t >= b;
+    if (shouldCorrect) ch = correct(t, b, ch);
+    return ch / rgbPrecision;
+  });
 
-  const blendedR = blendAlpha(R, A, br);
-  const blendedG = blendAlpha(G, A, bg);
-  const blendedB = blendAlpha(B, A, bb);
-
-  // Correct for rounding errors in light mode
-  if (desiredRgb === 0) {
-    if (tr <= br && tr !== blendedR) R = tr > blendedR ? R + 1 : R - 1;
-    if (tg <= bg && tg !== blendedG) G = tg > blendedG ? G + 1 : G - 1;
-    if (tb <= bb && tb !== blendedB) B = tb > blendedB ? B + 1 : B - 1;
-  }
-
-  // Correct for rounding errors in dark mode
-  if (desiredRgb === rgbPrecision) {
-    if (tr >= br && tr !== blendedR) R = tr > blendedR ? R + 1 : R - 1;
-    if (tg >= bg && tg !== blendedG) G = tg > blendedG ? G + 1 : G - 1;
-    if (tb >= bb && tb !== blendedB) B = tb > blendedB ? B + 1 : B - 1;
-  }
-
-  // Convert back to 0-1 values
-  R = R / rgbPrecision;
-  G = G / rgbPrecision;
-  B = B / rgbPrecision;
-
-  return [R, G, B, A] as const;
+  return [...channels, A] as [number, number, number, number];
 }
 
 const blendAlpha = (
@@ -156,29 +127,18 @@ const blendAlpha = (
   round = true
 ): number => {
   if (round) return Math.round(background * (1 - alpha)) + Math.round(foreground * alpha);
-
   return background * (1 - alpha) + foreground * alpha;
 };
 
 const formatHex = (str: string): string => {
   if (!str.startsWith("#")) return str;
-
-  if (str.length === 4) {
-    const hash = str.charAt(0);
-    const r = str.charAt(1);
-    const g = str.charAt(2);
-    const b = str.charAt(3);
-    return hash + r + r + g + g + b + b;
-  }
-
-  if (str.length === 5) {
-    const hash = str.charAt(0);
-    const r = str.charAt(1);
-    const g = str.charAt(2);
-    const b = str.charAt(3);
-    const a = str.charAt(4);
-    return hash + r + r + g + g + b + b + a + a;
-  }
-
-  return str;
+  if (str.length !== 4 && str.length !== 5) return str;
+  return (
+    "#" +
+    str
+      .slice(1)
+      .split("")
+      .map(c => c + c)
+      .join("")
+  );
 };
