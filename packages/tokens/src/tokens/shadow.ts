@@ -1,4 +1,4 @@
-import type { ColorTheme, ShadowToken } from "@/types";
+import type { ColorTheme, ShadowToken } from "@/types/output.types";
 import type { StyleDictionaryToken } from "@/tokens.utils";
 
 export function shadowTokenConfig(theme: ColorTheme) {

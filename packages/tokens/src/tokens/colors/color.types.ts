@@ -1,6 +1,6 @@
-import { ColorScale } from "@/internal-types";
+import { ColorScale } from "@/types/internal.types";
 import { ColorEntry } from "@/tokens.utils";
-import { ColorRole } from "@/types";
+import { ColorRole } from "@/types/output.types";
 
 export type ColorConfigWithAlpha = Record<
   Extract<ColorRole, "neutral">,

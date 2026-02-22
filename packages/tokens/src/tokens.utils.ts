@@ -1,4 +1,4 @@
-import type { ColorRole } from "./types";
+import type { ColorRole } from "./types/output.types";
 import { merge } from "./utils/merge";
 
 export type ColorEntry = {

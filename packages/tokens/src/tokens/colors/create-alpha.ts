@@ -1,5 +1,5 @@
 import Color, { type Coords } from "colorjs.io";
-import { ColorRole, ColorTheme } from "@/types";
+import { ColorRole, ColorTheme } from "@/types/output.types";
 import { ColorConfigWithAlpha, ColorConfigWithoutAlpha } from "./color.types";
 import { semanticRootTokens } from "./roles/root.tokens";
 
@@ -94,16 +94,20 @@ function getAlphaColor(
     return [V, V, V, alphaR] as const;
   }
 
-  const clampRgb = (n: number) =>
+  const clampRGB = (n: number) =>
     Number.isNaN(n) ? 0 : Math.min(rgbPrecision, Math.max(0, n));
-  const clampA = (n: number) =>
+  const clampAlpha = (n: number) =>
     Number.isNaN(n) ? 0 : Math.min(alphaPrecision, Math.max(0, n));
   const maxAlpha = targetAlpha ?? Math.max(alphaR, alphaG, alphaB);
 
-  const A = clampA(Math.ceil(maxAlpha * alphaPrecision)) / alphaPrecision;
-  const correct = (t: number, b: number, channel: number): number => {
-    const blended = blendAlpha(channel, A, b);
-    return t !== blended ? (t > blended ? channel + 1 : channel - 1) : channel;
+  const A = clampAlpha(Math.ceil(maxAlpha * alphaPrecision)) / alphaPrecision;
+  const correctChannel = (
+    target: number,
+    background: number,
+    channel: number
+  ): number => {
+    const blended = blendAlpha(channel, A, background);
+    return target !== blended ? (target > blended ? channel + 1 : channel - 1) : channel;
   };
 
   const channels = [
@@ -111,9 +115,9 @@ function getAlphaColor(
     { t: tg, b: bg },
     { t: tb, b: bb },
   ].map(({ t, b }) => {
-    let ch = Math.ceil(clampRgb((t - b * (1 - A)) / A));
+    let ch = Math.ceil(clampRGB((t - b * (1 - A)) / A));
     const shouldCorrect = desiredRgb === 0 ? t <= b : t >= b;
-    if (shouldCorrect) ch = correct(t, b, ch);
+    if (shouldCorrect) ch = correctChannel(t, b, ch);
     return ch / rgbPrecision;
   });
 

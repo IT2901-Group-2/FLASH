@@ -1,5 +1,5 @@
 import { StyleDictionaryToken } from "@/tokens.utils";
-import { ColorTheme } from "@/types";
+import { ColorTheme } from "@/types/output.types";
 
 export function opacityTokenConfig(theme: ColorTheme) {
   return {

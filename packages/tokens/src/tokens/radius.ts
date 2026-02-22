@@ -1,5 +1,5 @@
 import { StyleDictionaryToken } from "@/tokens.utils";
-import { BorderRadiusToken } from "@/types";
+import { BorderRadiusToken } from "@/types/output.types";
 
 export const radiusTokenConfig = {
   radius: {

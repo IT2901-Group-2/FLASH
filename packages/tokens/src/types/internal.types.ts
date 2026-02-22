@@ -1,4 +1,4 @@
-import { ColorRole } from "./types";
+import { ColorRole } from "./output.types";
 
 type ColorScale =
   | "100"

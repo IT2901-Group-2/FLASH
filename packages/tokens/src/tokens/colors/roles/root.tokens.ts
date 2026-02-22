@@ -1,5 +1,10 @@
 import { StyleDictionaryToken } from "@/tokens.utils";
-import { ColorTheme, RootBackgroundToken, RootBorderToken, RootTextToken } from "@/types";
+import {
+  ColorTheme,
+  RootBackgroundToken,
+  RootBorderToken,
+  RootTextToken,
+} from "@/types/output.types";
 
 /**
  * Static root-layer for semantic tokens.

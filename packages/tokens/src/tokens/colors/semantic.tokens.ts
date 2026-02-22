@@ -1,4 +1,4 @@
-import { ColorRole } from "@/types";
+import { ColorRole } from "@/types/output.types";
 import { NeutralColorTokenConfig } from "./roles/neutral.tokens";
 import { StyleDictionaryTokenConfig } from "@/tokens.utils";
 import { merge } from "@/utils/merge";

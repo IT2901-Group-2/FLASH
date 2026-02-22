@@ -3,7 +3,7 @@ import {
   FontLineHeightKeys,
   FontSizeKeys,
   FontWeightKeys,
-} from "@/internal-types";
+} from "@/types/internal.types";
 import { StyleDictionaryToken } from "@/tokens.utils";
 import { pxToRem } from "@/utils/pxtoRem";
 
