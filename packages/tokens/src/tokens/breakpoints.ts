@@ -5,49 +5,49 @@ export const breakpointTokenConfig = {
   breakpoint: {
     xs: {
       value: "0",
-      type: "breakpoint",
+      type: "global-breakpoint",
     },
     sm: {
       value: "480px",
-      type: "breakpoint",
+      type: "global-breakpoint",
     },
     "sm-down": {
       value: "479px",
-      type: "breakpoint",
+      type: "global-breakpoint",
     },
     md: {
       value: "768px",
-      type: "breakpoint",
+      type: "global-breakpoint",
     },
     "md-down": {
       value: "767px",
-      type: "breakpoint",
+      type: "global-breakpoint",
     },
     lg: {
       value: "1024px",
-      type: "breakpoint",
+      type: "global-breakpoint",
     },
     "lg-down": {
       value: "1023px",
-      type: "breakpoint",
+      type: "global-breakpoint",
     },
     xl: {
       value: "1280px",
-      type: "breakpoint",
+      type: "global-breakpoint",
     },
     "xl-down": {
       value: "1279px",
-      type: "breakpoint",
+      type: "global-breakpoint",
     },
     "2xl": {
       value: "1440px",
-      type: "breakpoint",
+      type: "global-breakpoint",
     },
     "2xl-down": {
       value: "1439px",
-      type: "breakpoint",
+      type: "global-breakpoint",
     },
   },
 } satisfies {
-  breakpoint: Record<BreakpointToken, StyleDictionaryToken<"breakpoint">>;
+  breakpoint: Record<BreakpointToken, StyleDictionaryToken<"global-breakpoint">>;
 };

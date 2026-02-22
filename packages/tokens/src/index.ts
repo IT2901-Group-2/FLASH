@@ -1,15 +1,10 @@
 import StyleDictionary from "style-dictionary";
 import { DesignTokens, Filter } from "style-dictionary/types";
 import { formatES6, transformCSS } from "./style-dictionary.formats";
-import {
-  lightModeTokens,
-  scaleTokens,
-  fontTokens,
-  darkModeTokens,
-  allTokens,
-} from "./tokens.config";
+import { allTokens, lightModeTokens, darkModeTokens, rootTokens } from "./tokens.config";
 import fs from "node:fs";
 import { bundle } from "lightningcss";
+import { DarkTokens, LightTokens } from "./tokens/colors/color.tokens";
 
 const OUT_DIST_DIR = "./dist/";
 
@@ -19,23 +14,33 @@ main();
 
 async function main() {
   await buildCSSBundleForTokens({
-    tokens: lightModeTokens(true),
+    tokens: LightTokens,
     filename: "light-tokens.css",
     selector: ":root, :host, .light",
   });
   await buildCSSBundleForTokens({
-    tokens: darkModeTokens(true),
+    tokens: DarkTokens,
     filename: "dark-tokens.css",
     selector: ':root[data-theme="dark"], :host[data-theme="dark"], .dark',
   });
   await buildCSSBundleForTokens({
-    tokens: scaleTokens(),
-    filename: "scale-tokens.css",
-    selector: ":root, :host",
+    tokens: lightModeTokens(false),
+    filename: "semantic-light-tokens.css",
+    selector: ":root, :host, .light",
+    filter: async token => {
+      console.log(token.type);
+      return token.type !== "global-color";
+    },
   });
   await buildCSSBundleForTokens({
-    tokens: fontTokens(),
-    filename: "font-tokens.css",
+    tokens: darkModeTokens(false),
+    filename: "semantic-dark-tokens.css",
+    selector: ':root[data-theme="dark"], :host[data-theme="dark"], .dark',
+    filter: async token => token.type !== "global-color",
+  });
+  await buildCSSBundleForTokens({
+    tokens: rootTokens(),
+    filename: "scale-tokens.css",
     selector: ":root, :host",
   });
   await buildOtherTokenFormats();
@@ -49,9 +54,9 @@ async function main() {
     minify: false,
   });
   fs.writeFileSync(`${OUT_DIST_DIR}tokens.css`, code);
-  bundledCSSFiles.forEach(path => {
-    fs.unlinkSync(`${OUT_DIST_DIR}${path}`);
-  });
+  // bundledCSSFiles.forEach(path => {
+  //   fs.unlinkSync(`${OUT_DIST_DIR}${path}`);
+  // });
 }
 
 async function buildCSSBundleForTokens({
@@ -78,7 +83,7 @@ async function buildCSSBundleForTokens({
           {
             destination: filename,
             format: "css/variables",
-            ...filter,
+            ...(filter && { filter }),
             options: {
               outputReferences: true,
               selector,

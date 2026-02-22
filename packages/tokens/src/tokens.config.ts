@@ -37,13 +37,8 @@ export const scaleTokens = () => {
   return mergeConfigs(config);
 };
 
-export const fontTokens = () => {
-  const config = [fontTokenConfig];
-  return mergeConfigs(config);
-};
-
-export const nonColorTokens = () => {
-  const config = [scaleTokens(), fontTokens()];
+export const rootTokens = () => {
+  const config = [scaleTokens(), fontTokenConfig, breakpointTokenConfig];
   return mergeConfigs(config);
 };
 

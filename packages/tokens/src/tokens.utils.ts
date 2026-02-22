@@ -3,17 +3,18 @@ import { merge } from "./utils/merge";
 
 export type ColorEntry = {
   value: string;
-  type: "color";
+  type: "global-color";
 };
 
 export type TokenTypes =
   | "color"
+  | "global-color"
   | "shadow"
   | "opacity"
-  | "radius"
-  | "space"
-  | "breakpoint"
-  | "font";
+  | "global-radius"
+  | "global-space"
+  | "global-breakpoint"
+  | "global-font";
 
 export type SemanticTokenGroups = "background" | "border" | "text";
 
