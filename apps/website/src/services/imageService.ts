@@ -1,34 +1,93 @@
-import { FileStorage } from "file-storage";
 import { DatabaseService, dbService } from "./databaseService";
+import { Image, ImageSize, imageSizeTable, imageTable, ImageWithSizes } from "@/db";
 import { AsyncResult, Result } from "typescript-result";
-import { Image, imageTable } from "@/db";
-import sharp from "sharp";
-import ShortUniqueId from "short-unique-id";
 import { getFirstRow } from "@/lib/utils/sql";
+import { FileStorage } from "file-storage";
 import { and, eq } from "drizzle-orm";
 import { storage } from "@/config";
-
-const uid = new ShortUniqueId();
+import sharp, { Sharp, SharpInput } from "sharp";
 
 export class ImageService {
   private readonly dbService: DatabaseService;
   private readonly storage: FileStorage;
+
+  private static readonly MAX_IMAGE_SIZE = 4 * 1024 * 1024;
+  private static readonly IMAGE_TARGET_SIZES: [number, number][] = [
+    [200, 200],
+    [500, 500],
+    [1500, 1500],
+  ];
 
   constructor(dbService: DatabaseService, storage: FileStorage) {
     this.dbService = dbService;
     this.storage = storage;
   }
 
-  /**
-   * Attempts to convert the blob into a wepb image.
-   *
-   * @param image The blob to convert.
-   * @returns A result contianing a webp image as a buffer or an error.
-   */
-  private convertImage(image: Blob): AsyncResult<Buffer<ArrayBufferLike>, Error> {
-    return Result.try(() => image.bytes()).mapCatching(buf =>
-      sharp(buf).webp().toBuffer()
-    );
+  private validateImage(sharpImage: Sharp): AsyncResult<[number, number], Error> {
+    return Result.fromAsyncCatching(sharpImage.clone().metadata()).map(meta => {
+      if (meta.size === undefined) {
+        return Result.error(new Error("Unable to determine image size"));
+      }
+
+      if (meta.size > ImageService.MAX_IMAGE_SIZE) {
+        return Result.error(new Error("Image exceeded the max image size"));
+      }
+
+      return Result.ok([meta.width, meta.height]);
+    });
+  }
+
+  private insertImage(
+    sharpImage: Sharp,
+    id: string,
+    width: number,
+    height: number,
+    original: boolean = false
+  ): AsyncResult<ImageSize, Error> {
+    const filename = `${id}-${width}x${height}.webp`;
+
+    return Result.try(() => sharpImage.clone().webp().toBuffer())
+      .mapCatching(buff => this.storage.write(filename, buff))
+      .mapCatching(() =>
+        this.dbService.db
+          .insert(imageSizeTable)
+          .values({ id, width, height, original })
+          .returning()
+      )
+      .map(rows => getFirstRow(rows, "Failed to insert image size"))
+      .onFailure(async () => {
+        await this.storage.rm(filename).getOrNull();
+      });
+  }
+
+  uploadImage(eventId: string, image: SharpInput): AsyncResult<ImageWithSizes, Error> {
+    return Result.genCatching(this, async function* () {
+      const sharpImage = sharp(image);
+      const [width, height] = yield* this.validateImage(sharpImage);
+
+      const imageRow = yield* Result.try(() =>
+        this.dbService.db.insert(imageTable).values({ eventId }).returning()
+      ).map(rows => getFirstRow(rows, "Failed to insert image"));
+
+      const imageResizeOptions: { width: number; height: number; original: boolean }[] = [
+        { width, height, original: true },
+        ...ImageService.IMAGE_TARGET_SIZES.filter(
+          ([w, h]) => w <= width && h <= height
+        ).map(([width, height]) => ({ width, height, original: false })),
+      ];
+
+      const imageSizeRows = yield* Result.all(
+        ...imageResizeOptions.map(opt =>
+          this.insertImage(sharpImage, imageRow.id, opt.width, opt.height, opt.original)
+        )
+      );
+
+      this.dbService.flush();
+      return {
+        ...imageRow,
+        sizes: imageSizeRows.map(row => [row.width, row.height] as [number, number]),
+      };
+    });
   }
 
   /**
@@ -68,28 +127,6 @@ export class ImageService {
         )
       )
       .map(() => this.storage.read(`${imageId}.webp`));
-  }
-
-  /**
-   * Uploads the given image blob to the specified event.
-   *
-   * @param eventId The id of the event to upload the image into.
-   * @param image The image to upload.
-   * @returns A result containing the newly inserted `Image` object or an error.
-   */
-  uploadImage(eventId: string, image: Blob): AsyncResult<Image, Error> {
-    const id = uid.rnd();
-
-    return this.convertImage(image)
-      .map(image => this.storage.write(`${id}.webp`, image))
-      .map(() =>
-        Result.try(() =>
-          this.dbService.db.insert(imageTable).values({ id, eventId }).returning()
-        )
-          .map(rows => getFirstRow(rows, "Unable to upload image"))
-          .onFailure(() => this.storage.rm(`${id}.webp`).getOrThrow())
-          .onSuccess(() => this.dbService.flush())
-      );
   }
 }
 

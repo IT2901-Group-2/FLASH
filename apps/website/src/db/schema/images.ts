@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import ShortUniqueId from "short-unique-id";
 import { eventTable } from "./events";
 
@@ -18,4 +18,20 @@ export const imageTable = sqliteTable("images", {
     .$onUpdate(() => new Date()),
 });
 
+export const imageSizeTable = sqliteTable(
+  "imageSizes",
+  {
+    id: text()
+      .notNull()
+      .references(() => imageTable.id),
+    width: integer().notNull(),
+    height: integer().notNull(),
+    original: integer({ mode: "boolean" }).notNull().default(false),
+  },
+  t => [primaryKey({ columns: [t.id, t.width, t.height] })]
+);
+
 export type Image = typeof imageTable.$inferSelect;
+export type ImageSize = typeof imageSizeTable.$inferSelect;
+
+export type ImageWithSizes = Image & { sizes: [number, number][] };
