@@ -6,7 +6,7 @@ import {
   lightModeTokens,
   darkModeTokens,
   rootTokens,
-  dataColorTokens,
+  roleTokens,
 } from "./tokens.config";
 import fs from "node:fs";
 import { bundle } from "lightningcss";
@@ -42,7 +42,7 @@ async function main() {
     filter: async token => token.type !== "global-color",
   });
   await buildCSSBundleForTokens({
-    tokens: dataColorTokens(),
+    tokens: roleTokens(),
     filename: "semantic-tokens.css",
     selector: ":root, :host, .light, .dark",
     filter: async token => token.type !== "global-color",

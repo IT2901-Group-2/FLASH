@@ -32,7 +32,7 @@ export const darkModeTokens = (withSemanticRoles = true) => {
   return mergeConfigs(config);
 };
 
-export const dataColorTokens = () => {
+export const roleTokens = () => {
   const config = [LightTokens, ColorTokensForAllRoles()];
 
   return mergeConfigs(config);
