@@ -12,6 +12,10 @@ export const ColorTokenRoleConfig: Record<
   accent: AccentColorTokenConfig,
 };
 
+/**
+ * Generates a merged configuration object containing color tokens for all defined color roles.
+ * @returns A merged configuration object containing color tokens for all defined color roles.
+ */
 export const ColorTokensForAllRoles = () => {
   const a = Object.values(ColorTokenRoleConfig).reduce(
     (acc, config) => merge(acc, config),

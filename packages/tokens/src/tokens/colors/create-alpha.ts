@@ -27,6 +27,16 @@ export function globalConfigWithAlphaTokens({
   return localConfig;
 }
 
+/**
+ * Creates an alpha color based on the target color and the background color
+ * defined in the theme. The function calculates the appropriate alpha value
+ * to achieve the desired color blending effect, ensuring that the resulting
+ * color maintains visual consistency with the background.
+ *
+ * @param targetColor - The target color for which the alpha version is to be created.
+ * @param theme - The color theme to determine the background color from.
+ * @returns A string representing the alpha color in hex format.
+ */
 const createAlphaColor = (targetColor: string, theme: ColorTheme): string => {
   const backgroundColor = semanticRootTokens(theme).bg.default.value;
 
@@ -43,6 +53,15 @@ const createAlphaColor = (targetColor: string, theme: ColorTheme): string => {
   return formatHex(new Color("srgb", [r, g, b], a).toString({ format: "hex" }));
 };
 
+/**
+ * Parses and validates color coordinates, ensuring that none of the coordinates are undefined.
+ * @param coords - An array of color coordinates (e.g., RGB values).
+ * @returns An array of validated color coordinates.
+ * @throws Will throw an error if any of the color coordinates are undefined.
+ * @example
+ * parseAndValidateCoords([255, 0, 0]) // returns [255, 0, 0]
+ * parseAndValidateCoords([255, undefined, 0]) // throws Error: Color coordinate is undefined: undefined
+ */
 function parseAndValidateCoords(coords: Coords): number[] {
   return coords.map(coord => {
     if (coord === null) throw new Error(`Color coordinate is undefined: ${coord}`);
@@ -50,6 +69,18 @@ function parseAndValidateCoords(coords: Coords): number[] {
   });
 }
 
+/**
+ * Calculates the alpha color. The function determines the appropriate alpha
+ * value to achieve the desired color blending effect while ensuring that the
+ * resulting color maintains visual consistency with the background.
+ *
+ * @param targetRgb - The RGB values of the target color.
+ * @param backgroundRgb - The RGB values of the background color.
+ * @param rgbPrecision  - The precision for RGB values (e.g., 255 for standard RGB).
+ * @param alphaPrecision - The precision for alpha values (e.g., 255 for standard alpha).
+ * @param targetAlpha - Optional target alpha value to use instead of calculating it based on the RGB values.
+ * @returns An array containing the RGBa values of the resulting color.
+ */
 function getAlphaColor(
   targetRgb: number[],
   backgroundRgb: number[],
@@ -74,11 +105,6 @@ function getAlphaColor(
   )
     throw Error("Color is undefined");
 
-  // Is the background color lighter, RGB-wise, than target color?
-  // Decide whether we want to add as little color or as much color as possible,
-  // darkening or lightening the background respectively.
-  // If at least one of the bits of the target RGB value
-  // is lighter than the background, we want to lighten it.
   const desiredRgb = tr > br || tg > bg || tb > bb ? rgbPrecision : 0;
 
   const alphaR = (tr - br) / (desiredRgb - br);
@@ -87,9 +113,7 @@ function getAlphaColor(
 
   const isPureGray = [alphaR, alphaG, alphaB].every(alpha => alpha === alphaR);
 
-  // No need for precision gymnastics with pure grays, and we can get cleaner output
   if (!targetAlpha && isPureGray) {
-    // Convert back to 0-1 values
     const V = desiredRgb / rgbPrecision;
     return [V, V, V, alphaR] as const;
   }
@@ -124,6 +148,22 @@ function getAlphaColor(
   return [...channels, A] as [number, number, number, number];
 }
 
+/**
+ * Blends a foreground color with a background color based on the given alpha value.
+ * The resulting color is calculated using the formula:
+ * `blended = background * (1 - alpha) + foreground * alpha`
+ *
+ * @param foreground - The foreground color channel value (0-255).
+ * @param alpha - The alpha value (0-1) representing the opacity of the foreground color.
+ * @param background - The background color channel value (0-255).
+ * @param round - Whether to round the resulting blended color channel value to the nearest integer (default: true).
+ * @returns The blended color channel value, either rounded to the nearest integer or as a float depending on the `round` parameter.
+ *
+ * @example
+ * blendAlpha(255, 0.5, 0) // returns 128
+ * blendAlpha(255, 0.5, 0, false) // returns 127.5
+ * blendAlpha(127, 0.25, 255) // returns 191
+ */
 const blendAlpha = (
   foreground: number,
   alpha: number,
@@ -134,6 +174,19 @@ const blendAlpha = (
   return background * (1 - alpha) + foreground * alpha;
 };
 
+/**
+ * Formats a hex color from a string.
+ *
+ * If the string is in 3 or 4 character hex format, it converts it to 6 or 8
+ * character format respectively. If the string is not a hex color, it
+ * returns the original string.
+ *
+ * @param str The input string to format.
+ * @returns A formatted hex color string or the original string if it's not a hex color.
+ * @example
+ * formatHex("#abc") // returns "#aabbcc"
+ * formatHex("#abcd") // returns "#aabbccdd"
+ */
 const formatHex = (str: string): string => {
   if (!str.startsWith("#")) return str;
   if (str.length !== 4 && str.length !== 5) return str;

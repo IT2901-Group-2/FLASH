@@ -123,7 +123,6 @@ async function buildOtherTokenFormats() {
   const SDictionary = new StyleDictionary({
     tokens: allTokens(),
     platforms: {
-      /* We don't want to build any files with CSS here, but have to add this for the formatting support */
       css: {
         transformGroup: "css",
         transforms: ["name/alpha-suffix"],
