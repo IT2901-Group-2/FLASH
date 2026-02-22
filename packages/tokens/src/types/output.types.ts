@@ -60,7 +60,7 @@ type RootBorderToken = "focus";
 type ColoredBorderToken =
   | ColorRole
   | `${ColorRole}-subtle`
-  | `${ColorRole}-subtleA`
+  | `${ColorRole}-subtleT`
   | `${ColorRole}-strong`;
 
 export type { RootBorderToken, ColoredBorderToken };

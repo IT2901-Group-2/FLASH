@@ -32,6 +32,12 @@ export const darkModeTokens = (withSemanticRoles = true) => {
   return mergeConfigs(config);
 };
 
+export const dataColorTokens = () => {
+  const config = [LightTokens, ColorTokensForAllRoles()];
+
+  return mergeConfigs(config);
+};
+
 export const scaleTokens = () => {
   const config = [radiusTokenConfig, breakpointTokenConfig];
   return mergeConfigs(config);

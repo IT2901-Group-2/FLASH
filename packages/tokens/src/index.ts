@@ -1,7 +1,13 @@
 import StyleDictionary from "style-dictionary";
 import { DesignTokens, Filter } from "style-dictionary/types";
 import { formatES6, transformCSS } from "./style-dictionary.formats";
-import { allTokens, lightModeTokens, darkModeTokens, rootTokens } from "./tokens.config";
+import {
+  allTokens,
+  lightModeTokens,
+  darkModeTokens,
+  rootTokens,
+  dataColorTokens,
+} from "./tokens.config";
 import fs from "node:fs";
 import { bundle } from "lightningcss";
 import { DarkTokens, LightTokens } from "./tokens/colors/color.tokens";
@@ -36,8 +42,14 @@ async function main() {
     filter: async token => token.type !== "global-color",
   });
   await buildCSSBundleForTokens({
+    tokens: dataColorTokens(),
+    filename: "semantic-tokens.css",
+    selector: ":root, :host, .light, .dark",
+    filter: async token => token.type !== "global-color",
+  });
+  await buildCSSBundleForTokens({
     tokens: rootTokens(),
-    filename: "scale-tokens.css",
+    filename: "root-tokens.css",
     selector: ":root, :host",
   });
   await buildOtherTokenFormats();
@@ -51,9 +63,9 @@ async function main() {
     minify: false,
   });
   fs.writeFileSync(`${OUT_DIST_DIR}tokens.css`, code);
-  // bundledCSSFiles.forEach(path => {
-  //   fs.unlinkSync(`${OUT_DIST_DIR}${path}`);
-  // });
+  bundledCSSFiles.forEach(path => {
+    fs.unlinkSync(`${OUT_DIST_DIR}${path}`);
+  });
 }
 
 async function buildCSSBundleForTokens({
