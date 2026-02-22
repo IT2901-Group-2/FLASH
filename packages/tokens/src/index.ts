@@ -57,7 +57,7 @@ async function main() {
   await buildOtherTokenFormats();
 
   console.log(bundledCSSFiles);
-  await combineFiles(bundledCSSFiles, OUT_DIST_DIR);
+  await combineFiles(bundledCSSFiles, `${OUT_DIST_DIR}tokens.css`);
 }
 
 async function buildDataColorTokens() {

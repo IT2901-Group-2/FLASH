@@ -1,5 +1,7 @@
 import { ColorRole } from "./output.types";
 
+/* --- Color Scale --- */
+
 type ColorScale =
   | "100"
   | "200"
@@ -23,7 +25,7 @@ type GlobalColorKeys =
 
 export type { ColorScale, GlobalColorKeys };
 
-/*------------------------ Font Family ---------------------- */
+/* --- Font Family --- */
 
 export type FontFamilyKeys = "family";
 

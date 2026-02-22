@@ -58,6 +58,12 @@ export type StyleDictionaryTokenConfig<T extends TokenTypes> = {
   [key: string]: Record<string, StyleDictionaryToken<T>>;
 };
 
+/**
+ * Merges multiple token configuration objects into a single configuration object.
+ *
+ * @param configs - An array of token configuration objects to merge.
+ * @returns A single merged token configuration object.
+ */
 export const mergeConfigs = (
   configs: StyleDictionaryTokenConfig<TokenTypes>[]
 ): StyleDictionaryTokenConfig<TokenTypes> => {

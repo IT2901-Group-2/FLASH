@@ -1,16 +1,16 @@
-/* --------------------------------- Themes --------------------------------- */
+/* --- Themes --- */
 type ColorTheme = "light" | "dark";
 
-/* ------------------------------- Main colors ------------------------------ */
+/* --- Main colors --- */
 type MainColorRole = "neutral" | "accent";
 
-/* ------------------------------ Status colors ----------------------------- */
+/* --- Status colors --- */
 type StatusColorRole = "success" | "warning" | "danger";
 
-/* ------------------------------ Brand colors ------------------------------ */
+/* --- Brand colors --- */
 type BrandColorRole = "brand-purple";
 
-/* ------------------------------- All colors ------------------------------- */
+/* --- All colors --- */
 type ColorRole = MainColorRole;
 // | StatusColorRole
 // | BrandColorRole;
@@ -43,7 +43,7 @@ export type {
   StatefulBackgroundToken,
 };
 
-/* ------------------------------- Text tokens ------------------------------ */
+/* --- Text tokens --- */
 type RootTextToken = "logo";
 
 type ColoredTextToken =
@@ -54,7 +54,7 @@ type ColoredTextToken =
 
 export type { RootTextToken, ColoredTextToken };
 
-/* ------------------------------ Border tokens ----------------------------- */
+/* --- Border tokens --- */
 type RootBorderToken = "focus";
 
 type ColoredBorderToken =
@@ -65,38 +65,13 @@ type ColoredBorderToken =
 
 export type { RootBorderToken, ColoredBorderToken };
 
-/* ------------------------------ Space tokens ------------------------------ */
-export type SpaceToken =
-  | "space-0"
-  | "space-1"
-  | "space-2"
-  | "space-4"
-  | "space-6"
-  | "space-8"
-  | "space-12"
-  | "space-16"
-  | "space-20"
-  | "space-24"
-  | "space-28"
-  | "space-32"
-  | "space-36"
-  | "space-40"
-  | "space-44"
-  | "space-48"
-  | "space-56"
-  | "space-64"
-  | "space-72"
-  | "space-80"
-  | "space-96"
-  | "space-128";
-
-/* ------------------------------ Shadow tokens ----------------------------- */
+/* --- Shadow tokens --- */
 export type ShadowToken = "dialog";
 
-/* ------------------------------ Border Radius tokens --------------------- */
+/* --- Border Radius tokens ------------- */
 export type BorderRadiusToken = "2" | "4" | "8" | "12" | "16" | "full";
 
-/* ------------------------------ Breakpoints tokens ------------------------ */
+/* --- Breakpoints tokens ---------------- */
 export type BreakpointToken =
   | "xs"
   | "sm"
