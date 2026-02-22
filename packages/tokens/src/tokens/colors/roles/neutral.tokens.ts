@@ -74,7 +74,7 @@ export const NeutralColorTokenConfig = {
       value: "{neutral.400.value}",
       type: "color",
     },
-    "neutral-subtleA": {
+    "neutral-subtleT": {
       value: "{neutral.400T.value}",
       type: "color",
     },

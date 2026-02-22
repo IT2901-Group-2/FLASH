@@ -74,7 +74,7 @@ export const AccentColorTokenConfig = {
       value: "{accent.400.value}",
       type: "color",
     },
-    "accent-subtleA": {
+    "accent-subtleT": {
       value: "{accent.400T.value}",
       type: "color",
     },
