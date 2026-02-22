@@ -6,7 +6,7 @@ export const NeutralColorTokenConfig = {
       value: "{neutral.100.value}",
       type: "color",
     },
-    "neutral-softA": {
+    "neutral-softT": {
       value: "{neutral.100T.value}",
       type: "color",
     },

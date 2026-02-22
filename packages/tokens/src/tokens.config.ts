@@ -46,3 +46,14 @@ export const nonColorTokens = () => {
   const config = [scaleTokens(), fontTokens()];
   return mergeConfigs(config);
 };
+
+export const allTokens = () => {
+  const config = [
+    lightModeTokens(),
+    scaleTokens(),
+    breakpointTokenConfig,
+    fontTokenConfig,
+  ];
+
+  return mergeConfigs(config);
+};

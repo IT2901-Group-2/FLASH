@@ -6,7 +6,7 @@ export const AccentColorTokenConfig = {
       value: "{accent.100.value}",
       type: "color",
     },
-    "accent-softA": {
+    "accent-softT": {
       value: "{accent.100T.value}",
       type: "color",
     },
@@ -14,7 +14,7 @@ export const AccentColorTokenConfig = {
       value: "{accent.200.value}",
       type: "color",
     },
-    "accent-moderateA": {
+    "accent-moderateT": {
       value: "{accent.200T.value}",
       type: "color",
     },
@@ -22,7 +22,7 @@ export const AccentColorTokenConfig = {
       value: "{accent.300.value}",
       type: "color",
     },
-    "accent-moderate-hoverA": {
+    "accent-moderate-hoverT": {
       value: "{accent.300T.value}",
       type: "color",
     },
@@ -30,7 +30,7 @@ export const AccentColorTokenConfig = {
       value: "{accent.400.value}",
       type: "color",
     },
-    "accent-moderate-pressedA": {
+    "accent-moderate-pressedT": {
       value: "{accent.400T.value}",
       type: "color",
     },

@@ -6,6 +6,7 @@ import {
   scaleTokens,
   fontTokens,
   darkModeTokens,
+  allTokens,
 } from "./tokens.config";
 import fs from "node:fs";
 import { bundle } from "lightningcss";
@@ -37,6 +38,7 @@ async function main() {
     filename: "font-tokens.css",
     selector: ":root, :host",
   });
+  await buildOtherTokenFormats();
 
   fs.writeFileSync(
     `${OUT_DIST_DIR}tokens.css`,
@@ -65,9 +67,10 @@ async function buildCSSBundleForTokens({
 }) {
   const SDictionary = new StyleDictionary({
     tokens,
+    /* Since we end up filtering out references for some tokens, we filter out warnings */
     log: { warnings: "disabled" },
     platforms: {
-      css: {
+      [filename]: {
         transformGroup: "css",
         transforms: ["name/alpha-suffix"],
         buildPath: OUT_DIST_DIR,
@@ -75,10 +78,38 @@ async function buildCSSBundleForTokens({
           {
             destination: filename,
             format: "css/variables",
-            ...(filter && { filter }),
+            ...filter,
             options: {
               outputReferences: true,
               selector,
+            },
+          },
+        ],
+      },
+    },
+  });
+
+  await Promise.all([SDictionary.hasInitialized]);
+
+  SDictionary.registerTransform(transformCSS);
+  await SDictionary.buildAllPlatforms();
+  bundledCSSFiles.push(filename);
+}
+
+async function buildOtherTokenFormats() {
+  const SDictionary = new StyleDictionary({
+    tokens: allTokens(),
+    platforms: {
+      /* We don't want to build any files with CSS here, but have to add this for the formatting support */
+      css: {
+        transformGroup: "css",
+        transforms: ["name/alpha-suffix"],
+        files: [
+          {
+            format: "css/variables",
+            options: {
+              outputReferences: true,
+              outputReferenceFallbacks: true,
             },
           },
         ],
@@ -87,6 +118,10 @@ async function buildCSSBundleForTokens({
         transformGroup: "js",
         buildPath: OUT_DIST_DIR,
         files: [
+          {
+            destination: "tokens.js",
+            format: "format-ES6",
+          },
           {
             destination: "tokens.d.ts",
             format: "format-ES6",
@@ -99,7 +134,9 @@ async function buildCSSBundleForTokens({
   await Promise.all([SDictionary.hasInitialized]);
 
   SDictionary.registerTransform(transformCSS);
-  SDictionary.registerFormat({ name: "format-ES6", format: formatES6 });
+  SDictionary.registerFormat({
+    name: "format-ES6",
+    format: formatES6,
+  });
   await SDictionary.buildAllPlatforms();
-  bundledCSSFiles.push(filename);
 }
