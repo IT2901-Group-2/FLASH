@@ -47,6 +47,10 @@ export type StyleDictionaryToken<T extends TokenTypes> = {
    * Token type
    */
   type: T;
+  /**
+   * Optional comment.
+   */
+  comment?: string;
 };
 
 export type StyleDictionaryTokenConfig<T extends TokenTypes> = {
