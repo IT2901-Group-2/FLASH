@@ -7,10 +7,11 @@ import {
   darkModeTokens,
   rootTokens,
   roleTokens,
+  dataColorTokens,
 } from "./tokens.config";
-import fs from "node:fs";
-import { bundle } from "lightningcss";
 import { DarkTokens, LightTokens } from "./tokens/colors/color.tokens";
+import { ColorRole } from "./types/output.types";
+import { combineFiles } from "./utils/combineFiles";
 
 const OUT_DIST_DIR = "./dist/";
 
@@ -52,19 +53,27 @@ async function main() {
     filename: "root-tokens.css",
     selector: ":root, :host",
   });
+  await buildDataColorTokens();
   await buildOtherTokenFormats();
 
-  fs.writeFileSync(
-    `${OUT_DIST_DIR}tokens.css`,
-    bundledCSSFiles.map(path => `@import "${path}";`).join("\n")
-  );
-  const { code } = bundle({
-    filename: `${OUT_DIST_DIR}tokens.css`,
-    minify: false,
-  });
-  fs.writeFileSync(`${OUT_DIST_DIR}tokens.css`, code);
-  bundledCSSFiles.forEach(path => {
-    fs.unlinkSync(`${OUT_DIST_DIR}${path}`);
+  console.log(bundledCSSFiles);
+  await combineFiles(bundledCSSFiles, OUT_DIST_DIR);
+}
+
+async function buildDataColorTokens() {
+  const rootSelector = `:root, [data-color=""], [data-color="neutral"]`;
+
+  const colors: ColorRole[] = ["neutral", "accent"];
+
+  colors.forEach(color => {
+    const fileName = `data-color-${color}-tokens.css`;
+    bundledCSSFiles.push(fileName);
+    return buildCSSBundleForTokens({
+      tokens: dataColorTokens(color as ColorRole),
+      filename: fileName,
+      selector: color === "neutral" ? rootSelector : `[data-color=${color}]`,
+      filter: async token => token.type === "data-color",
+    });
   });
 }
 

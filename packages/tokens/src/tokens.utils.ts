@@ -14,7 +14,8 @@ export type TokenTypes =
   | "global-radius"
   | "global-space"
   | "global-breakpoint"
-  | "global-font";
+  | "global-font"
+  | "data-color";
 
 export type SemanticTokenGroups = "background" | "border" | "text";
 
