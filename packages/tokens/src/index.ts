@@ -1,12 +1,14 @@
 import StyleDictionary from "style-dictionary";
 import { DesignTokens, Filter } from "style-dictionary/types";
-import { transformCSS } from "./style-dictionary.formats";
+import { formatES6, transformCSS } from "./style-dictionary.formats";
 import {
   lightModeTokens,
   scaleTokens,
   fontTokens,
   darkModeTokens,
 } from "./tokens.config";
+import fs from "node:fs";
+import { bundle } from "lightningcss";
 
 const OUT_DIST_DIR = "./dist/";
 
@@ -35,6 +37,19 @@ async function main() {
     filename: "font-tokens.css",
     selector: ":root, :host",
   });
+
+  fs.writeFileSync(
+    `${OUT_DIST_DIR}tokens.css`,
+    bundledCSSFiles.map(path => `@import "${path}";`).join("\n")
+  );
+  const { code } = bundle({
+    filename: `${OUT_DIST_DIR}tokens.css`,
+    minify: false,
+  });
+  fs.writeFileSync(`${OUT_DIST_DIR}tokens.css`, code);
+  bundledCSSFiles.forEach(path => {
+    fs.unlinkSync(`${OUT_DIST_DIR}${path}`);
+  });
 }
 
 async function buildCSSBundleForTokens({
@@ -52,7 +67,7 @@ async function buildCSSBundleForTokens({
     tokens,
     log: { warnings: "disabled" },
     platforms: {
-      [filename]: {
+      css: {
         transformGroup: "css",
         transforms: ["name/alpha-suffix"],
         buildPath: OUT_DIST_DIR,
@@ -68,12 +83,23 @@ async function buildCSSBundleForTokens({
           },
         ],
       },
+      js: {
+        transformGroup: "js",
+        buildPath: OUT_DIST_DIR,
+        files: [
+          {
+            destination: "tokens.d.ts",
+            format: "format-ES6",
+          },
+        ],
+      },
     },
   });
 
   await Promise.all([SDictionary.hasInitialized]);
 
   SDictionary.registerTransform(transformCSS);
+  SDictionary.registerFormat({ name: "format-ES6", format: formatES6 });
   await SDictionary.buildAllPlatforms();
   bundledCSSFiles.push(filename);
 }
