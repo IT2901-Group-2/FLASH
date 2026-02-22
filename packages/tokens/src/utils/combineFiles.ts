@@ -12,12 +12,7 @@ export const combineFiles = (files: string[], outputFile: string, path?: string)
   const outPath = path ? `${path}${outputFile}` : outputFile;
   const dir = path ?? "./";
 
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-
-  fs.writeFileSync(
-    `${dir}${outputFile}`,
-    files.map(file => `@import "./${file}";`).join("\n")
-  );
+  fs.writeFileSync(outPath, files.map(file => `@import "./${file}";`).join("\n"));
   const { code } = bundle({
     filename: outPath,
     minify: false,

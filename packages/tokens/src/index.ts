@@ -11,7 +11,8 @@ import {
 } from "./tokens.config";
 import { DarkTokens, LightTokens } from "./tokens/colors/color.tokens";
 import { ColorRole } from "./types/output.types";
-import { combineFiles } from "./utils/combineFiles";
+import { bundle } from "lightningcss";
+import fs from "node:fs";
 
 const OUT_DIST_DIR = "./dist/";
 
@@ -56,13 +57,34 @@ async function main() {
   await buildDataColorTokens();
   await buildOtherTokenFormats();
 
-  await combineFiles(bundledCSSFiles, `tokens.css`, OUT_DIST_DIR);
+  fs.writeFileSync(
+    `${OUT_DIST_DIR}tokens.css`,
+    bundledCSSFiles.map(path => `@import "${path}";`).join("\n")
+  );
+
+  const { code } = bundle({
+    filename: `${OUT_DIST_DIR}tokens.css`,
+    minify: false,
+  });
+
+  fs.writeFileSync(`${OUT_DIST_DIR}tokens.css`, code);
+
+  /* Cleanup temp-files */
+  bundledCSSFiles.forEach(path => {
+    fs.unlinkSync(`${OUT_DIST_DIR}${path}`);
+  });
 }
 
 async function buildDataColorTokens() {
   const rootSelector = `:root, [data-color=""], [data-color="neutral"]`;
 
-  const colors: ColorRole[] = ["neutral", "accent"];
+  const colors: ColorRole[] = [
+    "neutral",
+    "accent",
+    "success",
+    "warning",
+    "danger",
+  ] as const;
 
   colors.forEach(color => {
     const fileName = `data-color-${color}-tokens.css`;

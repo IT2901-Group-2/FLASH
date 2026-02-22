@@ -11,8 +11,7 @@ type StatusColorRole = "success" | "warning" | "danger";
 type BrandColorRole = "brand-purple";
 
 /* --- All colors --- */
-type ColorRole = MainColorRole;
-// | StatusColorRole
+type ColorRole = MainColorRole | StatusColorRole;
 // | BrandColorRole;
 
 export type { ColorTheme, ColorRole, MainColorRole, StatusColorRole, BrandColorRole };
