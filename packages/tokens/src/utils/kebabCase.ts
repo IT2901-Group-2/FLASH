@@ -9,14 +9,15 @@
  * kebabCase("XMLParser")       // "xml-parser"
  */
 export function kebabCase(string: string): string {
-  return string
-    .replace(/([a-z])([A-Z])/g, "$1-$2") // camelCase → camel-Case
-    .replace(/([A-Z]+)([A-Z][a-z])/g, "$1-$2") // XMLParser → XML-Parser
-    .replace(/[\s_]+/g, "-") // spaces/underscores → hyphens
-    .replace(/[^a-zA-Z0-9-]/g, "") // strip non-alphanumeric (except hyphens)
-    .replace(/-+/g, "-") // collapse multiple hyphens
-    .replace(/^-|-$/g, "") // trim leading/trailing hyphens
-    .toLowerCase();
+  return (
+    string
+      // .replace(/([a-z])([A-Z])/g, "$1-$2") // camelCase → camel-Case
+      .replace(/([A-Z]+)([A-Z][a-z])/g, "$1-$2") // XMLParser → XML-Parser
+      .replace(/[\s_]+/g, "-") // spaces/underscores → hyphens
+      .replace(/[^a-zA-Z0-9-]/g, "") // strip non-alphanumeric (except hyphens)
+      .replace(/-+/g, "-") // collapse multiple hyphens
+      .replace(/^-|-$/g, "") // trim leading/trailing hyphens
+  );
 }
 
 /**
