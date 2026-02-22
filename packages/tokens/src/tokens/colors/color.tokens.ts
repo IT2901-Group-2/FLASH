@@ -1,4 +1,4 @@
-import { ColorConfigWithoutAlpha } from "./colors.types";
+import { ColorConfigWithoutAlpha } from "./color.types";
 import { globalConfigWithAlphaTokens } from "./create-alpha";
 
 const LightTokensNoAlpha: ColorConfigWithoutAlpha = {

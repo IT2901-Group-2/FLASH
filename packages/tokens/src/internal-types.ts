@@ -12,10 +12,10 @@ type ColorScale =
   | "900"
   | "1000"
   | "000"
-  | "100A"
-  | "200A"
-  | "300A"
-  | "400A";
+  | "100T"
+  | "200T"
+  | "300T"
+  | "400T";
 
 type GlobalColorKeys =
   | `${Extract<ColorRole, "neutral">}-${Extract<ColorScale, "000">}`

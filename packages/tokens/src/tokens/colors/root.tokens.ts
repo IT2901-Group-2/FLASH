@@ -1,5 +1,5 @@
 import { StyleDictionaryToken } from "@/tokens.utils";
-import { ColorTheme } from "@/types";
+import { ColorTheme, RootBackgroundToken, RootBorderToken, RootTextToken } from "@/types";
 
 /**
  * Static root-layer for semantic tokens.
@@ -9,25 +9,25 @@ export function semanticRootTokens(theme: ColorTheme) {
   return {
     text: {
       logo: {
-        value: theme === "light" ? "#C30000" : "{ax.neutral.1000.value}",
+        value: theme === "light" ? "#C30000" : "{neutral.1000.value}",
         type: "color",
       },
     },
     bg: {
       default: {
-        value: theme === "light" ? "#ffffff" : "#0E151F",
+        value: theme === "light" ? "#f8f2f5" : "#0E151F",
         type: "color",
       },
       input: {
-        value: theme === "light" ? "rgba(255, 255, 255, 0.85)" : "rgba(7, 9, 13, 0.50)",
+        value: theme === "light" ? "rgba(248, 242, 245, 0.85)" : "rgba(7, 9, 13, 0.50)",
         type: "color",
       },
       raised: {
-        value: theme === "light" ? "{ax.neutral.000.value}" : "{ax.neutral.200.value}",
+        value: theme === "light" ? "{neutral.000.value}" : "{neutral.200.value}",
         type: "color",
       },
       sunken: {
-        value: theme === "light" ? "{ax.neutral.200.value}" : "#07090D",
+        value: theme === "light" ? "{neutral.200.value}" : "#07090D",
         type: "color",
       },
       overlay: {
@@ -37,13 +37,13 @@ export function semanticRootTokens(theme: ColorTheme) {
     },
     border: {
       focus: {
-        value: "{ax.neutral.1000.value}",
+        value: "{neutral.1000.value}",
         type: "color",
       },
     },
   } satisfies {
-    bg: Record<AkselRootBackgroundToken, StyleDictionaryToken<"color">>;
-    border: Record<AkselRootBorderToken, StyleDictionaryToken<"color">>;
-    text: Record<AkselRootTextToken, StyleDictionaryToken<"color">>;
+    bg: Record<RootBackgroundToken, StyleDictionaryToken<"color">>;
+    border: Record<RootBorderToken, StyleDictionaryToken<"color">>;
+    text: Record<RootTextToken, StyleDictionaryToken<"color">>;
   };
 }

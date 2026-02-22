@@ -1,6 +1,7 @@
 import Color, { type Coords } from "colorjs.io";
 import { ColorRole, ColorTheme } from "@/types";
-import { ColorConfigWithAlpha, ColorConfigWithoutAlpha } from "./colors.types";
+import { ColorConfigWithAlpha, ColorConfigWithoutAlpha } from "./color.types";
+import { semanticRootTokens } from "./root.tokens";
 
 export function globalConfigWithAlphaTokens({
   config: globalConfig,
@@ -15,19 +16,19 @@ export function globalConfigWithAlphaTokens({
     const _key = key as ColorRole;
     const scopedConfig = localConfig[_key];
 
-    scopedConfig["100A"] = {
+    scopedConfig["100T"] = {
       ...scopedConfig?.["100"],
       value: createAlphaColor(scopedConfig["100"].value, theme),
     };
-    scopedConfig["200A"] = {
+    scopedConfig["200T"] = {
       ...scopedConfig["200"],
       value: createAlphaColor(scopedConfig["200"].value, theme),
     };
-    scopedConfig["300A"] = {
+    scopedConfig["300T"] = {
       ...scopedConfig["300"],
       value: createAlphaColor(scopedConfig["300"].value, theme),
     };
-    scopedConfig["400A"] = {
+    scopedConfig["400T"] = {
       ...scopedConfig["400"],
       value: createAlphaColor(scopedConfig["400"].value, theme),
     };
@@ -37,8 +38,7 @@ export function globalConfigWithAlphaTokens({
 }
 
 const createAlphaColor = (targetColor: string, theme: ColorTheme): string => {
-  console.log(targetColor, theme);
-  const backgroundColor = theme;
+  const backgroundColor = semanticRootTokens(theme).bg.default.value;
 
   const targetCoords = new Color(targetColor).to("srgb").coords;
   const backgroundCoords = new Color(backgroundColor).to("srgb").coords;
@@ -57,9 +57,7 @@ function parseAndValidateCoords(coords: Coords): number[] {
   const parsedCoords: number[] = [];
 
   for (const coord of coords) {
-    if (coord === null) {
-      throw new Error(`Color coordinate is undefined: ${coord}`);
-    }
+    if (coord === null) throw new Error(`Color coordinate is undefined: ${coord}`);
     parsedCoords.push(coord);
   }
 
@@ -93,13 +91,9 @@ function getAlphaColor(
   // If at least one of the bits of the target RGB value
   // is lighter than the background, we want to lighten it.
   let desiredRgb = 0;
-  if (tr > br) {
-    desiredRgb = rgbPrecision;
-  } else if (tg > bg) {
-    desiredRgb = rgbPrecision;
-  } else if (tb > bb) {
-    desiredRgb = rgbPrecision;
-  }
+  if (tr > br) desiredRgb = rgbPrecision;
+  else if (tg > bg) desiredRgb = rgbPrecision;
+  else if (tb > bb) desiredRgb = rgbPrecision;
 
   const alphaR = (tr - br) / (desiredRgb - br);
   const alphaG = (tg - bg) / (desiredRgb - bg);

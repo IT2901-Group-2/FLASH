@@ -16,12 +16,12 @@ main();
 
 async function main() {
   await buildCSSBundleForTokens({
-    tokens: lightModeTokens(false),
+    tokens: lightModeTokens(true),
     filename: "light-tokens.css",
     selector: ":root, :host, .light",
   });
   await buildCSSBundleForTokens({
-    tokens: darkModeTokens(false),
+    tokens: darkModeTokens(true),
     filename: "dark-tokens.css",
     selector: ':root[data-theme="dark"], :host[data-theme="dark"], .dark',
   });

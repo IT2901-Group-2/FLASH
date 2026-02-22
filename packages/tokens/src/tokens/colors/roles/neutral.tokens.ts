@@ -1,6 +1,6 @@
 import { StyleDictionaryTokenConfig } from "@/tokens.utils";
 
-export const neutralColorTokenConfig = {
+export const NeutralColorTokenConfig = {
   bg: {
     "neutral-soft": {
       value: "{neutral.100.value}",
@@ -14,7 +14,7 @@ export const neutralColorTokenConfig = {
       value: "{neutral.200.value}",
       type: "color",
     },
-    "neutral-moderateA": {
+    "neutral-moderateT": {
       value: "{neutral.200T.value}",
       type: "color",
     },
@@ -22,7 +22,7 @@ export const neutralColorTokenConfig = {
       value: "{neutral.300.value}",
       type: "color",
     },
-    "neutral-moderate-hoverA": {
+    "neutral-moderate-hoverT": {
       value: "{neutral.300T.value}",
       type: "color",
     },
@@ -30,7 +30,7 @@ export const neutralColorTokenConfig = {
       value: "{neutral.400.value}",
       type: "color",
     },
-    "neutral-moderate-pressedA": {
+    "neutral-moderate-pressedT": {
       value: "{neutral.400T.value}",
       type: "color",
     },
