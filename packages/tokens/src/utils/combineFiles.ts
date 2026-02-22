@@ -5,16 +5,25 @@ import fs from "node:fs";
  * Combines multiple files into a single file by creating an import file and then bundling it.
  *
  * @param files - Array of file paths to combine
- * @param outDir - Output directory for the combined file
+ * @param outputFile - Output directory for the combined file
+ * @param path - Path to the files
  */
-export const combineFiles = (files: string[], outPath: string) => {
-  fs.writeFileSync(outPath, files.map(path => `@import "${path}";`).join("\n"));
+export const combineFiles = (files: string[], outputFile: string, path?: string) => {
+  const outPath = path ? `${path}${outputFile}` : outputFile;
+  const dir = path ?? "./";
+
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+
+  fs.writeFileSync(
+    `${dir}${outputFile}`,
+    files.map(file => `@import "./${file}";`).join("\n")
+  );
   const { code } = bundle({
     filename: outPath,
     minify: false,
   });
   fs.writeFileSync(outPath, code);
-  files.forEach(path => {
-    fs.unlinkSync(`${outPath}${path}`);
+  files.forEach(file => {
+    fs.unlinkSync(`${dir}${file}`);
   });
 };

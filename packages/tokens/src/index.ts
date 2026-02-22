@@ -56,8 +56,7 @@ async function main() {
   await buildDataColorTokens();
   await buildOtherTokenFormats();
 
-  console.log(bundledCSSFiles);
-  await combineFiles(bundledCSSFiles, `${OUT_DIST_DIR}tokens.css`);
+  await combineFiles(bundledCSSFiles, `tokens.css`, OUT_DIST_DIR);
 }
 
 async function buildDataColorTokens() {
@@ -90,7 +89,6 @@ async function buildCSSBundleForTokens({
 }) {
   const SDictionary = new StyleDictionary({
     tokens,
-    /* Since we end up filtering out references for some tokens, we filter out warnings */
     log: { warnings: "disabled" },
     platforms: {
       [filename]: {
