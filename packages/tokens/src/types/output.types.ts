@@ -2,8 +2,7 @@
 type ColorTheme = "light" | "dark";
 
 /* ------------------------------- Main colors ------------------------------ */
-type MainColorRole = "neutral";
-// | "accent";
+type MainColorRole = "neutral" | "accent";
 
 /* ------------------------------ Status colors ----------------------------- */
 type StatusColorRole = "success" | "warning" | "danger";
