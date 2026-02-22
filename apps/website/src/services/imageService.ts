@@ -1,9 +1,9 @@
 import { DatabaseService, dbService } from "./databaseService";
-import { Image, ImageSize, imageSizeTable, imageTable, ImageWithSizes } from "@/db";
+import { ImageSize, imageSizeTable, imageTable, ImageWithSizes } from "@/db";
 import { AsyncResult, Result } from "typescript-result";
 import { getFirstRow } from "@/lib/utils/sql";
 import { FileStorage } from "file-storage";
-import { and, eq } from "drizzle-orm";
+import { and, eq, getTableColumns, sql } from "drizzle-orm";
 import { storage } from "@/config";
 import sharp, { Sharp, SharpInput } from "sharp";
 
@@ -96,9 +96,27 @@ export class ImageService {
    * @param eventId The id of the event.
    * @returns A result containing a list of `Image` objects or an error.
    */
-  getImages(eventId: string): AsyncResult<Image[], Error> {
+  getImages(eventId: string): AsyncResult<ImageWithSizes[], Error> {
+    const imageSizesAgg = this.dbService.db.$with("imageSizesAgg").as(
+      this.dbService.db
+        .select({
+          id: imageSizeTable.id,
+          sizes:
+            sql<string>`json_group_array(json_array(${imageSizeTable.width}, ${imageSizeTable.height}))`
+              .mapWith(JSON.parse)
+              .as("sizes"),
+        })
+        .from(imageSizeTable)
+        .groupBy(imageSizeTable.id)
+    );
+
     return Result.try(() =>
-      this.dbService.db.select().from(imageTable).where(eq(imageTable.eventId, eventId))
+      this.dbService.db
+        .with(imageSizesAgg)
+        .select({ ...getTableColumns(imageTable), sizes: imageSizesAgg.sizes })
+        .from(imageTable)
+        .innerJoin(imageSizesAgg, eq(imageTable.id, imageSizesAgg.id))
+        .where(eq(imageTable.eventId, eventId))
     );
   }
 
