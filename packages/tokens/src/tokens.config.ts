@@ -16,7 +16,6 @@ export const lightModeTokens = (withSemanticRoles = true) => {
     semanticRootTokens("light"),
     LightTokens,
   ];
-
   return mergeConfigs(config);
 };
 
@@ -28,13 +27,11 @@ export const darkModeTokens = (withSemanticRoles = true) => {
     semanticRootTokens("dark"),
     DarkTokens,
   ];
-
   return mergeConfigs(config);
 };
 
 export const roleTokens = () => {
   const config = [LightTokens, ColorTokensForAllRoles()];
-
   return mergeConfigs(config);
 };
 
