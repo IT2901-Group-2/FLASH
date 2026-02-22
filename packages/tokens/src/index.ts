@@ -27,10 +27,7 @@ async function main() {
     tokens: lightModeTokens(false),
     filename: "semantic-light-tokens.css",
     selector: ":root, :host, .light",
-    filter: async token => {
-      console.log(token.type);
-      return token.type !== "global-color";
-    },
+    filter: async token => token.type !== "global-color",
   });
   await buildCSSBundleForTokens({
     tokens: darkModeTokens(false),
