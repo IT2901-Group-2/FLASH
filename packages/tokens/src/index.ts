@@ -1,6 +1,6 @@
 import StyleDictionary from "style-dictionary";
 import { DesignTokens, Filter } from "style-dictionary/types";
-import { formatES6, transformCSS } from "./style-dictionary.formats";
+import { formatDOCS, formatES6, transformCSS } from "./style-dictionary.formats";
 import {
   allTokens,
   lightModeTokens,
@@ -181,6 +181,16 @@ async function buildOtherTokenFormats() {
           },
         ],
       },
+      tokenDocs: {
+        transformGroup: "js",
+        buildPath: OUT_DIST_DIR,
+        files: [
+          {
+            destination: "token_docs.js",
+            format: "format-DOCS",
+          },
+        ],
+      },
     },
   });
 
@@ -190,6 +200,10 @@ async function buildOtherTokenFormats() {
   SDictionary.registerFormat({
     name: "format-ES6",
     format: formatES6,
+  });
+  SDictionary.registerFormat({
+    name: "format-DOCS",
+    format: formatDOCS,
   });
   await SDictionary.buildAllPlatforms();
 }

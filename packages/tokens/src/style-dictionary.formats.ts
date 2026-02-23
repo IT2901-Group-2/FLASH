@@ -28,3 +28,36 @@ const createTokenValue = (token: TransformedToken): string => {
 
   return `var(--${kebabName})`;
 };
+
+const formatRole = (group: TransformedToken["group"]): string => {
+  if (group?.indexOf(".") === -1) {
+    if (["background", "text", "border"].includes(group)) return "root";
+    return group;
+  }
+  return group?.split(".")[1];
+};
+
+export const formatDOCS: FormatFn = async ({ dictionary }) => {
+  const ignoredTokenTypes = ["global-color", "opacity"];
+
+  const tokens = dictionary.allTokens
+    .filter(token => token.type && !ignoredTokenTypes.includes(token.type))
+    .filter(token => !token.docsIgnore)
+    .map((token, index) => {
+      const name = kebabCaseForAlpha(token.name);
+      return (
+        JSON.stringify({
+          name,
+          value: createTokenValue(token),
+          jsValue: token.name,
+          cssValue: createTokenValue(token),
+          type: token.type,
+          rawType: token.attributes?.type,
+          group: token.group,
+        }) + (index === dictionary.allTokens.length - 1 ? "" : ",")
+      );
+    })
+    .join("\n");
+
+  return `export const tokens = [${tokens}];\n`;
+};
