@@ -140,28 +140,28 @@ describe("ImageService getImages", () => {
   it("Should correctly filter by approval status", async () => {
     expect(
       await imageService
-        .getImages("birthday", { status: true })
+        .getImages("birthday", { approval: "approved" })
         .map(rows => new Set(rows.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-2"]));
 
     expect(
       await imageService
-        .getImages("birthday", { status: null })
+        .getImages("birthday", { approval: "pending" })
         .map(rows => new Set(rows.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-1"]));
 
     expect(
       await imageService
-        .getImages("wedding", { status: null })
+        .getImages("wedding", { approval: "pending" })
         .map(rows => new Set(rows.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set([]));
 
     expect(
       await imageService
-        .getImages("wedding", { status: true })
+        .getImages("wedding", { approval: "approved" })
         .map(rows => new Set(rows.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-3", "image-5"]));
@@ -170,14 +170,20 @@ describe("ImageService getImages", () => {
   it("Should correctly filter by combination", async () => {
     expect(
       await imageService
-        .getImages("wedding", { id: ["image-5", "image-4", "image-1"], status: false })
+        .getImages("wedding", {
+          id: ["image-5", "image-4", "image-1"],
+          approval: "rejected",
+        })
         .map(rows => new Set(rows.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-4"]));
 
     expect(
       await imageService
-        .getImages("wedding", { id: ["image-5", "image-4", "image-1"], status: true })
+        .getImages("wedding", {
+          id: ["image-5", "image-4", "image-1"],
+          approval: "approved",
+        })
         .map(rows => new Set(rows.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-5"]));

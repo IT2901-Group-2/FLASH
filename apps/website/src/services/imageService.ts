@@ -50,7 +50,7 @@ export class ImageService {
    */
   getImages(
     eventId: string,
-    { id, status }: GetImages = {}
+    { id, approval }: GetImages = {}
   ): AsyncResult<Image[], Error> {
     return Result.try(() =>
       this.dbService.db
@@ -60,10 +60,10 @@ export class ImageService {
           and(
             eq(imageTable.eventId, eventId),
             id !== undefined ? inArray(imageTable.id, id) : undefined,
-            status !== null && status !== undefined
-              ? eq(imageTable.isApproved, status)
+            approval !== undefined && approval !== "pending"
+              ? eq(imageTable.isApproved, approval === "approved")
               : undefined,
-            status === null ? isNull(imageTable.isApproved) : undefined
+            approval === "pending" ? isNull(imageTable.isApproved) : undefined
           )
         )
     );

@@ -22,9 +22,9 @@ export const imageTable = sqliteTable("images", {
 
 export const getImagesSchema = z.object({
   id: z.string().array().min(1).optional(),
-  status: z
+  approval: z
     .tuple([z.enum(["pending", "approved", "rejected"])])
-    .transform(([str]) => (str === "pending" ? null : str === "approved"))
+    .transform(([str]) => str)
     .optional(),
 });
 
