@@ -14,7 +14,7 @@ export function semanticRootTokens(theme: ColorTheme) {
   return {
     text: {
       logo: {
-        value: theme === "light" ? "#C30000" : "{neutral.1000.value}",
+        value: "#fff",
         type: "color",
       },
     },
