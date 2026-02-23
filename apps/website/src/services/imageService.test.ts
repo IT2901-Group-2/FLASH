@@ -310,3 +310,41 @@ describe("ImageService updateImage", () => {
     expect(flush).toHaveBeenCalledTimes(3);
   });
 });
+
+describe("ImageService deleteImage", () => {
+  it("Should return Err when database call fails", async () => {
+    vi.spyOn(BetterSQLite3Database.prototype, "delete").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(await imageService.deleteImage("wedding", "image-4"));
+  });
+
+  it("Should return Err when image does not exist", async () => {
+    Result.assertError(await imageService.deleteImage("wedding", "image-100"));
+  });
+
+  it("Should return Err when image belongs to wrong event", async () => {
+    Result.assertError(await imageService.deleteImage("wedding", "image-1"));
+  });
+
+  it("Should delete image correctly", async () => {
+    const flush = vi
+      .spyOn(DatabaseService.prototype, "flush")
+      .mockImplementation(() => {});
+
+    const image1 = await imageService.deleteImage("wedding", "image-4").getOrThrow();
+
+    expect(image1.eventId).toBe("wedding");
+    expect(image1.id).toBe("image-4");
+    expect(image1.isApproved).toBe(false);
+    expect(flush).toHaveBeenCalledOnce();
+
+    const image2 = await imageService.deleteImage("birthday", "image-1").getOrThrow();
+
+    expect(image2.eventId).toBe("birthday");
+    expect(image2.id).toBe("image-1");
+    expect(image2.isApproved).toBeNull();
+    expect(flush).toHaveBeenCalledTimes(2);
+  });
+});
