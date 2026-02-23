@@ -236,7 +236,9 @@ describe("ImageService uploadImage", () => {
   });
 
   it("Should correctly upload image", async () => {
-    const flush = vi.spyOn(DatabaseService.prototype, "flush");
+    const flush = vi
+      .spyOn(DatabaseService.prototype, "flush")
+      .mockImplementation(() => {});
 
     const image1 = await imageService
       .uploadImage("wedding", mockImageData[2]!)
@@ -255,5 +257,56 @@ describe("ImageService uploadImage", () => {
     expect(image2.isApproved).toBeNull();
     Result.assertOk(await imageService["storage"].read(`${image2.id}.webp`));
     expect(flush).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("ImageService updateImage", () => {
+  it("Should return Err when database call fails", async () => {
+    vi.spyOn(BetterSQLite3Database.prototype, "insert").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(await imageService.updateImage("wedding", "image-4", {}));
+  });
+
+  it("Should return Err when image does not exist", async () => {
+    Result.assertError(await imageService.updateImage("wedding", "image-100", {}));
+  });
+
+  it("Should return Err when image belongs to wrong event", async () => {
+    Result.assertError(await imageService.updateImage("wedding", "image-1", {}));
+  });
+
+  it("Should correctly update image", async () => {
+    const flush = vi
+      .spyOn(DatabaseService.prototype, "flush")
+      .mockImplementation(() => {});
+
+    const image1 = await imageService
+      .updateImage("birthday", "image-1", { isApproved: true })
+      .getOrThrow();
+
+    expect(image1.eventId).toBe("birthday");
+    expect(image1.id).toBe("image-1");
+    expect(image1.isApproved).toBe(true);
+    expect(flush).toHaveBeenCalledOnce();
+
+    const image2 = await imageService
+      .updateImage("wedding", "image-4", { isApproved: false })
+      .getOrThrow();
+
+    expect(image2.eventId).toBe("wedding");
+    expect(image2.id).toBe("image-4");
+    expect(image2.isApproved).toBe(false);
+    expect(flush).toHaveBeenCalledTimes(2);
+
+    const image3 = await imageService
+      .updateImage("birthday", "image-1", { isApproved: null })
+      .getOrThrow();
+
+    expect(image3.eventId).toBe("birthday");
+    expect(image3.id).toBe("image-1");
+    expect(image3.isApproved).toBeNull();
+    expect(flush).toHaveBeenCalledTimes(3);
   });
 });
