@@ -16,7 +16,8 @@
           "basicInfo": {
             "description": "Sett opp en ny foto-event for gjestene dine. En QR-kode vil genereres automatisk.",
             "input": {
-              "date": "Hendelsesdato",
+              "startDate": "Hendelsesdato",
+              "endDate": "Sluttdato",
               "description": "Beskrivelse",
               "name": "Navn på hendelse"
             },
@@ -51,7 +52,8 @@
               "name": "Moderator"
             },
             "title": "La andre bli med!"
-          }
+          },
+          "create": "Opprett"
         },
         "page": {
           "description": "Administrer hendelsene dine.",
@@ -124,6 +126,12 @@
       "moderatorLinkInput": "moderator-lenke",
       "copyLink": "kopier-lenke",
       "copied": "Kopiert!"
+    }
+  },
+  "EventPage": {
+    "actions": {
+      "uploadImage": "Last opp bilde",
+      "takePhoto": "Ta bilde"
     }
   }
 }
