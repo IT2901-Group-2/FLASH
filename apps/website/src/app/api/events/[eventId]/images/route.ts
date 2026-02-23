@@ -1,17 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { imageService } from "@/services/imageService";
 import { Result } from "typescript-result";
+import { parseSearchParams } from "@/lib/utils/validation";
+import { getImagesSchema } from "@/db";
 
 export async function GET(
-  _: NextRequest,
+  req: NextRequest,
   { params }: RouteContext<"/api/events/[eventId]/images">
 ): Promise<NextResponse> {
   const { eventId } = await params;
 
-  return imageService.getImages(eventId).fold(
-    images => NextResponse.json(images),
-    err => NextResponse.json({ message: err.message }, { status: 500 })
-  );
+  return parseSearchParams(req.nextUrl.searchParams, getImagesSchema)
+    .map(filters => imageService.getImages(eventId, filters))
+    .fold(
+      images => NextResponse.json(images),
+      err => NextResponse.json({ message: err.message }, { status: 500 })
+    );
 }
 
 export async function POST(

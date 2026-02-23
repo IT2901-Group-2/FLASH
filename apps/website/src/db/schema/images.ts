@@ -20,9 +20,18 @@ export const imageTable = sqliteTable("images", {
     .$onUpdate(() => new Date()),
 });
 
+export const getImagesSchema = z.object({
+  id: z.string().array().min(1).optional(),
+  status: z
+    .tuple([z.enum(["pending", "approved", "rejected"])])
+    .transform(([str]) => (str === "pending" ? null : str === "approved"))
+    .optional(),
+});
+
 export const updateImageSchema = z.object({
   isApproved: z.boolean().nullable().optional(),
 });
 
 export type Image = typeof imageTable.$inferSelect;
+export type GetImages = z.infer<typeof getImagesSchema>;
 export type UpdateImage = z.infer<typeof updateImageSchema>;

@@ -1,11 +1,11 @@
 import { FileStorage } from "file-storage";
 import { DatabaseService, dbService } from "./databaseService";
 import { AsyncResult, Result } from "typescript-result";
-import { Image, imageTable, UpdateImage } from "@/db";
+import { GetImages, Image, imageTable, UpdateImage } from "@/db";
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
 import { getFirstRow } from "@/lib/utils/sql";
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray, isNull } from "drizzle-orm";
 import { storage } from "@/config";
 
 const uid = new ShortUniqueId();
@@ -48,9 +48,21 @@ export class ImageService {
    * @param eventId The id of the event.
    * @returns A result containing a list of `Image` objects or an error.
    */
-  getImages(eventId: string): AsyncResult<Image[], Error> {
+  getImages(eventId: string, { id, status }: GetImages): AsyncResult<Image[], Error> {
     return Result.try(() =>
-      this.dbService.db.select().from(imageTable).where(eq(imageTable.eventId, eventId))
+      this.dbService.db
+        .select()
+        .from(imageTable)
+        .where(
+          and(
+            eq(imageTable.eventId, eventId),
+            id !== undefined ? inArray(imageTable.id, id) : undefined,
+            status !== null && status !== undefined
+              ? eq(imageTable.isApproved, status)
+              : undefined,
+            status === null ? isNull(imageTable.isApproved) : undefined
+          )
+        )
     );
   }
 
