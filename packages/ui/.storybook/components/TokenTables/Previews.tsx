@@ -1,7 +1,7 @@
 import { TokenType } from "./DesignTokens";
 import { Type, Monitor, Tablet, Smartphone, UnfoldVertical } from "lucide-react";
 import "@flash/tokens/js";
-import { BorderNeutralStrong, RadiusFull } from "@flash/tokens/js";
+import { BgDefault, BorderNeutralSubtle, RadiusFull } from "@flash/tokens/js";
 
 export const BgColorPreview = ({ token }: { token: TokenType }) => (
   <div
@@ -10,9 +10,10 @@ export const BgColorPreview = ({ token }: { token: TokenType }) => (
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      border: `1px solid ${BorderNeutralStrong}`,
+      border: `1px solid ${BorderNeutralSubtle}`,
       borderRadius: 8,
       maxWidth: "min-content",
+      backgroundColor: BgDefault,
     }}
   >
     <div
@@ -21,7 +22,7 @@ export const BgColorPreview = ({ token }: { token: TokenType }) => (
         height: 24,
         borderRadius: RadiusFull,
         background: token.cssValue,
-        border: `1px solid ${BorderNeutralStrong}`,
+        border: `1px solid ${BorderNeutralSubtle}`,
         flexShrink: 0,
       }}
     />
@@ -61,7 +62,7 @@ export const ShadowPreview = () => (
       width: 32,
       height: 32,
       borderRadius: 6,
-      background: "#fff",
+      background: BgDefault,
       boxShadow: "var(--shadow-dialog, 0 8px 32px rgba(0,0,0,0.18))",
       flexShrink: 0,
     }}

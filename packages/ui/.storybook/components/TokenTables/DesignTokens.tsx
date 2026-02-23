@@ -38,6 +38,8 @@ const DesignTokens = ({ tokens }: { tokens: TokenType[] }) => {
   const fonts = tokens.filter(t => t.type === "global-font");
   const breakpoints = tokens.filter(t => t.type === "global-breakpoint");
 
+  document.documentElement.setAttribute("data-theme", "dark");
+
   return (
     <div
       style={{
