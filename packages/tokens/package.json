@@ -29,6 +29,7 @@
   "exports": {
     ".": "./dist/tokens.css",
     "./css": "./dist/tokens.css",
+    "./token_docs": "./token_docs.js",
     "./dist/*": {
       "types": "./dist/tokens.d.ts",
       "default": "./dist/*"
