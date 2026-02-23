@@ -20,8 +20,8 @@ export async function POST(
 ): Promise<NextResponse> {
   const { eventId } = await params;
 
-  return Result.try(() => req.blob())
-    .map(image => imageService.uploadImage(eventId, image))
+  return Result.try(() => req.bytes())
+    .map(body => imageService.uploadImage(eventId, body))
     .fold(
       image => NextResponse.json(image),
       err => NextResponse.json({ message: err.message }, { status: 500 })
