@@ -7,6 +7,8 @@ import { ImageService } from "./imageService";
 import { FileStorage, FSStorage } from "file-storage";
 import { DatabaseService } from "./databaseService";
 import { eventTable, imageTable } from "@/db";
+import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
+import { Result } from "typescript-result";
 
 let tmpDir: string;
 let storage: FileStorage;
@@ -61,6 +63,12 @@ const mockImages: MockImage[] = [
     isApproved: false,
     imageData: mockImageData[3]!,
   },
+  {
+    id: "image-5",
+    eventId: "wedding",
+    isApproved: true,
+    imageData: mockImageData[3]!,
+  },
 ];
 
 beforeEach(async () => {
@@ -83,10 +91,97 @@ afterEach(async () => {
   vi.restoreAllMocks();
 });
 
-describe("ImageService", () => {
-  it("Temp", async () => {
-    expect(await imageService.getImages("birthday").getOrThrow()).toHaveLength(2);
-    await imageService.uploadImage("birthday", mockImageData[3]!).getOrThrow();
-    expect(await imageService.getImages("birthday").getOrThrow()).toHaveLength(3);
+describe("ImageService getImages", () => {
+  it("Should return Err when database call fails", async () => {
+    vi.spyOn(BetterSQLite3Database.prototype, "select").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(await imageService.getImages("wedding"));
+  });
+
+  it("Should correctly fetch all event images", async () => {
+    expect(
+      await imageService
+        .getImages("birthday")
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["image-1", "image-2"]));
+
+    expect(
+      await imageService
+        .getImages("wedding")
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["image-3", "image-4", "image-5"]));
+
+    expect(
+      await imageService
+        .getImages("funeral")
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set([]));
+  });
+
+  it("Should correctly filter by id", async () => {
+    expect(
+      await imageService
+        .getImages("birthday", { id: ["image-1", "image-20", "image-4"] })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["image-1"]));
+
+    expect(
+      await imageService
+        .getImages("wedding", { id: ["image-5", "image-4", "image-1"] })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["image-4", "image-5"]));
+  });
+
+  it("Should correctly filter by approval status", async () => {
+    expect(
+      await imageService
+        .getImages("birthday", { status: true })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["image-2"]));
+
+    expect(
+      await imageService
+        .getImages("birthday", { status: null })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["image-1"]));
+
+    expect(
+      await imageService
+        .getImages("wedding", { status: null })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set([]));
+
+    expect(
+      await imageService
+        .getImages("wedding", { status: true })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["image-3", "image-5"]));
+  });
+
+  it("Should correctly filter by combination", async () => {
+    expect(
+      await imageService
+        .getImages("wedding", { id: ["image-5", "image-4", "image-1"], status: false })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["image-4"]));
+
+    expect(
+      await imageService
+        .getImages("wedding", { id: ["image-5", "image-4", "image-1"], status: true })
+        .map(rows => new Set(rows.map(row => row.id)))
+        .getOrThrow()
+    ).toStrictEqual(new Set(["image-5"]));
   });
 });

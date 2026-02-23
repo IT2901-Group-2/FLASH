@@ -48,7 +48,10 @@ export class ImageService {
    * @param eventId The id of the event.
    * @returns A result containing a list of `Image` objects or an error.
    */
-  getImages(eventId: string, { id, status }: GetImages): AsyncResult<Image[], Error> {
+  getImages(
+    eventId: string,
+    { id, status }: GetImages = {}
+  ): AsyncResult<Image[], Error> {
     return Result.try(() =>
       this.dbService.db
         .select()
