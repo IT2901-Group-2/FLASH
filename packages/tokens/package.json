@@ -28,7 +28,14 @@
   },
   "exports": {
     ".": "./dist/tokens.css",
-    "./tokens.d.ts": "./dist/tokens.d.ts",
-    "./tokens.js": "./dist/tokens.js"
+    "./css": "./dist/tokens.css",
+    "./dist/*": {
+      "types": "./dist/tokens.d.ts",
+      "default": "./dist/*"
+    },
+    "./js": {
+      "types": "./dist/tokens.d.ts",
+      "import": "./dist/tokens.js"
+    }
   }
 }
