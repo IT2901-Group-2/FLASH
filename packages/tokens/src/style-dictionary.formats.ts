@@ -21,7 +21,7 @@ export const formatES6: FormatFn = async ({ dictionary, file }) => {
 
 const createTokenValue = (token: TransformedToken): string => {
   const kebabName = kebabCaseForAlpha(token.name);
-  if (/\-t$/.test(kebabName)) return `var(--${kebabName.slice(0, -2)}T)`;
+  if (/-t$/.test(kebabName)) return `var(--${kebabName.slice(0, -2)}T)`;
 
   if ((token.type as TokenTypes) === "global-breakpoint")
     return token.value ?? token.$value;
