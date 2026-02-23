@@ -63,6 +63,18 @@ const LightTokensNoAlpha: ColorConfigWithoutAlpha = {
     "900": { value: "#871431", type: "global-color" },
     "1000": { value: "#4c0515", type: "global-color" },
   },
+  "brand-purple": {
+    "100": { value: "#d9a5c1", type: "global-color" },
+    "200": { value: "#bf8da9", type: "global-color" },
+    "300": { value: "#a77591", type: "global-color" },
+    "400": { value: "#8e5f7a", type: "global-color" },
+    "500": { value: "#774964", type: "global-color" },
+    "600": { value: "#60344e", type: "global-color" },
+    "700": { value: "#4a2039", type: "global-color" },
+    "800": { value: "#350c26", type: "global-color" },
+    "900": { value: "#240014", type: "global-color" },
+    "1000": { value: "#150000", type: "global-color" },
+  },
 } as const;
 
 const DarkTokensNoAlpha: ColorConfigWithoutAlpha = {
@@ -126,6 +138,18 @@ const DarkTokensNoAlpha: ColorConfigWithoutAlpha = {
     "800": { value: "#fca5aa", type: "global-color" },
     "900": { value: "#fecdd0", type: "global-color" },
     "1000": { value: "#ffe4e5", type: "global-color" },
+  },
+  "brand-purple": {
+    "100": { value: "#150000", type: "global-color" },
+    "200": { value: "#240014", type: "global-color" },
+    "300": { value: "#350c26", type: "global-color" },
+    "400": { value: "#4a2039", type: "global-color" },
+    "500": { value: "#60344e", type: "global-color" },
+    "600": { value: "#774964", type: "global-color" },
+    "700": { value: "#8e5f7a", type: "global-color" },
+    "800": { value: "#a77591", type: "global-color" },
+    "900": { value: "#bf8da9", type: "global-color" },
+    "1000": { value: "#d9a5c1", type: "global-color" },
   },
 } as const;
 
