@@ -18,3 +18,15 @@ export async function GET(
     err => NextResponse.json({ message: err.message }, { status: 500 })
   );
 }
+
+export async function DELETE(
+  _: NextRequest,
+  { params }: RouteContext<"/api/events/[eventId]/images/[imageId]">
+): Promise<NextResponse> {
+  const { eventId, imageId } = await params;
+
+  return imageService.deleteImage(eventId, imageId).fold(
+    image => NextResponse.json(image),
+    err => NextResponse.json({ message: err.message }, { status: 500 })
+  );
+}

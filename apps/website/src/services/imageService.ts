@@ -71,6 +71,7 @@ export class ImageService {
         .select()
         .from(imageTable)
         .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
+        .limit(1)
     )
       .map(rows =>
         getFirstRow(
@@ -108,6 +109,31 @@ export class ImageService {
             await this.storage.rm(`${imageId}.webp`).getOrNull();
           })
       );
+  }
+
+  /**
+   * Deletes the image with the specified id.
+   * Will fail if the image does not exist or does not belong to the specified event.
+   *
+   * @param eventId The id of the event the image belongs to.
+   * @param imageId The id of the image to delete.
+   * @returns A result containing the deleted `Ìmage` object or an error
+   */
+  deleteImage(eventId: string, imageId: string): AsyncResult<Image, Error> {
+    return Result.try(() =>
+      this.dbService.db
+        .delete(imageTable)
+        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
+        .returning()
+    )
+      .map(rows =>
+        getFirstRow(
+          rows,
+          `Image with id ${imageId} does not exist on event with id ${eventId}`
+        )
+      )
+      .onSuccess(() => this.dbService.flush())
+      .map(row => this.storage.rm(`${row.id}.webp`).map(() => row));
   }
 }
 
