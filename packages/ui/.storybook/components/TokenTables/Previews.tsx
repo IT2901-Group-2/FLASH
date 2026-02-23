@@ -1,17 +1,31 @@
 import { TokenType } from "./DesignTokens";
-import { Type, AlignLeft, Monitor, Tablet, Smartphone, Bold, Minus } from "lucide-react";
+import { Type, Monitor, Tablet, Smartphone, UnfoldVertical } from "lucide-react";
+import "@flash/tokens/js";
+import { BorderNeutralStrong, RadiusFull } from "@flash/tokens/js";
 
 export const BgColorPreview = ({ token }: { token: TokenType }) => (
   <div
     style={{
-      width: 32,
-      height: 32,
-      borderRadius: 6,
-      background: token.cssValue,
-      border: "1px solid rgba(0,0,0,0.08)",
-      flexShrink: 0,
+      padding: 8,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      border: `1px solid ${BorderNeutralStrong}`,
+      borderRadius: 8,
+      maxWidth: "min-content",
     }}
-  />
+  >
+    <div
+      style={{
+        width: 24,
+        height: 24,
+        borderRadius: RadiusFull,
+        background: token.cssValue,
+        border: `1px solid ${BorderNeutralStrong}`,
+        flexShrink: 0,
+      }}
+    />
+  </div>
 );
 
 export const BorderColorPreview = ({ token }: { token: TokenType }) => (
@@ -34,7 +48,6 @@ export const TextColorPreview = ({ token }: { token: TokenType }) => (
       fontWeight: 700,
       fontSize: 18,
       lineHeight: 1,
-      fontFamily: "Georgia, serif",
       flexShrink: 0,
     }}
   >
@@ -63,8 +76,8 @@ export const RadiusPreview = ({ token }: { token: TokenType }) => {
         width: 32,
         height: 32,
         borderRadius: r,
-        background: "var(--bg-accent-moderate, #dbeafe)",
-        border: "1.5px solid var(--border-accent, #93c5fd)",
+        background: "var(--bg-neutral-moderate, #dbeafe)",
+        border: "1.5px solid var(--border-neutral, #93c5fd)",
         flexShrink: 0,
       }}
     />
@@ -77,7 +90,7 @@ export const BreakpointIcon = ({ rawType }: { rawType: string }) => {
       <Smartphone
         size={20}
         strokeWidth={1.5}
-        style={{ color: "var(--text-neutral-subtle, #64748b)", flexShrink: 0 }}
+        style={{ color: "var(--text-neutral-strong, #64748b)", flexShrink: 0 }}
       />
     );
   if (rawType === "md" || rawType === "md-down")
@@ -85,14 +98,14 @@ export const BreakpointIcon = ({ rawType }: { rawType: string }) => {
       <Tablet
         size={20}
         strokeWidth={1.5}
-        style={{ color: "var(--text-neutral-subtle, #64748b)", flexShrink: 0 }}
+        style={{ color: "var(--text-neutral-strong, #64748b)", flexShrink: 0 }}
       />
     );
   return (
     <Monitor
       size={20}
       strokeWidth={1.5}
-      style={{ color: "var(--text-neutral-subtle, #64748b)", flexShrink: 0 }}
+      style={{ color: "var(--text-neutral-strong, #64748b)", flexShrink: 0 }}
     />
   );
 };
@@ -100,49 +113,63 @@ export const BreakpointIcon = ({ rawType }: { rawType: string }) => {
 export const FontIcon = ({ rawType }: { rawType: string }) => {
   if (rawType === "family")
     return (
-      <AlignLeft
+      <Type
         size={18}
         strokeWidth={1.5}
-        style={{ color: "var(--text-neutral-subtle, #64748b)", flexShrink: 0 }}
+        style={{ color: "var(--text-neutral-strong, #64748b)", flexShrink: 0 }}
       />
     );
   if (rawType.startsWith("weight-bold"))
     return (
-      <Bold
-        size={18}
-        strokeWidth={1.5}
-        style={{ color: "var(--text-neutral-subtle, #64748b)", flexShrink: 0 }}
-      />
+      <span
+        style={{
+          fontSize: 18,
+          lineHeight: 1,
+          flexShrink: 0,
+          fontWeight: `var(--font-weight-bold)`,
+        }}
+      >
+        Aa
+      </span>
     );
   if (rawType.startsWith("weight"))
     return (
-      <Type
-        size={18}
-        strokeWidth={1.5}
-        style={{ color: "var(--text-neutral-subtle, #64748b)", flexShrink: 0 }}
-      />
+      <span
+        style={{
+          fontSize: 18,
+          lineHeight: 1,
+          flexShrink: 0,
+          fontWeight: `var(--font-weight-regular)`,
+        }}
+      >
+        Aa
+      </span>
     );
   if (rawType.startsWith("line-height"))
     return (
-      <Minus
+      <UnfoldVertical
         size={18}
         strokeWidth={1.5}
-        style={{ color: "var(--text-neutral-subtle, #64748b)", flexShrink: 0 }}
+        style={{ color: "var(--text-neutral-strong, #64748b)", flexShrink: 0 }}
       />
     );
   if (rawType.startsWith("size"))
     return (
-      <Type
-        size={18}
-        strokeWidth={1.5}
-        style={{ color: "var(--text-neutral-subtle, #64748b)", flexShrink: 0 }}
-      />
+      <span
+        style={{
+          fontSize: `var(--font-${rawType})`,
+          lineHeight: 1,
+          flexShrink: 0,
+        }}
+      >
+        Aa
+      </span>
     );
   return (
     <Type
       size={18}
       strokeWidth={1.5}
-      style={{ color: "var(--text-neutral-subtle, #64748b)", flexShrink: 0 }}
+      style={{ color: "var(--text-neutral-strong, #64748b)", flexShrink: 0 }}
     />
   );
 };

@@ -1,0 +1,27 @@
+.copyButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.25rem;
+
+  background-color: transparent;
+  outline: none;
+  border: none;
+  border-radius: 0.25rem;
+
+  &:hover {
+    background-color: color-mix(in srgb, white 25%, transparent);
+  }
+
+  &:active {
+    svg {
+      transform: translateY(-0.25rem);
+    }
+  }
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+    color: var(--docs-color-text);
+  }
+}
