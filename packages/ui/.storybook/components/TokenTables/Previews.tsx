@@ -1,7 +1,7 @@
 import { TokenType } from "./DesignTokens";
 import { Type, Monitor, Tablet, Smartphone, UnfoldVertical } from "lucide-react";
 import "@flash/tokens/js";
-import { BgDefault, BorderNeutralSubtle } from "@flash/tokens/js";
+import { BgDefault, BgNeutralStrong, BorderNeutralSubtle } from "@flash/tokens/js";
 
 export const BgColorPreview = ({ token }: { token: TokenType }) => (
   <div
@@ -32,28 +32,54 @@ export const BgColorPreview = ({ token }: { token: TokenType }) => (
 export const BorderColorPreview = ({ token }: { token: TokenType }) => (
   <div
     style={{
-      width: 28,
-      height: 28,
-      borderRadius: "50%",
-      border: `2.5px solid ${token.cssValue}`,
-      flexShrink: 0,
-      background: "transparent",
+      padding: 8,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      border: `1px solid ${BorderNeutralSubtle}`,
+      borderRadius: 8,
+      maxWidth: "min-content",
+      backgroundColor: BgDefault,
     }}
-  />
+  >
+    <div
+      style={{
+        width: 24,
+        height: 24,
+        borderRadius: "50%",
+        border: `2.5px solid ${token.cssValue}`,
+        flexShrink: 0,
+        background: "transparent",
+      }}
+    />
+  </div>
 );
 
 export const TextColorPreview = ({ token }: { token: TokenType }) => (
-  <span
+  <div
     style={{
-      color: token.cssValue,
-      fontWeight: 700,
-      fontSize: 18,
-      lineHeight: 1,
-      flexShrink: 0,
+      padding: 8,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      border: `1px solid ${BorderNeutralSubtle}`,
+      borderRadius: 8,
+      maxWidth: "min-content",
+      backgroundColor: token.name.includes("contrast") ? BgNeutralStrong : BgDefault,
     }}
   >
-    Aa
-  </span>
+    <span
+      style={{
+        color: token.cssValue,
+        fontWeight: 700,
+        fontSize: 18,
+        lineHeight: 1,
+        flexShrink: 0,
+      }}
+    >
+      Aa
+    </span>
+  </div>
 );
 
 export const ShadowPreview = () => (
