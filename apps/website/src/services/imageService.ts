@@ -111,6 +111,15 @@ export class ImageService {
       );
   }
 
+  /**
+   * Updates the image with the specified id.
+   * Will fail if the image does not exist or does not belong to the specified event.
+   *
+   * @param eventId The id of the event the image belongs to.
+   * @param imageId The id of the image to update.
+   * @param data The data to update the image with.
+   * @returns A result containing the updated `Ìmage` object or an error
+   */
   updateImage(
     eventId: string,
     imageId: string,
