@@ -4,12 +4,23 @@ import styles from "./UploadImage.module.css";
 import { ActionCard, PhoneHeader } from "ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
+import { useEventsQuery } from "@/hooks/useEvents";
 
 export default function Page() {
   const t = useTranslations("EventPage");
-  const eventName = "Event Name"; // This should be dynamically fetched based on the event the guest is joining
-  const nickname = "GuestNickname"; // This should be dynamically fetched based on the guest's information
-  const uploadsRemaining = 5; // This should be dynamically fetched based on the guest's upload status
+  const { id } = useParams<{ id: string }>();
+  const eventId = typeof id === "string" ? id : "";
+  const { data, isLoading, isError } = useEventsQuery(
+    eventId ? { id: [eventId] } : undefined
+  );
+  const eventData = data?.[0];
+
+  const eventName = eventData?.name ?? (isLoading ? "Loading event..." : "Event");
+  // Nickname should be added later in join event card, for now we can just show the guest code if it exists
+  const nickname = eventData?.guestCode ? `Code: ${eventData.guestCode}` : "Guest";
+  const uploadsRemaining =
+    typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
 
   const { openFilePicker, FileInput } = useFileUpload({
     onFilesSelected: files => {
@@ -34,6 +45,9 @@ export default function Page() {
         primaryText={t("actions.uploadImage")}
         secondaryText={t("actions.takePhoto")}
       ></PhoneHeader>
+      {!isLoading && (isError || !eventData) ? (
+        <p className={styles.errorText}>Could not load event details for this link.</p>
+      ) : null}
       <ActionCard
         className={styles.mobileOnly}
         primaryButton={{

@@ -26,6 +26,15 @@ vi.mock("next-intl", () => ({
   },
 }));
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+  }),
+  useParams: () => ({
+    locale: "en",
+  }),
+}));
+
 describe("JoinEventCard", () => {
   afterEach(() => {
     cleanup();
