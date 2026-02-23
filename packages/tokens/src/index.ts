@@ -76,7 +76,7 @@ async function main() {
 }
 
 async function buildDataColorTokens() {
-  const rootSelector = `:root, [data-color=""], [data-color="neutral"]`;
+  const rootSelector = `:root, [data-color=""], [data-color="accent"]`;
 
   const colors: ColorRole[] = [
     "neutral",
@@ -86,16 +86,26 @@ async function buildDataColorTokens() {
     "danger",
   ] as const;
 
-  colors.forEach(color => {
-    const fileName = `data-color-${color}-tokens.css`;
-    bundledCSSFiles.push(fileName);
-    return buildCSSBundleForTokens({
-      tokens: dataColorTokens(color as ColorRole),
-      filename: fileName,
-      selector: color === "neutral" ? rootSelector : `[data-color=${color}]`,
+  // colors.forEach(color => {
+  //   const fileName = `data-color-${color}-tokens.css`;
+  //   bundledCSSFiles.push(fileName);
+  //   return buildCSSBundleForTokens({
+  //     tokens: dataColorTokens(color as ColorRole),
+  //     filename: fileName,
+  //     selector: color === "neutral" ? rootSelector : `[data-color=${color}]`,
+  //     filter: async token => token.type === "data-color",
+  //   });
+  // });
+
+  // I have no idea why this works and not the code above...
+  for (const color of colors as ColorRole[]) {
+    await buildCSSBundleForTokens({
+      tokens: dataColorTokens(color),
+      filename: `data-color-${color}.css`,
+      selector: color === "accent" ? rootSelector : `[data-color=${color}]`,
       filter: async token => token.type === "data-color",
     });
-  });
+  }
 }
 
 async function buildCSSBundleForTokens({
