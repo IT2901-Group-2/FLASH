@@ -1,6 +1,6 @@
 "use client";
-import { Plus } from "lucide-react";
-import { Button, Title } from "ui";
+import { LoaderIcon, LoaderPinwheel, Plus } from "lucide-react";
+import { Button, Card, Loader, Title } from "ui";
 import styles from "./page.module.css";
 import CreateEventCard from "@/components/CreateEventCard/CreateEventCard";
 import { useRef } from "react";
@@ -13,7 +13,7 @@ const Page = () => {
   const t = useTranslations("admin.dashboard.event.page");
   const navigation = useRouter();
 
-  const { data } = useEventsQuery();
+  const { data, isLoading } = useEventsQuery();
 
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -32,13 +32,19 @@ const Page = () => {
       </div>
       <h3>Events</h3>
       <div className={styles.eventsContainer}>
-        {data?.map(event => (
-          <EventCard
-            key={event.id}
-            data={event}
-            onClick={() => navigation.push(`./events/${event.id}`)}
-          />
-        ))}
+        {isLoading ? (
+          <div className={styles.loadingContainer}>
+            <Loader size="3xlarge" />
+          </div>
+        ) : (
+          data?.map(event => (
+            <EventCard
+              key={event.id}
+              data={event}
+              onClick={() => navigation.push(`./events/${event.id}`)}
+            />
+          ))
+        )}
       </div>
     </>
   );
