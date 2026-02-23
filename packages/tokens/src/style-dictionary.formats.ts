@@ -21,6 +21,8 @@ export const formatES6: FormatFn = async ({ dictionary, file }) => {
 
 const createTokenValue = (token: TransformedToken): string => {
   const kebabName = kebabCaseForAlpha(token.name);
+  if (/\-t$/.test(kebabName)) return `var(--${kebabName.slice(0, -2)}T)`;
+
   if ((token.type as TokenTypes) === "global-breakpoint")
     return token.value ?? token.$value;
   if ((token.type as TokenTypes) === "global-color")
@@ -52,6 +54,7 @@ export const formatDOCS: FormatFn = async ({ dictionary }) => {
           jsValue: token.name,
           cssValue: createTokenValue(token),
           type: token.type,
+          role: formatRole(token.group),
           rawType: token.attributes?.type,
           group: token.group,
         }) + (index === dictionary.allTokens.length - 1 ? "" : ",")
