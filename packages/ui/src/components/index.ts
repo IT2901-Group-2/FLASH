@@ -10,5 +10,7 @@ export * from "./Switch";
 export * from "./Title";
 export * from "./SegmentedControl";
 export * from "./DropdownControl";
+export * from "./Breadcrumb";
+export * from "./PhoneHeader";
 export * from "./QRDisplay";
 export * from "./ActionCard";

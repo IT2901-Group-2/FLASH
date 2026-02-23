@@ -1,5 +1,6 @@
 import styles from "./QRDisplay.module.css";
 import QRCode from "react-qr-code";
+import { cl } from "../../util/className";
 
 export interface QRDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
@@ -10,6 +11,11 @@ export interface QRDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
    * A code that is shown under the QRCode
    */
   code?: string;
+  /**
+   * Optional named size for the QR code. Allowed values: 'small' | 'medium' | 'large'.
+   * When omitted the component defaults to 'medium'. Sizes are defined in CSS.
+   */
+  size?: "small" | "medium" | "large";
 }
 
 /**
@@ -19,15 +25,18 @@ export interface QRDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
  *
  * > _Last updated: `2026-02-07`_
  */
-const QRDisplay = ({ value, code, ...rest }: QRDisplayProps) => {
+const QRDisplay = ({ value, code, size, className, ...rest }: QRDisplayProps) => {
+  const selectedSize = size ?? "medium";
+  const sizeClass = styles[`qr-${selectedSize}`];
+  const containerSizeClass = styles[`container-${selectedSize}`];
   return (
-    <div className={styles.container} {...rest}>
+    <div className={cl(styles.container, containerSizeClass, className)} {...rest}>
       <QRCode
         value={value}
         level="H"
-        className={styles.qrCode}
-        bgColor={`var(--color-neutral-000)`}
-        fgColor={`var(--color-neutral-1000)`}
+        className={cl(styles.qrCode, sizeClass)}
+        bgColor="var(--color-neutral-000)"
+        fgColor="var(--color-neutral-1000)"
       />
       <div className={styles.text}>
         {code && <span className={styles.code}>{code}</span>}
