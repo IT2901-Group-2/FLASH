@@ -8,6 +8,8 @@ import {
   TextColorPreview,
 } from "./Previews";
 import { DisplayTable } from "./DisplayTable";
+import { Button } from "storybook/internal/components";
+import { useState } from "react";
 
 export type TokenType = {
   name: string;
@@ -27,7 +29,18 @@ function SectionHeader({ title, description }: { title: string; description: str
   );
 }
 
+const switchTheme = () => {
+  const currentTheme = document.documentElement.getAttribute("data-theme");
+  document.documentElement.setAttribute(
+    "data-theme",
+    currentTheme === "light" ? "dark" : "light"
+  );
+};
+
 const DesignTokens = ({ tokens }: { tokens: TokenType[] }) => {
+  // Set theme to light as default
+  document.documentElement.setAttribute("data-theme", "light");
+
   const bgColors = tokens.filter(
     t => t.type === "color" && !t.name.includes("border") && !t.name.includes("text")
   );
@@ -38,8 +51,6 @@ const DesignTokens = ({ tokens }: { tokens: TokenType[] }) => {
   const fonts = tokens.filter(t => t.type === "global-font");
   const breakpoints = tokens.filter(t => t.type === "global-breakpoint");
 
-  document.documentElement.setAttribute("data-theme", "dark");
-
   return (
     <div
       style={{
@@ -49,6 +60,8 @@ const DesignTokens = ({ tokens }: { tokens: TokenType[] }) => {
         padding: "0 0 64px",
       }}
     >
+      <Button onClick={switchTheme}>Switch Theme</Button>
+
       {/* ── Background Colors ── */}
       <SectionHeader
         title="Background Colors"
