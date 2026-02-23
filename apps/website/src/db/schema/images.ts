@@ -1,6 +1,7 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import ShortUniqueId from "short-unique-id";
 import { eventTable } from "./events";
+import z from "zod";
 
 const uid = new ShortUniqueId();
 
@@ -9,6 +10,7 @@ export const imageTable = sqliteTable("images", {
   eventId: text()
     .notNull()
     .references(() => eventTable.id),
+  isApproved: integer({ mode: "boolean" }),
   createdAt: integer({ mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
@@ -18,4 +20,9 @@ export const imageTable = sqliteTable("images", {
     .$onUpdate(() => new Date()),
 });
 
+export const updateImageSchema = z.object({
+  isApproved: z.boolean().nullable().optional(),
+});
+
 export type Image = typeof imageTable.$inferSelect;
+export type UpdateImage = z.infer<typeof updateImageSchema>;

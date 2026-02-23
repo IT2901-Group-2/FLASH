@@ -1,7 +1,7 @@
 import { FileStorage } from "file-storage";
 import { DatabaseService, dbService } from "./databaseService";
 import { AsyncResult, Result } from "typescript-result";
-import { Image, imageTable } from "@/db";
+import { Image, imageTable, UpdateImage } from "@/db";
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
 import { getFirstRow } from "@/lib/utils/sql";
@@ -109,6 +109,27 @@ export class ImageService {
             await this.storage.rm(`${imageId}.webp`).getOrNull();
           })
       );
+  }
+
+  updateImage(
+    eventId: string,
+    imageId: string,
+    data: UpdateImage
+  ): AsyncResult<Image, Error> {
+    return Result.try(() =>
+      this.dbService.db
+        .update(imageTable)
+        .set(data)
+        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
+        .returning()
+    )
+      .map(rows =>
+        getFirstRow(
+          rows,
+          `Image with id ${imageId} does not exist on event with id ${eventId}`
+        )
+      )
+      .onSuccess(() => this.dbService.flush());
   }
 
   /**

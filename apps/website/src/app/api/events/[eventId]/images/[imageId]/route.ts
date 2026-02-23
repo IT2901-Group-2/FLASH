@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { imageService } from "@/services/imageService";
+import { parseRequestBody } from "@/lib/utils/validation";
+import { updateImageSchema } from "@/db";
 
 export async function GET(
   _: NextRequest,
@@ -17,6 +19,20 @@ export async function GET(
       }),
     err => NextResponse.json({ message: err.message }, { status: 500 })
   );
+}
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: RouteContext<"/api/events/[eventId]/images/[imageId]">
+): Promise<NextResponse> {
+  const { eventId, imageId } = await params;
+
+  return parseRequestBody(req, updateImageSchema)
+    .map(data => imageService.updateImage(eventId, imageId, data))
+    .fold(
+      image => NextResponse.json(image),
+      err => NextResponse.json({ message: err.message }, { status: 500 })
+    );
 }
 
 export async function DELETE(
