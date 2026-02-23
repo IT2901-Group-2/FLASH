@@ -20,7 +20,7 @@ export async function POST(
 ): Promise<NextResponse> {
   const { eventId } = await params;
 
-  return Result.try(() => req.bytes())
+  return Result.try(() => req.blob())
     .map(image => imageService.uploadImage(eventId, image))
     .fold(
       image => NextResponse.json(image),
