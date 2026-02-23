@@ -9,7 +9,6 @@ import {
 } from "./Previews";
 import { DisplayTable } from "./DisplayTable";
 import { Button } from "storybook/internal/components";
-import { useState } from "react";
 
 export type TokenType = {
   name: string;
