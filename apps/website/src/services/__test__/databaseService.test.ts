@@ -2,7 +2,7 @@
 import { describe, it, beforeEach, afterEach, expect, vi } from "vitest";
 import Sqlite, { type Database } from "better-sqlite3";
 import { FileStorage, FSStorage } from "file-storage";
-import { DatabaseService } from "./databaseService";
+import { DatabaseService } from "../databaseService";
 import { Result } from "typescript-result";
 import { randomUUID } from "crypto";
 import { tmpdir } from "os";
