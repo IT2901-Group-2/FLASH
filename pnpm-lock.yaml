@@ -195,6 +195,9 @@ importers:
       '@chromatic-com/storybook':
         specifier: ^5.0.0
         version: 5.0.1(storybook@10.2.10(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
+      '@flash/tokens':
+        specifier: workspace:*
+        version: link:../tokens
       '@storybook/addon-a11y':
         specifier: ^10.2.3
         version: 10.2.10(storybook@10.2.10(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))

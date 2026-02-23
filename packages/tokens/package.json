@@ -1,9 +1,9 @@
 {
-  "name": "tokens",
+  "name": "@flash/tokens",
   "version": "0.1.0",
   "description": "TypeScript-first CSS design token system with data-color support",
-  "main": "dist/index.es.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/tokens.es.js",
+  "types": "dist/tokens.d.ts",
   "type": "module",
   "scripts": {
     "build": "tsx ./src",
@@ -25,5 +25,10 @@
     "typescript-eslint": "^8.53.1",
     "vitest": "^4.0.18",
     "prettier": "^3.8.1"
+  },
+  "exports": {
+    ".": "./dist/tokens.css",
+    "./tokens.d.ts": "./dist/tokens.d.ts",
+    "./tokens.js": "./dist/tokens.js"
   }
 }
