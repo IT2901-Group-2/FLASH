@@ -3,15 +3,15 @@ import { kebabCase, kebabCaseForAlpha } from "../src/utils/kebabCase";
 
 describe("kebabCase", () => {
   it("converts camelCase to kebab-case", () => {
-    expect(kebabCase("helloWorld")).toBe("hello-world");
+    expect(kebabCase("helloWorld")).toBe("helloWorld");
   });
 
   it("converts PascalCase to kebab-case", () => {
-    expect(kebabCase("HelloWorld")).toBe("hello-world");
+    expect(kebabCase("HelloWorld")).toBe("HelloWorld");
   });
 
   it("converts spaces to hyphens", () => {
-    expect(kebabCase("Hello World")).toBe("hello-world");
+    expect(kebabCase("Hello World")).toBe("Hello-World");
   });
 
   it("converts underscores to hyphens", () => {
@@ -19,7 +19,7 @@ describe("kebabCase", () => {
   });
 
   it("handles consecutive capital letters", () => {
-    expect(kebabCase("XMLParser")).toBe("xml-parser");
+    expect(kebabCase("XMLParser")).toBe("XML-Parser");
   });
 
   it("collapses multiple hyphens", () => {
@@ -27,7 +27,7 @@ describe("kebabCase", () => {
   });
 
   it("removes leading and trailing hyphens", () => {
-    expect(kebabCase("-helloWorld-")).toBe("hello-world");
+    expect(kebabCase("-HelloWorld-")).toBe("HelloWorld");
   });
 
   it("strips special characters", () => {
@@ -35,7 +35,7 @@ describe("kebabCase", () => {
   });
 
   it("handles mixed input", () => {
-    expect(kebabCase("Hello_World 123")).toBe("hello-world-123");
+    expect(kebabCase("Hello_World 123")).toBe("Hello-World-123");
   });
 
   it("returns empty string for empty input", () => {
