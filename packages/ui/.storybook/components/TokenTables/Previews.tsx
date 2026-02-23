@@ -1,7 +1,7 @@
 import { TokenType } from "./DesignTokens";
 import { Type, Monitor, Tablet, Smartphone, UnfoldVertical } from "lucide-react";
 import "@flash/tokens/js";
-import { BgDefault, BorderNeutralSubtle, RadiusFull } from "@flash/tokens/js";
+import { BgDefault, BorderNeutralSubtle } from "@flash/tokens/js";
 
 export const BgColorPreview = ({ token }: { token: TokenType }) => (
   <div
@@ -20,9 +20,9 @@ export const BgColorPreview = ({ token }: { token: TokenType }) => (
       style={{
         width: 24,
         height: 24,
-        borderRadius: RadiusFull,
         background: token.cssValue,
         border: `1px solid ${BorderNeutralSubtle}`,
+        borderRadius: "50%",
         flexShrink: 0,
       }}
     />
