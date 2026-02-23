@@ -19,7 +19,7 @@ export const formatES6: FormatFn = async ({ dictionary, file }) => {
   return `${header}${tokens}\n`;
 };
 
-function createTokenValue(token: TransformedToken): string {
+const createTokenValue = (token: TransformedToken): string => {
   const kebabName = kebabCaseForAlpha(token.name);
   if ((token.type as TokenTypes) === "global-breakpoint")
     return token.value ?? token.$value;
@@ -27,4 +27,4 @@ function createTokenValue(token: TransformedToken): string {
     return `var(--${token.path.join("-")})`;
 
   return `var(--${kebabName})`;
-}
+};

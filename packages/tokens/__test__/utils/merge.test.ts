@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { merge } from "../src/utils/merge";
+import { merge } from "../../src/utils/merge";
 
 describe("merge", () => {
   it("should merge simple objects", () => {

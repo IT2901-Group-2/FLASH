@@ -1,6 +1,6 @@
 // pxToRem.test.ts
 import { describe, it, expect } from "vitest";
-import { pxToRem } from "../src/utils/pxToRem";
+import { pxToRem } from "../../src/utils/pxToRem";
 
 describe("pxToRem", () => {
   it("converts 16px to 1rem using the default base (16px)", () => {
