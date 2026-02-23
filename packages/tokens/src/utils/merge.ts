@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Merges the source objects into the destination object. The merge is
  * performed recursively, meaning that nested objects will also be merged.
@@ -9,10 +8,10 @@
  * @param object — The destination object.
  * @param source — The source objects.
  */
-export const merge = <T extends Record<string, any>>(
-  object: Record<string, any>,
+export const merge = <T extends Record<string, object>>(
+  object: Record<string, object>,
   ...sources: Partial<T>[]
-): Record<string, any> => {
+): Record<string, object> => {
   sources.forEach(source => {
     if (!source) return;
     Object.keys(source).forEach(key => {
@@ -36,7 +35,7 @@ export const merge = <T extends Record<string, any>>(
  * @param value - The value to check.
  * @returns True if the value is a plain object, false otherwise.
  */
-const isPlainObject = (value: Record<string, any>) =>
+const isPlainObject = (value: object | undefined) =>
   Object.prototype.toString.call(value) === "[object Object]" &&
   (Object.getPrototypeOf(value) === null ||
     Object.getPrototypeOf(value) === Object.prototype);
