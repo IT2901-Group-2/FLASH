@@ -1,9 +1,10 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import JoinEventCard from "./JoinEventCard";
 
 // Track which translation keys are requested
 const translationKeys: string[] = [];
+const mockPush = vi.fn();
 
 // Mock next-intl
 vi.mock("next-intl", () => ({
@@ -28,7 +29,7 @@ vi.mock("next-intl", () => ({
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
-    push: vi.fn(),
+    push: mockPush,
   }),
   useParams: () => ({
     locale: "en",
@@ -39,6 +40,8 @@ describe("JoinEventCard", () => {
   afterEach(() => {
     cleanup();
     translationKeys.length = 0;
+    vi.unstubAllGlobals();
+    mockPush.mockReset();
   });
 
   test("renders without crashing", () => {
@@ -81,5 +84,87 @@ describe("JoinEventCard", () => {
     expect(translationKeys).toContain("scanQrTab");
     expect(translationKeys).toContain("scanQrDescription");
     expect(translationKeys).toContain("openCameraButton");
+  });
+
+  test("shows validation error when event code is empty", async () => {
+    render(<JoinEventCard />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Join" }));
+
+    expect(await screen.findByText("Please enter an event code.")).toBeDefined();
+  });
+
+  test("calls API and routes to event page on successful lookup", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => [{ id: "ev-123" }],
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<JoinEventCard />);
+
+    fireEvent.change(screen.getByLabelText("Event Code"), {
+      target: { value: " ABC123 " },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Join" }));
+
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith("/api/events?guestCode=ABC123");
+      expect(mockPush).toHaveBeenCalledWith("/en/ev-123");
+    });
+  });
+
+  test("shows not-found error when lookup returns no events", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => [],
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<JoinEventCard />);
+
+    fireEvent.change(screen.getByLabelText("Event Code"), {
+      target: { value: "MISSING" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Join" }));
+
+    expect(await screen.findByText("No event found for that code.")).toBeDefined();
+    expect(mockPush).not.toHaveBeenCalled();
+  });
+
+  test("shows generic error when request fails", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: false });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<JoinEventCard />);
+
+    fireEvent.change(screen.getByLabelText("Event Code"), {
+      target: { value: "ABC123" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Join" }));
+
+    expect(
+      await screen.findByText("Could not join event. Please try again.")
+    ).toBeDefined();
+  });
+
+  test("submits when pressing Enter in the code field", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => [{ id: "ev-enter" }],
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<JoinEventCard />);
+
+    fireEvent.change(screen.getByLabelText("Event Code"), {
+      target: { value: "ENTER1" },
+    });
+    fireEvent.keyDown(screen.getByLabelText("Event Code"), { key: "Enter" });
+
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith("/api/events?guestCode=ENTER1");
+      expect(mockPush).toHaveBeenCalledWith("/en/ev-enter");
+    });
   });
 });
