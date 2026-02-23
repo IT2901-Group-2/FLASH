@@ -1,1 +1,0 @@
-ALTER TABLE `images` ADD `isApproved` integer;
