@@ -84,7 +84,7 @@ async function buildDataColorTokens() {
     "success",
     "warning",
     "danger",
-    "brand-purple",
+    "purple",
   ] as const;
 
   // colors.forEach(color => {

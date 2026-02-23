@@ -63,7 +63,7 @@ const LightTokensNoAlpha: ColorConfigWithoutAlpha = {
     "900": { value: "#871431", type: "global-color" },
     "1000": { value: "#4c0515", type: "global-color" },
   },
-  "brand-purple": {
+  purple: {
     "100": { value: "#d9a5c1", type: "global-color" },
     "200": { value: "#bf8da9", type: "global-color" },
     "300": { value: "#a77591", type: "global-color" },
@@ -139,7 +139,7 @@ const DarkTokensNoAlpha: ColorConfigWithoutAlpha = {
     "900": { value: "#fecdd0", type: "global-color" },
     "1000": { value: "#ffe4e5", type: "global-color" },
   },
-  "brand-purple": {
+  purple: {
     "100": { value: "#150000", type: "global-color" },
     "200": { value: "#240014", type: "global-color" },
     "300": { value: "#350c26", type: "global-color" },

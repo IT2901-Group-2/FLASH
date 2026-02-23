@@ -8,7 +8,7 @@ type MainColorRole = "neutral" | "accent";
 type StatusColorRole = "success" | "warning" | "danger";
 
 /* --- Brand colors --- */
-type BrandColorRole = "brand-purple";
+type BrandColorRole = "purple";
 
 /* --- All colors --- */
 type ColorRole = MainColorRole | StatusColorRole | BrandColorRole;
