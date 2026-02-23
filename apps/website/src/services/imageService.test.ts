@@ -4,15 +4,13 @@ import upath from "upath";
 import { tmpdir } from "os";
 import fs from "fs/promises";
 import { ImageService } from "./imageService";
-import { FileStorage, FSStorage } from "file-storage";
+import { FSStorage } from "file-storage";
 import { DatabaseService } from "./databaseService";
 import { eventTable, imageTable } from "@/db";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { Result } from "typescript-result";
 
 let tmpDir: string;
-let storage: FileStorage;
-let dbService: DatabaseService;
 let imageService: ImageService;
 
 const mockEvents: (typeof eventTable.$inferInsert)[] = [
@@ -73,8 +71,8 @@ const mockImages: MockImage[] = [
 
 beforeEach(async () => {
   tmpDir = await fs.mkdtemp(upath.join(tmpdir(), "test-imageService-"));
-  storage = new FSStorage(tmpDir);
-  dbService = await DatabaseService.create(storage).getOrThrow();
+  const storage = new FSStorage(tmpDir);
+  const dbService = await DatabaseService.create(storage).getOrThrow();
   imageService = new ImageService(dbService, storage);
 
   await dbService.db.insert(eventTable).values(mockEvents);
@@ -217,5 +215,45 @@ describe("ImageService downloadImage", () => {
         .map(buff => buff.toString("base64"))
         .getOrThrow()
     ).toBe(mockImageData[0]!.toString("base64"));
+  });
+});
+
+describe("ImageService uploadImage", () => {
+  it("Should return Err when database call fails", async () => {
+    vi.spyOn(BetterSQLite3Database.prototype, "insert").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(await imageService.uploadImage("wedding", mockImageData[0]!));
+  });
+
+  it("Should return Err when event does not exist", async () => {
+    Result.assertError(await imageService.uploadImage("funeral", mockImageData[0]!));
+  });
+
+  it("Should return Err when image is invalid", async () => {
+    Result.assertError(await imageService.uploadImage("funeral", "not an image"));
+  });
+
+  it("Should correctly upload image", async () => {
+    const flush = vi.spyOn(DatabaseService.prototype, "flush");
+
+    const image1 = await imageService
+      .uploadImage("wedding", mockImageData[2]!)
+      .getOrThrow();
+
+    expect(image1.eventId).toBe("wedding");
+    expect(image1.isApproved).toBeNull();
+    Result.assertOk(await imageService["storage"].read(`${image1.id}.webp`));
+    expect(flush).toHaveBeenCalledOnce();
+
+    const image2 = await imageService
+      .uploadImage("birthday", mockImageData[3]!)
+      .getOrThrow();
+
+    expect(image2.eventId).toBe("birthday");
+    expect(image2.isApproved).toBeNull();
+    Result.assertOk(await imageService["storage"].read(`${image2.id}.webp`));
+    expect(flush).toHaveBeenCalledTimes(2);
   });
 });
