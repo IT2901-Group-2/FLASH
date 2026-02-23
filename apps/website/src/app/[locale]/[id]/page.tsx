@@ -17,7 +17,7 @@ export default function Page() {
   const eventData = data?.[0];
 
   const eventName = eventData?.name ?? (isLoading ? "Loading event..." : "Event");
-  // Nickname should be added later in join event card, for now we can just show the guest code if it exists
+  // TODO: Nickname should be added later in join event card, for now we can just show the guest code if it exists
   const nickname = eventData?.guestCode ? `Code: ${eventData.guestCode}` : "Guest";
   const uploadsRemaining =
     typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
@@ -50,6 +50,7 @@ export default function Page() {
       ) : null}
       <ActionCard
         className={styles.mobileOnly}
+        description={`You have ${uploadsRemaining} uploads remaining`}
         primaryButton={{
           "data-color": "brand-purple",
           icon: <Upload size={18} />,
