@@ -185,3 +185,37 @@ describe("ImageService getImages", () => {
     ).toStrictEqual(new Set(["image-5"]));
   });
 });
+
+describe("ImageService downloadImage", () => {
+  it("Should return Err when database call fails", async () => {
+    vi.spyOn(BetterSQLite3Database.prototype, "select").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(await imageService.downloadImage("wedding", "image-3"));
+  });
+
+  it("Should return Err when image does not exist", async () => {
+    Result.assertError(await imageService.downloadImage("wedding", "image-100"));
+  });
+
+  it("Should return Err when image belong to wrong event", async () => {
+    Result.assertError(await imageService.downloadImage("wedding", "image-1"));
+  });
+
+  it("Should correctly download image", async () => {
+    expect(
+      await imageService
+        .downloadImage("wedding", "image-3")
+        .map(buff => buff.toString("base64"))
+        .getOrThrow()
+    ).toBe(mockImageData[2]!.toString("base64"));
+
+    expect(
+      await imageService
+        .downloadImage("birthday", "image-1")
+        .map(buff => buff.toString("base64"))
+        .getOrThrow()
+    ).toBe(mockImageData[0]!.toString("base64"));
+  });
+});
