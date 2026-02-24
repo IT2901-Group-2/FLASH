@@ -3,6 +3,7 @@ import { render, screen, cleanup, fireEvent, act } from "@testing-library/react"
 import type { ReactElement } from "react";
 import { NextIntlClientProvider } from "next-intl";
 import Page from "./page";
+import * as downloadQrCodeModule from "@/utils/downloadqrcode";
 
 let fromParam: string | null = null;
 
@@ -137,5 +138,19 @@ describe("Share Event Page", () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it("downloads QR svg when clicking download button", () => {
+    const downloadSpy = vi
+      .spyOn(downloadQrCodeModule, "downloadQrSvg")
+      .mockImplementation(() => undefined);
+
+    renderWithIntl(<Page />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Download QR code" }));
+
+    expect(downloadSpy).toHaveBeenCalledWith(expect.any(SVGElement), "qr-abc123-g.svg");
+
+    downloadSpy.mockRestore();
   });
 });
