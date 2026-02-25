@@ -66,7 +66,7 @@ export class DatabaseService {
    * @returns An empty result or an error.
    */
   initialize(): AsyncResult<void, Error> {
-    return storage
+    return this.storage
       .read(this.dbPath)
       .map(buf => new Sqlite(buf))
       .recover(() => new Sqlite(":memory:"))

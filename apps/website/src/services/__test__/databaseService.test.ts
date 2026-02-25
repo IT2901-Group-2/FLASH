@@ -44,7 +44,11 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("DatabaseService create", () => {
+describe("DatabaseService initialize", () => {
+  it("Should throw an error when accessing db before initialization", () => {
+    expect(() => new DatabaseService(storage).db).toThrow();
+  });
+
   it("Should return Err when database migration fails", async () => {
     vi.restoreAllMocks();
     vi.spyOn(
@@ -54,11 +58,12 @@ describe("DatabaseService create", () => {
       "migrateDatabase"
     ).mockImplementationOnce(() => Result.error(new Error("")));
 
-    Result.assertError(await DatabaseService.create(storage));
+    Result.assertError(await new DatabaseService(storage).initialize());
   });
 
   it("Should create empty database", async () => {
-    const dbService = await DatabaseService.create(storage, "database.db").getOrThrow();
+    const dbService = new DatabaseService(storage, "database.db");
+    await dbService.initialize().getOrThrow();
 
     dbService.flush();
     await dbService["flushPromise"];
@@ -74,7 +79,8 @@ describe("DatabaseService create", () => {
     data.forEach(d => insertTestData(db, d));
     await storage.write("database.db", db.serialize());
 
-    const dbService = await DatabaseService.create(storage, "database.db").getOrThrow();
+    const dbService = new DatabaseService(storage, "database.db");
+    await dbService.initialize().getOrThrow();
 
     expect(new Set(getTestData(dbService.db.$client))).toStrictEqual(new Set(data));
   });
@@ -84,7 +90,9 @@ describe("DatabaseService flush", () => {
   it("Should flush changes to file", async () => {
     const data = new Array(10).fill(null).map(() => randomUUID());
 
-    const dbService = await DatabaseService.create(storage, "database.db").getOrThrow();
+    const dbService = new DatabaseService(storage, "database.db");
+    await dbService.initialize().getOrThrow();
+
     createTestTable(dbService.db.$client);
     data.forEach(d => insertTestData(dbService.db.$client, d));
 
@@ -97,9 +105,10 @@ describe("DatabaseService flush", () => {
   });
 
   it("Should debounce flushes", async () => {
-    const dbService = await DatabaseService.create(storage).getOrThrow();
-    const flushOriginal = dbService["flushDatabase"].bind(dbService);
+    const dbService = new DatabaseService(storage, "database.db");
+    await dbService.initialize().getOrThrow();
 
+    const flushOriginal = dbService["flushDatabase"].bind(dbService);
     const flushDatabase = vi
       .spyOn(
         dbService as unknown as {
