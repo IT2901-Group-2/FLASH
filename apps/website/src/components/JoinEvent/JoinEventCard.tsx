@@ -1,5 +1,5 @@
 "use client";
-import { useState, FormEvent } from "react";
+import { useState, SubmitEvent } from "react";
 import { TextAlignStart } from "lucide-react";
 import { Card, Input, Button, Title, DropdownControl } from "ui";
 import { useTranslations } from "next-intl";
@@ -16,10 +16,10 @@ const JoinEventCard = () => {
 
   const { refetch, isFetching } = useEventsQuery({ guestCode: code }, false);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!code.trim()) {
-      setError("Please enter a guest code.");
+      setError("Please enter an event code.");
       return;
     }
 
