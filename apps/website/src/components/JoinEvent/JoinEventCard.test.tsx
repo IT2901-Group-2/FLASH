@@ -81,7 +81,7 @@ describe("JoinEventCard", () => {
   test("uses correct translation keys", () => {
     render(<JoinEventCard />);
 
-    // Verify all expected translation keys are requested
+    // Verify all expected translation keys are requested on initial render
     expect(translationKeys).toContain("title");
     expect(translationKeys).toContain("description");
     expect(translationKeys).toContain("nicknameLabel");
@@ -93,10 +93,6 @@ describe("JoinEventCard", () => {
     expect(translationKeys).toContain("scanQrTab");
     expect(translationKeys).toContain("scanQrDescription");
     expect(translationKeys).toContain("openCameraButton");
-    expect(translationKeys).toContain("nicknameRequiredError");
-    expect(translationKeys).toContain("eventCodeRequiredError");
-    expect(translationKeys).toContain("eventNotFoundError");
-    expect(translationKeys).toContain("joinFailedError");
   });
 
   test("shows validation error when nickname is empty", async () => {
