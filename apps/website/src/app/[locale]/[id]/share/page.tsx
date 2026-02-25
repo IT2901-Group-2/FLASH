@@ -8,6 +8,7 @@ import styles from "./ShareEvent.module.css";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { useEventsQuery } from "@/hooks/useEvents";
 import { downloadQrSvg } from "@/utils/downloadqrcode";
+import { useCopyToClipboard } from "usehooks-ts";
 
 type ShareOrigin = "create" | "share";
 
@@ -21,10 +22,7 @@ export default function Page() {
   const eventId = typeof params.id === "string" ? params.id : "";
 
   const [shareRole, setShareRole] = useState<"guest" | "moderator">("guest");
-  const [copied, setCopied] = useState(false);
-  const [copyError, setCopyError] = useState<string | null>(null);
 
-  const timeoutRef = useRef<number | null>(null);
   const qrContainerRef = useRef<HTMLDivElement>(null);
 
   const mounted = useIsMounted();
@@ -52,11 +50,19 @@ export default function Page() {
   const shareUrl = mounted ? `${window.location.origin}${sharePath}` : sharePath;
   const displayCode = shareCode ?? "—";
 
+  const [copiedText, copy] = useCopyToClipboard();
+  const [showCopiedFeedback, setShowCopiedFeedback] = useState(false);
+  const copied = showCopiedFeedback && copiedText === shareUrl;
+
   useEffect(() => {
-    return () => {
-      if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
-    };
-  }, []);
+    if (!showCopiedFeedback) return;
+
+    const timeoutId = window.setTimeout(() => {
+      setShowCopiedFeedback(false);
+    }, 1500);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [showCopiedFeedback]);
 
   const originDependentContent =
     origin === "create"
@@ -82,18 +88,16 @@ export default function Page() {
           description: t("links.moderator.description"),
         };
 
-  const handleCopy = async () => {
-    setCopyError(null);
-    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
-
-    try {
-      await navigator.clipboard.writeText(`${window.location.origin}${sharePath}`);
-      setCopied(true);
-      timeoutRef.current = window.setTimeout(() => setCopied(false), 1200);
-    } catch {
-      setCopied(false);
-      setCopyError(t("errors.copyFailed"));
-    }
+  const handleCopy = (text: string) => () => {
+    copy(text)
+      .then(() => {
+        setShowCopiedFeedback(true);
+        console.log(t("aria.copied"), { text });
+      })
+      .catch(error => {
+        setShowCopiedFeedback(false);
+        console.error(t("errors.copyFailed"), error);
+      });
   };
 
   const handleDownloadQR = () => {
@@ -189,13 +193,12 @@ export default function Page() {
                 size={18}
                 aria-label={t("aria.copyLink")}
                 style={{ cursor: "pointer" }}
-                onClick={handleCopy}
+                onClick={handleCopy(shareUrl)}
               />
             )
           }
           iconPosition="right"
         />
-        {copyError ? <p className={styles.copyError}>{copyError}</p> : null}
         {!isLoading && (isError || !eventData) ? (
           <p className={styles.copyError}>Could not load event share data.</p>
         ) : null}

@@ -7,6 +7,8 @@ import * as downloadQrCodeModule from "@/utils/downloadqrcode";
 
 let fromParam: string | null = null;
 
+//TODO: A lot of these will have to be updated when the page has been fully reworked
+
 vi.mock("next/navigation", () => ({
   useSearchParams: () => ({
     get: (key: string) => (key === "from" ? fromParam : null),

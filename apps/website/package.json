@@ -28,6 +28,7 @@
     "typescript-result": "^3.5.2",
     "ui": "workspace:*",
     "upath": "^2.0.1",
+    "usehooks-ts": "^3.1.1",
     "zod": "^4.3.6"
   },
   "devDependencies": {

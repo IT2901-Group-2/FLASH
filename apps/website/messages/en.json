@@ -135,7 +135,7 @@
       "moderatorAlert": "moderator link alert",
       "guestLinkInput": "guest-link",
       "moderatorLinkInput": "moderator-link",
-      "copyLink": "copy-link",
+      "copyLink": "Copy link to clipboard",
       "copied": "Copied successfully!"
     }
   },
