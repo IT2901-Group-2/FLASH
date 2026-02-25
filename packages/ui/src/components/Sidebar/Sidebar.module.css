@@ -40,6 +40,9 @@
     position: absolute;
     left: -100%;
 
+    transition-property: width, left;
+    transition-duration: 0.5s;
+
     &[data-open="true"] {
       left: 0;
       width: 60%;
