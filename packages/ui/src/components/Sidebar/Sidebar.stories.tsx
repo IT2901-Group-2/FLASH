@@ -39,11 +39,7 @@ export default meta;
 type Story = StoryObj<typeof Sidebar>;
 
 export const Simple: Story = {
-  render: () => (
-    <Sidebar defaultOpen={true}>
-      <Sidebar.Trigger />
-    </Sidebar>
-  ),
+  render: () => <Sidebar defaultOpen={true}></Sidebar>,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const sidebar = canvas.getByRole("sidebar");
@@ -67,7 +63,6 @@ export const Simple: Story = {
 export const WithGroupAndItems: Story = {
   render: () => (
     <Sidebar>
-      <Sidebar.Trigger />
       <Sidebar.Header style={{ height: "5rem" }} />
       <Sidebar.Group title="Test Title">
         <Sidebar.Item icon={<SquareDashed />}>Test 1</Sidebar.Item>
@@ -115,7 +110,6 @@ export const WithGroupAndItems: Story = {
 export const GroupPosition: Story = {
   render: () => (
     <Sidebar>
-      <Sidebar.Trigger />
       <Sidebar.Header style={{ height: "5rem" }} />
       <Sidebar.Group title="Test Title" position="center">
         <Sidebar.Item icon={<SquareDashed />}>Test 1</Sidebar.Item>
@@ -144,7 +138,6 @@ export const GroupPosition: Story = {
 export const FullExample: Story = {
   render: () => (
     <Sidebar>
-      <Sidebar.Trigger />
       <Sidebar.Header style={{ height: "5rem" }} />
       <Sidebar.Group title="MAIN" position="top">
         <Sidebar.Item icon={<House />}>Desktop</Sidebar.Item>

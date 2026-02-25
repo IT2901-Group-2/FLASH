@@ -1,4 +1,4 @@
-import { ChevronLeft } from "lucide-react";
+import { Sidebar } from "lucide-react";
 import { useSidebar } from "./SidebarContext";
 import styles from "./Sidebar.module.css";
 import { HTMLAttributes } from "react";
@@ -20,7 +20,7 @@ export const SidebarTrigger = ({
       role="sidebar-trigger"
       {...rest}
     >
-      <ChevronLeft />
+      <Sidebar />
     </button>
   );
 };
