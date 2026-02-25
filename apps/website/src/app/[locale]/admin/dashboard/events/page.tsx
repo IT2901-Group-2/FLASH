@@ -33,7 +33,7 @@ const Page = () => {
       <h3>Events</h3>
       <div className={styles.eventsContainer}>
         {isLoading ? (
-          <div className={styles.loadingContainer}>
+          <div className={styles.loadingContainer} data-testid="loading-spinner">
             <Loader size="3xlarge" />
           </div>
         ) : (
