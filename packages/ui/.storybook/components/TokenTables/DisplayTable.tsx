@@ -20,7 +20,7 @@ export const DisplayTable = ({ tokens, renderPreview }: DisplayTableProps) => {
                 <span>{stripVar(token.cssValue)}</span>
               </td>
               <td>
-                <CopyButton copyValue={stripVar(token.name)} />
+                <CopyButton copyValue={stripVar(token.cssValue)} />
               </td>
             </tr>
           );
