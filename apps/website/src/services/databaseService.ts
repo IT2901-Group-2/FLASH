@@ -15,18 +15,30 @@ export type Database = ReturnType<typeof drizzle<typeof schema>>;
  */
 export class DatabaseService {
   public static readonly DRIZZLE_MIGRATION_FOLDER: string = "drizzle";
-
   private readonly storage: FileStorage;
   private readonly dbPath: string;
-  public readonly db: Database;
 
+  private _db: Database | null = null;
   private flushPromise: Promise<void> | null = null;
   private dirty: boolean = false;
 
-  constructor(storage: FileStorage, db: Database, dbPath: string = "index.db") {
+  /**
+   * Creates a `DatabaseService` instance associated with a `FileStorage` instance.
+   *
+   * @param storage The `FileStorage` object to read from/write to.
+   * @param dbPath The path to save the database as.
+   */
+  constructor(storage: FileStorage, dbPath: string = "index.db") {
     this.storage = storage;
-    this.db = db;
     this.dbPath = dbPath;
+  }
+
+  get db(): Database {
+    if (this._db === null) {
+      throw new Error("DatabaseService used before initialization");
+    }
+
+    return this._db;
   }
 
   /**
@@ -46,24 +58,22 @@ export class DatabaseService {
   }
 
   /**
-   * Creates a `DatabaseService` instance assosiated with a storage.
-   * Attempts to open a database from storage at `dbPath`, otherwise creates a new database.
+   * Initializes the `DatabaseService` instance.
+   * Attempts to read the database from `FileStorage` at `dbPath`, otherwise creates a new database.
+   * Also migrates the database schema if neccessary.
    *
-   * @param storage The `FileStorage` object to read from/write to.
-   * @param dbPath The path to save the database as.
-   * @returns A result with the created `DatabaseService` or an error.
+   * @returns An empty result or an error.
    */
-  static create(
-    storage: FileStorage,
-    dbPath: string = "index.db"
-  ): AsyncResult<DatabaseService, Error> {
+  initialize(): AsyncResult<void, Error> {
     return storage
-      .read(dbPath)
+      .read(this.dbPath)
       .map(buf => new Sqlite(buf))
       .recover(() => new Sqlite(":memory:"))
       .map(client => drizzle(client, { schema }))
-      .map(db => this.migrateDatabase(db))
-      .map(db => new DatabaseService(storage, db, dbPath));
+      .map(db => DatabaseService.migrateDatabase(db))
+      .map(db => {
+        this._db = db;
+      });
   }
 
   /**
@@ -84,4 +94,11 @@ export class DatabaseService {
   }
 }
 
-export const dbService = await DatabaseService.create(storage).getOrThrow();
+// Prevent NextJS from making multiple DatabaseService instances
+// https://github.com/vercel/next.js/discussions/15054
+declare global {
+  var _dbService: DatabaseService;
+}
+
+global._dbService ??= new DatabaseService(storage);
+export const dbService = global._dbService;

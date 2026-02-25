@@ -8,7 +8,7 @@ export type StorageConfig =
   | { backend: "gcloud"; bucket: string; options: StorageOptions };
 
 export function getStorageConfig(): StorageConfig {
-  const backend = process.env.STORAGE_BACKEND;
+  const backend = process.env.STORAGE_BACKEND ?? "fs";
 
   switch (backend) {
     case "fs":
