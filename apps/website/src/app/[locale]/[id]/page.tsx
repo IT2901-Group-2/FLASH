@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { ArrowLeft, Camera, Upload } from "lucide-react";
 import styles from "./UploadImage.module.css";
 import { ActionCard, PhoneHeader } from "ui";
@@ -33,6 +34,7 @@ export default function Page() {
       // TODO: Handle file upload logic here
     },
   });
+  const [isQrOpen, setIsQrOpen] = useState(false);
 
   return (
     <div className={styles.pageWrapper}>
@@ -49,12 +51,13 @@ export default function Page() {
         onPrimaryClick={openFilePicker}
         primaryText={t("actions.uploadImage")}
         secondaryText={t("actions.takePhoto")}
+        onQrOpenChange={setIsQrOpen}
       ></PhoneHeader>
       {!isLoading && (isError || !eventData) ? (
         <p className={styles.errorText}>Could not load event details for this link.</p>
       ) : null}
       <ActionCard
-        className={styles.mobileOnly}
+        className={`${styles.mobileOnly} ${isQrOpen ? styles.dimmed : ""}`}
         description={uploadsDescription}
         primaryButton={{
           "data-color": "brand-purple",
