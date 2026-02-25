@@ -1,8 +1,8 @@
 // @vitest-environment node
 import { describe, it, beforeEach, expect, vi, afterEach } from "vitest";
-import { DatabaseService } from "./databaseService";
+import { DatabaseService } from "../databaseService";
 import { Result } from "typescript-result";
-import { EventService } from "./eventService";
+import { EventService } from "../eventService";
 import { eventTable } from "@/db";
 import { subDays, addDays, subHours, addHours, setMilliseconds } from "date-fns";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
