@@ -4,7 +4,7 @@ import SidebarItem, { SidebarItemProps } from "./SidebarItem";
 import SidebarGroup, { SidebarGroupProps } from "./SidebarGroup";
 import SidebarHeader, { SidebarHeaderProps } from "./SidebarHeader";
 import SidebarFooter, { SidebarFooterProps } from "./SidebarFooter";
-import SidebarProvider from "./SidebarContext";
+import SidebarProvider, { useSidebar } from "./SidebarContext";
 import { cl } from "@/util/helpers/";
 
 export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
@@ -13,6 +13,10 @@ export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
    * @default true
    */
   open?: boolean;
+  /**
+   * If the button to toggle the state is visible.
+   */
+  showToggleButton?: boolean;
   /**
    * Callback function that is called every time the sidebar opens/closes
    */
@@ -27,22 +31,37 @@ export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
 export const Sidebar = ({
   onOpenChange,
   open,
-  className,
-  children,
+  showToggleButton,
   ...rest
 }: SidebarProps) => {
   return (
-    <SidebarProvider onOpenChange={onOpenChange} open={open}>
-      <div
-        data-color={"foreground"}
-        data-open={open}
-        className={cl(className, styles.sidebar)}
-        {...rest}
-        role="sidebar"
-      >
-        {children}
-      </div>
+    <SidebarProvider
+      onOpenChange={onOpenChange}
+      open={open}
+      showToggleButton={showToggleButton}
+    >
+      <SidebarContent {...rest} />
     </SidebarProvider>
+  );
+};
+
+const SidebarContent = ({
+  className,
+  children,
+  ...rest
+}: HTMLAttributes<HTMLDivElement>) => {
+  const { open } = useSidebar();
+
+  return (
+    <aside
+      data-color={"foreground"}
+      data-open={open}
+      className={cl(className, styles.sidebar)}
+      {...rest}
+      role="sidebar"
+    >
+      {children}
+    </aside>
   );
 };
 

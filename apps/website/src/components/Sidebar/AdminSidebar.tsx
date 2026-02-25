@@ -14,7 +14,15 @@ import Logo from "../Logo/Logo";
 /**
  * Admin sidebar used in the /admin/dashboard pages
  */
-export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) => {
+export const AdminSidebar = ({
+  className,
+  onOpenChange,
+  open,
+  ...rest
+}: HTMLAttributes<HTMLDivElement> & {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) => {
   const navigation = useRouter();
   const t = useTranslations("admin.dashboard.sidebar");
   const { resolvedTheme, toggleTheme } = useTheme();
@@ -22,7 +30,7 @@ export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivEleme
   const mounted = useIsMounted();
 
   return (
-    <Sidebar className={className} {...rest}>
+    <Sidebar className={className} {...rest} open={open} onOpenChange={onOpenChange}>
       <Sidebar.Header logo={<Logo />} />
       <Sidebar.Group title="MAIN">
         <Sidebar.Item
