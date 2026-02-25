@@ -13,7 +13,6 @@ const Page = () => {
       <Logo />
       <Title
         align="center"
-        size="xlarge"
         as="h1"
         data-color="brand-purple"
         description={t("appDescription")}
