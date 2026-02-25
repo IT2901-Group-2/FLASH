@@ -1,5 +1,5 @@
 import { GetImages, Image, UpdateImage } from "@/db";
-import readResponseError, { fetchJson } from "@/lib/utils/api";
+import { fetchJson } from "@/lib/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 /**

@@ -7,7 +7,7 @@ import {
   CreateEventInput,
   UpdateEventInput,
 } from "@/types/eventTypes";
-import readResponseError, { fetchJson, toIso } from "@/lib/utils/api";
+import { fetchJson, toIso } from "@/lib/utils/api";
 
 /**
  * Serializes an `EventsQueryParams` object into a URL query string (e.g. `?status=active&archived=false`).
