@@ -6,6 +6,7 @@ import SidebarHeader, { SidebarHeaderProps } from "./SidebarHeader";
 import SidebarFooter, { SidebarFooterProps } from "./SidebarFooter";
 import SidebarProvider, { useSidebar } from "./SidebarContext";
 import { cl } from "@/util/helpers/";
+import SidebarTrigger from "./SidebarTrigger";
 
 export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
   /**
@@ -28,28 +29,7 @@ export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
  *
  * > _Last updated: `2026-02-05`_
  */
-export const Sidebar = ({
-  onOpenChange,
-  open,
-  showToggleButton,
-  ...rest
-}: SidebarProps) => {
-  return (
-    <SidebarProvider
-      onOpenChange={onOpenChange}
-      open={open}
-      showToggleButton={showToggleButton}
-    >
-      <SidebarContent {...rest} />
-    </SidebarProvider>
-  );
-};
-
-const SidebarContent = ({
-  className,
-  children,
-  ...rest
-}: HTMLAttributes<HTMLDivElement>) => {
+const Sidebar = ({ children, className, ...rest }: HTMLAttributes<HTMLDivElement>) => {
   const { open } = useSidebar();
 
   return (
@@ -70,6 +50,7 @@ Sidebar.Header = SidebarHeader;
 Sidebar.Group = SidebarGroup;
 Sidebar.Item = SidebarItem;
 Sidebar.Footer = SidebarFooter;
+Sidebar.Trigger = SidebarTrigger;
 
 export default Sidebar;
 export { SidebarHeader, SidebarGroup, SidebarItem, SidebarFooter };

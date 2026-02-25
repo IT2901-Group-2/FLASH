@@ -24,6 +24,7 @@
 
   position: sticky;
   top: 0;
+  z-index: 10;
 
   > *:not(.trigger, .sidebarHeader) {
     overflow: hidden;
@@ -45,8 +46,8 @@
 
     &[data-open="true"] {
       left: 0;
-      width: 60%;
-      max-width: 60%;
+      width: calc(100% - 10rem);
+      max-width: calc(100% - 10rem);
     }
   }
 }
