@@ -63,18 +63,24 @@ export class DatabaseService {
    * Attempts to read the database from `FileStorage` at `dbPath`, otherwise creates a new database.
    * Also migrates the database schema if neccessary.
    *
-   * @returns An empty result or an error.
+   * @returns A result indicating whether an existing database was loaded or an error.
    */
-  initialize(): AsyncResult<void, Error> {
+  initialize(): AsyncResult<boolean, Error> {
+    let loaded = true;
+
     return this.storage
       .read(this.dbPath)
       .map(buf => new Sqlite(buf))
-      .recover(() => new Sqlite(":memory:"))
+      .onFailure(() => {
+        loaded = false;
+      })
+      .recoverCatching(() => new Sqlite(":memory:"))
       .map(client => drizzle(client, { schema }))
       .map(db => DatabaseService.migrateDatabase(db))
       .map(db => {
         this._db = db;
-      });
+      })
+      .map(() => loaded);
   }
 
   /**

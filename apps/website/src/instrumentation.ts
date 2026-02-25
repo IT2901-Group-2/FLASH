@@ -1,6 +1,13 @@
 export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
     const { dbService } = await import("./services/databaseService");
-    await dbService.initialize();
+
+    // Initialize database service
+    console.log("\x1b[1;32m✓\x1b[0m Initializing database...");
+    console.log(
+      (await dbService.initialize().getOrThrow())
+        ? "\x1b[1;32m✓\x1b[0m Loaded existing database"
+        : "\x1b[1;33mW\x1b[0m Couldn't load existing database. A new database has been created instead."
+    );
   }
 }

@@ -63,7 +63,7 @@ describe("DatabaseService initialize", () => {
 
   it("Should create empty database", async () => {
     const dbService = new DatabaseService(storage, "database.db");
-    await dbService.initialize().getOrThrow();
+    expect(await dbService.initialize().getOrThrow()).toBe(false);
 
     dbService.flush();
     await dbService["flushPromise"];
@@ -80,7 +80,7 @@ describe("DatabaseService initialize", () => {
     await storage.write("database.db", db.serialize());
 
     const dbService = new DatabaseService(storage, "database.db");
-    await dbService.initialize().getOrThrow();
+    expect(await dbService.initialize().getOrThrow()).toBe(true);
 
     expect(new Set(getTestData(dbService.db.$client))).toStrictEqual(new Set(data));
   });
