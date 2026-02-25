@@ -6,6 +6,7 @@ import { Copy, Check, CircleAlert, QrCode, Download } from "lucide-react";
 import { Title, Controls, QRDisplay, Input, ActionCard } from "ui";
 import styles from "./ShareEvent.module.css";
 import { useIsMounted } from "@/hooks/useIsMounted";
+import { downloadQrSvg } from "@/utils/downloadqrcode";
 
 type ShareOrigin = "create" | "share";
 
@@ -27,6 +28,7 @@ export default function Page() {
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState<string | null>(null);
   const timeoutRef = useRef<number | null>(null);
+  const qrContainerRef = useRef<HTMLDivElement | null>(null);
 
   const originDependentContent =
     origin === "create"
@@ -68,7 +70,10 @@ export default function Page() {
   };
 
   const handleDownloadQR = () => {
-    // TODO: Add logic for downloading QR code
+    const svg = qrContainerRef.current?.querySelector("svg");
+    if (svg) {
+      downloadQrSvg(svg, `qr-${displayCode.toLowerCase()}.svg`);
+    }
   };
 
   const handleDone = () => {
@@ -103,7 +108,10 @@ export default function Page() {
         />
       </div>
 
-      <div style={{ alignSelf: "center", margin: "0.5rem 0 0.25rem" }}>
+      <div
+        ref={qrContainerRef}
+        style={{ alignSelf: "center", margin: "0.5rem 0 0.25rem" }}
+      >
         <QRDisplay value={shareUrl} code={displayCode} />
       </div>
 
