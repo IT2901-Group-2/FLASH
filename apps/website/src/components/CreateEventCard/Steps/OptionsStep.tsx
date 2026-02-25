@@ -16,7 +16,7 @@ export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
   return (
     <>
       <Title description={t("description")}>{t("title")}</Title>
-      <DropdownControl value={limitMode} onChange={setLimitMode}>
+      <DropdownControl value={limitMode} onChange={setLimitMode} dropdownBorder>
         <DropdownControl.Item
           value="limited"
           label={t("input.uploads.limited")}

@@ -26,6 +26,11 @@ export type DropdownControlProps = SegmentedControlProps & {
    */
   children: React.ReactNode;
   /**
+   * If the dropdown content has a border arount it.
+   * @default false
+   */
+  dropdownBorder?: boolean;
+  /**
    *
    */
   ref?: React.Ref<HTMLDivElement>;
@@ -43,6 +48,7 @@ const DropdownControl = ({
   onChange,
   className,
   "data-color": color = "accent",
+  dropdownBorder = false,
   ref,
   ...rest
 }: DropdownControlProps) => {
@@ -68,7 +74,11 @@ const DropdownControl = ({
   return (
     <div
       ref={ref}
-      className={cl(styles.dropdownControls, className)}
+      className={cl(
+        styles.dropdownControls,
+        className,
+        dropdownBorder && styles.dropdownBorder
+      )}
       data-color={color}
       {...rest}
     >
