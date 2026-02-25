@@ -6,6 +6,7 @@ import Sqlite from "better-sqlite3";
 import { storage } from "@/config";
 import * as schema from "@/db";
 import upath from "upath";
+import { makeGlobal } from "@/lib/utils/server";
 
 export type Database = ReturnType<typeof drizzle<typeof schema>>;
 
@@ -94,11 +95,4 @@ export class DatabaseService {
   }
 }
 
-// Prevent NextJS from making multiple DatabaseService instances
-// https://github.com/vercel/next.js/discussions/15054
-declare global {
-  var _dbService: DatabaseService;
-}
-
-global._dbService ??= new DatabaseService(storage);
-export const dbService = global._dbService;
+export const dbService = makeGlobal("dbService", new DatabaseService(storage));
