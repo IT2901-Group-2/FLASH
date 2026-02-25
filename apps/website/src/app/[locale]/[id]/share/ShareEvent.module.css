@@ -2,28 +2,46 @@
   margin: 0 auto;
   width: 100%;
   max-width: 26rem;
-  min-height: 100dvh;
+  min-height: auto;
 
   display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
+  gap: 0.875rem;
 
-  gap: 1rem;
-  padding: 1.5rem 1.5rem calc(2.5rem + env(safe-area-inset-bottom));
+  padding: 1rem 1rem max(1rem, env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 
 .actionCardDock {
-  position: sticky;
-  bottom: max(1rem, env(safe-area-inset-bottom)); /* was 2rem */
-  margin-top: auto;
-  padding-top: 0.5rem;
-  z-index: 20;
+  position: static;
+  margin-top: 0.5rem;
+  padding-top: 0;
+  padding-bottom: max(0.875rem, env(safe-area-inset-bottom));
+  z-index: auto;
 }
 
 .actionCardInner {
   width: 100%;
   max-width: 23rem;
   margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .pageWrapper {
+    gap: 1rem;
+    padding: 1.25rem 1.25rem max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .actionCardDock {
+    margin-top: 0.875rem;
+    padding-bottom: 0.5rem;
+  }
+}
+
+@media (min-width: 1024px) and (min-height: 700px) {
+  .actionCardDock {
+    margin-top: 1.5rem;
+  }
 }

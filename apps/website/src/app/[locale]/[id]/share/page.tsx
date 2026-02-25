@@ -1,34 +1,62 @@
 "use client";
-import { useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Copy, Check, CircleAlert, QrCode, Download } from "lucide-react";
 import { Title, Controls, QRDisplay, Input, ActionCard } from "ui";
 import styles from "./ShareEvent.module.css";
 import { useIsMounted } from "@/hooks/useIsMounted";
+import { useEventsQuery } from "@/hooks/useEvents";
 import { downloadQrSvg } from "@/utils/downloadqrcode";
 
 type ShareOrigin = "create" | "share";
 
 export default function Page() {
   const t = useTranslations("ShareEventPage");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const params = useParams<{ locale?: string; id?: string }>();
+  const locale = typeof params.locale === "string" ? params.locale : "en";
+  const eventId = typeof params.id === "string" ? params.id : "";
 
   const [shareRole, setShareRole] = useState<"guest" | "moderator">("guest");
-
-  const searchParams = useSearchParams();
-  const origin: ShareOrigin = searchParams.get("from") === "share" ? "share" : "create";
-
-  const mounted = useIsMounted(); // For avoiding hydration error caused by window.location usage on initial render. Open for alternative solutions
-
-  const eventId = "abc123"; // TODO: Replace with actual event ID
-  const sharePath = `/event/${eventId}/${shareRole}`;
-  const shareUrl = mounted ? `${window.location.origin}${sharePath}` : sharePath;
-  const displayCode = `${eventId.toUpperCase()}-${shareRole.substring(0, 1).toUpperCase()}`;
-
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState<string | null>(null);
+
   const timeoutRef = useRef<number | null>(null);
-  const qrContainerRef = useRef<HTMLDivElement | null>(null);
+  const qrContainerRef = useRef<HTMLDivElement>(null);
+
+  const mounted = useIsMounted();
+
+  const { data, isLoading, isError } = useEventsQuery(
+    eventId ? { id: [eventId], archived: "all" } : undefined
+  );
+  const eventData = data?.[0];
+
+  const origin: ShareOrigin = searchParams.get("from") === "share" ? "share" : "create";
+  const returnToParam = searchParams.get("returnTo");
+  const safeReturnTo =
+    returnToParam && returnToParam.startsWith("/") ? returnToParam : undefined;
+
+  const shareCode =
+    shareRole === "guest" ? eventData?.guestCode : eventData?.moderatorCode;
+  const codeParamName = shareRole === "guest" ? "guestCode" : "moderatorCode";
+
+  const sharePath = eventId
+    ? `/${locale}/${eventId}${
+        shareCode ? `?${codeParamName}=${encodeURIComponent(shareCode)}` : ""
+      }`
+    : `/${locale}`;
+
+  const shareUrl = mounted ? `${window.location.origin}${sharePath}` : sharePath;
+  const displayCode = shareCode ?? "—";
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   const originDependentContent =
     origin === "create"
@@ -59,8 +87,7 @@ export default function Page() {
     if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
 
     try {
-      const absoluteShareUrl = `${window.location.origin}${sharePath}`;
-      await navigator.clipboard.writeText(absoluteShareUrl);
+      await navigator.clipboard.writeText(`${window.location.origin}${sharePath}`);
       setCopied(true);
       timeoutRef.current = window.setTimeout(() => setCopied(false), 1200);
     } catch {
@@ -77,10 +104,15 @@ export default function Page() {
   };
 
   const handleDone = () => {
-    if (origin === "create") {
-      // TODO: route to post-create destination
-    }
-    // TODO: route back to "Event Overview" page
+    // TODO
+    const fallbackReturn =
+      origin === "create"
+        ? `/${locale}/admin/dashboard/events`
+        : eventId
+          ? `/${locale}/admin/dashboard/events/${eventId}`
+          : `/${locale}/admin/dashboard/events`;
+
+    router.push(safeReturnTo ?? fallbackReturn);
   };
 
   return (
@@ -164,6 +196,9 @@ export default function Page() {
           iconPosition="right"
         />
         {copyError ? <p className={styles.copyError}>{copyError}</p> : null}
+        {!isLoading && (isError || !eventData) ? (
+          <p className={styles.copyError}>Could not load event share data.</p>
+        ) : null}
       </div>
 
       <div className={styles.actionCardDock}>
@@ -188,6 +223,7 @@ export default function Page() {
               iconPosition: "left",
               onClick: handleDownloadQR,
               "data-color": "brand-purple",
+              disabled: isLoading || isError || !eventData,
             }}
             primaryButton={{
               text: originDependentContent.doneText,
