@@ -43,7 +43,7 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
       </div>
       <div className={cl(styles.row, styles.uploadLimit)}>
         <Users size={16} />
-        <span>{uploadLimit} photos/person</span>
+        <span>{uploadLimit ? `${uploadLimit} photos per person` : "No photo limit"}</span>
       </div>
     </Card>
   );
