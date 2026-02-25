@@ -41,6 +41,7 @@ type Story = StoryObj<typeof Sidebar>;
 export const Simple: Story = {
   render: () => (
     <Sidebar.Provider>
+      <Sidebar.Trigger />
       <Sidebar />
     </Sidebar.Provider>
   ),
