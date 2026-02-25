@@ -22,6 +22,11 @@ export default function Page() {
   const uploadsRemaining =
     typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
 
+  const uploadsDescription =
+    typeof uploadsRemaining === "number"
+      ? `You have ${uploadsRemaining} uploads remaining`
+      : "You have an unlimited number of uploads";
+
   const { openFilePicker, FileInput } = useFileUpload({
     onFilesSelected: files => {
       console.log("Selected files:", files);
@@ -50,7 +55,7 @@ export default function Page() {
       ) : null}
       <ActionCard
         className={styles.mobileOnly}
-        description={`You have ${uploadsRemaining} uploads remaining`}
+        description={uploadsDescription}
         primaryButton={{
           "data-color": "brand-purple",
           icon: <Upload size={18} />,
