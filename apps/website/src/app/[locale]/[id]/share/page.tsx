@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Copy, Check, CircleAlert, QrCode, Download } from "lucide-react";
-import { Title, Controls, QRDisplay, Input, ActionCard } from "ui";
+import { Title, SegmentedControl, QRDisplay, Input, ActionCard } from "ui";
 import styles from "./ShareEvent.module.css";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { downloadQrSvg } from "@/utils/downloadqrcode";
@@ -13,7 +13,7 @@ type ShareOrigin = "create" | "share";
 export default function Page() {
   const t = useTranslations("ShareEventPage");
 
-  const [shareRole, setShareRole] = useState<"guest" | "moderator">("guest");
+  const [shareRole, setShareRole] = useState<string>("guest");
 
   const searchParams = useSearchParams();
   const origin: ShareOrigin = searchParams.get("from") === "share" ? "share" : "create";
@@ -96,16 +96,15 @@ export default function Page() {
       </Title>
 
       <div style={{ alignSelf: "center" }}>
-        <Controls
-          options={[
-            { value: "guest", label: t("controls.guest") },
-            { value: "moderator", label: t("controls.moderator") },
-          ]}
+        <SegmentedControl
+          fill
           value={shareRole}
           onChange={setShareRole}
-          variant="primary"
           data-color="accent"
-        />
+        >
+          <SegmentedControl.Item value="guest" label={t("controls.guest")} />
+          <SegmentedControl.Item value="moderator" label={t("controls.moderator")} />
+        </SegmentedControl>
       </div>
 
       <div

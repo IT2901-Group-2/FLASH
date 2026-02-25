@@ -1,0 +1,112 @@
+.container {
+  --color-bg: var(--color-background-secondary-500);
+  --color-boder: var(--color-neutral-500);
+  --color-bg-active: var(--data-color-500);
+  --color-bg-hover: var(--data-color-200);
+
+  --color-text: var(--color-neutral-1000);
+  --color-text-active: var(--color-neutral-000);
+  --color-text-hover: var(--color-neutral-700);
+
+  /* Base layout values */
+  --inset-distance: 0.25rem;
+  --inset-total: calc(var(--inset-distance) * var(--item-count) * 2);
+
+  /* Derived sizes */
+  --available-width: calc(100% - var(--inset-total));
+  --backdrop-width: calc(var(--available-width) / var(--item-count));
+
+  /* Positioning */
+  --item-width: calc(100% / var(--item-count));
+  --backdrop-pos: calc(var(--item-width) * var(--selected-index));
+
+  display: flex;
+  flex-direction: column;
+  justify-items: start;
+  gap: 0.5rem;
+
+  width: max-content;
+
+  &[data-fill="true"] {
+    min-width: 100%;
+  }
+
+  .label {
+    font-size: 1.125rem;
+    font-weight: bold;
+    letter-spacing: 0;
+    line-height: 1.5rem;
+    margin: 0;
+  }
+}
+
+.toggleGroup {
+  color: var(--color-text);
+  width: max(100%, 7.5rem);
+
+  border-radius: 1rem;
+  background-color: var(--color-bg);
+  display: grid;
+  grid-template-columns: repeat(var(--item-count), 1fr);
+  position: relative;
+
+  box-shadow: inset 0 0 0 1px var(--color-boder);
+}
+
+.controlButton {
+  color: var(--color-text);
+  font-weight: bold;
+  background-color: transparent;
+
+  min-height: 2.5rem;
+  min-width: max-content;
+
+  padding: 0 1.5rem;
+  margin: var(--inset-distance);
+  border-radius: inherit;
+  border: none;
+  cursor: pointer;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+
+  position: relative;
+  isolation: isolate;
+
+  &:hover:not(&[aria-checked="true"]) {
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-hover);
+  }
+  &[data-size="small"] {
+    min-height: 1.5rem;
+  }
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+    aspect-ratio: 1/1;
+  }
+}
+
+.backdrop {
+  margin: var(--inset-distance);
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--color-bg-active);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+
+  width: var(--backdrop-width);
+  left: var(--backdrop-pos);
+
+  transition: left 0.2s ease-in-out;
+}

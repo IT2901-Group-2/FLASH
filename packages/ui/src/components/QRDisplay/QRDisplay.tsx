@@ -1,6 +1,6 @@
 import styles from "./QRDisplay.module.css";
 import QRCode from "react-qr-code";
-import { cl } from "../../util/className";
+import { cl } from "@//util/helpers/className";
 
 export interface QRDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
   /**

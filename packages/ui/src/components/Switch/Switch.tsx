@@ -3,7 +3,7 @@ import styles from "./Switch.module.css";
 import { Loader } from "../Loader";
 import { Check, Lock } from "lucide-react";
 import { ColorName } from "@/styles/colorType";
-import { cl } from "@/util/className";
+import { cl } from "@/util/helpers/";
 
 export interface SwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
   /**

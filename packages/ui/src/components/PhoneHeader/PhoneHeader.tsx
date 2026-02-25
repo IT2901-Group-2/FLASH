@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { User, Camera, Upload, QrCode } from "lucide-react";
-import { cl } from "../../util/className";
+import { cl } from "@/util/helpers/className";
 import styles from "./PhoneHeader.module.css";
 import { Button } from "../Button";
 import QRDisplay from "../QRDisplay/QRDisplay";

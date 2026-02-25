@@ -23,7 +23,6 @@ p {
 }
 
 .docs-story {
-  background-color: red;
   background-color: var(--canvas-bg-inverted);
 
   > div {
