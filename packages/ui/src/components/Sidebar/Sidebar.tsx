@@ -5,7 +5,6 @@ import SidebarGroup, { SidebarGroupProps } from "./SidebarGroup";
 import SidebarHeader, { SidebarHeaderProps } from "./SidebarHeader";
 import SidebarFooter, { SidebarFooterProps } from "./SidebarFooter";
 import SidebarProvider, { useSidebar } from "./SidebarContext";
-import SidebarTrigger from "./SidebarTrigger";
 import { cl } from "@/util/helpers/";
 
 export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
@@ -21,9 +20,11 @@ export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /**
- * The main container for the sidebar
+ * The sidebar is used in on every admin page.
+ *
+ * > _Last updated: `2026-02-05`_
  */
-const SidebarMain = ({
+export const Sidebar = ({
   className,
   children,
   ...rest
@@ -43,32 +44,11 @@ const SidebarMain = ({
   );
 };
 
-/**
- * The sidebar is used in on every admin page.
- *
- * > _Last updated: `2026-02-05`_
- */
-export const Sidebar = ({
-  defaultOpen = true,
-  onOpenChange,
-  children,
-  className,
-  ...rest
-}: SidebarProps) => {
-  return (
-    <SidebarProvider defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
-      <SidebarMain className={className} {...rest}>
-        {children}
-      </SidebarMain>
-    </SidebarProvider>
-  );
-};
-
+Sidebar.Provider = SidebarProvider;
 Sidebar.Header = SidebarHeader;
 Sidebar.Group = SidebarGroup;
 Sidebar.Item = SidebarItem;
 Sidebar.Footer = SidebarFooter;
-Sidebar.Trigger = SidebarTrigger;
 
 export default Sidebar;
 export { SidebarHeader, SidebarGroup, SidebarItem, SidebarFooter };

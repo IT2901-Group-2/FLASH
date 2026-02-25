@@ -15,7 +15,7 @@ export const useSidebar = () => {
   return context;
 };
 
-interface SidebarProviderProps {
+export interface SidebarProviderProps {
   children: ReactNode;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
