@@ -99,13 +99,14 @@ export const eventsKeys = {
 /**
  * Fetches a list of events, optionally filtered by the provided query params.
  */
-export function useEventsQuery(params?: EventsQueryParams) {
+export function useEventsQuery(params?: EventsQueryParams, enabled = true) {
   return useQuery({
     queryKey: eventsKeys.list(params),
     queryFn: async () => {
       const url = `/api/events${toEventsSearchParams(params)}`;
       return fetchJson<EventDTO[]>(url);
     },
+    enabled,
   });
 }
 
