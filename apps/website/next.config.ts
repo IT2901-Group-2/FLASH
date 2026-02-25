@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   transpilePackages: ["ui", "file-storage"],
   serverExternalPackages: ["better-sqlite3"],
+  outputFileTracingIncludes: {
+    "/api": ["drizzle/**/*"],
+  },
 };
 
 const withNextIntl = createNextIntlPlugin();
