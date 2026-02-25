@@ -87,7 +87,11 @@
     "enterCodeTab": "Enter code",
     "scanQrTab": "Scan QR",
     "scanQrDescription": "Use your camera to scan the event QR code",
-    "openCameraButton": "Open Camera"
+    "openCameraButton": "Open Camera",
+    "error": {
+      "noCode": "Please enter an event code.",
+      "invalidCode": "Invalid guest code. Please try again."
+    }
   },
   "login": {
     "title": "PhotoEvent Admin",

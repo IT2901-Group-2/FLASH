@@ -19,7 +19,7 @@ const JoinEventCard = () => {
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!code.trim()) {
-      setError("Please enter an event code.");
+      setError(t("error.noCode"));
       return;
     }
 
@@ -30,7 +30,7 @@ const JoinEventCard = () => {
       return;
     }
     if (!data?.[0]) {
-      setError("Invalid guest code. Please try again.");
+      setError(t("error.invalidCode"));
       return;
     }
 
