@@ -14,6 +14,8 @@ vi.mock("next-intl", () => ({
       const translations: Record<string, string> = {
         title: "Join Event",
         description: "Enter an event code or scan a QR code",
+        nicknameLabel: "Nickname",
+        nicknamePlaceholder: "Enter your nickname",
         eventCodeLabel: "Event Code",
         eventCodePlaceholder: "Enter code",
         joinButton: "Join",
@@ -21,6 +23,10 @@ vi.mock("next-intl", () => ({
         scanQrTab: "Scan QR",
         scanQrDescription: "Use your camera to scan the event QR code",
         openCameraButton: "Open Camera",
+        nicknameRequiredError: "Please enter a nickname.",
+        eventCodeRequiredError: "Please enter an event code.",
+        eventNotFoundError: "No event found for that code.",
+        joinFailedError: "Could not join event. Please try again.",
       };
       return translations[key] || key;
     };
@@ -63,6 +69,7 @@ describe("JoinEventCard", () => {
 
   test("renders input field with correct label", () => {
     render(<JoinEventCard />);
+    expect(screen.getByText("Nickname")).toBeDefined();
     expect(screen.getByText("Event Code")).toBeDefined();
   });
 
@@ -77,6 +84,8 @@ describe("JoinEventCard", () => {
     // Verify all expected translation keys are requested
     expect(translationKeys).toContain("title");
     expect(translationKeys).toContain("description");
+    expect(translationKeys).toContain("nicknameLabel");
+    expect(translationKeys).toContain("nicknamePlaceholder");
     expect(translationKeys).toContain("eventCodeLabel");
     expect(translationKeys).toContain("eventCodePlaceholder");
     expect(translationKeys).toContain("joinButton");
@@ -84,11 +93,26 @@ describe("JoinEventCard", () => {
     expect(translationKeys).toContain("scanQrTab");
     expect(translationKeys).toContain("scanQrDescription");
     expect(translationKeys).toContain("openCameraButton");
+    expect(translationKeys).toContain("nicknameRequiredError");
+    expect(translationKeys).toContain("eventCodeRequiredError");
+    expect(translationKeys).toContain("eventNotFoundError");
+    expect(translationKeys).toContain("joinFailedError");
+  });
+
+  test("shows validation error when nickname is empty", async () => {
+    render(<JoinEventCard />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Join" }));
+
+    expect(await screen.findByText("Please enter a nickname.")).toBeDefined();
   });
 
   test("shows validation error when event code is empty", async () => {
     render(<JoinEventCard />);
 
+    fireEvent.change(screen.getByLabelText("Nickname"), {
+      target: { value: "Alex" },
+    });
     fireEvent.click(screen.getByRole("button", { name: "Join" }));
 
     expect(await screen.findByText("Please enter an event code.")).toBeDefined();
@@ -103,6 +127,9 @@ describe("JoinEventCard", () => {
 
     render(<JoinEventCard />);
 
+    fireEvent.change(screen.getByLabelText("Nickname"), {
+      target: { value: "Alex" },
+    });
     fireEvent.change(screen.getByLabelText("Event Code"), {
       target: { value: " ABC123 " },
     });
@@ -110,7 +137,7 @@ describe("JoinEventCard", () => {
 
     await waitFor(() => {
       expect(fetchMock).toHaveBeenCalledWith("/api/events?guestCode=ABC123");
-      expect(mockPush).toHaveBeenCalledWith("/en/ev-123");
+      expect(mockPush).toHaveBeenCalledWith("/en/ev-123?nickname=Alex");
     });
   });
 
@@ -123,6 +150,9 @@ describe("JoinEventCard", () => {
 
     render(<JoinEventCard />);
 
+    fireEvent.change(screen.getByLabelText("Nickname"), {
+      target: { value: "Alex" },
+    });
     fireEvent.change(screen.getByLabelText("Event Code"), {
       target: { value: "MISSING" },
     });
@@ -138,6 +168,9 @@ describe("JoinEventCard", () => {
 
     render(<JoinEventCard />);
 
+    fireEvent.change(screen.getByLabelText("Nickname"), {
+      target: { value: "Alex" },
+    });
     fireEvent.change(screen.getByLabelText("Event Code"), {
       target: { value: "ABC123" },
     });
@@ -157,6 +190,9 @@ describe("JoinEventCard", () => {
 
     render(<JoinEventCard />);
 
+    fireEvent.change(screen.getByLabelText("Nickname"), {
+      target: { value: "Alex" },
+    });
     fireEvent.change(screen.getByLabelText("Event Code"), {
       target: { value: "ENTER1" },
     });
@@ -164,7 +200,7 @@ describe("JoinEventCard", () => {
 
     await waitFor(() => {
       expect(fetchMock).toHaveBeenCalledWith("/api/events?guestCode=ENTER1");
-      expect(mockPush).toHaveBeenCalledWith("/en/ev-enter");
+      expect(mockPush).toHaveBeenCalledWith("/en/ev-enter?nickname=Alex");
     });
   });
 });

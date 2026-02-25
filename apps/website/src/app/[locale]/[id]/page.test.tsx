@@ -18,6 +18,7 @@ vi.mock("next-intl", () => ({
 
 vi.mock("next/navigation", () => ({
   useParams: vi.fn(() => ({ id: "event-1", locale: "en" })),
+  useSearchParams: vi.fn(() => ({ get: vi.fn(() => null) })),
 }));
 
 vi.mock("@/hooks/useEvents", () => ({
@@ -53,6 +54,22 @@ afterEach(() => {
 });
 
 describe("Guest Upload Page", () => {
+  it("uses nickname from query param as subtitle", () => {
+    vi.mocked(nextNavigation.useSearchParams).mockReturnValueOnce({
+      get: vi.fn((key: string) => (key === "nickname" ? "Alex" : null)),
+    } as unknown as ReturnType<typeof nextNavigation.useSearchParams>);
+
+    render(<Page />);
+
+    const phoneHeaderMock = vi.mocked(uiModule.PhoneHeader);
+    expect(phoneHeaderMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        subtitle: "Alex",
+      }),
+      undefined
+    );
+  });
+
   it("passes fetched event data to PhoneHeader", () => {
     render(<Page />);
 
