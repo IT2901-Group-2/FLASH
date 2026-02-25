@@ -4,15 +4,15 @@ import SidebarItem, { SidebarItemProps } from "./SidebarItem";
 import SidebarGroup, { SidebarGroupProps } from "./SidebarGroup";
 import SidebarHeader, { SidebarHeaderProps } from "./SidebarHeader";
 import SidebarFooter, { SidebarFooterProps } from "./SidebarFooter";
-import SidebarProvider, { useSidebar } from "./SidebarContext";
+import SidebarProvider from "./SidebarContext";
 import { cl } from "@/util/helpers/";
 
 export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
   /**
-   * If the sidebar starts open or not
+   * If the sidebar is open or not
    * @default true
    */
-  defaultOpen?: boolean;
+  open?: boolean;
   /**
    * Callback function that is called every time the sidebar opens/closes
    */
@@ -25,22 +25,24 @@ export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
  * > _Last updated: `2026-02-05`_
  */
 export const Sidebar = ({
+  onOpenChange,
+  open,
   className,
   children,
   ...rest
-}: HTMLAttributes<HTMLDivElement>) => {
-  const { open } = useSidebar();
-
+}: SidebarProps) => {
   return (
-    <div
-      data-color={"foreground"}
-      data-open={open}
-      className={cl(className, styles.sidebar)}
-      {...rest}
-      role="sidebar"
-    >
-      {children}
-    </div>
+    <SidebarProvider onOpenChange={onOpenChange} open={open}>
+      <div
+        data-color={"foreground"}
+        data-open={open}
+        className={cl(className, styles.sidebar)}
+        {...rest}
+        role="sidebar"
+      >
+        {children}
+      </div>
+    </SidebarProvider>
   );
 };
 

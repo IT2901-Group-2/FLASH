@@ -17,16 +17,16 @@ export const useSidebar = () => {
 
 export interface SidebarProviderProps {
   children: ReactNode;
-  defaultOpen?: boolean;
+  open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 
 export const SidebarProvider = ({
   children,
-  defaultOpen = true,
+  open: _open = true,
   onOpenChange,
 }: SidebarProviderProps) => {
-  const [open, setOpenState] = useState<boolean>(defaultOpen);
+  const [open, setOpenState] = useState<boolean>(_open);
 
   const setOpen = (newOpen: boolean) => {
     setOpenState(newOpen);
