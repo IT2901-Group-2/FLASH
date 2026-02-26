@@ -81,6 +81,8 @@
   "JoinEvent": {
     "title": "Bli med på et arrangement",
     "description": "Skriv inn arrangementskoden eller skann QR-koden for å bli med",
+    "nicknameLabel": "Kallenavn",
+    "nicknamePlaceholder": "Skriv inn kallenavn… f.eks. Alex",
     "eventCodeLabel": "Arrangementskode",
     "eventCodePlaceholder": "Skriv inn kode… f.eks. 245033",
     "joinButton": "Bli med",
@@ -92,6 +94,10 @@
       "invalidCode": "Fyll inn en gyldig event kode",
       "noCode": "Ugyldig kode. Venligst prøv igjenn."
     }
+    "nicknameRequiredError": "Skriv inn et kallenavn.",
+    "eventCodeRequiredError": "Skriv inn en arrangementskode.",
+    "eventNotFoundError": "Fant ikke arrangement for denne koden.",
+    "joinFailedError": "Kunne ikke bli med i arrangementet. Prøv igjen."
   },
   "ShareEventPage": {
     "create": {

@@ -38,6 +38,14 @@ describe("JoinEventCard", () => {
     expect(screen.getByText("joinButton")).toBeDefined();
   });
 
+  test("shows validation error when nickname is empty", async () => {
+    render(<JoinEventCard />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Join" }));
+
+    expect(await screen.findByText("Please enter a nickname.")).toBeDefined();
+  });
+
   test("shows validation error when event code is empty", async () => {
     render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
 

@@ -4,12 +4,13 @@ import styles from "./UploadImage.module.css";
 import { ActionCard, PhoneHeader } from "ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useEventsQuery } from "@/hooks/useEvents";
 
 export default function Page() {
   const t = useTranslations("EventPage");
   const { id } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
   const eventId = typeof id === "string" ? id : "";
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
@@ -17,8 +18,13 @@ export default function Page() {
   const eventData = data?.[0];
 
   const eventName = eventData?.name ?? (isLoading ? "Loading event..." : "Event");
-  // TODO: Nickname should be added later in join event card, for now we can just show the guest code if it exists
-  const nickname = eventData?.guestCode ? `Code: ${eventData.guestCode}` : "Guest";
+  const nicknameParam = searchParams.get("nickname")?.trim();
+  const nickname =
+    nicknameParam && nicknameParam.length > 0
+      ? nicknameParam
+      : eventData?.guestCode
+        ? `Code: ${eventData.guestCode}`
+        : "Guest";
   const uploadsRemaining =
     typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
 

@@ -50,6 +50,21 @@ const JoinEventCard = () => {
           content={
             <form className={styles.content} onSubmit={handleSubmit}>
               <Input
+                label={t("nicknameLabel")}
+                placeholder={t("nicknamePlaceholder")}
+                icon={<TextAlignStart size={24} />}
+                aria-label={t("nicknameLabel")}
+                value={nickname}
+                onChange={e => setNickname(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    void handleJoin();
+                  }
+                }}
+                error={nicknameError ?? undefined}
+              />
+              <Input
                 label={t("eventCodeLabel")}
                 placeholder={t("eventCodePlaceholder")}
                 icon={<TextAlignStart />}
