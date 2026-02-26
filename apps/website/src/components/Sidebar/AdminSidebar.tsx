@@ -3,13 +3,13 @@
 import { Calendar, HardDrive, House, Moon, Settings, Sun } from "lucide-react";
 import { Sidebar } from "ui";
 import SidebarFooter from "./SidebarFooter";
-import { SidebarHeader } from "./SidebarHeader";
 import { useTranslations } from "next-intl";
 import { HTMLAttributes } from "react";
 import { useTheme } from "@/hooks/useTheme";
 import { capitalize } from "@/utils/string-utils";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { useRouter } from "next/navigation";
+import Logo from "../Logo/Logo";
 
 /**
  * Admin sidebar used in the /admin/dashboard pages
@@ -23,11 +23,7 @@ export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivEleme
 
   return (
     <Sidebar className={className} {...rest}>
-      <Sidebar.Trigger style={{ top: "3.5rem" }} />
-      {/* Positioning. Didn't think of a better way */}
-      <Sidebar.Header>
-        <SidebarHeader />
-      </Sidebar.Header>
+      <Sidebar.Header logo={<Logo />} />
       <Sidebar.Group title="MAIN">
         <Sidebar.Item
           icon={<House />}

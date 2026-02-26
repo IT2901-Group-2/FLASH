@@ -1,17 +1,22 @@
-import { HTMLAttributes } from "react";
+import { cloneElement, HTMLAttributes } from "react";
 import styles from "./Sidebar.module.css";
+import SidebarTrigger from "./SidebarTrigger";
+import { useSidebar } from "./SidebarContext";
 
 export interface SidebarHeaderProps extends HTMLAttributes<HTMLElement> {
-  children?: React.ReactNode;
+  logo?: React.ReactElement<HTMLDivElement>;
 }
 
 /**
  * The header component for the sidebar
  */
-export const SidebarHeader = ({ children, ...rest }: SidebarHeaderProps) => {
+export const SidebarHeader = ({ logo, ...rest }: SidebarHeaderProps) => {
+  const { showToggleButton } = useSidebar();
+
   return (
     <div className={styles.sidebarHeader} {...rest}>
-      {children}
+      <div className={styles.logo}>{logo && cloneElement(logo)}</div>
+      {showToggleButton && <SidebarTrigger />}
     </div>
   );
 };

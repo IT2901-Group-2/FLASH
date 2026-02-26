@@ -10,12 +10,6 @@ body {
   background-color: var(--background-primary);
 }
 
-@media screen and (max-width: 768px) {
-  :root {
-    font-size: 12px;
-  }
-}
-
 :root {
   --text-tertiary: #474747;
   --background-primary: #f8f2f5;
