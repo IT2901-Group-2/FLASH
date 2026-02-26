@@ -42,7 +42,8 @@ export type {
 };
 
 /* --- Text tokens --- */
-type RootTextToken = "main" | "accent";
+type LogoColorToken = "logo";
+type RootTextToken = `${LogoColorToken}-primary` | `${LogoColorToken}-secondary`;
 
 type ColoredTextToken =
   | ColoredStatefulBackgroundToken

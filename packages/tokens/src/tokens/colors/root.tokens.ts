@@ -13,12 +13,12 @@ import {
 export function semanticRootTokens(theme: ColorTheme) {
   return {
     text: {
-      main: {
-        value: theme == "light" ? "{warning.300.value}" : "{neutral.700.value}",
+      "logo-primary": {
+        value: theme == "light" ? "{warning.300.value}" : "{neutral.300.value}",
         type: "color",
       },
-      accent: {
-        value: theme == "light" ? "{warning.100.value}" : "{neutral.1000.value}",
+      "logo-secondary": {
+        value: theme == "light" ? "{warning.100.value}" : "{neutral.100.value}",
         type: "color",
       },
     },
