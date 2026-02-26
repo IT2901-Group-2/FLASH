@@ -18,10 +18,11 @@ import { ColorRole } from "./types/output.types";
  * @param withSemanticRoles - Whether to include semantic role tokens. Defaults to true.
  * @returns A merged token config object for light mode tokens.
  */
-export const lightModeTokens = () => {
+export const lightModeTokens = (withSemanticRoles = true) => {
   const config = [
     shadowTokenConfig("light"),
     opacityTokenConfig("light"),
+    withSemanticRoles ? ColorTokensForAllRoles() : {},
     semanticRootTokens("light"),
     LightTokens,
   ];
@@ -33,10 +34,11 @@ export const lightModeTokens = () => {
  * @param withSemanticRoles - Whether to include semantic role tokens. Defaults to true.
  * @returns A merged token config object for dark mode tokens.
  */
-export const darkModeTokens = () => {
+export const darkModeTokens = (withSemanticRoles = true) => {
   const config = [
     shadowTokenConfig("dark"),
     opacityTokenConfig("dark"),
+    withSemanticRoles ? ColorTokensForAllRoles() : {},
     semanticRootTokens("dark"),
     DarkTokens,
   ];
