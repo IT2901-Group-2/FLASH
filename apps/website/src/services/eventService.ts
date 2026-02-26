@@ -3,6 +3,7 @@ import { CreateEvent, Event, eventTable, GetEvent, UpdateEvent } from "@/db";
 import { AsyncResult, Result } from "typescript-result";
 import { getFirstRow } from "@/lib/utils/sql";
 import { and, eq, like, inArray, lt, lte, gte, gt } from "drizzle-orm";
+import { makeGlobal } from "@/lib/utils/makeGlobal";
 
 export class EventService {
   private readonly dbService: DatabaseService;
@@ -101,4 +102,4 @@ export class EventService {
   }
 }
 
-export const eventService = new EventService(dbService);
+export const eventService = makeGlobal("eventService", () => new EventService(dbService));
