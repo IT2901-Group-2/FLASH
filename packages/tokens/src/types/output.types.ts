@@ -42,7 +42,7 @@ export type {
 };
 
 /* --- Text tokens --- */
-type RootTextToken = "logo";
+type RootTextToken = "main" | "accent";
 
 type ColoredTextToken =
   | ColoredStatefulBackgroundToken
