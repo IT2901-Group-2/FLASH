@@ -24,7 +24,7 @@ export function semanticRootTokens(theme: ColorTheme) {
     },
     bg: {
       default: {
-        value: theme === "light" ? "#f8f2f5" : "#0E151F",
+        value: theme === "light" ? "#f8f2f5" : "#0d0d11",
         type: "color",
       },
       input: {
@@ -32,11 +32,11 @@ export function semanticRootTokens(theme: ColorTheme) {
         type: "color",
       },
       raised: {
-        value: theme === "light" ? "{neutral.000.value}" : "{neutral.200.value}",
+        value: theme === "light" ? "{neutral.000.value}" : "#1c181d",
         type: "color",
       },
       sunken: {
-        value: theme === "light" ? "{neutral.200.value}" : "#07090D",
+        value: theme === "light" ? "{neutral.200.value}" : "#29252b",
         type: "color",
       },
       overlay: {
@@ -46,7 +46,7 @@ export function semanticRootTokens(theme: ColorTheme) {
     },
     border: {
       focus: {
-        value: "{neutral.1000.value}",
+        value: theme === "light" ? "{neutral.1000.value}" : "#272529",
         type: "color",
       },
     },
