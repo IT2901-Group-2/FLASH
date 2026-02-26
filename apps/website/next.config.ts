@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   transpilePackages: ["ui", "file-storage"],
   serverExternalPackages: ["better-sqlite3"],
   outputFileTracingIncludes: {
-    "/api": ["drizzle/**/*"],
+    "/": ["drizzle/**/*"],
   },
 };
 
