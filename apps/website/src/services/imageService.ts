@@ -7,6 +7,7 @@ import ShortUniqueId from "short-unique-id";
 import { getFirstRow } from "@/lib/utils/sql";
 import { and, eq, inArray, isNull } from "drizzle-orm";
 import { storage } from "@/config";
+import { makeGlobal } from "@/lib/utils/makeGlobal";
 
 const uid = new ShortUniqueId();
 
@@ -182,4 +183,7 @@ export class ImageService {
   }
 }
 
-export const imageService = new ImageService(dbService, storage);
+export const imageService = makeGlobal(
+  "imageService",
+  () => new ImageService(dbService, storage)
+);
