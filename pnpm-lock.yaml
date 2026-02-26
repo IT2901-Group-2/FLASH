@@ -12,7 +12,7 @@ importers:
     dependencies:
       '@google-cloud/storage':
         specifier: ^7.18.0
-        version: 7.18.0
+        version: 7.19.0
       '@tanstack/react-query':
         specifier: ^5.90.21
         version: 5.90.21(react@19.2.3)
