@@ -1,40 +1,14 @@
 import { describe, it, expect, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import Page from "./page";
-import { NextIntlClientProvider } from "next-intl";
-
-// Mock translations
-const messages = {
-  admin: {
-    login: {
-      title: "PhotoEvent Admin",
-      description: "Manage your photo events with ease",
-      undertext: "Self-hosted Photo Event Management System",
-      signIn: {
-        title: "Sign in",
-        titleDescription: "Enter your credentials to access the admin panel",
-        buttonTitle: "Sign in",
-        inputLabel: "Password",
-      },
-    },
-  },
-};
-
-const renderWithIntl = (component: React.ReactElement) => {
-  return render(
-    <NextIntlClientProvider locale="en" messages={messages}>
-      {component}
-    </NextIntlClientProvider>
-  );
-};
-
-afterEach(() => {
-  cleanup();
-});
 
 describe("AdminLogin Page", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
   it("renders all components together", () => {
-    const { container } = renderWithIntl(<Page />);
+    const { container } = render(<Page />);
     const pageWrapper = container.querySelector('[class*="pageWrapper"]');
 
     expect(pageWrapper).not.toBeNull();
@@ -42,14 +16,14 @@ describe("AdminLogin Page", () => {
   });
 
   it("displays translated content", () => {
-    renderWithIntl(<Page />);
+    render(<Page />);
 
-    expect(screen.getByText("PhotoEvent Admin")).toBeTruthy();
-    expect(screen.getByText("Manage your photo events with ease")).toBeTruthy();
+    expect(screen.getByText("pageTitle")).toBeTruthy();
+    expect(screen.getByText("description")).toBeTruthy();
   });
 
   it("renders all required components", () => {
-    const { container } = renderWithIntl(<Page />);
+    const { container } = render(<Page />);
 
     const cameraIcon = container.querySelector('[class*="cameraWrapper"]');
     expect(cameraIcon).toBeTruthy();
@@ -59,7 +33,7 @@ describe("AdminLogin Page", () => {
   });
 
   it("passes correct props to Title component", () => {
-    renderWithIntl(<Page />);
+    render(<Page />);
     const h1 = screen.getByTestId("title");
 
     expect(h1.getAttribute("data-color")).toBe("brand-purple");
