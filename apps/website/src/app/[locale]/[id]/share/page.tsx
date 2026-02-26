@@ -11,6 +11,10 @@ import { downloadQrSvg } from "@/utils/downloadqrcode";
 import { useCopyToClipboard } from "usehooks-ts";
 
 type ShareOrigin = "create" | "share";
+type ShareRole = "guest" | "moderator";
+
+const isShareRole = (value: string): value is ShareRole =>
+  value === "guest" || value === "moderator";
 
 export default function Page() {
   const t = useTranslations("ShareEventPage");
@@ -21,7 +25,7 @@ export default function Page() {
   const locale = typeof params.locale === "string" ? params.locale : "en";
   const eventId = typeof params.id === "string" ? params.id : "";
 
-  const [shareRole, setShareRole] = useState<string>("guest");
+  const [shareRole, setShareRole] = useState<ShareRole>("guest");
 
   const qrContainerRef = useRef<HTMLDivElement>(null);
 
@@ -135,7 +139,9 @@ export default function Page() {
         <SegmentedControl
           fill
           value={shareRole}
-          onChange={setShareRole}
+          onChange={value => {
+            if (isShareRole(value)) setShareRole(value);
+          }}
           data-color="accent"
         >
           <SegmentedControl.Item value="guest" label={t("controls.guest")} />
@@ -208,7 +214,7 @@ export default function Page() {
           iconPosition="right"
         />
         {!isLoading && (isError || !eventData) ? (
-          <p className={styles.copyError}>Could not load event share data.</p>
+          <p className={styles.copyError}>{t("errors.loadShareDataFailed")}</p>
         ) : null}
       </div>
 

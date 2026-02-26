@@ -135,7 +135,8 @@
       "downloadQr": "Download QR code"
     },
     "errors": {
-      "copyFailed": "Failed to copy link to clipboard"
+      "copyFailed": "Failed to copy link to clipboard",
+      "loadShareDataFailed": "Could not load data for sharing the event"
     },
     "aria": {
       "moderatorAlert": "moderator link alert",

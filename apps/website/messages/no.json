@@ -124,7 +124,8 @@
       "downloadQr": "Last ned QR-kode"
     },
     "errors": {
-      "copyFailed": "Klarte ikke å kopiere lenken til utklippstavlen"
+      "copyFailed": "Klarte ikke å kopiere lenken til utklippstavlen",
+      "loadShareDataFailed": "Kunne ikke laste inn data for deling av arrangementet"
     },
     "aria": {
       "moderatorAlert": "moderatorlenke-varsel",
