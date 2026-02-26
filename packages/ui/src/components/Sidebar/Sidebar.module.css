@@ -187,11 +187,3 @@
     background-color: var(--color-bg-hover);
   }
 }
-
-@media screen and (max-width: 768px) {
-  .sidebar[data-open="true"] {
-    position: absolute;
-    width: 60%;
-    max-width: 60%;
-  }
-}

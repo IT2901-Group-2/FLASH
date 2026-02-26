@@ -17,7 +17,7 @@ export const SidebarTrigger = ({
     <button
       className={cl(styles.trigger, className)}
       onClick={toggleOpen}
-      role="sidebar-trigger"
+      data-testid="sidebar-trigger"
       {...rest}
     >
       <Sidebar />

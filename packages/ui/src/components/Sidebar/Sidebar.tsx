@@ -38,7 +38,7 @@ const Sidebar = ({ children, className, ...rest }: HTMLAttributes<HTMLDivElement
       data-open={open}
       className={cl(className, styles.sidebar)}
       {...rest}
-      role="sidebar"
+      data-testid="sidebar"
     >
       {children}
     </aside>

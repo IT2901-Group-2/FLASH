@@ -47,8 +47,8 @@ export const Simple: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const sidebar = canvas.getByRole("sidebar");
-    const button = canvas.getByRole("sidebar-trigger");
+    const sidebar = canvas.getByTestId("sidebar");
+    const button = canvas.getByTestId("sidebar-trigger");
 
     await step("Sidebar and Open/Close button is renderd", async () => {
       expect(sidebar).toBeInTheDocument();
@@ -168,7 +168,7 @@ export const FullExample: Story = {
     const canvas = within(canvasElement);
 
     await step("Sidebar renders with all sections", async () => {
-      const sidebar = canvas.getByRole("sidebar");
+      const sidebar = canvas.getByTestId("sidebar");
       await expect(sidebar).toBeInTheDocument();
     });
 
