@@ -93,7 +93,7 @@
     "error": {
       "invalidCode": "Fyll inn en gyldig event kode",
       "noCode": "Ugyldig kode. Venligst prøv igjenn."
-    }
+    },
     "nicknameRequiredError": "Skriv inn et kallenavn.",
     "eventCodeRequiredError": "Skriv inn en arrangementskode.",
     "eventNotFoundError": "Fant ikke arrangement for denne koden.",

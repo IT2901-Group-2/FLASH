@@ -93,7 +93,7 @@
     "error": {
       "noCode": "Please enter an event code.",
       "invalidCode": "Invalid guest code. Please try again."
-    }
+    },
     "nicknameRequiredError": "Please enter a nickname.",
     "eventCodeRequiredError": "Please enter an event code.",
     "eventNotFoundError": "No event found for that code.",
