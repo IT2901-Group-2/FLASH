@@ -12,20 +12,31 @@ const JoinEventCard = () => {
   const t = useTranslations("JoinEvent");
   const router = useRouter();
   const { locale } = useParams<{ locale: string }>();
+  const [nickname, setNickname] = useState("");
   const [eventCode, setEventCode] = useState("");
+  const [nicknameError, setNicknameError] = useState<string | null>(null);
+  const [eventCodeError, setEventCodeError] = useState<string | null>(null);
   const [joinError, setJoinError] = useState<string | null>(null);
   const [isJoining, setIsJoining] = useState(false);
 
   const handleJoin = async () => {
+    const trimmedNickname = nickname.trim();
     const trimmedCode = eventCode.trim();
+    setNicknameError(null);
+    setEventCodeError(null);
+    setJoinError(null);
+
+    if (!trimmedNickname) {
+      setNicknameError(t("nicknameRequiredError"));
+      return;
+    }
 
     if (!trimmedCode) {
-      setJoinError("Please enter an event code.");
+      setEventCodeError(t("eventCodeRequiredError"));
       return;
     }
 
     setIsJoining(true);
-    setJoinError(null);
 
     try {
       const response = await fetch(
@@ -40,13 +51,14 @@ const JoinEventCard = () => {
       const event = events[0];
 
       if (!event) {
-        setJoinError("No event found for that code.");
+        setJoinError(t("eventNotFoundError"));
         return;
       }
 
-      router.push(`/${locale}/${event.id}`);
+      const redirectParams = new URLSearchParams({ nickname: trimmedNickname });
+      router.push(`/${locale}/${event.id}?${redirectParams.toString()}`);
     } catch {
-      setJoinError("Could not join event. Please try again.");
+      setJoinError(t("joinFailedError"));
     } finally {
       setIsJoining(false);
     }
@@ -64,6 +76,21 @@ const JoinEventCard = () => {
           content={
             <div className={styles.content}>
               <Input
+                label={t("nicknameLabel")}
+                placeholder={t("nicknamePlaceholder")}
+                icon={<TextAlignStart size={24} />}
+                aria-label={t("nicknameLabel")}
+                value={nickname}
+                onChange={e => setNickname(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    void handleJoin();
+                  }
+                }}
+                error={nicknameError ?? undefined}
+              />
+              <Input
                 label={t("eventCodeLabel")}
                 placeholder={t("eventCodePlaceholder")}
                 icon={<TextAlignStart size={24} />}
@@ -76,7 +103,7 @@ const JoinEventCard = () => {
                     void handleJoin();
                   }
                 }}
-                error={joinError ?? undefined}
+                error={eventCodeError ?? joinError ?? undefined}
               />
               <Button
                 className={styles.fullWidthButton}
