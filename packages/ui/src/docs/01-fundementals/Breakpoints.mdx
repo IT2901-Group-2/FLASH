@@ -1,0 +1,40 @@
+import { DocsContext, Meta } from "@storybook/addon-docs/blocks";
+import { Table } from "@docs-components/Table";
+import { InfoBox } from "@docs-components/InfoBox";
+import { CodeBox } from "@docs-components/CodeBox";
+import { Lightbulb } from "lucide-react";
+
+<Meta title="Fundementals/Styling/Breakpoints" /># Breakpoints
+
+<img src="figures/brekkpunkter_header.svg" alt="Illustrasjon av brekkpunkter" />
+
+Breakpoints are specific widths for a web page where the layout and content can change. These breakpoints define the limits for when the design should be adjusted to optimise the user experience on different devices and screen sizes.
+
+Breakpoints are most commonly used to determine layout changes, such as changing the number of columns in a grid, changing the size of text and images, or hiding/showing certain elements on the page. The user experience can vary depending on the device and screen size, and breakpoints contribute to a better and more optimised experience across these.
+
+## Design
+
+As a designer, breakpoints allow you to adapt your design to different screen sizes and devices. The transition from one level to another gives you the opportunity to change the layout, sizes, typography and graphics.
+
+<Table
+  data={{
+    header: ["Breakpoint", "Value"],
+    valuePairs: [
+      { name: "xs", value: "320 px" },
+      { name: "sm", value: "480 px" },
+      { name: "md", value: "768 px" },
+      { name: "lg", value: "1024 px" },
+      { name: "xl", value: "1280 px" },
+      { name: "2xl", value: "1440 px" },
+    ],
+  }}
+/>
+
+## Code
+
+<CodeBox title="CSS" language="css">
+  {`@media (min-width: 480px)
+  @media (min-width: 768px)
+  @media (min-width: 1024px)
+  @media (min-width: 1280px)`}
+</CodeBox>

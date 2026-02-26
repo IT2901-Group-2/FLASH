@@ -72,7 +72,8 @@ const mockImages: MockImage[] = [
 beforeEach(async () => {
   tmpDir = await fs.mkdtemp(upath.join(tmpdir(), "test-imageService-"));
   const storage = new FSStorage(tmpDir);
-  const dbService = await DatabaseService.create(storage).getOrThrow();
+  const dbService = new DatabaseService(storage);
+  await dbService.initialize().getOrThrow();
   imageService = new ImageService(dbService, storage);
 
   await dbService.db.insert(eventTable).values(mockEvents);
