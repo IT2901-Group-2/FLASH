@@ -87,7 +87,11 @@
     "enterCodeTab": "Skriv inn kode",
     "scanQrTab": "Skann QR-kode",
     "scanQrDescription": "Bruk kameraet ditt til å skanne QR-koden til arrangementet",
-    "openCameraButton": "Åpne kamera"
+    "openCameraButton": "Åpne kamera",
+    "error": {
+      "invalidCode": "Fyll inn en gyldig event kode",
+      "noCode": "Ugyldig kode. Venligst prøv igjenn."
+    }
   },
   "ShareEventPage": {
     "create": {
