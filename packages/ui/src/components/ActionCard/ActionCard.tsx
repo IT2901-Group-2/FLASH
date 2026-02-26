@@ -3,7 +3,7 @@ import { ColorName } from "@/styles/colorType";
 import { Card } from "../Card";
 import { Button, ButtonProps } from "../Button";
 import styles from "./ActionCard.module.css";
-import { cl } from "../../util/className";
+import { cl } from "@/util/helpers/";
 
 export interface ActionCardButtonConfig extends Omit<ButtonProps, "children"> {
   text: React.ReactNode;

@@ -24,7 +24,7 @@ export const eventTable = sqliteTable(
       .notNull()
       .$defaultFn(() => new Date())
       .$onUpdate(() => new Date()),
-    isArchived: integer({ mode: "boolean" }).default(false),
+    isArchived: integer({ mode: "boolean" }).notNull().default(false),
   },
   t => [check("dateConstraint", lte(t.startDate, t.endDate))]
 );
