@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { StepProps } from "../CreateEventCard";
-import { Title, Controls, QRDisplay, Button, Input, Loader } from "ui";
+import { Title, SegmentedControl, QRDisplay, Button, Input, Loader } from "ui";
 import { Copy, Download } from "lucide-react";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
@@ -16,14 +16,10 @@ const ReviewStep = ({ status, result }: StepProps) => {
       <Title size="medium" description={t("description")}>
         {t("title")}
       </Title>
-      <Controls
-        onChange={setView}
-        value={view}
-        options={[
-          { label: t("guest.name"), value: "guest" },
-          { label: t("moderator.name"), value: "moderator" },
-        ]}
-      />
+      <SegmentedControl onChange={setView} value={view} fill>
+        <SegmentedControl.Item label={t("guest.name")} value="guest" />
+        <SegmentedControl.Item label={t("moderator.name")} value="moderator" />
+      </SegmentedControl>
       <div className={styles.infoContainer}>
         <div className={styles.QRCodeContainer}>
           <QRDisplay

@@ -1,0 +1,33 @@
+.table {
+  width: 100%;
+  text-align: left;
+
+  thead {
+    border-bottom: 2px solid var(--docs-color-outline);
+
+    th {
+      border: none !important;
+    }
+  }
+  tbody {
+    background-color: transparent;
+  }
+}
+
+tr {
+  background-color: transparent !important;
+  border-top: none !important;
+  border-bottom: 1px solid var(--docs-color-outline);
+
+  &:hover {
+    background-color: color-mix(
+      in srgb,
+      var(--docs-color-background) 75%,
+      white
+    ) !important;
+  }
+
+  td {
+    border: none !important;
+  }
+}

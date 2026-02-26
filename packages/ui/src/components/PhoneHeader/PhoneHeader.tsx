@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { User, Camera, Upload, QrCode } from "lucide-react";
-import { cl } from "../../util/className";
+import { cl } from "@/util/helpers/className";
 import styles from "./PhoneHeader.module.css";
 import { Button } from "../Button";
 import QRDisplay from "../QRDisplay/QRDisplay";
@@ -58,6 +58,8 @@ export interface PhoneHeaderProps {
   qrValue?: string;
   /** Optional children rendered beneath the header (e.g., Breadcrumb). */
   children?: ReactNode;
+  /** Notifies parent when QR overlay opens/closes. */
+  onQrOpenChange?: (open: boolean) => void;
 }
 
 /**
@@ -85,6 +87,7 @@ export const PhoneHeader = ({
   uploadsRemaining,
   qrValue,
   children,
+  onQrOpenChange,
 }: PhoneHeaderProps) => {
   const handleLeftClick =
     onLeftClick ??
@@ -99,6 +102,11 @@ export const PhoneHeader = ({
     });
   const [showQr, setShowQr] = useState(false);
   const [qrSize, setQrSize] = useState<QRDisplayProps["size"]>("medium");
+
+  const setQrOpen = (open: boolean) => {
+    setShowQr(open);
+    onQrOpenChange?.(open);
+  };
 
   // Update QR size based on window width
   useEffect(() => {
@@ -170,7 +178,8 @@ export const PhoneHeader = ({
               icon={<QrCode />}
               iconPosition="right"
               onClick={() => {
-                setShowQr(true);
+                // open internal QR display and also call external handler if provided
+                setQrOpen(true);
                 onTertiaryClick?.();
               }}
               aria-label="show-qr"
@@ -215,8 +224,7 @@ export const PhoneHeader = ({
             icon={<QrCode />}
             iconPosition="right"
             onClick={() => {
-              // open internal QR display and also call external handler if provided
-              setShowQr(true);
+              setQrOpen(true);
               onTertiaryClick?.();
             }}
             className={styles.rightAction}
@@ -232,7 +240,7 @@ export const PhoneHeader = ({
           role="dialog"
           aria-modal="true"
           className={styles.qrOverlay}
-          onClick={() => setShowQr(false)}
+          onClick={() => setQrOpen(false)}
         >
           <div
             className={styles.qrDialog}
@@ -242,7 +250,7 @@ export const PhoneHeader = ({
             <button
               className={styles.qrClose}
               aria-label="Close QR"
-              onClick={() => setShowQr(false)}
+              onClick={() => setQrOpen(false)}
             >
               ✕
             </button>
