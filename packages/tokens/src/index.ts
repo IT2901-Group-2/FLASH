@@ -32,13 +32,13 @@ async function main() {
     selector: ':root[data-theme="dark"], :host[data-theme="dark"], .dark',
   });
   await buildCSSBundleForTokens({
-    tokens: lightModeTokens(false),
+    tokens: lightModeTokens(),
     filename: "semantic-light-tokens.css",
     selector: ":root, :host, .light",
     filter: async token => token.type !== "global-color",
   });
   await buildCSSBundleForTokens({
-    tokens: darkModeTokens(false),
+    tokens: darkModeTokens(),
     filename: "semantic-dark-tokens.css",
     selector: ':root[data-theme="dark"], :host[data-theme="dark"], .dark',
     filter: async token => token.type !== "global-color",
