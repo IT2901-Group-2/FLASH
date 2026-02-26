@@ -43,8 +43,6 @@ export const imagesKeys = {
   event: (eventId: string) => [...imagesKeys.all, eventId] as const,
   list: (eventId: string, params?: GetImages) =>
     [...imagesKeys.event(eventId), "list", toImagesSearchParams(params)] as const,
-  download: (eventId: string, imageId: string) =>
-    [...imagesKeys.event(eventId), "download", imageId] as const,
 };
 
 /**
@@ -67,7 +65,7 @@ export function useUploadImageMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ eventId, file }: { eventId: string; file: File | Blob }) => {
+    mutationFn: ({ eventId, file }: { eventId: string; file: Blob }) => {
       const formData = new FormData();
       formData.append("image", file);
       return fetchJson<Image>(`/api/events/${eventId}/images`, {
