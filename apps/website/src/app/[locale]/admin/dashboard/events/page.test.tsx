@@ -1,5 +1,5 @@
-import { render, screen } from "@testing-library/react";
-import { expect, vi, describe, it, beforeEach } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { expect, vi, describe, it, beforeEach, afterEach } from "vitest";
 import {
   useCreateEventMutation,
   useDeleteEventMutation,
@@ -7,6 +7,7 @@ import {
   useUpdateEventMutation,
 } from "@/hooks/useEvents";
 import { NextIntlClientProvider } from "next-intl";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Page from "./page";
 
 vi.mock("next-intl", () => ({
@@ -47,16 +48,28 @@ const messages = {
   },
 };
 
-const renderWithIntl = (ui: React.ReactNode) =>
-  render(
-    <NextIntlClientProvider locale="en" messages={messages}>
-      {ui}
-    </NextIntlClientProvider>
+// Fresh QueryClient per test to avoid state leaking between tests
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>
+      <NextIntlClientProvider locale="en" messages={messages}>
+        {children}
+      </NextIntlClientProvider>
+    </QueryClientProvider>
   );
+};
+
+const renderWithProviders = (ui: React.ReactNode) =>
+  render(ui, { wrapper: createWrapper() });
 
 describe("Page", () => {
+  afterEach(() => {
+    cleanup();
+  });
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.mocked(useEventsQuery).mockReturnValue({
       data: undefined,
       isLoading: false,
@@ -74,13 +87,14 @@ describe("Page", () => {
       status: "idle",
     } as any);
   });
+
   it("shows the spinner when loading", () => {
     vi.mocked(useEventsQuery).mockReturnValue({
       data: undefined,
       isLoading: true,
     } as any);
 
-    renderWithIntl(<Page />);
+    renderWithProviders(<Page />);
 
     expect(screen.getByTestId("loading-spinner")).toBeTruthy();
   });
@@ -91,10 +105,9 @@ describe("Page", () => {
       isLoading: false,
     } as any);
 
-    console.log("mock value:", useEventsQuery());
-
-    renderWithIntl(<Page />);
+    renderWithProviders(<Page />);
 
     expect(screen.queryByTestId("loading-spinner")).toBeNull();
+    expect(screen.getAllByTestId("event-card")).toHaveLength(1);
   });
 });
