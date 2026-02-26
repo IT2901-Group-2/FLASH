@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from "vitest";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import JoinEventCard from "./JoinEventCard";
 import { createQueryClientWrapper, mockFetch } from "@test-config";
@@ -39,28 +39,35 @@ describe("JoinEventCard", () => {
   });
 
   test("shows validation error when nickname is empty", async () => {
-    render(<JoinEventCard />);
+    render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
 
-    fireEvent.click(screen.getByRole("button", { name: "Join" }));
+    const button = screen.getByText("joinButton");
+    await user.click(button);
 
-    expect(await screen.findByText("Please enter a nickname.")).toBeDefined();
+    expect(await screen.getAllByText("error.invalidNickname")).toBeDefined();
   });
 
   test("shows validation error when event code is empty", async () => {
     render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
 
-    await fireEvent.click(screen.getByText("joinButton"));
+    const input = screen.getByText("nicknameLabel");
+    const button = screen.getByText("joinButton");
 
-    expect(await screen.findByText("error.noCode")).toBeDefined();
+    await user.type(input, "NICKNAME");
+    await user.click(button);
+
+    expect(await screen.findAllByText("error.noCode")).toBeDefined();
   });
 
   test("calls API and routes to event page on successful lookup", async () => {
     render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
 
-    const input = screen.getByPlaceholderText("eventCodePlaceholder");
+    const nicknameInput = screen.getByText("nicknameLabel");
+    const codeInput = screen.getByPlaceholderText("eventCodePlaceholder");
     const button = screen.getByText("joinButton");
 
-    await user.type(input, "ABC123");
+    await user.type(nicknameInput, "NICKNAME");
+    await user.type(codeInput, "ABC123");
     await user.click(button);
 
     await waitFor(() => {
@@ -85,8 +92,10 @@ describe("JoinEventCard", () => {
   test("submits when pressing Enter in the code field", async () => {
     render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
 
+    const nicknameInput = screen.getByText("nicknameLabel");
     const input = screen.getByPlaceholderText("eventCodePlaceholder");
 
+    await user.type(nicknameInput, "NICKNAME");
     await user.type(input, "ENTER1");
     await user.keyboard("{Enter}");
 

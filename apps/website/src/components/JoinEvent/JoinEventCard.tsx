@@ -21,6 +21,7 @@ const JoinEventCard = () => {
     e.preventDefault();
     if (!nickname.trim()) {
       setError(t("error.invalidNickname"));
+      return;
     }
     if (!code.trim()) {
       setError(t("error.noCode"));
