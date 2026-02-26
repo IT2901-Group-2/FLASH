@@ -7,8 +7,14 @@ import {
   useUpdateEventMutation,
 } from "@/hooks/useEvents";
 import { NextIntlClientProvider } from "next-intl";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryClient,
+  QueryClientProvider,
+  UseMutationResult,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import Page from "./page";
+import { CreateEventInput, EventDTO, UpdateEventInput } from "@/types/eventTypes";
 
 vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key,
@@ -53,13 +59,15 @@ const createWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
-  return ({ children }: { children: React.ReactNode }) => (
+  const Wrapper = ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>
       <NextIntlClientProvider locale="en" messages={messages}>
         {children}
       </NextIntlClientProvider>
     </QueryClientProvider>
   );
+  Wrapper.displayName = "TestWrapper";
+  return Wrapper;
 };
 
 const renderWithProviders = (ui: React.ReactNode) =>
@@ -73,26 +81,30 @@ describe("Page", () => {
     vi.mocked(useEventsQuery).mockReturnValue({
       data: undefined,
       isLoading: false,
-    } as any);
+    } as UseQueryResult<EventDTO[]>);
     vi.mocked(useCreateEventMutation).mockReturnValue({
       mutateAsync: vi.fn(),
       status: "idle",
-    } as any);
+    } as unknown as UseMutationResult<EventDTO, Error, CreateEventInput>);
     vi.mocked(useUpdateEventMutation).mockReturnValue({
       mutateAsync: vi.fn(),
       status: "idle",
-    } as any);
+    } as unknown as UseMutationResult<
+      EventDTO,
+      Error,
+      { eventId: string; data: UpdateEventInput }
+    >);
     vi.mocked(useDeleteEventMutation).mockReturnValue({
       mutateAsync: vi.fn(),
       status: "idle",
-    } as any);
+    } as unknown as UseMutationResult<EventDTO, Error, { eventId: string }>);
   });
 
   it("shows the spinner when loading", () => {
     vi.mocked(useEventsQuery).mockReturnValue({
       data: undefined,
       isLoading: true,
-    } as any);
+    } as UseQueryResult<EventDTO[]>);
 
     renderWithProviders(<Page />);
 
@@ -103,7 +115,7 @@ describe("Page", () => {
     vi.mocked(useEventsQuery).mockReturnValue({
       data: [{ id: "1", name: "Test Event" }],
       isLoading: false,
-    } as any);
+    } as UseQueryResult<EventDTO[]>);
 
     renderWithProviders(<Page />);
 

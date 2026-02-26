@@ -1,6 +1,6 @@
 "use client";
-import { LoaderIcon, LoaderPinwheel, Plus } from "lucide-react";
-import { Button, Card, Loader, Title } from "ui";
+import { Plus } from "lucide-react";
+import { Button, Loader, Title } from "ui";
 import styles from "./page.module.css";
 import CreateEventCard from "@/components/CreateEventCard/CreateEventCard";
 import { useRef } from "react";
