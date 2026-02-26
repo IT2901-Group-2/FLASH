@@ -90,10 +90,11 @@
     "scanQrTab": "Skann QR-kode",
     "scanQrDescription": "Bruk kameraet ditt til å skanne QR-koden til arrangementet",
     "openCameraButton": "Åpne kamera",
-    "nicknameRequiredError": "Skriv inn et kallenavn.",
-    "eventCodeRequiredError": "Skriv inn en arrangementskode.",
-    "eventNotFoundError": "Fant ikke arrangement for denne koden.",
-    "joinFailedError": "Kunne ikke bli med i arrangementet. Prøv igjen."
+    "error": {
+      "invalidCode": "Fyll inn en gyldig event kode",
+      "noCode": "Ugyldig kode. Venligst prøv igjenn.",
+      "invalidNickname": "Skriv inn et kallenavn."
+    }
   },
   "ShareEventPage": {
     "create": {

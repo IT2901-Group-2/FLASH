@@ -1,4 +1,4 @@
-import { ChevronLeft } from "lucide-react";
+import { Sidebar } from "lucide-react";
 import { useSidebar } from "./SidebarContext";
 import styles from "./Sidebar.module.css";
 import { HTMLAttributes } from "react";
@@ -17,10 +17,10 @@ export const SidebarTrigger = ({
     <button
       className={cl(styles.trigger, className)}
       onClick={toggleOpen}
-      role="sidebar-trigger"
+      data-testid="sidebar-trigger"
       {...rest}
     >
-      <ChevronLeft />
+      <Sidebar />
     </button>
   );
 };
