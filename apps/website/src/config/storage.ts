@@ -2,6 +2,7 @@ import { FileStorage, FSStorage, GcloudStorage } from "file-storage";
 import { Storage, StorageOptions } from "@google-cloud/storage";
 import { tmpdir } from "os";
 import upath from "upath";
+import { makeGlobal } from "@/lib/utils/makeGlobal";
 
 export type StorageConfig =
   | { backend: "fs"; dir: string }
@@ -47,9 +48,7 @@ export function getStorageConfig(): StorageConfig {
   }
 }
 
-export function getStorage(): FileStorage {
-  const config = getStorageConfig();
-
+export function getStorage(config: StorageConfig): FileStorage {
   const { backend } = config;
   switch (backend) {
     case "fs":
@@ -63,3 +62,5 @@ export function getStorage(): FileStorage {
       throw new Error(`Unknown storage backend: ${backend}`);
   }
 }
+
+export const storage = makeGlobal("fileStorage", () => getStorage(getStorageConfig()));

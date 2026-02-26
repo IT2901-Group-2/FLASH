@@ -6,7 +6,7 @@ import Sqlite from "better-sqlite3";
 import { storage } from "@/config";
 import * as schema from "@/db";
 import upath from "upath";
-import { makeGlobal } from "@/lib/utils/server";
+import { makeGlobal } from "@/lib/utils/makeGlobal";
 
 export type Database = ReturnType<typeof drizzle<typeof schema>>;
 
@@ -101,4 +101,4 @@ export class DatabaseService {
   }
 }
 
-export const dbService = makeGlobal("dbService", new DatabaseService(storage));
+export const dbService = makeGlobal("dbService", () => new DatabaseService(storage));
