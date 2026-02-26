@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { cleanup } from "@testing-library/react";
 import { ReactNode } from "react";
-import { vi } from "vitest";
+import { afterEach, vi } from "vitest";
 
 export const createQueryClientWrapper = () => {
   const queryClient = new QueryClient({
@@ -18,13 +19,35 @@ export const createQueryClientWrapper = () => {
   return Wrapper;
 };
 
-vi.mock("next-intl", () => ({
-  useTranslations: () => (key: string) => key,
-}));
+vi.mock("next-intl", async importOriginal => {
+  const actual = await importOriginal<typeof import("next-intl")>();
+  return {
+    ...actual,
+    useTranslations: () => (key: string) => key,
+  };
+});
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
     push: vi.fn(),
+    replace: vi.fn(),
+    prefetch: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    refresh: vi.fn(),
+    pathname: "/",
+    query: {},
   }),
-  useParams: vi.fn(() => ({ id: "test-id" })),
+  usePathname: () => "/",
+  useSearchParams: () => new URLSearchParams(),
+  useParams: () => ({}),
+  redirect: vi.fn(),
+  notFound: vi.fn(),
 }));
+
+export const mockFetch = vi.fn();
+globalThis.fetch = mockFetch;
+
+afterEach(() => {
+  cleanup();
+});
