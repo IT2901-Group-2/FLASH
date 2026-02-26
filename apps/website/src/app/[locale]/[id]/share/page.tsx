@@ -183,11 +183,20 @@ export default function Page() {
           data-color="accent"
           icon={
             copied ? (
-              <Check
-                size={18}
-                aria-label={t("aria.copied")}
-                style={{ cursor: "pointer" }}
-              />
+              <span className={styles.copyIconWrap}>
+                <Check
+                  size={18}
+                  aria-label={t("aria.copied")}
+                  style={{ cursor: "default" }}
+                />
+                <span
+                  className={styles.copySuccessPopup}
+                  role="status"
+                  aria-live="polite"
+                >
+                  {t("aria.copied")}
+                </span>
+              </span>
             ) : (
               <Copy
                 size={18}
