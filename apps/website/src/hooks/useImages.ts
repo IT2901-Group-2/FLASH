@@ -36,7 +36,6 @@ function toImagesSearchParams(params?: GetImages): string {
  *   imagesKeys.all                    → ["images"]
  *   imagesKeys.event(eventId)         → ["images", eventId]
  *   imagesKeys.list(eventId, params)  → ["images", eventId, "list", "?approval=pending&..."]
- *   imagesKeys.download(eventId, id)  → ["images", eventId, "download", imageId]
  */
 export const imagesKeys = {
   all: ["images"] as const,
