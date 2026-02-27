@@ -2,14 +2,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
   gap: 0.625rem;
   width: max-content;
   min-width: 8rem;
   height: 3rem;
   padding: 1rem 1.25rem;
-  border-radius: 4rem;
+  border-radius: var(--radius-full);
   border: none;
-  font-size: 1.25rem;
+  font-size: var(--font-size-large);
 
   &:hover:not(:active, .loading, .disabled) {
     transform: translateY(-0.25rem);
@@ -43,7 +44,7 @@
   &[data-variant="secondary"] {
     background-color: transparent;
     color: var(--text-default);
-    border: 2px solid var(--bg-strong);
+    border: 0.125rem solid var(--border-strong);
 
     &:hover {
       background-color: var(--bg-moderate-hoverT);
@@ -77,17 +78,10 @@
 
   &[data-size="small"] {
     height: 2.5rem;
-    font-size: 1.125rem;
+    font-size: var(--font-size-medium);
   }
   &[data-size="xsmall"] {
     height: 2rem;
-    font-size: 1rem;
-  }
-}
-
-.icon {
-  display: flex;
-  .icon-only & {
-    margin: 0;
+    font-size: var(--font-size-small);
   }
 }

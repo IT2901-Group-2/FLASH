@@ -88,10 +88,10 @@ export const Button = ({
       disabled={disabled || loading}
       type={type}
     >
-      {icon && iconPosition === "left" && <span className={styles.icon}>{icon}</span>}
+      {icon && iconPosition === "left" && icon}
       {loading && <Loader size={size} />}
       {children && !loading && <span>{children}</span>}
-      {icon && iconPosition === "right" && <span className={styles.icon}>{icon}</span>}
+      {icon && iconPosition === "right" && icon}
     </button>
   );
 };
