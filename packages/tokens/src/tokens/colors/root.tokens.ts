@@ -28,15 +28,15 @@ export function semanticRootTokens(theme: ColorTheme) {
         type: "color",
       },
       input: {
-        value: theme === "light" ? "rgba(248, 242, 245, 0.85)" : "rgba(7, 9, 13, 0.50)",
+        value: theme === "light" ? "#fffbfe" : "#29252b",
         type: "color",
       },
       raised: {
-        value: theme === "light" ? "{neutral.000.value}" : "#1c181d",
+        value: theme === "light" ? "#f0e9ec" : "#1c181d",
         type: "color",
       },
       sunken: {
-        value: theme === "light" ? "{neutral.200.value}" : "#29252b",
+        value: theme === "light" ? "#e2dadd" : "#000",
         type: "color",
       },
       overlay: {
