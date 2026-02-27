@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "./Button";
 import { expect, fn, userEvent, within } from "storybook/test";
 import { GamepadDirectional } from "lucide-react";
-import { colorNames } from "../types";
 
 const TestIcon = <GamepadDirectional data-testid="test-icon" />;
 
