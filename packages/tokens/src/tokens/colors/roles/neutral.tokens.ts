@@ -35,15 +35,15 @@ export const NeutralColorTokenConfig = {
       type: "color",
     },
     "neutral-strong": {
-      value: "{neutral.700.value}",
+      value: "{neutral.600.value}",
       type: "color",
     },
     "neutral-strong-hover": {
-      value: "{neutral.800.value}",
+      value: "{neutral.700.value}",
       type: "color",
     },
     "neutral-strong-pressed": {
-      value: "{neutral.900.value}",
+      value: "{neutral.800.value}",
       type: "color",
     },
   },
