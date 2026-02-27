@@ -76,7 +76,7 @@ async function main() {
 }
 
 async function buildDataColorTokens() {
-  const rootSelector = `:root, [data-color=""], [data-color="accent"]`;
+  const rootSelector = `:root, [data-color=""], [data-color="neutral"]`;
 
   const colors: ColorRole[] = [
     "neutral",
@@ -103,7 +103,7 @@ async function buildDataColorTokens() {
     await buildCSSBundleForTokens({
       tokens: dataColorTokens(color),
       filename: `data-color-${color}.css`,
-      selector: color === "accent" ? rootSelector : `[data-color=${color}]`,
+      selector: color === "neutral" ? rootSelector : `[data-color=${color}]`,
       filter: async token => token.type === "data-color",
     });
   }

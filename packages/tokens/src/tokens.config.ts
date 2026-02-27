@@ -2,7 +2,7 @@ import { mergeConfigs } from "./tokens.utils";
 import { breakpointTokenConfig } from "./tokens/breakpoints";
 import { DarkTokens, LightTokens } from "./tokens/colors/color.tokens";
 import { dataColorTokensConfig } from "./tokens/colors/data-color.tokens";
-import { semanticRootTokens } from "./tokens/colors/roles/root.tokens";
+import { semanticRootTokens } from "./tokens/colors/root.tokens";
 import {
   ColorTokenRoleConfig,
   ColorTokensForAllRoles,
