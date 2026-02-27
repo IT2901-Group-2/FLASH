@@ -34,7 +34,6 @@ const Sidebar = ({ children, className, ...rest }: HTMLAttributes<HTMLDivElement
 
   return (
     <aside
-      data-color="neutral"
       data-open={open}
       className={cl(className, styles.sidebar)}
       {...rest}
