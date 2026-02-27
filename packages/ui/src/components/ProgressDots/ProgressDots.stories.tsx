@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ProgressDots } from "./ProgressDots";
-import { colorNames } from "@/styles/colorType";
+import { colorNames } from "../types";
 import { expect } from "storybook/test";
 import styles from "./ProgressDots.module.css";
 

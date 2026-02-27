@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Title } from "./Title";
 import { expect, within } from "storybook/test";
-import { colorNames } from "@/styles/colorType";
+import { colorNames } from "../types";
 
 const meta: Meta<typeof Title> = {
   title: "Building Blocks/Components/Title",

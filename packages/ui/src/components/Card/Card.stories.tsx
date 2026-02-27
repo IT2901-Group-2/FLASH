@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Card } from "./Card";
 import { expect, within } from "storybook/test";
-import { colorNames } from "@/styles/colorType";
+import { colorNames } from "../types";
 
 const meta: Meta<typeof Card> = {
   title: "Building Blocks/Components/Card",

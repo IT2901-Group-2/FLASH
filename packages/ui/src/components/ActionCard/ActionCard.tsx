@@ -1,5 +1,5 @@
 import React from "react";
-import { ColorName } from "@/styles/colorType";
+import { ColorName } from "../types";
 import { Card } from "../Card";
 import { Button, ButtonProps } from "../Button";
 import styles from "./ActionCard.module.css";
@@ -49,7 +49,7 @@ export const ActionCard = ({
   descriptionColor = "neutral",
   primaryButton,
   secondaryButton,
-  "data-color": data = "background-secondary",
+  "data-color": data = "neutral",
   className,
   children,
   ...rest

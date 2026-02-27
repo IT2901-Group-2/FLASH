@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Input } from "./Input";
 import { expect, fn, userEvent, within } from "storybook/test";
 import { Search, Mail, Check, X } from "lucide-react";
-import { colorNames } from "@/styles/colorType";
+import { colorNames } from "../types";
 
 const meta: Meta<typeof Input> = {
   title: "Building Blocks/Components/Input",
