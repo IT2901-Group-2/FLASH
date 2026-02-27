@@ -10,27 +10,7 @@ const meta: Meta<typeof Button> = {
   title: "Building Blocks/Components/Button",
   component: Button,
   tags: ["autodocs"],
-  argTypes: {
-    variant: {
-      control: "select",
-      options: ["primary", "secondary", "tertiary"],
-    },
-    iconPosition: {
-      control: "select",
-      options: ["left", "right"],
-    },
-    disabled: {
-      control: "boolean",
-    },
-    loading: {
-      control: "boolean",
-    },
-    children: { control: { type: "text" } },
-    "data-color": {
-      control: "select",
-      options: colorNames,
-    },
-  },
+
   args: {
     loading: false,
     disabled: false,
@@ -139,14 +119,24 @@ export const Interactions: Story = {
  */
 export const Disabled: Story = {
   args: {
-    variant: "primary",
-    children: "Disabled Button",
-    disabled: true,
     onClick: fn(),
   },
+  render: args => (
+    <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+      <Button disabled variant="primary" onClick={args.onClick}>
+        Disabled Primary
+      </Button>
+      <Button disabled variant="secondary">
+        Disabled Secondary
+      </Button>
+      <Button disabled variant="tertiary">
+        Disabled Tertiary
+      </Button>
+    </div>
+  ),
   play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
-    const button = canvas.getByRole("button", { name: /disabled button/i });
+    const button = canvas.getByRole("button", { name: /disabled primary/i });
 
     await step("Button is disabled", async () => {
       await expect(button).toBeDisabled();

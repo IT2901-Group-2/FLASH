@@ -1,9 +1,4 @@
 .button {
-  --color-base: var(--data-color-500);
-  --color-hover: var(--data-color-200);
-  --color-active: var(--data-color-300);
-  --color-disabled: var(--data-color-200);
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,58 +15,63 @@
     transform: translateY(-0.25rem);
   }
 
+  &:where(:disabled, .disabled) {
+    cursor: not-allowed;
+
+    &:not(.loading) {
+      opacity: var(--opacity-disabled);
+    }
+  }
+
   &[data-variant="primary"] {
-    background-color: var(--color-base);
-    color: #ffffff;
+    background-color: var(--bg-strong);
+    color: var(--text-contrast);
+
+    &:hover {
+      background-color: var(--bg-strong-hover);
+    }
 
     &:active {
-      background-color: var(--color-active);
+      background-color: var(--bg-strong-pressed);
     }
 
     &:is(:disabled, .disabled) {
-      background-color: var(--color-disabled);
-      color: var(--color-neutral-800);
-      cursor: not-allowed;
+      background-color: var(--bg-strong);
     }
   }
 
   &[data-variant="secondary"] {
     background-color: transparent;
-    color: var(--color-neutral-1000);
-    outline: 2px solid var(--color-base);
+    color: var(--text-default);
+    border: 2px solid var(--bg-strong);
 
     &:hover {
-      background-color: var(--color-hover);
+      background-color: var(--bg-moderate-hoverT);
     }
 
     &:active {
-      background-color: var(--color-active);
+      background-color: var(--bg-moderate-pressedT);
     }
 
     &:is(:disabled, .disabled) {
-      outline-color: var(--color-disabled);
       background-color: transparent;
-      cursor: not-allowed;
-      color: var(--color-neutral-800);
     }
   }
 
   &[data-variant="tertiary"] {
     background-color: transparent;
-    color: var(--color-neutral-1000);
+    color: var(--text-default);
 
     &:hover {
-      background-color: var(--color-hover);
+      background-color: var(--bg-moderate-hoverT);
     }
 
     &:active {
-      background-color: var(--color-active);
+      background-color: var(--bg-moderate-pressedT);
     }
 
     &:is(:disabled, .disabled) {
       background-color: transparent;
-      cursor: not-allowed;
-      color: var(--color-neutral-800);
     }
   }
 
