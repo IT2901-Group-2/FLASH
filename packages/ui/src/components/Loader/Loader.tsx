@@ -23,7 +23,7 @@ export interface LoaderProps extends Omit<SVGProps<SVGSVGElement>, "ref"> {
    * Colored variants for Loader
    * @default "neutral"
    */
-  variant?: "neutral" | "interaction"; //"inverted"
+  variant?: "neutral" | "interaction" | "inverted";
 }
 
 /**
@@ -64,7 +64,7 @@ export const Loader = ({
         className,
         styles[`loader--${size}`],
         styles[`loader--${variant}`],
-        transparent && [styles["loader--transparent"]]
+        transparent && styles.transparent
       )}`}
       id={id}
       {...rest}
@@ -76,7 +76,7 @@ export const Loader = ({
         cy="25"
         r="20"
         fill="none"
-        className={styles.loader__background}
+        className={styles.background}
       />
       <circle
         xmlns="http://www.w3.org/2000/svg"
@@ -85,7 +85,7 @@ export const Loader = ({
         r="20"
         fill="none"
         strokeDasharray="50 155"
-        className={styles.loader__foreground}
+        className={styles.spinner}
       />
     </svg>
   );
