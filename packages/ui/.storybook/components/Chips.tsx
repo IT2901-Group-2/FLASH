@@ -12,6 +12,7 @@ export const Chips: React.FC<ChipsProps> = ({ children, onClick, active = false 
     <button
       className={`${styles.container} ${active ? styles.active : ""}`}
       onClick={onClick}
+      data-color="neutral"
     >
       <span>{children}</span>
     </button>

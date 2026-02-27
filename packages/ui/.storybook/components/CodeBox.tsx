@@ -19,7 +19,7 @@ export const CodeBox = ({ title, language, children }: CodeBoxProps) => {
   };
 
   return (
-    <div className={styles.container} data-color="gray">
+    <div className={styles.container} data-color="neutral">
       <div className={styles.titleContainer}>
         <h4 className={styles.title}>{title}</h4>
         <button className={styles.copyButton} onClick={handleCopy}>
