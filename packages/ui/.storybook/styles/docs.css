@@ -28,6 +28,9 @@ p {
   font-family: "Nunito Sans", sans-serif;
 }
 
+.css-pdsmhf {
+  max-width: none !important;
+}
 .sbdocs-content {
   padding-right: 25%;
 }
@@ -44,7 +47,7 @@ p {
   > div {
     resize: horizontal;
     background-color: var(--canvas-bg);
-    max-width: calc(100% - 2.75rem);
+    max-width: 100%;
   }
 }
 
