@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./Card.module.css";
 import { cl } from "@/util/helpers/";
-import { ColorName } from "@/styles/colorType";
+import { ColorName } from "../types";
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   /**

@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Input } from "./Input";
 import { expect, fn, userEvent, within } from "storybook/test";
 import { Search, Mail, Check, X } from "lucide-react";
-import { colorNames } from "@/styles/colorType";
 
 const meta: Meta<typeof Input> = {
   title: "Building Blocks/Components/Input",
@@ -17,7 +16,7 @@ const meta: Meta<typeof Input> = {
     },
     "data-color": {
       control: "select",
-      options: colorNames,
+      options: [],
       description: "Overrides inherited color scheme",
     },
     iconPosition: {
