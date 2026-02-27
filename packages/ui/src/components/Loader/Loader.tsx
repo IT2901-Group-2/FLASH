@@ -1,6 +1,7 @@
 import { SVGProps } from "react";
 import styles from "./Loader.module.css";
 import { cl } from "@/util/helpers/";
+import { ColorName } from "../types";
 
 export interface LoaderProps extends Omit<SVGProps<SVGSVGElement>, "ref"> {
   /**
@@ -24,6 +25,10 @@ export interface LoaderProps extends Omit<SVGProps<SVGSVGElement>, "ref"> {
    * @default "neutral"
    */
   variant?: "neutral" | "interaction" | "inverted";
+  /**
+   *
+   */
+  "data-color"?: ColorName;
 }
 
 /**
@@ -51,6 +56,7 @@ export const Loader = ({
   transparent = false,
   variant = "neutral",
   id,
+  "data-color": color,
   ...rest
 }: LoaderProps) => {
   return (
@@ -59,6 +65,7 @@ export const Loader = ({
       viewBox="0 0 50 50"
       preserveAspectRatio="xMidYMid"
       data-variant={variant}
+      data-color={color}
       className={`${cl(
         styles.loader,
         className,

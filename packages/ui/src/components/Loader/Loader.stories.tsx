@@ -33,6 +33,13 @@ export const Interaction: Story = {
   },
 };
 
+export const Inverted: Story = {
+  args: {
+    variant: "inverted",
+    size: "3xlarge",
+  },
+};
+
 export const Transparent: Story = {
   args: {
     transparent: true,
