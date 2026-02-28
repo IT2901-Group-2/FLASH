@@ -49,13 +49,13 @@ export const ActionCard = ({
   descriptionColor = "neutral",
   primaryButton,
   secondaryButton,
-  "data-color": data = "neutral",
+  "data-color": color = "neutral",
   className,
   children,
   ...rest
 }: ActionCardProps) => {
   return (
-    <Card data-color={data} className={cl(styles.actionCard, className)} {...rest}>
+    <Card data-color={color} className={cl(styles.actionCard, className)} {...rest}>
       {description && (
         <p className={styles.description} data-color={descriptionColor}>
           {description}

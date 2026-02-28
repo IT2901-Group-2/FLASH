@@ -9,7 +9,6 @@ const meta: Meta<typeof Button> = {
   title: "Building Blocks/Components/Button",
   component: Button,
   tags: ["autodocs"],
-
   args: {
     loading: false,
     disabled: false,

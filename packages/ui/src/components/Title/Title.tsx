@@ -50,7 +50,7 @@ export const Title = ({
   size = "large",
   weight = "semibold",
   align = "left",
-  "data-color": data = "brand-purple",
+  "data-color": color = "brand-purple",
   ref,
   className,
   ...props
@@ -58,7 +58,7 @@ export const Title = ({
   return (
     <div className={styles.wrapper}>
       <Component
-        data-color={data}
+        data-color={color}
         data-size={size}
         data-weight={weight}
         data-align={align}

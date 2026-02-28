@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Title } from "./Title";
 import { expect, within } from "storybook/test";
-import { colorNames } from "../types";
 
 const meta: Meta<typeof Title> = {
   title: "Building Blocks/Components/Title",
@@ -26,7 +25,7 @@ const meta: Meta<typeof Title> = {
     },
     "data-color": {
       control: "select",
-      options: colorNames,
+      options: [],
     },
     children: { control: { type: "text" } },
   },

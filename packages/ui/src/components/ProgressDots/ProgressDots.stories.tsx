@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ProgressDots } from "./ProgressDots";
-import { colorNames } from "../types";
 import { expect } from "storybook/test";
 import styles from "./ProgressDots.module.css";
 
@@ -11,7 +10,7 @@ const meta: Meta<typeof ProgressDots> = {
   argTypes: {
     maxValue: { control: { type: "number" } },
     value: { control: { type: "number" } },
-    "data-color": { control: "select", options: colorNames },
+    "data-color": { control: "select", options: [] },
     lineThickness: { control: "select", options: ["thin", "medium", "thick"] },
   },
   decorators: [Story => <Story />],

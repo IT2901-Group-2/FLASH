@@ -1,17 +1,18 @@
 import React from "react";
 import styles from "./InfoBox.module.css";
+import { ColorRole } from "@flash/tokens/types";
 
 export interface InfoBoxProps {
   title: string;
   icon?: React.ReactNode;
-  "data-color"?: "gray" | "blue" | "green" | "yellow" | "red";
+  "data-color"?: ColorRole;
   children: React.ReactNode;
 }
 
 export const InfoBox: React.FC<InfoBoxProps> = ({
   title,
   icon,
-  "data-color": color = "gray",
+  "data-color": color = "neutral",
   children,
 }) => {
   return (
