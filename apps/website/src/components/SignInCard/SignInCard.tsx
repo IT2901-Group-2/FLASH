@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 export default function SignInCard() {
   const t = useTranslations("admin.login.signIn");
   return (
-    <Card data-color="background-secondary" className={styles.card}>
+    <Card className={styles.card}>
       <Title
         align="left"
         size="medium"

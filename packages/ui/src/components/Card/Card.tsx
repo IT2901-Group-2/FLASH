@@ -21,7 +21,7 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
  */
 export const Card = ({
   children,
-  "data-color": color = "neutral",
+  "data-color": color,
   className,
   ...rest
 }: CardProps) => {
