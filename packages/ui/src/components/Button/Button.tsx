@@ -89,7 +89,7 @@ export const Button = ({
       type={type}
     >
       {icon && iconPosition === "left" && icon}
-      {loading && <Loader size={size} />}
+      {loading && <Loader size={size} variant="inverted" />}
       {children && !loading && <span>{children}</span>}
       {icon && iconPosition === "right" && icon}
     </button>
