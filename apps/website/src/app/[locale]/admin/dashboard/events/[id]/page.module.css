@@ -18,9 +18,14 @@
 }
 
 .back {
-  margin-top: 0.15rem;
-  padding: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  padding: 0.25rem;
   border-radius: 0.5rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 
   &:hover {
