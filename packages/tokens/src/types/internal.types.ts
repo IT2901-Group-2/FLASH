@@ -53,4 +53,4 @@ export type FontLineHeightKeys =
   | "line-height-large"
   | "line-height-medium";
 
-export type FontWeightKeys = "weight-bold" | "weight-regular";
+export type FontWeightKeys = "weight-bold" | "weight-medium" | "weight-regular";
