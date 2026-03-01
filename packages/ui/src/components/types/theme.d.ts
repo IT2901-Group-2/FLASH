@@ -1,8 +1,6 @@
 import type { ColorRole } from "@flash/tokens/types";
 
-export interface CustomName {
-  default: string;
-}
+export interface CustomName {}
 export type ColorName = ColorRole | keyof CustomName;
 
 declare global {
