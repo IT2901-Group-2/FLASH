@@ -1,5 +1,4 @@
 import type { Preview } from "@storybook/react-vite";
-import "../src/styles/global.css";
 import "./styles/docs.css";
 import FontDecorator from "./decorators/TypeDecorator";
 import { themes } from "storybook/theming";
