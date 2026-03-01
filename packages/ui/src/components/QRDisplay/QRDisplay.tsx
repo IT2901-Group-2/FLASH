@@ -1,6 +1,7 @@
 import styles from "./QRDisplay.module.css";
 import QRCode from "react-qr-code";
 import { cl } from "@//util/helpers/className";
+import { BgRaised, Neutral1000 } from "@flash/tokens/js";
 
 export interface QRDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
@@ -25,18 +26,21 @@ export interface QRDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
  *
  * > _Last updated: `2026-02-07`_
  */
-const QRDisplay = ({ value, code, size, className, ...rest }: QRDisplayProps) => {
-  const selectedSize = size ?? "medium";
-  const sizeClass = styles[`qr-${selectedSize}`];
-  const containerSizeClass = styles[`container-${selectedSize}`];
+const QRDisplay = ({
+  value,
+  code,
+  size = "medium",
+  className,
+  ...rest
+}: QRDisplayProps) => {
   return (
-    <div className={cl(styles.container, containerSizeClass, className)} {...rest}>
+    <div data-size={size} className={cl(styles.container, className)} {...rest}>
       <QRCode
         value={value}
         level="H"
-        className={cl(styles.qrCode, sizeClass)}
-        bgColor="var(--color-neutral-000)"
-        fgColor="var(--color-neutral-1000)"
+        className={styles.qrCode}
+        bgColor={BgRaised}
+        fgColor={Neutral1000}
       />
       <div className={styles.text}>
         {code && <span className={styles.code}>{code}</span>}

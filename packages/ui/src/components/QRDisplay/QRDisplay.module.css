@@ -1,76 +1,49 @@
 .container {
   /* Let the container size to its content (QR + padding) but never overflow viewport */
-  width: auto;
-  max-width: calc(100vw - 3rem);
+  width: max-content;
   height: min-content;
-  padding-inline: 1rem;
-  padding-block: 3rem 1.5rem;
+  padding: 1.5em;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 2rem;
+  gap: 1em;
 
-  border-radius: 1rem;
-  opacity: 0.9;
-  background-color: var(--color-neutral-000);
-  box-shadow: 0 0.25rem 0.25rem 0 rgba(0, 0, 0, 0.25);
-}
+  border-radius: var(--radius-16);
+  background-color: var(--bg-raised);
+  box-shadow: var(--shadow-dialog);
+  color: var(--neutral-1000);
 
-.container-small {
-  min-width: min(10rem, calc(100vw - 3rem));
-}
-
-.container-medium {
-  min-width: min(12rem, calc(100vw - 3rem));
-}
-
-.container-large {
-  min-width: min(20rem, calc(100vw - 3rem));
+  &[data-size="small"] {
+    font-size: 12px;
+  }
+  &[data-size="large"] {
+    font-size: 20px;
+  }
 }
 
 .qrCode {
   /* base responsive behavior for the svg */
-  max-width: 100%;
+  min-width: 10em;
+  max-width: 10em;
+  margin: 1em;
   height: auto;
   display: block;
   aspect-ratio: 1/1;
-}
-
-.qr-small {
-  min-width: 8rem;
-  min-height: 8rem;
-  max-width: 8rem;
-  max-height: 8rem;
-}
-
-.qr-medium {
-  min-width: 10rem; /* current default */
-  min-height: 10rem;
-  max-width: 10rem;
-  max-height: 10rem;
-}
-
-.qr-large {
-  min-width: 18rem;
-  min-height: 18rem;
-  max-width: 18rem;
-  max-height: 18rem;
 }
 
 .text {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 1em;
 
   .code {
-    color: var(--color-neutral-1000);
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: var(--font-size-xlarge);
+    font-weight: var(--font-weight-bold);
   }
 
   .helperText {
-    color: var(--color-neutral-800);
+    color: var(--text-subtle);
   }
 }
