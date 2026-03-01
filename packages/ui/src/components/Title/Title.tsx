@@ -17,12 +17,12 @@ export interface TitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
    * Visual size (independent of semantic level)
    * @default "large"
    */
-  size?: "xlarge" | "large" | "medium" | "small";
+  size?: "2xlarge" | "xlarge" | "large" | "medium" | "small" | "xsmall";
   /**
    * Font weight
    * @default "semibold"
    */
-  weight?: "bold" | "semibold" | "medium";
+  weight?: "bold" | "regular";
   /**
    * Text alignment
    * @default "left"
@@ -48,9 +48,9 @@ export const Title = ({
   children,
   description,
   size = "large",
-  weight = "semibold",
+  weight = "bold",
   align = "left",
-  "data-color": color = "brand-purple",
+  "data-color": color,
   ref,
   className,
   ...props

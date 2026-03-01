@@ -32,9 +32,18 @@ const meta: Meta<typeof Title> = {
   args: {
     children: "Title Text",
   },
+  parameters: {
+    layout: "left",
+    chromatic: { disable: true },
+    docs: {
+      source: {
+        type: "dynamic",
+      },
+    },
+  },
   decorators: [
     Story => (
-      <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: ".5rem" }}>
         <Story />
       </div>
     ),
@@ -45,7 +54,7 @@ export default meta;
 type Story = StoryObj<typeof Title>;
 
 // Semantic HTML Levels
-export const Standard_Purple: Story = {
+export const HeadingTypes: Story = {
   render: () => (
     <>
       <Title as="h1">This is an H1 title</Title>
@@ -75,25 +84,31 @@ export const Standard_Purple: Story = {
 export const Sizes: Story = {
   render: () => (
     <>
-      <Title size="xlarge">Extra Large Title</Title>
-      <Title size="large">Large Title</Title>
-      <Title size="medium">Medium Title</Title>
-      <Title size="small">Small Title</Title>
+      <Title size="2xlarge">This is a title with 2xlarge</Title>
+      <Title size="xlarge">This is a title with xlarge</Title>
+      <Title size="large">This is a title with large</Title>
+      <Title size="medium">This is a title with medium</Title>
+      <Title size="small">This is a title with small</Title>
+      <Title size="xsmall">This is a title with xsmall</Title>
     </>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("All sizes render with correct data attributes", async () => {
-      const xlargeTitle = canvas.getByText("Extra Large Title").closest("[data-size]");
-      const largeTitle = canvas.getByText("Large Title").closest("[data-size]");
-      const mediumTitle = canvas.getByText("Medium Title").closest("[data-size]");
-      const smallTitle = canvas.getByText("Small Title").closest("[data-size]");
+      const xxlargeTitle = canvas.getByText(/with 2xlarge/i).closest("[data-size]");
+      const xlargeTitle = canvas.getByText(/with xlarge/i).closest("[data-size]");
+      const largeTitle = canvas.getByText(/with large/i).closest("[data-size]");
+      const mediumTitle = canvas.getByText(/with medium/i).closest("[data-size]");
+      const smallTitle = canvas.getByText(/with small/i).closest("[data-size]");
+      const xsmallTitle = canvas.getByText(/with xsmall/i).closest("[data-size]");
 
+      await expect(xxlargeTitle).toHaveAttribute("data-size", "2xlarge");
       await expect(xlargeTitle).toHaveAttribute("data-size", "xlarge");
       await expect(largeTitle).toHaveAttribute("data-size", "large");
       await expect(mediumTitle).toHaveAttribute("data-size", "medium");
       await expect(smallTitle).toHaveAttribute("data-size", "small");
+      await expect(xsmallTitle).toHaveAttribute("data-size", "xsmall");
     });
   },
 };
@@ -103,8 +118,7 @@ export const Weights: Story = {
   render: () => (
     <>
       <Title weight="bold">Bold Weight</Title>
-      <Title weight="semibold">Semibold Weight</Title>
-      <Title weight="medium">Medium Weight</Title>
+      <Title weight="regular">Regular Weight</Title>
     </>
   ),
   play: async ({ canvasElement, step }) => {
@@ -112,12 +126,10 @@ export const Weights: Story = {
 
     await step("All weights render with correct data attributes", async () => {
       const boldTitle = canvas.getByText("Bold Weight").closest("[data-weight]");
-      const semiboldTitle = canvas.getByText("Semibold Weight").closest("[data-weight]");
-      const mediumTitle = canvas.getByText("Medium Weight").closest("[data-weight]");
+      const regularTitle = canvas.getByText("Regular Weight").closest("[data-weight]");
 
       await expect(boldTitle).toHaveAttribute("data-weight", "bold");
-      await expect(semiboldTitle).toHaveAttribute("data-weight", "semibold");
-      await expect(mediumTitle).toHaveAttribute("data-weight", "medium");
+      await expect(regularTitle).toHaveAttribute("data-weight", "regular");
     });
   },
 };
@@ -152,27 +164,40 @@ export const Alignment: Story = {
 export const Colors: Story = {
   render: () => (
     <>
+      <Title>Default</Title>
+      <Title data-color="neutral">Neutral</Title>
+      <Title data-color="accent">Accent</Title>
       <Title data-color="brand-purple">Brand Purple</Title>
-      <Title data-color="accent">Accent Color</Title>
-      <Title data-color="neutral">Neutral Color</Title>
+      <Title data-color="success">Success</Title>
+      <Title data-color="warning">Warning</Title>
+      <Title data-color="danger">Danger</Title>
     </>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("All colors render with correct data attributes", async () => {
-      const brandPurpleTitle = canvas.getByText("Brand Purple").closest("[data-color]");
-      const accentTitle = canvas.getByText("Accent Color").closest("[data-color]");
-      const neutralTitle = canvas.getByText("Neutral Color").closest("[data-color]");
+      const neutral = canvas.getByText("Neutral").closest("[data-color]");
+      const accent = canvas.getByText("Accent").closest("[data-color]");
+      const brandPurple = canvas.getByText("Brand Purple").closest("[data-color]");
+      const success = canvas.getByText("Success").closest("[data-color]");
+      const warning = canvas.getByText("Warning").closest("[data-color]");
+      const danger = canvas.getByText("Danger").closest("[data-color]");
 
-      await expect(brandPurpleTitle).toHaveAttribute("data-color", "brand-purple");
-      await expect(accentTitle).toHaveAttribute("data-color", "accent");
-      await expect(neutralTitle).toHaveAttribute("data-color", "neutral");
+      await expect(neutral).toHaveAttribute("data-color", "neutral");
+      await expect(accent).toHaveAttribute("data-color", "accent");
+      await expect(brandPurple).toHaveAttribute("data-color", "brand-purple");
+      await expect(success).toHaveAttribute("data-color", "success");
+      await expect(warning).toHaveAttribute("data-color", "warning");
+      await expect(danger).toHaveAttribute("data-color", "danger");
     });
   },
 };
 
 // Semantic vs Visual
+/**
+ * This demonstrates how semantic level (as) can be independent from visual size
+ */
 export const SemanticVsVisual: Story = {
   render: () => (
     <>
@@ -182,9 +207,6 @@ export const SemanticVsVisual: Story = {
       <Title as="h2" size="xlarge">
         H2 but visually extra large
       </Title>
-      <p style={{ marginTop: "1rem", color: "#666", fontSize: "0.875rem" }}>
-        This demonstrates how semantic level (as) can be independent from visual size
-      </p>
     </>
   ),
   play: async ({ canvasElement, step }) => {
@@ -258,8 +280,8 @@ export const AllVariants: Story = {
       <Title as="h2" size="large">
         Large H2
       </Title>
-      <Title as="h3" size="medium" weight="semibold">
-        Semibold H3
+      <Title as="h3" size="medium" weight="bold">
+        Bold H3
       </Title>
       <Title size="small" align="center">
         Small Centered
