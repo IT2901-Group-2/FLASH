@@ -5,12 +5,8 @@
 }
 
 .dropdownBorder {
-  border: 1px solid var(--border-focus);
+  border: 0.1rem solid var(--border-focus);
   border-top: none;
-
-  &[data-color] {
-    border-color: var(--border-default);
-  }
 }
 
 .panel {
