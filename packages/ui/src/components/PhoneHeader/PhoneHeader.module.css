@@ -1,13 +1,9 @@
 .phoneheader {
-  --phoneheader-bg: var(--color-foreground-400);
-  --phoneheader-text: var(--color-brand-purple-800);
-  --phoneheader-border: var(--color-foreground-600);
-  --phoneheader-subtitle: var(--color-neutral-700);
-  --phoneheader-focus: var(--color-brand-purple-500);
-  --phoneheader-right-primary-bg: var(--color-brand-purple-800);
-  --phoneheader-right-primary-text: var(--color-foreground-100);
-  --phoneheader-right-secondary-bg: var(--color-brand-purple-500);
-  --phoneheader-right-secondary-text: var(--color-foreground-100);
+  --phoneheader-bg: var(--bg-raised);
+  --phoneheader-text: var(--text-default);
+  --phoneheader-border: var(--border-focus);
+  --phoneheader-subtitle: var(--text-subtle);
+  --phoneheader-focus: var(--bg-soft);
 }
 
 .container {
