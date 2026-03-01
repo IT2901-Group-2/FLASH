@@ -68,7 +68,7 @@
 /* ---------------------------------- Thumb -------------------------------- */
 .thumb {
   background-color: var(--color-unchecked);
-  border-radius: 9999px;
+  border-radius: var(--radius-full);
   display: flex;
   justify-content: center;
   align-items: center;

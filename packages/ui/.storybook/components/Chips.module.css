@@ -3,7 +3,7 @@
   padding: 0.3rem 1rem;
   background-color: transparent;
   color: var(--docs-color-text);
-  border-radius: 1rem;
+  border-radius: var(--radius-16);
   border: 1px solid var(--neutral-900);
 
   &:hover {

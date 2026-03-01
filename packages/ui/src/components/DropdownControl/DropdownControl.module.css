@@ -1,6 +1,6 @@
 .dropdownControls {
   width: 100%;
-  border-radius: 1rem;
+  border-radius: var(--radius-16);
   overflow: hidden;
 }
 

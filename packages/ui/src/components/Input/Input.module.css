@@ -15,7 +15,7 @@
   height: 3rem;
   padding: 0.875rem 1.25rem;
   margin: 0.125rem;
-  border-radius: 1rem;
+  border-radius: var(--radius-16);
   border: none;
   font-size: 1rem;
   position: relative;
