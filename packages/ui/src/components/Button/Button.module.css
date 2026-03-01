@@ -26,7 +26,7 @@
 
   &[data-variant="primary"] {
     background-color: var(--bg-strong);
-    color: var(--text-contrast);
+    color: white;
 
     &:hover {
       background-color: var(--bg-strong-hover);
