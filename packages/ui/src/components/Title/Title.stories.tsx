@@ -273,9 +273,7 @@ export const Accessibility: Story = {
 // All Variants Showcase
 export const AllVariants: Story = {
   render: () => (
-    <div
-      style={{ display: "flex", flexDirection: "column", gap: "1rem", maxWidth: "600px" }}
-    >
+    <>
       <Title as="h1">Default H1</Title>
       <Title as="h2" size="large">
         Large H2
@@ -292,7 +290,7 @@ export const AllVariants: Story = {
       <Title as="h2" size="xlarge" weight="bold" align="right" data-color="brand-purple">
         All Props Combined
       </Title>
-    </div>
+    </>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
