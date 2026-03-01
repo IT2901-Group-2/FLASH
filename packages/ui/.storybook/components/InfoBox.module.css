@@ -1,6 +1,6 @@
 .container {
   color: var(--docs-color-text);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-8);
   margin-bottom: 1rem !important;
   border: 1px solid var(--data-color);
   width: 75%;
@@ -66,7 +66,7 @@
   background-color: transparent;
   outline: none;
   border: none;
-  border-radius: 0.25rem;
+  border-radius: var(--radius-4);
 
   &:hover {
     background-color: color-mix(in srgb, var(--data-color) 75%, transparent);
