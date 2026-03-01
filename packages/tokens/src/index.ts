@@ -40,7 +40,7 @@ async function main() {
   await buildCSSBundleForTokens({
     tokens: darkModeTokens(false),
     filename: "semantic-dark-tokens.css",
-    selector: ':root[data-theme="dark"], :host[data-theme="dark"], .dark',
+    selector: '[data-theme="dark"], [data-theme="dark"], .dark',
     filter: async token => token.type !== "global-color",
   });
   await buildCSSBundleForTokens({
@@ -84,7 +84,7 @@ async function buildDataColorTokens() {
     "success",
     "warning",
     "danger",
-    "purple",
+    "brand-purple",
   ] as const;
 
   // colors.forEach(color => {
