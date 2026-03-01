@@ -1,67 +1,46 @@
 "use client";
-import { useState } from "react";
+import { useState, SubmitEvent } from "react";
 import { TextAlignStart } from "lucide-react";
 import { Card, Input, Button, Title, DropdownControl } from "ui";
 import { useTranslations } from "next-intl";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import styles from "./JoinEventCard.module.css";
 import { QrCode } from "lucide-react";
-import type { EventDTO } from "@/types/eventTypes";
+import { useEventsQuery } from "@/hooks/useEvents";
 
 const JoinEventCard = () => {
   const t = useTranslations("JoinEvent");
   const router = useRouter();
-  const { locale } = useParams<{ locale: string }>();
-  const [nickname, setNickname] = useState("");
-  const [eventCode, setEventCode] = useState("");
-  const [nicknameError, setNicknameError] = useState<string | null>(null);
-  const [eventCodeError, setEventCodeError] = useState<string | null>(null);
-  const [joinError, setJoinError] = useState<string | null>(null);
-  const [isJoining, setIsJoining] = useState(false);
+  const [code, setCode] = useState<string>("");
+  const [error, setError] = useState<string | undefined>("");
+  const [nickname, setNickname] = useState<string>("");
 
-  const handleJoin = async () => {
-    const trimmedNickname = nickname.trim();
-    const trimmedCode = eventCode.trim();
-    setNicknameError(null);
-    setEventCodeError(null);
-    setJoinError(null);
+  const { refetch, isFetching } = useEventsQuery({ guestCode: code }, false);
 
-    if (!trimmedNickname) {
-      setNicknameError(t("nicknameRequiredError"));
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!nickname.trim()) {
+      setError(t("error.invalidNickname"));
+      return;
+    }
+    if (!code.trim()) {
+      setError(t("error.noCode"));
       return;
     }
 
-    if (!trimmedCode) {
-      setEventCodeError(t("eventCodeRequiredError"));
+    const { data, isError, error } = await refetch();
+
+    if (isError) {
+      setError(error.message);
+      return;
+    }
+    if (!data?.[0]) {
+      setError(t("error.invalidCode"));
       return;
     }
 
-    setIsJoining(true);
-
-    try {
-      const response = await fetch(
-        `/api/events?guestCode=${encodeURIComponent(trimmedCode)}`
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch event");
-      }
-
-      const events = (await response.json()) as EventDTO[];
-      const event = events[0];
-
-      if (!event) {
-        setJoinError(t("eventNotFoundError"));
-        return;
-      }
-
-      const redirectParams = new URLSearchParams({ nickname: trimmedNickname });
-      router.push(`/${locale}/${event.id}?${redirectParams.toString()}`);
-    } catch {
-      setJoinError(t("joinFailedError"));
-    } finally {
-      setIsJoining(false);
-    }
+    setError(undefined);
+    router.push(`/${data[0]?.id}`);
   };
 
   return (
@@ -74,7 +53,7 @@ const JoinEventCard = () => {
           value="enter-code"
           label={t("enterCodeTab")}
           content={
-            <div className={styles.content}>
+            <form className={styles.content} onSubmit={handleSubmit}>
               <Input
                 label={t("nicknameLabel")}
                 placeholder={t("nicknamePlaceholder")}
@@ -82,38 +61,29 @@ const JoinEventCard = () => {
                 aria-label={t("nicknameLabel")}
                 value={nickname}
                 onChange={e => setNickname(e.target.value)}
-                onKeyDown={e => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    void handleJoin();
-                  }
-                }}
-                error={nicknameError ?? undefined}
+                error={error}
               />
               <Input
                 label={t("eventCodeLabel")}
                 placeholder={t("eventCodePlaceholder")}
-                icon={<TextAlignStart size={24} />}
+                icon={<TextAlignStart />}
                 aria-label={t("eventCodeLabel")}
-                value={eventCode}
-                onChange={e => setEventCode(e.target.value)}
-                onKeyDown={e => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    void handleJoin();
-                  }
+                value={code}
+                onChange={e => {
+                  setCode(e.target.value);
+                  setError(undefined);
                 }}
-                error={eventCodeError ?? joinError ?? undefined}
+                error={error}
               />
               <Button
                 className={styles.fullWidthButton}
                 data-color="brand-purple"
-                onClick={() => void handleJoin()}
-                loading={isJoining}
+                type="submit"
+                loading={isFetching}
               >
                 {t("joinButton")}
               </Button>
-            </div>
+            </form>
           }
         />
         <DropdownControl.Item
@@ -135,17 +105,6 @@ const JoinEventCard = () => {
             </div>
           }
         />
-        <div className={styles.content}>
-          <Input
-            label={t("eventCodeLabel")}
-            placeholder={t("eventCodePlaceholder")}
-            icon={<TextAlignStart size={24} />}
-            aria-label={t("eventCodeLabel")}
-          />
-          <Button className={styles.fullWidthButton} data-color="brand-purple">
-            {t("joinButton")}
-          </Button>
-        </div>
       </DropdownControl>
     </Card>
   );

@@ -6,7 +6,7 @@ import { AccentColorTokenConfig } from "./roles/accent.tokens";
 import { SuccessColorTokenConfig } from "./roles/success.tokens";
 import { WarningColorTokenConfig } from "./roles/warning.tokens";
 import { DangerColorTokenConfig } from "./roles/danger.tokens";
-import { PurpleColorTokenConfig } from "./roles/brand-purple.tokens";
+import { PurpleColorTokenConfig } from "./roles/purple.tokens";
 
 export const ColorTokenRoleConfig: Record<
   ColorRole,

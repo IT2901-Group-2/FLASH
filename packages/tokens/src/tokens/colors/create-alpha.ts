@@ -1,7 +1,7 @@
 import Color, { type Coords } from "colorjs.io";
 import { ColorRole, ColorTheme } from "@/types/output.types";
 import { ColorConfigWithAlpha, ColorConfigWithoutAlpha } from "@/types/color.types";
-import { semanticRootTokens } from "./roles/root.tokens";
+import { semanticRootTokens } from "./root.tokens";
 
 const ALPHA_LEVELS = ["100", "200", "300", "400"] as const;
 

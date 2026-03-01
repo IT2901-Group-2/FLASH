@@ -20,6 +20,7 @@ const Page = () => {
   return (
     <>
       <CreateEventCard ref={dialogRef} onClose={() => dialogRef.current?.close()} />
+
       <div className={styles.header}>
         <Title description={t("description")}>{t("title")}</Title>
         <Button
