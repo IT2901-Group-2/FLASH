@@ -101,10 +101,6 @@ export const fontTokenConfig = {
       value: "700",
       type: "global-font",
     },
-    "weight-medium": {
-      value: "500",
-      type: "global-font",
-    },
     "weight-regular": {
       value: "400",
       type: "global-font",
