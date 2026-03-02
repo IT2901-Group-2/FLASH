@@ -35,7 +35,7 @@ const JoinEventCard = () => {
     }
 
     setError(undefined);
-    router.push(`/${data[0]?.id}`);
+    router.push(`/${data[0]?.id}/nickname`);
   };
 
   return (

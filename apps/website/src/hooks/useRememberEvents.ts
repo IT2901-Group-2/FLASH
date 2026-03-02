@@ -1,4 +1,3 @@
-"use client";
 /**
  * Everything in this file is temporary until guest authentication is done.
  */
@@ -24,6 +23,8 @@ export const getNickname = (eventID: string) => {
 };
 
 export const getAllJoinedEvents = (): string[] => {
+  if (typeof window === "undefined") return [];
+
   const stored = localStorage.getItem("rememberedEvents");
-  return Object.keys(stored ? JSON.parse(stored) : {});
+  return stored ? Object.keys(JSON.parse(stored)) : [];
 };

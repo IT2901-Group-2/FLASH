@@ -22,9 +22,13 @@ const RememberedEvent = ({ name, uploadLimit, id }: EventDTO) => {
 };
 
 const RememberedEvents = () => {
-  const events = useEventsQuery({
-    id: getAllJoinedEvents(),
-  }).data;
+  const eventIDs = getAllJoinedEvents();
+  const events = useEventsQuery(
+    {
+      id: eventIDs,
+    },
+    eventIDs.length !== 0
+  ).data;
   if (!events) return;
 
   if (events.length === 0) return;
