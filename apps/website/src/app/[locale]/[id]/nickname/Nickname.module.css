@@ -14,4 +14,11 @@
   align-items: center;
   justify-content: start;
   margin-right: auto;
+  cursor: pointer;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }

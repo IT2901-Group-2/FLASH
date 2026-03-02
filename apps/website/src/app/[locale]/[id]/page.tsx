@@ -5,10 +5,12 @@ import styles from "./UploadImage.module.css";
 import { ActionCard, PhoneHeader } from "ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { useEventsQuery } from "@/hooks/useEvents";
+import { hasNicknameForEvent } from "@/hooks/useRememberEvents";
 
 export default function Page() {
+  const navigation = useRouter();
   const t = useTranslations("EventPage");
   const { id } = useParams<{ id: string }>();
   const searchParams = useSearchParams();
@@ -41,6 +43,8 @@ export default function Page() {
     },
   });
   const [isQrOpen, setIsQrOpen] = useState(false);
+
+  if (!hasNicknameForEvent(eventId)) navigation.push(`${eventId}/nickname`);
 
   return (
     <div className={styles.pageWrapper}>
