@@ -35,7 +35,7 @@ const RememberedEvents = () => {
 
   return (
     <Card className={styles.card}>
-      <div>
+      <div className={styles.title}>
         <Calendar />
         <Title size="medium">Your Events</Title>
       </div>
