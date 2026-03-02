@@ -133,6 +133,7 @@ export default function ModeratePage() {
                 state={selectMode && selectedIds.has(image.id) ? "selected" : "default"}
                 onClick={() => handleImageClick(image.id)}
                 data-image-id={image.id}
+                onDragStart={e => e.preventDefault()}
               />
             ))}
           </div>
