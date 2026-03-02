@@ -4,9 +4,9 @@
   height: 3.5rem;
   aspect-ratio: 1/1;
   align-items: center;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-8);
   background: var(--text-tertiary);
-  box-shadow: 0 0.25rem 0.25rem 0 rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-dialog);
 }
 
 .camera {

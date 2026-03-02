@@ -40,7 +40,7 @@ const JoinEventCard = () => {
 
   return (
     <Card>
-      <Title align="center" description={t("description")} as="h2">
+      <Title size="medium" align="center" description={t("description")} as="h2">
         {t("title")}
       </Title>
       <DropdownControl className={styles.dropdownControls} defaultValue="enter-code">
@@ -66,6 +66,7 @@ const JoinEventCard = () => {
                 data-color="brand-purple"
                 type="submit"
                 loading={isFetching}
+                fill
               >
                 {t("joinButton")}
               </Button>

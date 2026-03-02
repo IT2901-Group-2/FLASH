@@ -7,7 +7,7 @@
   background-color: transparent;
   outline: none;
   border: none;
-  border-radius: 0.25rem;
+  border-radius: var(--radius-4);
 
   &:hover {
     background-color: color-mix(in srgb, white 25%, transparent);

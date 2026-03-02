@@ -12,12 +12,7 @@ const Page = () => {
   return (
     <div className={styles.pageWrapper}>
       <Logo />
-      <Title
-        align="center"
-        as="h1"
-        data-color="brand-purple"
-        description={t("appDescription")}
-      >
+      <Title align="center" size="large" as="h1" description={t("appDescription")}>
         {t("appTitle")}
       </Title>
       <JoinEventCard />

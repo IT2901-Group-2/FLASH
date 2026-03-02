@@ -98,7 +98,7 @@ export const fontTokenConfig = {
     },
 
     "weight-bold": {
-      value: "600",
+      value: "700",
       type: "global-font",
     },
     "weight-regular": {

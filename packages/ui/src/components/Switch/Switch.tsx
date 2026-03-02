@@ -154,9 +154,7 @@ const SwitchIcon = ({
   checked: SwitchProps["checked"];
   loading: SwitchProps["loading"];
 }) => {
-  if (loading) {
-    return <Loader />;
-  }
+  if (loading) return <Loader variant="inverted" />;
 
   if (!checked) return null;
 
