@@ -36,8 +36,7 @@ export const ModerateHeader = ({
   selectMode,
   onSelectToggle,
   onSelectAll,
-  // TODO: Replace the href with the actual event URL once event ID is wired into this component.
-  breadcrumbItems = [{ label: "Event", href: "/event" }, { label: "Moderate" }],
+  breadcrumbItems = [{ label: "Event" }, { label: "Moderate" }],
 }: ModerateHeaderProps) => {
   const [scrolled, setScrolled] = useState(false);
 
@@ -53,7 +52,7 @@ export const ModerateHeader = ({
       <div className={styles.desktopRow}>
         <Button
           variant="tertiary"
-          icon={<ArrowLeft />}
+          icon={<ArrowLeft aria-hidden="true" />}
           onClick={onBack}
           aria-label="Go back"
         />
@@ -97,7 +96,7 @@ export const ModerateHeader = ({
         <Button
           className={styles.mobileBackButton}
           variant="tertiary"
-          icon={<ChevronLeft />}
+          icon={<ChevronLeft aria-hidden="true" />}
           onClick={onBack}
           aria-label="Go back"
         />
