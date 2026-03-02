@@ -59,3 +59,8 @@ storybook-static
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+.claude
+CLAUDE.md
+_specs
+_plans
