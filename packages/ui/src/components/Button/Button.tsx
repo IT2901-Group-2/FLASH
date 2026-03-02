@@ -41,6 +41,11 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
    * Overrides inherited color.
    */
   "data-color"?: ColorName;
+  /**
+   * Stretch the button to fill avaliable space in the container.
+   * @default false
+   */
+  fill: boolean;
 }
 
 /**
@@ -64,6 +69,7 @@ export const Button = ({
   iconPosition = "left",
   className,
   type = "button",
+  fill = false,
   ...rest
 }: ButtonProps) => {
   const filterProps: React.ButtonHTMLAttributes<HTMLButtonElement> =
@@ -77,6 +83,7 @@ export const Button = ({
       data-color={data}
       data-variant={variant}
       data-size={size}
+      data-fill={fill}
       onKeyUp={handleKeyUp}
       {...filterProps}
       className={cl(

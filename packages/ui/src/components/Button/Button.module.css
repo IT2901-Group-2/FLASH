@@ -16,6 +16,10 @@
   border: none;
   font-size: 1.25rem;
 
+  &[data-fill="true"] {
+    width: 100%;
+  }
+
   &:hover:not(:active, .loading, .disabled) {
     transform: translateY(-0.25rem);
   }
