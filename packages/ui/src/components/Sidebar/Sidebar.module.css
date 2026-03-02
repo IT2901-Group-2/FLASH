@@ -17,6 +17,7 @@
   flex-direction: column;
   align-items: stretch;
 
+  color: var(--text-default);
   background-color: var(--color-bg);
   border-right: var(--border);
 
@@ -59,6 +60,7 @@
 }
 
 .sidebarHeader {
+  color: inherit;
   height: min-content;
   width: 100%;
   align-items: center;
@@ -78,6 +80,7 @@
     padding-right: 0;
 
     .logo {
+      color: inherit;
       padding-bottom: 0.25rem;
       margin-bottom: 0.25rem;
       width: fit-content;
@@ -95,6 +98,7 @@
 }
 
 .sidebarGroup {
+  color: inherit;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -126,11 +130,12 @@
 }
 
 .sidebarItem {
+  color: inherit;
   display: flex;
   align-items: center;
   gap: 1rem;
   padding: 0.5rem 0.25rem;
-  border-radius: 0.25rem;
+  border-radius: var(--radius-4);
   cursor: pointer;
   border: none;
   background-color: inherit;
@@ -175,10 +180,11 @@
 }
 
 .trigger {
+  color: inherit;
   outline: none;
   border: none;
   padding: 0.5rem;
-  border-radius: 0.25rem;
+  border-radius: var(--radius-4);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -50,30 +50,21 @@ export const Default: Story = {
         }
       });
     });
-  },
-};
 
-/**
- * Test progress line calculation
- */
-export const ProgressLineCalculation: Story = {
-  args: {
-    maxValue: 5,
-    value: 3,
-  },
-  play: async ({ canvasElement, args }) => {
-    const progressLine = canvasElement.querySelector(
-      '[class*="progressLine"]'
-    ) as HTMLElement;
-    await expect(progressLine).toBeInTheDocument();
+    await step("Test progress line calculation", async () => {
+      const progressLine = canvasElement.querySelector(
+        '[class*="progressLine"]'
+      ) as HTMLElement;
+      await expect(progressLine).toBeInTheDocument();
 
-    // Calculate expected progress
-    const expectedProgress = (args.value! - 1) / (args.maxValue - 1);
-    const styleProgress = progressLine?.style.getPropertyValue("--progress");
+      // Calculate expected progress
+      const expectedProgress = (args.value! - 1) / (args.maxValue - 1);
+      const styleProgress = progressLine?.style.getPropertyValue("--progress");
 
-    if (styleProgress) {
-      await expect(parseFloat(styleProgress)).toBeCloseTo(expectedProgress, 2);
-    }
+      if (styleProgress) {
+        await expect(parseFloat(styleProgress)).toBeCloseTo(expectedProgress, 2);
+      }
+    });
   },
 };
 

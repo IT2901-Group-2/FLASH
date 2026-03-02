@@ -46,10 +46,10 @@ export interface ActionCardProps extends React.HTMLAttributes<HTMLDivElement> {
  */
 export const ActionCard = ({
   description,
-  descriptionColor = "neutral",
+  descriptionColor,
   primaryButton,
   secondaryButton,
-  "data-color": color = "neutral",
+  "data-color": color,
   className,
   children,
   ...rest
