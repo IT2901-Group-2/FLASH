@@ -14,3 +14,4 @@ export * from "./Breadcrumb";
 export * from "./PhoneHeader";
 export * from "./QRDisplay";
 export * from "./ActionCard";
+export * from "./ModerateHeader";

@@ -18,7 +18,7 @@ export interface ImageCardProps extends React.HTMLAttributes<HTMLDivElement> {
    * Changes design and styling. As of now their only exists styling for the primary variant
    * @default "primary"
    */
-  variant?: "primary" | "secondary" | "tertiary";
+  variant?: "primary" | "secondary" | "tertiary" | "preview2";
   /**
    * Image source URL
    */
@@ -83,6 +83,7 @@ export const ImageCard = ({
       data-color={color}
       data-variant={variant}
       data-size={size}
+      data-state={state}
       ref={ref}
       className={cl(
         styles.imageCard,
@@ -95,6 +96,11 @@ export const ImageCard = ({
       onClick={onClick}
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
+      aria-pressed={
+        onClick && (state === "selected" || state === "default")
+          ? state === "selected"
+          : undefined
+      }
       onKeyDown={
         onClick
           ? e => {
@@ -120,6 +126,11 @@ export const ImageCard = ({
         )}
         {state === "pending" && <div className={styles.pendingOverlay}></div>}
         <img src={src} alt={alt} className={styles.image} />
+        {variant === "preview2" && state === "selected" && (
+          <div className={styles.moderateCheckBadge} aria-hidden="true">
+            <CircleCheckBig aria-hidden="true" />
+          </div>
+        )}
       </div>
       <div className={styles.titleBox}>
         {state === "pending" && (

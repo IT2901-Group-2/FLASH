@@ -1,0 +1,106 @@
+/* ── Shared header shell ── */
+.header {
+  background: var(--color-accent-300);
+  border-bottom: 1px solid var(--color-background-secondary-800);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── MOBILE layout (default, < 768px) ── */
+
+/* Hide desktop row on mobile */
+.desktopRow {
+  display: none;
+}
+
+/* Title bar: 73px tall, centres title, back icon pinned absolute-left */
+.mobileTitleBar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 73px;
+  padding-top: 22px;
+  padding-bottom: 10px;
+  overflow: hidden;
+}
+
+.mobileBackButton {
+  position: absolute;
+  left: 16px;
+  color: var(--color-neutral-1000);
+  padding: 0;
+  min-width: unset;
+}
+
+/* Bottom bar: 45px tall, holds breadcrumb or select actions */
+.mobileBottomBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 45px;
+  padding-left: 30px;
+  padding-right: 10px;
+  box-sizing: border-box;
+}
+
+/* Mobile button width overrides (height from Button size="xsmall") */
+.mobileSelectButton {
+  width: 95px;
+  min-width: unset;
+}
+
+/* Mobile select actions: right-aligned button group, gap 8px */
+.mobileSelectActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.mobileSelectAllButton {
+  width: 128px;
+  min-width: unset;
+}
+
+/* ── DESKTOP layout (≥ 768px) ── */
+@media (min-width: 768px) {
+  /* Hide mobile rows */
+  .mobileTitleBar,
+  .mobileBottomBar {
+    display: none;
+  }
+
+  /* Show desktop row */
+  .desktopRow {
+    display: flex;
+    align-items: center;
+    gap: 68px;
+    padding: 16px 30px;
+    height: 153px;
+    box-sizing: border-box;
+  }
+
+  /* Center block: title left, actions right */
+  .desktopCenter {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 0;
+  }
+
+  /* Desktop action group */
+  .desktopActions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+  }
+
+  /* Desktop button width override (height from Button default size) */
+  .desktopButton {
+    width: 142px;
+    min-width: unset;
+  }
+}
