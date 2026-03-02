@@ -1,8 +1,9 @@
 .pageWrapper {
-  margin: 2rem;
+  margin: auto;
   gap: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: max-content;
 }
