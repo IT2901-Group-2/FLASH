@@ -1,9 +1,10 @@
 .pageWrapper {
-  margin: auto;
+  margin: 2rem auto;
   gap: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: max-content;
+  max-width: calc(100% - 2rem);
 }
