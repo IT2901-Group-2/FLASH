@@ -6,8 +6,7 @@
   margin-top: 2.5vh;
 
   &::backdrop {
-    background-color: black;
-    opacity: 0.75;
+    background-color: var(--bg-overlay);
   }
 }
 
@@ -46,7 +45,7 @@
   justify-content: end;
   gap: 1rem;
 
-  border-top: 1px solid var(--text-tertiary);
+  border-top: 1px solid var(--border-focus);
   margin-top: 0.5rem;
   padding-top: 0.5rem;
 

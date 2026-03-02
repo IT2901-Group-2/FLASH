@@ -20,13 +20,22 @@
 
   &[data-open="true"] {
     max-height: 30rem;
-    padding: 1rem 0.75rem 0.75rem;
+    padding: 1rem 0;
 
     .panelInner {
       opacity: 1;
       pointer-events: auto;
       transition-delay: 150ms;
     }
+  }
+}
+
+.dropdownBorder {
+  border: 0.1rem solid var(--border-focus);
+  border-top: none;
+
+  & .panel[data-open="true"] {
+    padding-inline: 0.75rem;
   }
 }
 

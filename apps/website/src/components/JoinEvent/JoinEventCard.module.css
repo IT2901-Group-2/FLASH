@@ -26,8 +26,8 @@
 
 .qrText {
   text-align: center;
-  font-size: 0.875rem;
+  font-size: var(--font-size-small);
   color: var(--color-neutral-600);
   margin: 0;
-  font-weight: 600;
+  font-weight: var(--font-weight-bold);
 }

@@ -196,6 +196,6 @@
   }
 
   &:hover {
-    background-color: var(--color-bg-hover);
+    background-color: var(--bg-input);
   }
 }
