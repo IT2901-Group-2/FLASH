@@ -2,7 +2,6 @@ import { describe, it, expect, afterEach, vi } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import Page from "./page";
 import * as useFileUploadModule from "@/hooks/useFileUpload";
-import * as nextNavigation from "next/navigation";
 import * as useEventsModule from "@/hooks/useEvents";
 import * as uiModule from "ui";
 
