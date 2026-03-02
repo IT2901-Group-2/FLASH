@@ -41,7 +41,6 @@ export function useImageSelection(images: Image[], eventId: string) {
         return;
       }
       // TODO: Open image preview when implemented.
-      void imageId;
     },
     [selectMode, toggleSelection]
   );
@@ -49,13 +48,18 @@ export function useImageSelection(images: Image[], eventId: string) {
   const handleBulkAction = useCallback(
     async (isApproved: boolean) => {
       setBulkError(null);
-      try {
-        for (const imageId of Array.from(selectedIds)) {
-          await updateImage({ eventId, imageId, data: { isApproved } });
-        }
-        exitSelectMode();
-      } catch {
-        setBulkError("Some photos could not be updated. Please try again.");
+      const results = await Promise.allSettled(
+        Array.from(selectedIds).map(imageId =>
+          updateImage({ eventId, imageId, data: { isApproved } })
+        )
+      );
+      // Always exit select mode, partially applied changes cannot be undone by retrying the same selection.
+      exitSelectMode();
+      const failed = results.filter(r => r.status === "rejected").length;
+      if (failed > 0) {
+        setBulkError(
+          `${failed} photo${failed > 1 ? "s" : ""} could not be updated.`
+        );
       }
     },
     [selectedIds, updateImage, eventId, exitSelectMode]
