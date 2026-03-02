@@ -6,14 +6,10 @@ import {
   useEventsQuery,
   useUpdateEventMutation,
 } from "@/hooks/useEvents";
-import {
-  QueryClient,
-  QueryClientProvider,
-  UseMutationResult,
-  UseQueryResult,
-} from "@tanstack/react-query";
+import { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 import Page from "./page";
 import { CreateEventInput, EventDTO, UpdateEventInput } from "@/types/eventTypes";
+import { createQueryClientWrapper } from "@test-config";
 
 vi.mock("@/hooks/useEvents", () => ({
   useEventsQuery: vi.fn(),
@@ -30,24 +26,10 @@ vi.mock("@/components/EventCard/EventCard", () => ({
   default: vi.fn(({ data }) => <div data-testid="event-card">{data.name}</div>),
 }));
 
-const createWrapper = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  });
-  const Wrapper = ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-  Wrapper.displayName = "TestWrapper";
-  return Wrapper;
-};
-
 const renderWithProviders = (ui: React.ReactNode) =>
-  render(ui, { wrapper: createWrapper() });
+  render(ui, { wrapper: createQueryClientWrapper() });
 
 describe("Page", () => {
-  afterEach(() => {
-    cleanup();
-  });
   beforeEach(() => {
     vi.mocked(useEventsQuery).mockReturnValue({
       data: undefined,
