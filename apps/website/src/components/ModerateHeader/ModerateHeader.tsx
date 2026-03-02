@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { ArrowLeft, ChevronLeft } from "lucide-react";
 import { Breadcrumb, Button, Title } from "ui";
 import styles from "./ModerateHeader.module.css";
@@ -38,8 +39,16 @@ export const ModerateHeader = ({
   // TODO: Replace the href with the actual event URL once event ID is wired into this component.
   breadcrumbItems = [{ label: "Event", href: "/event" }, { label: "Moderate" }],
 }: ModerateHeaderProps) => {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 0);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className={styles.header}>
+    <header className={`${styles.header}${scrolled ? ` ${styles.scrolled}` : ""}`}>
       {/* ── Desktop layout (hidden on mobile via CSS) ── */}
       <div className={styles.desktopRow}>
         <Button
