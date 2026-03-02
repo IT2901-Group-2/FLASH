@@ -31,7 +31,9 @@ export function useImageSelection(images: Image[], eventId: string) {
   const toggleSelection = useCallback((imageId: string) => {
     setSelectedIds(prev => {
       const next = new Set(prev);
-      next.has(imageId) ? next.delete(imageId) : next.add(imageId);
+      if (!next.delete(imageId)) {
+        next.add(imageId);
+      }
       return next;
     });
   }, []);
