@@ -1,5 +1,5 @@
 import { RefAttributes, useState } from "react";
-import { Button, Card, Dialog, ProgressDots } from "ui";
+import { Button, Dialog, ProgressDots } from "ui";
 import styles from "./CreateEventCard.module.css";
 import { BasicInfoStep, OptionsStep, ReviewStep } from "./Steps";
 import { useTranslations } from "next-intl";
@@ -63,7 +63,7 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
   const isMiddleStep = !isFirstStep && !isLastStep;
   const isSecondToLastStep = progress === steps.length - 1;
   return (
-    <Dialog ref={ref}>
+    <Dialog ref={ref} {...rest}>
       <ProgressDots maxValue={3} value={progress} data-color="brand-purple" />
       <form className={styles.form}>
         <CurrentStep

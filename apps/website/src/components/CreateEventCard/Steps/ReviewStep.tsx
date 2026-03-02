@@ -6,7 +6,10 @@ import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 import { downloadQrSvg } from "@/utils/downloadqrcode";
 
-const ReviewStep = ({ status, result }: StepProps) => {
+const ReviewStep = ({
+  status,
+  result,
+}: Omit<StepProps, "formData" | "updateFormData">) => {
   const t = useTranslations("admin.dashboard.event.create.review");
   const [shareRole, setShareRole] = useState<string>("guest");
   const qrContainerRef = useRef<HTMLDivElement | null>(null);

@@ -37,3 +37,7 @@
     background-color: var(--color-neutral-200);
   }
 }
+
+.dialogCloseButton {
+  margin-left: auto;
+}
