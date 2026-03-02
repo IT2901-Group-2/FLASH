@@ -11,7 +11,6 @@ export default function SignInCard() {
         size="medium"
         weight="bold"
         as="h2"
-        data-color="brand-purple"
         description={t("titleDescription")}
       >
         {t("title")}
