@@ -27,8 +27,8 @@ vi.mock("@/hooks/useImages", () => ({
   })),
 }));
 
-// Mock UI components to simplify testing
-vi.mock("ui", () => ({
+// Mock ModerateHeader
+vi.mock("@/components/ModerateHeader", () => ({
   ModerateHeader: ({
     onBack,
     selectMode,
@@ -51,6 +51,10 @@ vi.mock("ui", () => ({
       </div>
     </header>
   ),
+}));
+
+// Mock UI components to simplify testing
+vi.mock("ui", () => ({
   SegmentedControl: Object.assign(
     ({
       children,
