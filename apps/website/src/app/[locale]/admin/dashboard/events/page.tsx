@@ -31,7 +31,7 @@ const Page = () => {
           {t("createNew")}
         </Button>
       </div>
-      <h3>Events</h3>
+      <Title size="small">Events</Title>
       <div className={styles.eventsContainer}>
         {data?.map(event => (
           <EventCard
