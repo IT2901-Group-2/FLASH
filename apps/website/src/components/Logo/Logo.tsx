@@ -21,7 +21,12 @@ export default function Logo({
   };
 
   return (
-    <div className={styles.cameraWrapper} onClick={handleRedirect} {...rest}>
+    <div
+      className={styles.cameraWrapper}
+      onClick={handleRedirect}
+      {...rest}
+      data-redirect={!!redirectTo}
+    >
       <ApplicationLogo animationOnHover={animationOnHover} />
     </div>
   );
