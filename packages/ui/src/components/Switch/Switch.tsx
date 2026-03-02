@@ -2,7 +2,7 @@ import { InputHTMLAttributes, useEffect, useId, useState } from "react";
 import styles from "./Switch.module.css";
 import { Loader } from "../Loader";
 import { Check, Lock } from "lucide-react";
-import { ColorName } from "@/styles/colorType";
+import { ColorName } from "../types";
 import { cl } from "@/util/helpers";
 
 export interface SwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
@@ -154,9 +154,7 @@ const SwitchIcon = ({
   checked: SwitchProps["checked"];
   loading: SwitchProps["loading"];
 }) => {
-  if (loading) {
-    return <Loader />;
-  }
+  if (loading) return <Loader variant="inverted" />;
 
   if (!checked) return null;
 

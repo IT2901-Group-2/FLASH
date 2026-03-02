@@ -16,4 +16,12 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(20rem, 40rem));
   gap: 1rem;
+  margin-top: 1rem;
+}
+
+.loadingContainer {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

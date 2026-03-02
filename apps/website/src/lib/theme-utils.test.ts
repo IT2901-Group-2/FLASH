@@ -57,23 +57,23 @@ describe("getSystemTheme", () => {
 
 describe("applyTheme", () => {
   beforeEach(() => {
-    document.body.setAttribute("data-theme", "");
+    document.documentElement.setAttribute("data-theme", "");
   });
 
   it("should set data-theme attribute to 'light' on body", () => {
     applyTheme("light");
-    expect(document.body.getAttribute("data-theme")).toBe("light");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("light");
   });
 
   it("should set data-theme attribute to 'dark' on body", () => {
     applyTheme("dark");
-    expect(document.body.getAttribute("data-theme")).toBe("dark");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
   });
 
   it("should update existing data-theme attribute", () => {
-    document.body.setAttribute("data-theme", "light");
+    document.documentElement.setAttribute("data-theme", "light");
     applyTheme("dark");
-    expect(document.body.getAttribute("data-theme")).toBe("dark");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
   });
   it("should do nothing when document is undefined", () => {
     const originalDocument = global.document;
@@ -167,7 +167,7 @@ describe("systemThemeListner", () => {
 
     mockMatchMedia = vi.fn().mockReturnValue(mockMediaQuery);
     vi.stubGlobal("matchMedia", mockMatchMedia);
-    document.body.setAttribute("data-theme", "");
+    document.documentElement.setAttribute("data-theme", "");
   });
 
   afterEach(() => {
@@ -211,7 +211,7 @@ describe("systemThemeListner", () => {
     mockMediaQuery.matches = true;
     handler();
 
-    expect(document.body.getAttribute("data-theme")).toBe("dark");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
   });
 
   it("should remove event listener when cleanup function is called", () => {

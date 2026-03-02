@@ -2,7 +2,7 @@ import React from "react";
 import { Loader } from "../Loader/Loader";
 import styles from "./Button.module.css";
 import { cl, omit } from "@/util/helpers";
-import { ColorName } from "@/styles/colorType";
+import { ColorName } from "../types";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Button Content. */
@@ -41,6 +41,11 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
    * Overrides inherited color.
    */
   "data-color"?: ColorName;
+  /**
+   * Stretch the button to fill avaliable space in the container.
+   * @default false
+   */
+  fill?: boolean;
 }
 
 /**
@@ -64,6 +69,7 @@ export const Button = ({
   iconPosition = "left",
   className,
   type = "button",
+  fill = false,
   ...rest
 }: ButtonProps) => {
   const filterProps: React.ButtonHTMLAttributes<HTMLButtonElement> =
@@ -77,6 +83,7 @@ export const Button = ({
       data-color={data}
       data-variant={variant}
       data-size={size}
+      data-fill={fill}
       onKeyUp={handleKeyUp}
       {...filterProps}
       className={cl(
@@ -88,10 +95,10 @@ export const Button = ({
       disabled={disabled || loading}
       type={type}
     >
-      {icon && iconPosition === "left" && <span className={styles.icon}>{icon}</span>}
-      {loading && <Loader size={size} />}
+      {icon && iconPosition === "left" && icon}
+      {loading && <Loader size={size} variant="inverted" />}
       {children && !loading && <span>{children}</span>}
-      {icon && iconPosition === "right" && <span className={styles.icon}>{icon}</span>}
+      {icon && iconPosition === "right" && icon}
     </button>
   );
 };

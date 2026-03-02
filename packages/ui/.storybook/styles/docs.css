@@ -1,3 +1,6 @@
+@import "@flash/tokens/css/reset.css";
+@import "@flash/tokens";
+
 :root {
   --docs-color-background: #222325;
   --docs-color-outline: #39393b;
@@ -28,6 +31,10 @@ p {
   font-family: "Nunito Sans", sans-serif;
 }
 
+.css-pdsmhf {
+  max-width: none !important;
+}
+
 .sbdocs-content {
   padding-right: 25%;
 }
@@ -44,22 +51,6 @@ p {
   > div {
     resize: horizontal;
     background-color: var(--canvas-bg);
-    max-width: calc(100% - 2.75rem);
+    max-width: 100%;
   }
-}
-
-[data-color="gray"] {
-  --data-color: var(--gray);
-}
-[data-color="blue"] {
-  --data-color: var(--blue);
-}
-[data-color="green"] {
-  --data-color: var(--green);
-}
-[data-color="yellow"] {
-  --data-color: var(--yellow);
-}
-[data-color="red"] {
-  --data-color: var(--red);
 }

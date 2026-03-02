@@ -26,7 +26,7 @@ export const getSystemTheme = (): "light" | "dark" => {
  */
 export const applyTheme = (resolvedTheme: ResolvedTheme) => {
   if (typeof document === "undefined") return;
-  document.body.setAttribute("data-theme", resolvedTheme);
+  document.documentElement.setAttribute("data-theme", resolvedTheme);
 };
 
 /**

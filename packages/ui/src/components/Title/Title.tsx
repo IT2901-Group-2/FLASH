@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./Title.module.css";
 import { cl } from "@/util/helpers";
-import { ColorName } from "@/styles/colorType";
+import { ColorName } from "../types";
 
 export interface TitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   /** Title Content. */
@@ -17,12 +17,12 @@ export interface TitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
    * Visual size (independent of semantic level)
    * @default "large"
    */
-  size?: "xlarge" | "large" | "medium" | "small";
+  size?: "2xlarge" | "xlarge" | "large" | "medium" | "small" | "xsmall";
   /**
    * Font weight
    * @default "semibold"
    */
-  weight?: "bold" | "semibold" | "medium";
+  weight?: "bold" | "regular";
   /**
    * Text alignment
    * @default "left"
@@ -48,9 +48,9 @@ export const Title = ({
   children,
   description,
   size = "large",
-  weight = "semibold",
+  weight = "bold",
   align = "left",
-  "data-color": data = "brand-purple",
+  "data-color": color,
   ref,
   className,
   ...props
@@ -58,7 +58,7 @@ export const Title = ({
   return (
     <div className={styles.wrapper}>
       <Component
-        data-color={data}
+        data-color={color}
         data-size={size}
         data-weight={weight}
         data-align={align}

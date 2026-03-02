@@ -1,26 +1,14 @@
 .switch {
-  --color-text: var(--color-neutral-1000);
-  --color-description: var(--color-neutral-700);
-  --color-unchecked: var(--color-neutral-600);
-  --color-unchecked-readonly: var(--color-neutral-200);
-  --color-unchecked-bg: color-mix(
-    in srgb,
-    var(--color-neutral-200) 50%,
-    var(--color-neutral-000)
-  );
-  --color-unchecked-bg-hover: color-mix(
-    in srgb,
-    var(--color-neutral-200) 80%,
-    var(--color-neutral-000)
-  );
+  --color-text: var(--text-neutral);
+  --color-description: var(--text-neutral-decoration);
+  --color-unchecked: var(--border-neutral);
+  --color-unchecked-readonly: var(--border-neutral-subtleT);
+  --color-unchecked-bg: var(--bg-input);
+  --color-unchecked-bg-hover: var(--bg-neutral-moderate-hover);
 
-  --color-checked: var(--data-color-600);
-  --color-checked-thumb: var(--color-neutral-100);
-  --color-checked-hover: color-mix(
-    in srgb,
-    var(--data-color-500) 80%,
-    var(--color-neutral-000)
-  );
+  --color-checked: var(--bg-strong);
+  --color-checked-thumb: var(--bg-raised);
+  --color-checked-hover: var(--bg-strong-hover);
 
   width: fit-content;
   min-height: 3rem;
@@ -45,6 +33,10 @@
     height: 2rem;
     width: 2.5rem;
   }
+
+  &:focus {
+    border: 2px solid red;
+  }
 }
 
 /* ---------------------------------- Track -------------------------------- */
@@ -54,7 +46,7 @@
   width: 2.75rem;
   height: 1.5rem;
   top: 0.75rem;
-  border-radius: 9999px;
+  border-radius: var(--radius-full);
   border: 2px solid var(--color-unchecked);
   transition-property: background-color, border-color;
   transition-duration: 0.1s;
@@ -76,7 +68,7 @@
 /* ---------------------------------- Thumb -------------------------------- */
 .thumb {
   background-color: var(--color-unchecked);
-  border-radius: 9999px;
+  border-radius: var(--radius-full);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -184,7 +176,7 @@
 }
 
 .disabled:not(.loading) {
-  opacity: 0.5;
+  opacity: var(--opacity-disabled);
 }
 
 .input:disabled,

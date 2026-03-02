@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "./Button";
 import { expect, fn, userEvent, within } from "storybook/test";
 import { GamepadDirectional } from "lucide-react";
-import { colorNames } from "@/styles/colorType";
 
 const TestIcon = <GamepadDirectional data-testid="test-icon" />;
 
@@ -10,33 +9,36 @@ const meta: Meta<typeof Button> = {
   title: "Building Blocks/Components/Button",
   component: Button,
   tags: ["autodocs"],
-  argTypes: {
-    variant: {
-      control: "select",
-      options: ["primary", "secondary", "tertiary"],
-    },
-    iconPosition: {
-      control: "select",
-      options: ["left", "right"],
-    },
-    disabled: {
-      control: "boolean",
-    },
-    loading: {
-      control: "boolean",
-    },
-    children: { control: { type: "text" } },
-    "data-color": {
-      control: "select",
-      options: colorNames,
-    },
-  },
   args: {
     loading: false,
     disabled: false,
     children: "Button",
   },
-  decorators: [],
+  parameters: {
+    layout: "left",
+    chromatic: { disable: true },
+    docs: {
+      source: {
+        type: "dynamic",
+      },
+    },
+  },
+  decorators: [
+    Story => (
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "1rem",
+          maxWidth: "40rem",
+        }}
+      >
+        <Story />
+      </div>
+    ),
+  ],
 } satisfies Meta<typeof Button>;
 
 export default meta;
@@ -49,11 +51,11 @@ type Story = StoryObj<typeof Button>;
  */
 export const Variants: Story = {
   render: () => (
-    <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+    <>
       <Button variant="primary">Primary</Button>
       <Button variant="secondary">Secondary</Button>
       <Button variant="tertiary">Tertiary</Button>
-    </div>
+    </>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -72,11 +74,11 @@ export const Variants: Story = {
  */
 export const Sizes: Story = {
   render: () => (
-    <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+    <>
       <Button size="xsmall">Xsmall</Button>
       <Button size="small">Small</Button>
       <Button>Default</Button>
-    </div>
+    </>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -139,14 +141,24 @@ export const Interactions: Story = {
  */
 export const Disabled: Story = {
   args: {
-    variant: "primary",
-    children: "Disabled Button",
-    disabled: true,
     onClick: fn(),
   },
+  render: args => (
+    <>
+      <Button disabled variant="primary" onClick={args.onClick}>
+        Primary
+      </Button>
+      <Button disabled variant="secondary">
+        Secondary
+      </Button>
+      <Button disabled variant="tertiary">
+        Tertiary
+      </Button>
+    </>
+  ),
   play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
-    const button = canvas.getByRole("button", { name: /disabled button/i });
+    const button = canvas.getByRole("button", { name: /primary/i });
 
     await step("Button is disabled", async () => {
       await expect(button).toBeDisabled();
@@ -189,7 +201,7 @@ export const Loading: Story = {
 // Icon Tests
 export const WithIcon: Story = {
   render: () => (
-    <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+    <>
       <Button variant="primary" icon={TestIcon} iconPosition="left">
         Icon Left
       </Button>
@@ -197,7 +209,7 @@ export const WithIcon: Story = {
         Icon Right
       </Button>
       <Button variant="secondary" icon={TestIcon} />
-    </div>
+    </>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -265,7 +277,7 @@ export const DataAttributes: Story = {
 // All Variants Showcase
 export const AllVariants: Story = {
   render: () => (
-    <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", maxWidth: "600px" }}>
+    <>
       <Button variant="primary">Primary</Button>
       <Button variant="secondary">Secondary</Button>
       <Button variant="tertiary">Tertiary</Button>
@@ -274,7 +286,7 @@ export const AllVariants: Story = {
       <Button icon={TestIcon}>With Icon</Button>
       <Button size="small">Small</Button>
       <Button size="xsmall">Xsmall</Button>
-    </div>
+    </>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

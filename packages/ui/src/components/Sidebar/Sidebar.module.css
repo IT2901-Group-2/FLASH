@@ -1,20 +1,23 @@
 .sidebar {
-  --color-bg: var(--data-color-500);
-  --color-bg-hover: var(--data-color-600);
-  --color-group-title: var(--color-neutral-700);
-  --border: 0.1rem solid var(--color-neutral-500);
+  --color-bg: var(--bg-raised);
+  --color-bg-hover: var(--bg-input);
+  --color-group-title: var(--text-default);
+  --border: 0.1rem solid var(--border-neutral);
   --transition: 0.25s ease-in-out;
 
-  width: 12rem;
-  max-width: 12rem;
+  width: 15rem;
+  min-width: 4.5rem;
+  max-width: 40rem;
+
+  flex: 0 0 auto;
   height: 100vh;
-  min-height: 4rem;
   padding: 0 1rem;
 
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
 
+  color: var(--text-default);
   background-color: var(--color-bg);
   border-right: var(--border);
 
@@ -30,8 +33,12 @@
     overflow: hidden;
   }
 
+  > * {
+    width: 100%;
+  }
+
   &[data-open="false"] {
-    width: 3.5rem;
+    width: 4.5rem;
     padding: 0 0.5rem;
   }
 }
@@ -53,6 +60,7 @@
 }
 
 .sidebarHeader {
+  color: inherit;
   height: min-content;
   width: 100%;
   align-items: center;
@@ -72,6 +80,7 @@
     padding-right: 0;
 
     .logo {
+      color: inherit;
       padding-bottom: 0.25rem;
       margin-bottom: 0.25rem;
       width: fit-content;
@@ -89,10 +98,11 @@
 }
 
 .sidebarGroup {
+  color: inherit;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  padding: 1.5rem 0.5rem;
+  padding: 1.5rem 0;
   align-self: stretch;
 
   &:has(+ .sidebarFooter) {
@@ -120,11 +130,12 @@
 }
 
 .sidebarItem {
+  color: inherit;
   display: flex;
   align-items: center;
   gap: 1rem;
   padding: 0.5rem 0.25rem;
-  border-radius: 0.25rem;
+  border-radius: var(--radius-4);
   cursor: pointer;
   border: none;
   background-color: inherit;
@@ -169,10 +180,11 @@
 }
 
 .trigger {
+  color: inherit;
   outline: none;
   border: none;
   padding: 0.5rem;
-  border-radius: 0.25rem;
+  border-radius: var(--radius-4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -184,6 +196,6 @@
   }
 
   &:hover {
-    background-color: var(--color-bg-hover);
+    background-color: var(--bg-input);
   }
 }

@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Card } from "./Card";
 import { expect, within } from "storybook/test";
-import { colorNames } from "@/styles/colorType";
 
 const meta: Meta<typeof Card> = {
   title: "Building Blocks/Components/Card",
@@ -10,7 +9,7 @@ const meta: Meta<typeof Card> = {
   argTypes: {
     "data-color": {
       control: "select",
-      options: colorNames,
+      options: [],
     },
     children: { control: { type: "text" } },
   },
@@ -67,7 +66,7 @@ export const Colors: Story = {
       <Card data-color="accent">Accent</Card>
       <Card data-color="success">Success</Card>
       <Card data-color="warning">Warning</Card>
-      <Card data-color="background-secondary">Background Secondary</Card>
+      <Card data-color="danger">Danger</Card>
     </>
   ),
   play: async ({ canvasElement, step }) => {
@@ -79,14 +78,14 @@ export const Colors: Story = {
       const accent = canvas.getByText("Accent");
       const success = canvas.getByText("Success");
       const warning = canvas.getByText("Warning");
-      const backgroundSecondary = canvas.getByText("Background Secondary");
+      const danger = canvas.getByText("Danger");
 
       await expect(neutral).toBeInTheDocument();
       await expect(brandPurple).toBeInTheDocument();
       await expect(accent).toBeInTheDocument();
       await expect(success).toBeInTheDocument();
       await expect(warning).toBeInTheDocument();
-      await expect(backgroundSecondary).toBeInTheDocument();
+      await expect(danger).toBeInTheDocument();
     });
 
     await step("Cards have correct data-color attributes", async () => {

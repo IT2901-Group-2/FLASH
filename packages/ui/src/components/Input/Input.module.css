@@ -1,56 +1,58 @@
 .inputWrapper {
-  --color-warning: var(--color-warning-600);
-  --color-success: var(--color-success-500);
-  --color-text-primary: var(--data-color-800);
+  --color-warning: var(--text-danger-decoration);
+  --color-success: var(--text-success-decoration);
+  --color-text-primary: var(--text-neutral);
 }
 .inputContainer {
-  --color-base: var(--data-color-500);
-  --color-hover: var(--data-color-200);
-  --color-active: var(--data-color-300);
-  --color-disabled: var(--data-color-200);
+  --color-base: var(--border-default);
+  --color-active: var(--border-subtle);
+  --color-disabled: var(--border-strong);
 
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  height: 1.25rem;
+  height: 3rem;
   padding: 0.875rem 1.25rem;
   margin: 0.125rem;
-  border-radius: 1rem;
+  border-radius: var(--radius-16);
   border: none;
   font-size: 1rem;
   position: relative;
 
   &[data-variant="primary"] {
-    background-color: var(--color-foreground-500);
-    outline: 0.1rem solid var(--color-base);
+    background-color: var(--bg-input);
+    border: 0.1rem solid var(--color-base);
 
     &:focus-within:not(:has(input:disabled), .disabled).error {
-      outline-color: var(--color-warning);
-      outline-width: 0.1rem;
+      border-color: var(--color-warning);
+      border-width: 0.1rem;
+      opacity: var(--opacity-disabled);
     }
 
     &:focus-within:not(:has(input:disabled), .disabled).success {
-      outline-color: var(--color-success);
-      outline-width: 0.1rem;
+      border-color: var(--color-success);
+      border-width: 0.1rem;
+      opacity: var(--opacity-disabled);
     }
 
     &:focus-within:not(:has(input:disabled), .disabled) {
-      outline-color: var(--color-active);
-      outline-width: 0.1rem;
+      border-color: var(--color-active);
+      border-width: 0.1rem;
     }
 
     &:is(.disabled, :has(input:disabled)) {
       background-color: var(--color-neutral-50);
-      outline-color: var(--color-disabled);
+      border-color: var(--color-disabled);
       cursor: not-allowed;
+      opacity: var(--opacity-disabled);
     }
 
     &.error {
-      outline-color: var(--color-warning);
+      border-color: var(--color-warning);
     }
 
     &.success {
-      outline-color: var(--color-success);
+      border-color: var(--color-success);
     }
   }
 }
@@ -58,8 +60,8 @@
 .input {
   flex: 1;
   background: transparent;
-  border: none;
   outline: none;
+  border: none;
   font-size: inherit;
   color: var(--color-neutral-1000);
   width: 100%;

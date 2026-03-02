@@ -1,5 +1,5 @@
 import React from "react";
-import { ColorName } from "@/styles/colorType";
+import { ColorName } from "../types";
 import { Card } from "../Card";
 import { Button, ButtonProps } from "../Button";
 import styles from "./ActionCard.module.css";
@@ -46,16 +46,16 @@ export interface ActionCardProps extends React.HTMLAttributes<HTMLDivElement> {
  */
 export const ActionCard = ({
   description,
-  descriptionColor = "neutral",
+  descriptionColor,
   primaryButton,
   secondaryButton,
-  "data-color": data = "background-secondary",
+  "data-color": color,
   className,
   children,
   ...rest
 }: ActionCardProps) => {
   return (
-    <Card data-color={data} className={cl(styles.actionCard, className)} {...rest}>
+    <Card data-color={color} className={cl(styles.actionCard, className)} {...rest}>
       {description && (
         <p className={styles.description} data-color={descriptionColor}>
           {description}

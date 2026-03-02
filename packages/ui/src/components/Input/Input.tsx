@@ -2,7 +2,7 @@ import React from "react";
 import { Loader } from "../Loader";
 import styles from "./Input.module.css";
 import { cl } from "@/util/helpers";
-import { ColorName } from "@/styles/colorType";
+import { ColorName } from "../types";
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   /**
@@ -130,7 +130,7 @@ export const Input = ({
         />
         {loading && (
           <span className={styles.loaderContainer}>
-            <Loader />
+            <Loader data-color="neutral" />
           </span>
         )}
         {icon && iconPosition === "right" && !loading && (

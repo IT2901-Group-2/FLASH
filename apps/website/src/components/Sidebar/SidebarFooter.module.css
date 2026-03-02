@@ -16,14 +16,14 @@
   flex-shrink: 0;
 
   font-size: 1.5rem;
-  color: var(--background-primary);
-  background-color: #101028;
-  border-radius: 9999px;
+  /* color: var(--text-neutral-contrast); */
+  background-color: var(--bg-neutral-strong);
+  border-radius: var(--radius-full);
 }
 
 .userName {
   font-weight: bold;
-  font-size: 1.25rem;
+  font-size: var(--font-size-large);
   width: 40%;
 }
 

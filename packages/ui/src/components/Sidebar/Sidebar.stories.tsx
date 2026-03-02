@@ -41,8 +41,11 @@ type Story = StoryObj<typeof Sidebar>;
 export const Simple: Story = {
   render: () => (
     <Sidebar.Provider>
-      <Sidebar.Trigger />
-      <Sidebar />
+      <Sidebar>
+        <Sidebar.Header>
+          <Sidebar.Trigger />
+        </Sidebar.Header>
+      </Sidebar>
     </Sidebar.Provider>
   ),
   play: async ({ canvasElement, step }) => {

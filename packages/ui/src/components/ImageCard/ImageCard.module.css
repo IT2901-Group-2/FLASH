@@ -1,7 +1,7 @@
 /* ImageCard.module.css */
 .imageCard {
-  --color-base: var(--data-color-800);
-  --color-text: var(--color-neutral-100);
+  --color-base: var(--bg-strong);
+  --color-text: var(--text-neutral);
   display: flex;
   flex-direction: column;
   overflow: hidden;
