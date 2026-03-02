@@ -1,10 +1,12 @@
 .breadcrumb {
-  --breadcrumb-home-color: var(--data-color-700);
-  --breadcrumb-home-hover: var(--data-color-800);
+  --breadcrumb-home-color: var(--text-default);
+  --breadcrumb-home-hover: var(--text-subtle);
   --breadcrumb-middle-color: var(--color-neutral-800);
   --breadcrumb-middle-hover: var(--color-neutral-900);
   --breadcrumb-current-color: var(--color-neutral-800);
   --breadcrumb-separator-color: var(--color-neutral-600);
+
+  color: var(--text-default);
 }
 
 .list {

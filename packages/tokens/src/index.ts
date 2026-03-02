@@ -40,7 +40,7 @@ async function main() {
   await buildCSSBundleForTokens({
     tokens: darkModeTokens(false),
     filename: "semantic-dark-tokens.css",
-    selector: '[data-theme="dark"], [data-theme="dark"], .dark',
+    selector: ':root[data-theme="dark"], :host[data-theme="dark"], .dark',
     filter: async token => token.type !== "global-color",
   });
   await buildCSSBundleForTokens({

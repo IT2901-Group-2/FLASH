@@ -1,16 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@100;200;300;400;500;600;700&display=swap");
+@import "@flash/tokens/css/reset.css";
+@import "@flash/tokens";
 
 * {
   font-family: "Kantumruy Pro", sans-serif;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  background-color: var(--background-primary);
-}
-
-:root {
-  --text-tertiary: #474747;
-  --background-primary: #f8f2f5;
+  background-color: var(--bg-default);
+  color: var(--text-default);
 }

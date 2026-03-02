@@ -7,38 +7,53 @@
   display: flex;
   align-items: center;
   margin: 0;
-  color: var(--data-color-800);
+  color: var(--text-default);
   line-height: 1.2;
   font-family: inherit;
 
+  &[data-color] {
+    color: var(--text-subtle);
+  }
+
+  /* ----- Font Size ----- */
+  &[data-size="2xlarge"] {
+    font-size: var(--font-size-heading-2xlarge);
+  }
+
   &[data-size="xlarge"] {
-    font-size: 3rem;
+    font-size: var(--font-size-heading-xlarge);
   }
 
   &[data-size="large"] {
-    font-size: 2.25rem;
+    font-size: var(--font-size-heading-large);
   }
 
   &[data-size="medium"] {
-    font-size: 1.75rem;
+    font-size: var(--font-size-heading-medium);
   }
 
   &[data-size="small"] {
-    font-size: 1.25rem;
+    font-size: var(--font-size-heading-small);
   }
 
+  &[data-size="xsmall"] {
+    font-size: var(--font-size-heading-xsmall);
+  }
+
+  /* ----- Font Weight ----- */
   &[data-weight="bold"] {
-    font-weight: 700;
-  }
-
-  &[data-weight="semibold"] {
-    font-weight: 600;
+    font-weight: var(--font-weight-bold);
   }
 
   &[data-weight="medium"] {
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
   }
 
+  &[data-weight="regular"] {
+    font-weight: var(--font-weight-regular);
+  }
+
+  /* ----- Alignment ----- */
   &[data-align="left"] {
     justify-content: flex-start;
     text-align: left;
@@ -58,7 +73,7 @@
 .description {
   display: flex;
   align-items: center;
-  color: var(--color-neutral-600);
+  color: var(--text-decoration);
   &[data-size="xlarge"] {
     font-size: 1.5rem;
   }

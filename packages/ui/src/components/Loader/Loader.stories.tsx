@@ -33,11 +33,31 @@ export const Interaction: Story = {
   },
 };
 
+export const Inverted: Story = {
+  args: {
+    variant: "inverted",
+    size: "3xlarge",
+  },
+};
+
 export const Transparent: Story = {
   args: {
     transparent: true,
     size: "3xlarge",
   },
+};
+
+export const Color: Story = {
+  render: () => (
+    <>
+      <Loader size="2xlarge" title="Waiting..." data-color="neutral" />
+      <Loader size="2xlarge" title="Waiting..." data-color="accent" />
+      <Loader size="2xlarge" title="Waiting..." data-color="brand-purple" />
+      <Loader size="2xlarge" title="Waiting..." data-color="success" />
+      <Loader size="2xlarge" title="Waiting..." data-color="warning" />
+      <Loader size="2xlarge" title="Waiting..." data-color="danger" />
+    </>
+  ),
 };
 
 export const Size: Story = {

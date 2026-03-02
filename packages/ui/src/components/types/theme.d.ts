@@ -1,9 +1,6 @@
 import type { ColorRole } from "@flash/tokens/types";
 
-export interface CustomName {
-  default: string;
-}
-export type ColorName = ColorRole | keyof CustomName;
+export type ColorName = ColorRole;
 
 declare global {
   namespace React {

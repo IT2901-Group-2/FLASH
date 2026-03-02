@@ -1,1 +1,1 @@
-export type { ColorName } from "./theme";
+export * from "./theme";
