@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "./Button";
 import { expect, fn, userEvent, within } from "storybook/test";
 import { GamepadDirectional } from "lucide-react";
-import { colorNames } from "@/styles/colorType";
 
 const TestIcon = <GamepadDirectional data-testid="test-icon" />;
 
@@ -27,8 +26,7 @@ const meta: Meta<typeof Button> = {
     },
     children: { control: { type: "text" } },
     "data-color": {
-      control: "select",
-      options: colorNames,
+      control: "text",
     },
   },
   args: {

@@ -1,8 +1,31 @@
 .layout {
   display: flex;
+  position: relative;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.header {
+  height: 4.15rem;
+  border-bottom: 0.1rem solid var(--color-neutral-500);
+  padding: 1rem;
+
+  display: flex;
+  justify-content: start;
+  align-items: center;
 }
 
 .main {
   flex: 1;
   padding: 2rem;
+}
+
+@media screen and (min-width: 768px) {
+  .header {
+    display: none;
+  }
 }

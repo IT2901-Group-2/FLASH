@@ -2,7 +2,7 @@ import React from "react";
 import { Loader } from "../Loader/Loader";
 import styles from "./ImageCard.module.css";
 import { cl } from "@/util/helpers/";
-import { ColorName } from "@/styles/colorType";
+import { ColorName } from "../types";
 import { CheckCheck, CircleCheckBig, CircleX, LoaderIcon, Timer, X } from "lucide-react";
 
 type ImageCardState =

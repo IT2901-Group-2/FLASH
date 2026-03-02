@@ -1,15 +1,33 @@
 .container {
+  color: var(--docs-color-text);
   border-radius: 0.5rem;
   margin-bottom: 1rem !important;
+  border: 1px solid var(--data-color);
+  width: 75%;
 }
 
-.title {
+.titleContainer {
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
+  background-color: color-mix(in srgb, var(--data-color) 25%, transparent);
+  border-bottom: 1px solid var(--data-color);
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding-left: 1rem;
+
+  padding: 0.25rem 1rem;
+
+  &:has(button:last-child) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    padding-right: 0.25rem;
+  }
+
+  .title {
+    margin: 0;
+  }
 }
 
 .icon {
@@ -27,8 +45,42 @@
 }
 
 .content {
-  padding: 0 1rem;
+  padding: 0.5rem 0.5rem !important;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  height: min-content;
+
+  > p {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.copyButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.25rem;
+
+  background-color: transparent;
+  outline: none;
+  border: none;
+  border-radius: 0.25rem;
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--data-color) 75%, transparent);
+  }
+
+  &:active {
+    svg {
+      transform: translateY(-0.25rem);
+    }
+  }
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+    color: var(--docs-color-text);
+  }
 }

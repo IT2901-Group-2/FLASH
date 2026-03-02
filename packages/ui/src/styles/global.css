@@ -1,3 +1,5 @@
+@import "@flash/tokens/css/reset.css";
+@import "@flash/tokens";
 @import "./data-colors.css";
 
 :root {

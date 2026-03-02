@@ -1,5 +1,5 @@
 import React from "react";
-import { ColorName } from "@/styles/colorType";
+import { ColorName } from "../types";
 import { Card } from "../Card";
 import { Button, ButtonProps } from "../Button";
 import styles from "./ActionCard.module.css";
@@ -49,13 +49,13 @@ export const ActionCard = ({
   descriptionColor = "neutral",
   primaryButton,
   secondaryButton,
-  "data-color": data = "background-secondary",
+  "data-color": color = "neutral",
   className,
   children,
   ...rest
 }: ActionCardProps) => {
   return (
-    <Card data-color={data} className={cl(styles.actionCard, className)} {...rest}>
+    <Card data-color={color} className={cl(styles.actionCard, className)} {...rest}>
       {description && (
         <p className={styles.description} data-color={descriptionColor}>
           {description}

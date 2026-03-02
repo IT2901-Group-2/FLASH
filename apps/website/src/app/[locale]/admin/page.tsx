@@ -18,7 +18,7 @@ export default function Page() {
         data-color="brand-purple"
         description={t("description")}
       >
-        {t("title")}
+        {t("pageTitle")}
       </Title>
       <SignInCard />
       <p>{t("undertext")}</p>

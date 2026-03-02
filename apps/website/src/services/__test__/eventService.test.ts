@@ -68,10 +68,11 @@ const mockEvents: (typeof eventTable.$inferInsert)[] = [
 let eventService: EventService;
 
 beforeEach(async () => {
-  const dbService = await DatabaseService.create({
+  const dbService = new DatabaseService({
     read: vi.fn(() => Result.error(new Error())),
     write: vi.fn(() => Result.ok()),
-  } as never).getOrThrow();
+  } as never);
+  await dbService.initialize().getOrThrow();
 
   await dbService.db.insert(eventTable).values(mockEvents);
 

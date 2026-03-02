@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react-vite";
-import { Sidebar } from "./Sidebar";
+import Sidebar from "./Sidebar";
 import {
   Calendar,
   ChartColumn,
@@ -40,14 +40,15 @@ type Story = StoryObj<typeof Sidebar>;
 
 export const Simple: Story = {
   render: () => (
-    <Sidebar defaultOpen={true}>
+    <Sidebar.Provider>
       <Sidebar.Trigger />
-    </Sidebar>
+      <Sidebar />
+    </Sidebar.Provider>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const sidebar = canvas.getByRole("sidebar");
-    const button = canvas.getByRole("sidebar-trigger");
+    const sidebar = canvas.getByTestId("sidebar");
+    const button = canvas.getByTestId("sidebar-trigger");
 
     await step("Sidebar and Open/Close button is renderd", async () => {
       expect(sidebar).toBeInTheDocument();
@@ -66,16 +67,17 @@ export const Simple: Story = {
 
 export const WithGroupAndItems: Story = {
   render: () => (
-    <Sidebar>
-      <Sidebar.Trigger />
-      <Sidebar.Header style={{ height: "5rem" }} />
-      <Sidebar.Group title="Test Title">
-        <Sidebar.Item icon={<SquareDashed />}>Test 1</Sidebar.Item>
-        <Sidebar.Item icon={<SquareDashed />}>Test 2</Sidebar.Item>
-        <Sidebar.Item icon={<SquareDashed />}>Test 3</Sidebar.Item>
-      </Sidebar.Group>
-      <Sidebar.Footer style={{ height: "5rem" }} />
-    </Sidebar>
+    <Sidebar.Provider>
+      <Sidebar>
+        <Sidebar.Header style={{ height: "5rem" }} />
+        <Sidebar.Group title="Test Title">
+          <Sidebar.Item icon={<SquareDashed />}>Test 1</Sidebar.Item>
+          <Sidebar.Item icon={<SquareDashed />}>Test 2</Sidebar.Item>
+          <Sidebar.Item icon={<SquareDashed />}>Test 3</Sidebar.Item>
+        </Sidebar.Group>
+        <Sidebar.Footer style={{ height: "5rem" }} />
+      </Sidebar>
+    </Sidebar.Provider>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -114,16 +116,17 @@ export const WithGroupAndItems: Story = {
 
 export const GroupPosition: Story = {
   render: () => (
-    <Sidebar>
-      <Sidebar.Trigger />
-      <Sidebar.Header style={{ height: "5rem" }} />
-      <Sidebar.Group title="Test Title" position="center">
-        <Sidebar.Item icon={<SquareDashed />}>Test 1</Sidebar.Item>
-        <Sidebar.Item icon={<SquareDashed />}>Test 2</Sidebar.Item>
-        <Sidebar.Item icon={<SquareDashed />}>Test 3</Sidebar.Item>
-      </Sidebar.Group>
-      <Sidebar.Footer style={{ height: "5rem" }} />
-    </Sidebar>
+    <Sidebar.Provider>
+      <Sidebar>
+        <Sidebar.Header style={{ height: "5rem" }} />
+        <Sidebar.Group title="Test Title" position="center">
+          <Sidebar.Item icon={<SquareDashed />}>Test 1</Sidebar.Item>
+          <Sidebar.Item icon={<SquareDashed />}>Test 2</Sidebar.Item>
+          <Sidebar.Item icon={<SquareDashed />}>Test 3</Sidebar.Item>
+        </Sidebar.Group>
+        <Sidebar.Footer style={{ height: "5rem" }} />
+      </Sidebar>
+    </Sidebar.Provider>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -143,28 +146,29 @@ export const GroupPosition: Story = {
 
 export const FullExample: Story = {
   render: () => (
-    <Sidebar>
-      <Sidebar.Trigger />
-      <Sidebar.Header style={{ height: "5rem" }} />
-      <Sidebar.Group title="MAIN" position="top">
-        <Sidebar.Item icon={<House />}>Desktop</Sidebar.Item>
-        <Sidebar.Item icon={<Calendar />}>Event</Sidebar.Item>
-        <Sidebar.Item icon={<ChartColumn />}>Analytics</Sidebar.Item>
-        <Sidebar.Item icon={<Users />}>Users</Sidebar.Item>
-        <Sidebar.Item icon={<Clock4 />}>Timeline</Sidebar.Item>
-      </Sidebar.Group>
-      <Sidebar.Group position="bottom">
-        <Sidebar.Item icon={<Settings />}>Settings</Sidebar.Item>
-        <Sidebar.Item icon={<HardDrive />}>Storage</Sidebar.Item>
-      </Sidebar.Group>
-      <Sidebar.Footer style={{ height: "5rem" }} />
-    </Sidebar>
+    <Sidebar.Provider>
+      <Sidebar>
+        <Sidebar.Header style={{ height: "5rem" }} />
+        <Sidebar.Group title="MAIN" position="top">
+          <Sidebar.Item icon={<House />}>Desktop</Sidebar.Item>
+          <Sidebar.Item icon={<Calendar />}>Event</Sidebar.Item>
+          <Sidebar.Item icon={<ChartColumn />}>Analytics</Sidebar.Item>
+          <Sidebar.Item icon={<Users />}>Users</Sidebar.Item>
+          <Sidebar.Item icon={<Clock4 />}>Timeline</Sidebar.Item>
+        </Sidebar.Group>
+        <Sidebar.Group position="bottom">
+          <Sidebar.Item icon={<Settings />}>Settings</Sidebar.Item>
+          <Sidebar.Item icon={<HardDrive />}>Storage</Sidebar.Item>
+        </Sidebar.Group>
+        <Sidebar.Footer style={{ height: "5rem" }} />
+      </Sidebar>
+    </Sidebar.Provider>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Sidebar renders with all sections", async () => {
-      const sidebar = canvas.getByRole("sidebar");
+      const sidebar = canvas.getByTestId("sidebar");
       await expect(sidebar).toBeInTheDocument();
     });
 

@@ -1,0 +1,46 @@
+{
+  "name": "@flash/tokens",
+  "version": "0.1.0",
+  "description": "TypeScript-first CSS design token system with data-color support",
+  "main": "dist/tokens.es.js",
+  "types": "dist/tokens.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsx src && tsc src/types/output.types.ts --declaration --emitDeclarationOnly --outDir dist && copyfiles -f src/css/*.css dist/css",
+    "test": "vitest --coverage",
+    "test:watch": "vitest watch",
+    "lint": "eslint --max-warnings 0",
+    "format": "prettier --write src/",
+    "format:check": "prettier --check src/"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/node": "^25.3.0",
+    "@vitest/coverage-istanbul": "^4.0.18",
+    "colorjs.io": "^0.6.1",
+    "copyfiles": "^2.4.1",
+    "eslint": "^9.39.2",
+    "lightningcss": "^1.31.1",
+    "prettier": "^3.8.1",
+    "style-dictionary": "^4.1.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.53.1",
+    "vitest": "^4.0.18"
+  },
+  "exports": {
+    ".": "./dist/tokens.css",
+    "./tokens": "./dist/tokens.css",
+    "./types": "./dist/output.types.d.ts",
+    "./token_docs": "./dist/token_docs.js",
+    "./css/*": "./dist/css/*",
+    "./dist/*": {
+      "types": "./dist/tokens.d.ts",
+      "default": "./dist/*"
+    },
+    "./js": {
+      "types": "./dist/tokens.d.ts",
+      "import": "./dist/tokens.js"
+    }
+  }
+}

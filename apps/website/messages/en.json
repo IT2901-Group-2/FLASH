@@ -63,7 +63,7 @@
       }
     },
     "login": {
-      "title": "PhotoEvent Admin",
+      "pageTitle": "PhotoEvent Admin",
       "description": "Manage your photo events with ease",
       "undertext": "Self-hosted Photo Event Management System",
       "signIn": {
@@ -81,13 +81,20 @@
   "JoinEvent": {
     "title": "Join an Event",
     "description": "Enter the event code or scan the QR code to join",
+    "nicknameLabel": "Nickname",
+    "nicknamePlaceholder": "Enter your nickname... e.g. Alex",
     "eventCodeLabel": "Event code",
     "eventCodePlaceholder": "Enter event code... e.g. 245033",
     "joinButton": "Join Event",
     "enterCodeTab": "Enter code",
     "scanQrTab": "Scan QR",
     "scanQrDescription": "Use your camera to scan the event QR code",
-    "openCameraButton": "Open Camera"
+    "openCameraButton": "Open Camera",
+    "error": {
+      "noCode": "Please enter an event code.",
+      "invalidCode": "Invalid guest code. Please try again.",
+      "invalidNickname": "Please enter a nickname."
+    }
   },
   "login": {
     "title": "PhotoEvent Admin",
