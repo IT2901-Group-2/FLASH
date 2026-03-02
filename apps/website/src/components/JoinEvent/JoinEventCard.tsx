@@ -45,7 +45,7 @@ const JoinEventCard = () => {
 
   return (
     <Card>
-      <Title align="center" description={t("description")} as="h2">
+      <Title size="medium" align="center" description={t("description")} as="h2">
         {t("title")}
       </Title>
       <DropdownControl className={styles.dropdownControls} defaultValue="enter-code">
