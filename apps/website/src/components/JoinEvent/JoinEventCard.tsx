@@ -80,6 +80,7 @@ const JoinEventCard = () => {
                 data-color="brand-purple"
                 type="submit"
                 loading={isFetching}
+                fill
               >
                 {t("joinButton")}
               </Button>

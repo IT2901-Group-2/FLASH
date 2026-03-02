@@ -4,8 +4,3 @@
   gap: 1rem;
   box-shadow: var(--shadow-dialog);
 }
-
-.buttonComponent {
-  margin: auto;
-  width: 100%;
-}

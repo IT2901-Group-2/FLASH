@@ -4,6 +4,11 @@
   overflow: hidden;
 }
 
+.dropdownBorder {
+  border: 0.1rem solid var(--border-focus);
+  border-top: none;
+}
+
 .panel {
   overflow: hidden;
 
