@@ -7,14 +7,18 @@ import { Card, Title } from "ui";
 import styles from "./RememberedEvents.module.css";
 import { useRouter } from "next/navigation";
 import { getAllJoinedEvents } from "@/hooks/useRememberEvents";
+import { useTranslations } from "next-intl";
 
 const RememberedEvent = ({ name, uploadLimit, id }: EventDTO) => {
+  const t = useTranslations("guest.login");
   const navigation = useRouter();
   return (
     <Card onClick={() => navigation.push(`/${id}`)} className={styles.linkcard}>
       <div>
         <Title size="small">{name}</Title>
-        <span>{uploadLimit ?? "Unlimited"} Photos</span>
+        <span>
+          {uploadLimit ?? t("unlimited")} {t("photos")}
+        </span>
       </div>
       <ChevronRight />
     </Card>
@@ -22,6 +26,7 @@ const RememberedEvent = ({ name, uploadLimit, id }: EventDTO) => {
 };
 
 const RememberedEvents = () => {
+  const t = useTranslations("guest.login");
   const eventIDs = getAllJoinedEvents();
   const events = useEventsQuery(
     {
@@ -37,7 +42,7 @@ const RememberedEvents = () => {
     <Card className={styles.card}>
       <div className={styles.title}>
         <Calendar />
-        <Title size="medium">Your Events</Title>
+        <Title size="medium">{t("joinedEventsTitle")}</Title>
       </div>
       {events.map(event => (
         <RememberedEvent {...event} key={event.id} />

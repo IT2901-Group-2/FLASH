@@ -33,7 +33,7 @@ export default function Page() {
     <div className={styles.conatiner}>
       <div className={styles.navigation} onClick={navigation.back}>
         <ArrowLeft />
-        Back
+        {t("back")}
       </div>
       <Card className={styles.card}>
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -43,14 +43,14 @@ export default function Page() {
             size="large"
             as="h1"
             data-color="brand-purple"
-            description="Enter a nickname so the host knows who uploaded the photos"
+            description={t("description")}
           >
-            Welcome to {data[0]?.name}
+            {t("title")} {data[0]!.name}
           </Title>
           <Input
             aria-label="nickname-input"
-            label="Nickname"
-            placeholder="John Doe"
+            label={t("input.title")}
+            placeholder={t("input.placeholder")}
             required
             value={nickname}
             onChange={e => setNickname(e.target.value)}
