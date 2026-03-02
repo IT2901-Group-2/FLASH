@@ -22,11 +22,8 @@ const RememberedEvent = ({ name, uploadLimit, id }: EventDTO) => {
 };
 
 const RememberedEvents = () => {
-  console.log(typeof window);
-  const allEventIDs = getAllJoinedEvents();
-
   const events = useEventsQuery({
-    id: allEventIDs.length !== 0 ? allEventIDs : ["A"],
+    id: getAllJoinedEvents(),
   }).data;
   if (!events) return;
 
