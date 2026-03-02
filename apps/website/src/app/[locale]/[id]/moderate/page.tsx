@@ -70,13 +70,6 @@ export default function ModeratePage() {
 
   return (
     <div className={styles.pageWrapper}>
-      {/* Screen-reader live region: announces selection count changes */}
-      <div aria-live="polite" aria-atomic="true" className={styles.srOnly}>
-        {selectedIds.size > 0
-          ? `${selectedIds.size} photo${selectedIds.size > 1 ? "s" : ""} selected`
-          : ""}
-      </div>
-
       <ModerateHeader
         onBack={() => router.back()}
         selectMode={selectMode}
