@@ -26,7 +26,7 @@ export default function SignInCard() {
         visualSize="medium"
         placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
       />
-      <Button className={styles.buttonComponent} data-color="brand-purple">
+      <Button className={styles.buttonComponent} data-color="brand-purple" fill>
         {t("buttonTitle")}
       </Button>
     </Card>
