@@ -1,6 +1,6 @@
 import { ColorName } from "@/styles/colorType";
 import styles from "./ProgressDots.module.css";
-import { cl } from "@/util/helpers/";
+import { cl } from "@/util/helpers";
 
 interface ProgressDotProps extends React.HTMLAttributes<HTMLDivElement> {
   /**

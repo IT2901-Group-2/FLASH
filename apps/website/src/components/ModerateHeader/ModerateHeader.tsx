@@ -1,9 +1,7 @@
 "use client";
 
 import { ArrowLeft, ChevronLeft } from "lucide-react";
-import { Breadcrumb } from "../Breadcrumb";
-import { Button } from "../Button";
-import { Title } from "../Title";
+import { Breadcrumb, Button, Title } from "ui";
 import styles from "./ModerateHeader.module.css";
 
 export interface ModerateHeaderProps {

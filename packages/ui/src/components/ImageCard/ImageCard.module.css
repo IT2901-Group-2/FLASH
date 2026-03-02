@@ -158,6 +158,8 @@
 .imageCard[data-variant="preview2"] {
   border: none;
   border-radius: 0;
+  width: unset;
+  height: unset;
 
   .imageWrapper {
     height: 100%;

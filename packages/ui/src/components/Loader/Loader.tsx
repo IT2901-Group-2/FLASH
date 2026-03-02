@@ -1,6 +1,6 @@
 import { SVGProps } from "react";
 import styles from "./Loader.module.css";
-import { cl } from "@/util/helpers/";
+import { cl } from "@/util/helpers";
 
 export interface LoaderProps extends Omit<SVGProps<SVGSVGElement>, "ref"> {
   /**
