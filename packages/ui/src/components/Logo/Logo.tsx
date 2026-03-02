@@ -1,11 +1,24 @@
+import { HTMLAttributes } from "react";
 import styles from "./Logo.module.css";
+import { cl } from "@/util/helpers";
 
-export interface LogoProps {
-  animationOnHover: boolean;
-  isLoader: boolean;
+export interface LogoProps extends HTMLAttributes<SVGElement> {
+  /**
+   * If an animation plays when hovering over the logo
+   */
+  animationOnHover?: boolean;
+  /**
+   * If the logo should have a loader animation
+   */
+  isLoader?: boolean;
 }
 
-const Logo = ({ animationOnHover, isLoader }: LogoProps) => {
+const Logo = ({
+  animationOnHover = false,
+  isLoader = false,
+  className,
+  ...rest
+}: LogoProps) => {
   return (
     <svg
       width="256"
@@ -15,7 +28,8 @@ const Logo = ({ animationOnHover, isLoader }: LogoProps) => {
       xmlns="http://www.w3.org/2000/svg"
       data-loading={isLoader}
       data-hover={animationOnHover}
-      className={styles.logo}
+      className={cl(styles.logo, className)}
+      {...rest}
     >
       <g className={styles.star}>
         <path
