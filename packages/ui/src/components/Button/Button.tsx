@@ -45,7 +45,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
    * Stretch the button to fill avaliable space in the container.
    * @default false
    */
-  fill: boolean;
+  fill?: boolean;
 }
 
 /**
