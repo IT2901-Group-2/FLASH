@@ -86,28 +86,30 @@ export default function ModeratePage() {
 
       <div className={styles.content}>
         <div className={styles.tabContainer}>
-          <SegmentedControl
-            fill
-            data-color="accent"
-            value={activeTab}
-            onChange={val => setActiveTab(val as Tab)}
-          >
-            <SegmentedControl.Item
-              value="pending"
-              label="Pending"
-              disabled={selectMode}
-            />
-            <SegmentedControl.Item
-              value="approved"
-              label="Approved"
-              disabled={selectMode}
-            />
-            <SegmentedControl.Item
-              value="rejected"
-              label="Rejected"
-              disabled={selectMode}
-            />
-          </SegmentedControl>
+          <div className={`${selectMode ? ` ${styles.tabDisabled}` : ""}`}>
+            <SegmentedControl
+              fill
+              data-color="accent"
+              value={activeTab}
+              onChange={val => setActiveTab(val as Tab)}
+            >
+              <SegmentedControl.Item
+                value="pending"
+                label="Pending"
+                disabled={selectMode}
+              />
+              <SegmentedControl.Item
+                value="approved"
+                label="Approved"
+                disabled={selectMode}
+              />
+              <SegmentedControl.Item
+                value="rejected"
+                label="Rejected"
+                disabled={selectMode}
+              />
+            </SegmentedControl>
+          </div>
           <h2 className={styles.sectionHeading}>{TAB_HEADINGS[activeTab]}</h2>
         </div>
 

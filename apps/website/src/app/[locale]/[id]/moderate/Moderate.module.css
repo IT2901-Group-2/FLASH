@@ -10,9 +10,13 @@
 }
 
 .tabContainer {
-  /* padding: 0 0.6em 0 0.6em;
-  padding: 0; */
+
   margin: 1em;
+}
+
+.tabDisabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .sectionHeading {
