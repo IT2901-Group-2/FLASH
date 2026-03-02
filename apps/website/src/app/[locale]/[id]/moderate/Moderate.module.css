@@ -33,8 +33,6 @@
   grid-auto-rows: 176px;
   gap: 3px;
   padding: 1em 0.3em 0.3em 0.3em;
-  user-select: none;
-  touch-action: pan-y;
 }
 
 @media (min-width: 768px) {

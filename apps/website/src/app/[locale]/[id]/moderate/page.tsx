@@ -33,13 +33,9 @@ export default function ModeratePage() {
     selectMode,
     selectedIds,
     bulkError,
-    containerRef,
     handleSelectToggle,
     handleSelectAll,
     handleImageClick,
-    handlePointerDown,
-    handlePointerMove,
-    handlePointerUp,
     handleBulkApprove,
     handleBulkReject,
   } = useImageSelection(images, eventId);
@@ -112,11 +108,7 @@ export default function ModeratePage() {
           </div>
         ) : (
           <div
-            ref={containerRef}
             className={styles.grid}
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
           >
             {images.map(image => (
               <ImageCard
@@ -128,7 +120,6 @@ export default function ModeratePage() {
                 state={selectMode && selectedIds.has(image.id) ? "selected" : "default"}
                 onClick={() => handleImageClick(image.id)}
                 data-image-id={image.id}
-                onDragStart={e => e.preventDefault()}
               />
             ))}
           </div>
