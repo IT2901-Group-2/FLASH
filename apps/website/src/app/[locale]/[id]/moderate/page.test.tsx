@@ -1,6 +1,6 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import ModeratePage from "./page";
 import * as useImagesModule from "@/hooks/useImages";
 
@@ -100,24 +100,20 @@ vi.mock("ui", () => ({
     }
   ),
   ImageCard: ({
-    title,
     state,
     onClick,
     ...rest
   }: {
-    title: string;
     state: string;
     onClick: () => void;
     [key: string]: unknown;
   }) => (
     <div
-      data-testid={`image-card-${title}`}
+      data-testid={`image-card-${rest["data-image-id"]}`}
       data-state={state}
       data-image-id={rest["data-image-id"]}
       onClick={onClick}
-    >
-      {title}
-    </div>
+    />
   ),
   ActionCard: ({
     description,
@@ -306,5 +302,63 @@ describe("ModeratePage", () => {
     render(<ModeratePage />);
 
     expect(screen.getByText("No pending photos found")).toBeDefined();
+  });
+
+  it("bulk approve calls updateImage with isApproved=true for each selected image and exits select mode", async () => {
+    render(<ModeratePage />);
+
+    // Enter select mode and select two images
+    fireEvent.click(screen.getByText("Select"));
+    fireEvent.click(screen.getByTestId("image-card-img-1"));
+    fireEvent.click(screen.getByTestId("image-card-img-2"));
+
+    // Click primary action (Approve — we are on the pending tab)
+    fireEvent.click(screen.getByTestId("primary-action"));
+
+    await waitFor(() => {
+      expect(mockUpdateImage).toHaveBeenCalledTimes(2);
+      expect(mockUpdateImage).toHaveBeenCalledWith({
+        eventId: "event-1",
+        imageId: "img-1",
+        data: { isApproved: true },
+      });
+      expect(mockUpdateImage).toHaveBeenCalledWith({
+        eventId: "event-1",
+        imageId: "img-2",
+        data: { isApproved: true },
+      });
+    });
+
+    // Select mode should exit after successful bulk action
+    await waitFor(() => {
+      expect(screen.getByText("Select")).toBeDefined();
+      expect(screen.queryByTestId("action-card")).toBeNull();
+    });
+  });
+
+  it("bulk reject calls updateImage with isApproved=false for each selected image and exits select mode", async () => {
+    render(<ModeratePage />);
+
+    // Enter select mode and select one image
+    fireEvent.click(screen.getByText("Select"));
+    fireEvent.click(screen.getByTestId("image-card-img-1"));
+
+    // Click secondary action (Reject — we are on the pending tab)
+    fireEvent.click(screen.getByTestId("secondary-action"));
+
+    await waitFor(() => {
+      expect(mockUpdateImage).toHaveBeenCalledTimes(1);
+      expect(mockUpdateImage).toHaveBeenCalledWith({
+        eventId: "event-1",
+        imageId: "img-1",
+        data: { isApproved: false },
+      });
+    });
+
+    // Select mode should exit after successful bulk action
+    await waitFor(() => {
+      expect(screen.getByText("Select")).toBeDefined();
+      expect(screen.queryByTestId("action-card")).toBeNull();
+    });
   });
 });
