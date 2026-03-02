@@ -79,10 +79,8 @@ describe("JoinEventCard", () => {
   test("submits when pressing Enter in the code field", async () => {
     render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
 
-    const nicknameInput = screen.getByText("nicknameLabel");
     const input = screen.getByPlaceholderText("eventCodePlaceholder");
 
-    await user.type(nicknameInput, "NICKNAME");
     await user.type(input, "ENTER1");
     await user.keyboard("{Enter}");
 
