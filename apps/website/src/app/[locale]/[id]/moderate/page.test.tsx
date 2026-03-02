@@ -198,8 +198,13 @@ describe("ModeratePage", () => {
     // Enter select mode
     fireEvent.click(screen.getByText("Select"));
 
-    // Select an image
-    fireEvent.click(screen.getByTestId("image-card-img-1"));
+    // Select an image via tap (pointer down + up without movement)
+    fireEvent.pointerDown(screen.getByTestId("image-card-img-1"), {
+      clientX: 1,
+      clientY: 1,
+      pointerId: 1,
+    });
+    fireEvent.pointerUp(screen.getByTestId("image-card-img-1"));
 
     // Click Cancel
     fireEvent.click(screen.getByText("Cancel"));
@@ -224,12 +229,14 @@ describe("ModeratePage", () => {
 
     const imageCard = screen.getByTestId("image-card-img-1");
 
-    // Tap to select
-    fireEvent.click(imageCard);
+    // Tap to select (pointer down + up without movement)
+    fireEvent.pointerDown(imageCard, { clientX: 1, clientY: 1, pointerId: 1 });
+    fireEvent.pointerUp(imageCard);
     expect(imageCard.getAttribute("data-state")).toBe("selected");
 
     // Tap again to deselect
-    fireEvent.click(imageCard);
+    fireEvent.pointerDown(imageCard, { clientX: 1, clientY: 1, pointerId: 1 });
+    fireEvent.pointerUp(imageCard);
     expect(imageCard.getAttribute("data-state")).toBe("default");
   });
 
@@ -239,9 +246,14 @@ describe("ModeratePage", () => {
     // No ActionCard initially
     expect(screen.queryByTestId("action-card")).toBeNull();
 
-    // Enter select mode and select an image
+    // Enter select mode and select an image via tap
     fireEvent.click(screen.getByText("Select"));
-    fireEvent.click(screen.getByTestId("image-card-img-1"));
+    fireEvent.pointerDown(screen.getByTestId("image-card-img-1"), {
+      clientX: 1,
+      clientY: 1,
+      pointerId: 1,
+    });
+    fireEvent.pointerUp(screen.getByTestId("image-card-img-1"));
 
     // ActionCard should be visible
     expect(screen.getByTestId("action-card")).toBeDefined();
@@ -249,8 +261,13 @@ describe("ModeratePage", () => {
       "1 photo selected"
     );
 
-    // Select another
-    fireEvent.click(screen.getByTestId("image-card-img-2"));
+    // Select another via tap
+    fireEvent.pointerDown(screen.getByTestId("image-card-img-2"), {
+      clientX: 1,
+      clientY: 1,
+      pointerId: 1,
+    });
+    fireEvent.pointerUp(screen.getByTestId("image-card-img-2"));
     expect(screen.getByTestId("action-card-description").textContent).toBe(
       "2 photos selected"
     );
@@ -259,10 +276,20 @@ describe("ModeratePage", () => {
   it('clicking "Cancel" in header while images are selected exits select mode and clears the selection', () => {
     render(<ModeratePage />);
 
-    // Enter select mode and select images
+    // Enter select mode and select images via tap
     fireEvent.click(screen.getByText("Select"));
-    fireEvent.click(screen.getByTestId("image-card-img-1"));
-    fireEvent.click(screen.getByTestId("image-card-img-2"));
+    fireEvent.pointerDown(screen.getByTestId("image-card-img-1"), {
+      clientX: 1,
+      clientY: 1,
+      pointerId: 1,
+    });
+    fireEvent.pointerUp(screen.getByTestId("image-card-img-1"));
+    fireEvent.pointerDown(screen.getByTestId("image-card-img-2"), {
+      clientX: 1,
+      clientY: 1,
+      pointerId: 1,
+    });
+    fireEvent.pointerUp(screen.getByTestId("image-card-img-2"));
 
     // ActionCard should be visible
     expect(screen.getByTestId("action-card")).toBeDefined();
