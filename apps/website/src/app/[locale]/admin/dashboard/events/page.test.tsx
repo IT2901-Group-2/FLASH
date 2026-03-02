@@ -1,5 +1,5 @@
-import { cleanup, render, screen } from "@testing-library/react";
-import { expect, vi, describe, it, beforeEach, afterEach } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { expect, vi, describe, it, beforeEach } from "vitest";
 import {
   useCreateEventMutation,
   useDeleteEventMutation,
