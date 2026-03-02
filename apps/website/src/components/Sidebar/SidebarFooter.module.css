@@ -17,8 +17,8 @@
 
   font-size: 1.5rem;
   color: var(--background-primary);
-  background-color: #101028;
-  border-radius: 9999px;
+  background-color: var(--bg-neutral-strong);
+  border-radius: var(--radius-full);
 }
 
 .userName {
