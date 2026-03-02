@@ -4,10 +4,10 @@
   gap: 1rem;
 }
 
-@media (max-width: 768px){ 
+@media (max-width: 768px) {
   .actionCard {
     gap: 0.5rem;
-    padding: .8rem;
+    padding: 0.8rem;
   }
 }
 

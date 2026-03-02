@@ -31,7 +31,6 @@
   padding-top: 22px;
   padding-bottom: 10px;
   overflow: hidden;
-
 }
 
 .mobileBackButton {
@@ -51,7 +50,7 @@
   padding-left: 30px;
   padding-right: 10px;
   box-sizing: border-box;
-  margin: .8rem 0 1rem;
+  margin: 0.8rem 0 1rem;
 }
 
 /* Mobile button width overrides (height from Button size="xsmall") */

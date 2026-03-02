@@ -107,9 +107,7 @@ export default function ModeratePage() {
             No {activeTab} photos found
           </div>
         ) : (
-          <div
-            className={styles.grid}
-          >
+          <div className={styles.grid}>
             {images.map(image => (
               <ImageCard
                 key={image.id}
