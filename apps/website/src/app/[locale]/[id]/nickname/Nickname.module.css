@@ -1,0 +1,17 @@
+.conatiner {
+  margin: 2rem auto;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: max-content;
+  max-width: calc(100% - 2rem);
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  margin-right: auto;
+}

@@ -13,16 +13,11 @@ const JoinEventCard = () => {
   const router = useRouter();
   const [code, setCode] = useState<string>("");
   const [error, setError] = useState<string | undefined>("");
-  const [nickname, setNickname] = useState<string>("");
 
   const { refetch, isFetching } = useEventsQuery({ guestCode: code }, false);
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!nickname.trim()) {
-      setError(t("error.invalidNickname"));
-      return;
-    }
     if (!code.trim()) {
       setError(t("error.noCode"));
       return;
@@ -54,15 +49,6 @@ const JoinEventCard = () => {
           label={t("enterCodeTab")}
           content={
             <form className={styles.content} onSubmit={handleSubmit}>
-              <Input
-                label={t("nicknameLabel")}
-                placeholder={t("nicknamePlaceholder")}
-                icon={<TextAlignStart size={24} />}
-                aria-label={t("nicknameLabel")}
-                value={nickname}
-                onChange={e => setNickname(e.target.value)}
-                error={error}
-              />
               <Input
                 label={t("eventCodeLabel")}
                 placeholder={t("eventCodePlaceholder")}
