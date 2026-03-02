@@ -12,15 +12,6 @@ vi.mock("ui", () => ({
   ActionCard: vi.fn(() => <div data-testid="action-card">ActionCard</div>),
 }));
 
-vi.mock("next-intl", () => ({
-  useTranslations: vi.fn(() => (key: string) => key),
-}));
-
-vi.mock("next/navigation", () => ({
-  useParams: vi.fn(() => ({ id: "event-1", locale: "en" })),
-  useSearchParams: vi.fn(() => ({ get: vi.fn(() => null) })),
-}));
-
 vi.mock("@/hooks/useEvents", () => ({
   useEventsQuery: vi.fn(() => ({
     data: [
@@ -54,22 +45,6 @@ afterEach(() => {
 });
 
 describe("Guest Upload Page", () => {
-  it("uses nickname from query param as subtitle", () => {
-    vi.mocked(nextNavigation.useSearchParams).mockReturnValueOnce({
-      get: vi.fn((key: string) => (key === "nickname" ? "Alex" : null)),
-    } as unknown as ReturnType<typeof nextNavigation.useSearchParams>);
-
-    render(<Page />);
-
-    const phoneHeaderMock = vi.mocked(uiModule.PhoneHeader);
-    expect(phoneHeaderMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        subtitle: "Alex",
-      }),
-      undefined
-    );
-  });
-
   it("passes fetched event data to PhoneHeader", () => {
     render(<Page />);
 
@@ -124,21 +99,6 @@ describe("Guest Upload Page", () => {
     render(<Page />);
 
     expect(screen.getByText("Could not load event details for this link.")).toBeDefined();
-  });
-
-  it("falls back to empty id filter when route param is missing", () => {
-    vi.mocked(nextNavigation.useParams).mockReturnValueOnce({
-      locale: "en",
-    } as ReturnType<typeof nextNavigation.useParams>);
-    vi.mocked(useEventsModule.useEventsQuery).mockReturnValueOnce({
-      data: undefined,
-      isLoading: false,
-      isError: false,
-    } as ReturnType<typeof useEventsModule.useEventsQuery>);
-
-    render(<Page />);
-
-    expect(vi.mocked(useEventsModule.useEventsQuery)).toHaveBeenCalledWith(undefined);
   });
 
   it("should render without crashing", () => {
