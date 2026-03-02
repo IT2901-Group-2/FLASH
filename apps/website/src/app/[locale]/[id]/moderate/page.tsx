@@ -18,7 +18,7 @@ const TAB_HEADINGS: Record<Tab, string> = {
 
 export default function ModeratePage() {
   const router = useRouter();
-  const { id: eventId } = useParams<{ id: string }>();
+  const { id: eventId, locale } = useParams<{ id: string; locale: string }>();
 
   const [activeTab, setActiveTab] = useState<Tab>("pending");
 
@@ -40,6 +40,10 @@ export default function ModeratePage() {
     handleBulkReject,
   } = useImageSelection(images, eventId);
 
+  // Button matrix by tab:
+  //   pending:  primary=Approve, secondary=Reject  (both actions make sense)
+  //   approved: primary=Reject,  secondary=none    (already approved; only rejection is a new action)
+  //   rejected: primary=Approve, secondary=none    (already rejected; only approval is a new action)
   const primaryButton = (() => {
     if (activeTab === "pending" || activeTab === "rejected") {
       return {
@@ -71,6 +75,10 @@ export default function ModeratePage() {
         selectMode={selectMode}
         onSelectToggle={handleSelectToggle}
         onSelectAll={handleSelectAll}
+        breadcrumbItems={[
+          { label: "Event", href: `/${locale}/${eventId}` },
+          { label: "Moderate" },
+        ]}
       />
 
       <div className={styles.content}>
@@ -108,13 +116,13 @@ export default function ModeratePage() {
           </div>
         ) : (
           <div className={styles.grid}>
-            {images.map(image => (
+            {images.map((image, index) => (
               <ImageCard
                 key={image.id}
                 variant="preview2"
                 src={`/api/events/${eventId}/images/${image.id}`}
-                alt={image.id}
-                title={image.id}
+                alt={`Photo ${index + 1} of ${images.length}`}
+                title={`Photo ${index + 1}`}
                 state={selectMode && selectedIds.has(image.id) ? "selected" : "default"}
                 onClick={() => handleImageClick(image.id)}
                 data-image-id={image.id}
@@ -130,6 +138,13 @@ export default function ModeratePage() {
           {bulkError}
         </div>
       )}
+
+      {/* Announces selection count to screen readers when it changes */}
+      <div aria-live="polite" aria-atomic="true" className={styles.srOnly}>
+        {selectedIds.size > 0
+          ? `${selectedIds.size} photo${selectedIds.size > 1 ? "s" : ""} selected`
+          : ""}
+      </div>
 
       {selectedIds.size > 0 && (
         <div className={styles.actionCardContainer}>
