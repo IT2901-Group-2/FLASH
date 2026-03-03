@@ -8,7 +8,7 @@ import {
 } from "@/hooks/useEvents";
 import { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 import Page from "./page";
-import { CreateEventInput, EventDTO, UpdateEventInput } from "@/types/eventTypes";
+import { CreateEvent, Event, UpdateEvent } from "@/db";
 import { createQueryClientWrapper } from "@test-config";
 
 vi.mock("@/hooks/useEvents", () => ({
@@ -34,30 +34,30 @@ describe("Page", () => {
     vi.mocked(useEventsQuery).mockReturnValue({
       data: undefined,
       isLoading: false,
-    } as UseQueryResult<EventDTO[]>);
+    } as UseQueryResult<Event[]>);
     vi.mocked(useCreateEventMutation).mockReturnValue({
       mutateAsync: vi.fn(),
       status: "idle",
-    } as unknown as UseMutationResult<EventDTO, Error, CreateEventInput>);
+    } as unknown as UseMutationResult<Event, Error, CreateEvent>);
     vi.mocked(useUpdateEventMutation).mockReturnValue({
       mutateAsync: vi.fn(),
       status: "idle",
     } as unknown as UseMutationResult<
-      EventDTO,
+      Event,
       Error,
-      { eventId: string; data: UpdateEventInput }
+      { eventId: string; data: UpdateEvent }
     >);
     vi.mocked(useDeleteEventMutation).mockReturnValue({
       mutateAsync: vi.fn(),
       status: "idle",
-    } as unknown as UseMutationResult<EventDTO, Error, { eventId: string }>);
+    } as unknown as UseMutationResult<void, Error, { eventId: string }>);
   });
 
   it("shows the spinner when loading", () => {
     vi.mocked(useEventsQuery).mockReturnValue({
       data: undefined,
       isLoading: true,
-    } as UseQueryResult<EventDTO[]>);
+    } as UseQueryResult<Event[]>);
 
     renderWithProviders(<Page />);
 
@@ -68,7 +68,7 @@ describe("Page", () => {
     vi.mocked(useEventsQuery).mockReturnValue({
       data: [{ id: "1", name: "Test Event" }],
       isLoading: false,
-    } as UseQueryResult<EventDTO[]>);
+    } as UseQueryResult<Event[]>);
 
     renderWithProviders(<Page />);
 
