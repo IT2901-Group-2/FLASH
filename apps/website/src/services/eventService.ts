@@ -77,6 +77,25 @@ export class EventService {
   createEvent(data: CreateEvent): AsyncResult<Event, Error> {
     return Result.try(() => this.dbService.db.insert(eventTable).values(data).returning())
       .map(rows => getFirstRow(rows, "Unable to create event"))
+      .map(event =>
+        Result.try(() =>
+          this.dbService.db
+            .insert(eventCodeTable)
+            .values([
+              { eventId: event.id, isModerator: true },
+              { eventId: event.id, isModerator: false },
+            ])
+            .returning()
+        )
+          .map(rows =>
+            rows.length === 2
+              ? Result.ok(event)
+              : Result.error(new Error("Unable to create event codes"))
+          )
+          .onFailure(async () => {
+            await this.dbService.db.delete(eventTable).where(eq(eventTable.id, event.id));
+          })
+      )
       .onSuccess(() => this.dbService.flush());
   }
 
