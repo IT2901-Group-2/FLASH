@@ -226,7 +226,7 @@ describe("useDeleteEventMutation", () => {
     const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
     const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(null, { status: 204 })
+      async () => new Response(JSON.stringify(mockEvent), { status: 200 })
     );
 
     vi.stubGlobal("fetch", fetchMock);

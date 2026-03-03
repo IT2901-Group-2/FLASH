@@ -2,6 +2,7 @@ import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import ShortUniqueId from "short-unique-id";
 import { eventTable } from "./events";
 import z from "zod";
+import { assertEqual } from "@/lib/utils/assert";
 
 const uid = new ShortUniqueId();
 
@@ -27,6 +28,16 @@ export const getImagesParamsSchema = z.object({
     .transform(([str]) => str)
     .optional(),
 });
+
+export const getImageSchema = z.object({
+  id: z.string(),
+  eventId: z.string(),
+  isApproved: z.boolean(),
+  isArchived: z.boolean(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+});
+void assertEqual<Image, z.infer<typeof getImageSchema>>;
 
 export const updateImageSchema = z.object({
   isApproved: z.boolean().nullable().optional(),

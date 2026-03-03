@@ -1,6 +1,7 @@
-import { GetImagesParams, Image, UpdateImage } from "@/db";
-import { fetchJson } from "@/lib/utils/api";
+import { getImageSchema, GetImagesParams, UpdateImage } from "@/db";
+import { makeRequest } from "@/lib/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import z from "zod";
 
 /**
  * Serializes `GetImages` filters into a URL query string.
@@ -39,39 +40,36 @@ function toImagesSearchParams(params?: GetImagesParams): string {
  */
 export const imagesKeys = {
   all: ["images"] as const,
-  event: (eventId: string) => [...imagesKeys.all, eventId] as const,
-  list: (eventId: string, params?: GetImagesParams) =>
+  event: (eventId?: string) => [...imagesKeys.all, eventId] as const,
+  list: (eventId?: string, params?: GetImagesParams) =>
     [...imagesKeys.event(eventId), "list", toImagesSearchParams(params)] as const,
 };
 
 /**
  * Fetches a list of images for the given event, optionally filtered by the provided query params.
  */
-export function useImagesQuery(eventId: string, params?: GetImagesParams) {
+export function useImagesQuery(eventId?: string, params?: GetImagesParams) {
   return useQuery({
     queryKey: imagesKeys.list(eventId, params),
     queryFn: () =>
-      fetchJson<Image[]>(`/api/events/${eventId}/images${toImagesSearchParams(params)}`),
+      makeRequest(
+        z.array(getImageSchema),
+        `/api/events/${eventId}/images${toImagesSearchParams(params)}`
+      ),
     enabled: !!eventId,
   });
 }
 
 /**
- * Uploads one or more images to the given event via POST /api/events/:eventId/images.
- * Accepts a `File` or `Blob` and sends it as multipart form data.
+ * Uploads an image to the given event via POST /api/events/:eventId/images.
+ * Accepts a `File` or `Blob` and sends it as binary data.
  */
 export function useUploadImageMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ eventId, file }: { eventId: string; file: Blob }) => {
-      const formData = new FormData();
-      formData.append("image", file);
-      return fetchJson<Image>(`/api/events/${eventId}/images`, {
-        method: "POST",
-        body: formData,
-      });
-    },
+    mutationFn: ({ eventId, file }: { eventId: string; file: Blob }) =>
+      makeRequest(getImageSchema, `/api/events/${eventId}/images`, "POST", file),
     onSuccess: async (_data, { eventId }) => {
       await queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) });
     },
@@ -95,11 +93,12 @@ export function useUpdateImageMutation() {
       imageId: string;
       data: UpdateImage;
     }) =>
-      fetchJson<Image>(`/api/events/${eventId}/images/${imageId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      }),
+      makeRequest(
+        getImageSchema,
+        `/api/events/${eventId}/images/${imageId}`,
+        "PATCH",
+        data
+      ),
     onSuccess: async (_data, { eventId }) => {
       await queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) });
     },
@@ -114,9 +113,7 @@ export function useDeleteImageMutation() {
 
   return useMutation({
     mutationFn: ({ eventId, imageId }: { eventId: string; imageId: string }) =>
-      fetchJson<Image>(`/api/events/${eventId}/images/${imageId}`, {
-        method: "DELETE",
-      }),
+      makeRequest(getImageSchema, `/api/events/${eventId}/images/${imageId}`, "DELETE"),
     onSuccess: async (_data, { eventId }) => {
       await queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) });
     },

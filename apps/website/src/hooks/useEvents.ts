@@ -37,16 +37,17 @@ function toEventsSearchParams(params?: GetEventsParams): string {
  * events-related query in one go.
  *
  * Structure:
- *   eventsKeys.all           → ["events"]
- *   eventsKeys.list(params)  → ["events", "list", "?status=active&..."]
- *   eventsKeys.code(role)    → ["events", "code", role]
+ *   eventsKeys.all                 → ["events"]
+ *   eventsKeys.list(params)        → ["events", "list", "?status=active&..."]
+ *   eventsKeys.code(eventId, role) → ["events", eventId, "code", role]
  */
 
 export const eventsKeys = {
   all: ["events"] as const,
   list: (params?: GetEventsParams) =>
     [...eventsKeys.all, "list", toEventsSearchParams(params)] as const,
-  code: (role: GetEventCodeParams["role"]) => [...eventsKeys.all, "code", role] as const,
+  code: (eventId?: string, role: GetEventCodeParams["role"] = "guest") =>
+    [...eventsKeys.all, eventId, "code", role] as const,
 };
 
 /**
@@ -69,9 +70,9 @@ export function useEventCodeQuery(
   role: GetEventCodeParams["role"] = "guest"
 ) {
   return useQuery({
-    queryKey: eventsKeys.code(role),
+    queryKey: eventsKeys.code(eventId, role),
     queryFn: () => makeRequest(z.string(), `/api/events/${eventId}/code?role=${role}`),
-    enabled: eventId !== undefined,
+    enabled: !!eventId,
   });
 }
 
@@ -116,7 +117,7 @@ export function useDeleteEventMutation() {
 
   return useMutation({
     mutationFn: ({ eventId }: { eventId: string }) =>
-      makeRequest(z.void(), `/api/events/${eventId}`, "DELETE"),
+      makeRequest(getEventSchema, `/api/events/${eventId}`, "DELETE"),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: eventsKeys.all });
     },

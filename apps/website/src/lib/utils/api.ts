@@ -24,26 +24,68 @@ export default async function readResponseError(res: Response): Promise<string> 
   return `Request failed with status ${res.status} ${res.statusText}`;
 }
 
-/**
- * Wrapper around `fetch` that throws a descriptive error on non-2xx
- * responses and returns the parsed JSON body typed as `T`, avoiding
- * repetitive error handling and type casting at every call site.
- */
-export async function fetchJson<T>(
-  endpoint: RequestInfo | URL,
-  init?: RequestInit
-): Promise<T> {
-  const res = await fetch(endpoint, init);
-  if (!res.ok) throw new Error(await readResponseError(res));
-  return (await res.json()) as T;
-}
-
 export type HTTPMethod = "GET" | "HEAD" | "OPTIONS" | "POST" | "PUT" | "DELETE" | "PATCH";
+
+export type JSONValue =
+  | null
+  | string
+  | number
+  | boolean
+  | JSONValue[]
+  | { [key: string]: JSONValue };
+
+export type JSONObject =
+  | null
+  | string
+  | number
+  | boolean
+  | object
+  | (JSONObject | undefined)[]
+  | { [key: string]: JSONObject | undefined };
+
+/**
+ * Helper function to parse a JSON like JS object, stripping all undefined values.
+ *
+ * @example
+ * ```typescript
+ * parseJSON({a: 1, b: null, c: undefined}); // -> {a: 1, b: null}
+ * parseJSON([{a: {b: "foo", c: undefined}}]); // -> [{a: {b: "foo"}}]
+ * ```
+ *
+ * @param data The JSON like object to parse into valid JSON.
+ * @returns Valid JSON without undefined values.
+ */
+// TODO: Add tests
+export function parseJSON(data: JSONObject): JSONValue {
+  if (data === null || typeof data !== "object") {
+    return data;
+  }
+
+  if (Array.isArray(data)) {
+    return data.filter(x => x !== undefined).map(parseJSON);
+  }
+
+  const prototype = Object.getPrototypeOf(data);
+  if (prototype === null || prototype === Object.prototype) {
+    return Object.fromEntries(
+      Object.entries(data)
+        .map(([k, v]) => (v !== undefined ? ([k, parseJSON(v)] as const) : null))
+        .filter(x => x !== null)
+    );
+  }
+
+  const obj: object = data;
+  if ("toJSON" in obj && typeof obj.toJSON === "function") {
+    return obj.toJSON();
+  }
+
+  return obj.toString();
+}
 
 /**
  * Helper function that fetches from the specified endpoint and parses
  * the response with the provided schema.
- * A JSON body can optionally be attached to the request.
+ * A JSON or Blob body can optionally be attached to the request.
  *
  * @param schema The schema to validate/transform the response with.
  * @param endpoint The endpoint to send the fetch request to.
@@ -55,16 +97,22 @@ export async function makeRequest<T>(
   schema: z.ZodType<T>,
   endpoint: RequestInfo | URL,
   method: HTTPMethod = "GET",
-  body?: object
+  data?: JSONObject | Blob
 ): Promise<T> {
+  const body =
+    data === undefined
+      ? null
+      : data instanceof Blob
+        ? await data.arrayBuffer()
+        : JSON.stringify(parseJSON(data));
+
+  const contentType =
+    data === undefined ? null : data instanceof Blob ? data.type : "application/json";
+
   const response = await fetch(endpoint, {
     method,
-    ...(body !== undefined
-      ? {
-          body: JSON.stringify(body),
-          headers: { "Content-Type": "application/json" },
-        }
-      : {}),
+    body,
+    headers: contentType !== null ? { "Content-Type": contentType } : {},
   });
 
   if (!response.ok) {
