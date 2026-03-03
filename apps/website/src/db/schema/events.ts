@@ -2,6 +2,7 @@ import { integer, sqliteTable, text, check, unique } from "drizzle-orm/sqlite-co
 import ShortUniqueId from "short-unique-id";
 import { lte } from "drizzle-orm";
 import { z } from "zod";
+import { assertEqual } from "@/lib/utils/assert";
 
 const uid = new ShortUniqueId();
 const code = new ShortUniqueId({ length: 6, dictionary: "alphanum_upper" });
@@ -63,7 +64,6 @@ export const getEventCodeParamsSchema = z.object({
     .prefault(["guest"]),
 });
 
-// TODO: Assert equal to Event type
 export const getEventSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -75,6 +75,7 @@ export const getEventSchema = z.object({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
+assertEqual<Event, z.infer<typeof getEventSchema>>;
 
 export const createEventSchema = z.object({
   name: z.string(),
@@ -97,6 +98,5 @@ export const updateEventSchema = z.object({
 export type Event = typeof eventTable.$inferSelect;
 export type GetEventsParams = z.infer<typeof getEventsParamsSchema>;
 export type GetEventCodeParams = z.infer<typeof getEventCodeParamsSchema>;
-export type GetEvents = z.infer<typeof getEventsSchema>;
 export type CreateEvent = z.infer<typeof createEventSchema>;
 export type UpdateEvent = z.infer<typeof updateEventSchema>;
