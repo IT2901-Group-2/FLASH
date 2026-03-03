@@ -32,8 +32,7 @@ export const getImagesParamsSchema = z.object({
 export const getImageSchema = z.object({
   id: z.string(),
   eventId: z.string(),
-  isApproved: z.boolean(),
-  isArchived: z.boolean(),
+  isApproved: z.boolean().nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
