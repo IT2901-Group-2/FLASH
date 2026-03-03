@@ -186,7 +186,7 @@
   height: 24px;
   border-radius: 12px;
   background: var(--color-neutral-1000);
-  /* TODO: Implement with data-color when it is fully fixed */
+  /* TODO: Implement with variable when shadow color is added */
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   display: flex;
   align-items: center;
