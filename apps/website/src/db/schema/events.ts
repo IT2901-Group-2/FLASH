@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text, check } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text, check, unique } from "drizzle-orm/sqlite-core";
 import ShortUniqueId from "short-unique-id";
 import { lte } from "drizzle-orm";
 import { z } from "zod";
@@ -15,8 +15,6 @@ export const eventTable = sqliteTable(
     startDate: integer({ mode: "timestamp" }).notNull(),
     endDate: integer({ mode: "timestamp" }).notNull(),
     uploadLimit: integer(),
-    guestCode: text().unique().notNull().$defaultFn(code.rnd),
-    moderatorCode: text().unique().notNull().$defaultFn(code.rnd),
     createdAt: integer({ mode: "timestamp" })
       .notNull()
       .$defaultFn(() => new Date()),
@@ -29,7 +27,19 @@ export const eventTable = sqliteTable(
   t => [check("dateConstraint", lte(t.startDate, t.endDate))]
 );
 
-export const getEventSchema = z.object({
+export const eventCodeTable = sqliteTable(
+  "eventCodes",
+  {
+    code: text().primaryKey().$defaultFn(code.rnd),
+    eventId: text()
+      .notNull()
+      .references(() => eventTable.id),
+    isModerator: integer({ mode: "boolean" }).notNull(),
+  },
+  t => [unique("codeConstraint").on(t.code, t.eventId, t.isModerator)]
+);
+
+export const getEventsSchema = z.object({
   id: z.string().array().min(1).optional(),
   name: z
     .tuple([z.string()])
@@ -54,6 +64,13 @@ export const getEventSchema = z.object({
     .optional(),
 });
 
+export const getEventCodeSchema = z.object({
+  role: z
+    .tuple([z.enum(["guest", "moderator"])])
+    .transform(([str]) => str)
+    .prefault(["guest"]),
+});
+
 export const createEventSchema = z.object({
   name: z.string(),
   description: z.string().optional(),
@@ -73,6 +90,7 @@ export const updateEventSchema = z.object({
 });
 
 export type Event = typeof eventTable.$inferSelect;
-export type GetEvent = z.infer<typeof getEventSchema>;
+export type GetEvents = z.infer<typeof getEventsSchema>;
+export type GetEventCode = z.infer<typeof getEventCodeSchema>;
 export type CreateEvent = z.infer<typeof createEventSchema>;
 export type UpdateEvent = z.infer<typeof updateEventSchema>;

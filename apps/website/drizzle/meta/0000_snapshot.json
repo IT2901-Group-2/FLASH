@@ -1,9 +1,64 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "f79cfdc0-20d3-4921-bceb-0cb4ef1437e6",
+  "id": "fd56b128-0660-4cc1-9027-642242390227",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
+    "eventCodes": {
+      "name": "eventCodes",
+      "columns": {
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "eventId": {
+          "name": "eventId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "isModerator": {
+          "name": "isModerator",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "codeConstraint": {
+          "name": "codeConstraint",
+          "columns": [
+            "code",
+            "eventId",
+            "isModerator"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "eventCodes_eventId_events_id_fk": {
+          "name": "eventCodes_eventId_events_id_fk",
+          "tableFrom": "eventCodes",
+          "tableTo": "events",
+          "columnsFrom": [
+            "eventId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
     "events": {
       "name": "events",
       "columns": {
@@ -50,20 +105,6 @@
           "notNull": false,
           "autoincrement": false
         },
-        "guestCode": {
-          "name": "guestCode",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "moderatorCode": {
-          "name": "moderatorCode",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
         "createdAt": {
           "name": "createdAt",
           "type": "integer",
@@ -87,22 +128,7 @@
           "default": false
         }
       },
-      "indexes": {
-        "events_guestCode_unique": {
-          "name": "events_guestCode_unique",
-          "columns": [
-            "guestCode"
-          ],
-          "isUnique": true
-        },
-        "events_moderatorCode_unique": {
-          "name": "events_moderatorCode_unique",
-          "columns": [
-            "moderatorCode"
-          ],
-          "isUnique": true
-        }
-      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},

@@ -1,8 +1,16 @@
 import { DatabaseService, dbService } from "./databaseService";
-import { CreateEvent, Event, eventTable, GetEvent, UpdateEvent } from "@/db";
+import {
+  CreateEvent,
+  Event,
+  eventCodeTable,
+  eventTable,
+  GetEventCode,
+  GetEvents,
+  UpdateEvent,
+} from "@/db";
 import { AsyncResult, Result } from "typescript-result";
 import { getFirstRow } from "@/lib/utils/sql";
-import { and, eq, like, inArray, lt, lte, gte, gt } from "drizzle-orm";
+import { and, eq, like, inArray, lt, lte, gte, gt, exists, SQL } from "drizzle-orm";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 
 export class EventService {
@@ -27,8 +35,22 @@ export class EventService {
     moderatorCode,
     status,
     archived,
-  }: GetEvent = {}): AsyncResult<Event[], Error> {
+  }: GetEvents = {}): AsyncResult<Event[], Error> {
     const now = new Date();
+
+    const hasCode = (code: string, moderator: boolean): SQL =>
+      exists(
+        this.dbService.db
+          .select()
+          .from(eventCodeTable)
+          .where(
+            and(
+              eq(eventCodeTable.eventId, eventTable.id),
+              eq(eventCodeTable.code, code),
+              eq(eventCodeTable.isModerator, moderator)
+            )
+          )
+      );
 
     return Result.try(() =>
       this.dbService.db
@@ -38,10 +60,8 @@ export class EventService {
           and(
             id !== undefined ? inArray(eventTable.id, id) : undefined,
             name !== undefined ? like(eventTable.name, `%${name}%`) : undefined,
-            guestCode !== undefined ? eq(eventTable.guestCode, guestCode) : undefined,
-            moderatorCode !== undefined
-              ? eq(eventTable.moderatorCode, moderatorCode)
-              : undefined,
+            guestCode !== undefined ? hasCode(guestCode, false) : undefined,
+            moderatorCode !== undefined ? hasCode(moderatorCode, true) : undefined,
             archived !== undefined ? eq(eventTable.isArchived, archived) : undefined,
             status === "upcoming" ? gt(eventTable.startDate, now) : undefined,
             status === "active"
@@ -51,6 +71,23 @@ export class EventService {
           )
         )
     );
+  }
+
+  getEventCode(eventId: string, { role }: GetEventCode): AsyncResult<string, Error> {
+    return Result.try(() =>
+      this.dbService.db
+        .select({ code: eventCodeTable.code })
+        .from(eventCodeTable)
+        .where(
+          and(
+            eq(eventCodeTable.eventId, eventId),
+            eq(eventCodeTable.isModerator, role === "moderator")
+          )
+        )
+        .limit(1)
+    )
+      .map(rows => getFirstRow(rows))
+      .map(row => row.code);
   }
 
   /**
