@@ -1,22 +1,12 @@
 import { useRef, useState } from "react";
-import {
-  Title,
-  SegmentedControl,
-  QRDisplay,
-  Button,
-  Input,
-  Loader,
-  DropdownControl,
-} from "ui";
+import { Title, QRDisplay, Button, Input, Loader, DropdownControl } from "ui";
 import { Copy, Download } from "lucide-react";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 import { downloadQrSvg } from "@/utils/downloadqrcode";
 import { ReviewStepProps } from "./types";
-import { useRouter } from "next/navigation";
 
 const ReviewStep = ({ status, result }: ReviewStepProps) => {
-  const navigation = useRouter();
   const t = useTranslations("admin.dashboard.event.create.review");
   const [shareRole, setShareRole] = useState<string>("guest");
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
