@@ -10,7 +10,7 @@
   gap: 1em;
 
   border-radius: var(--radius-16);
-  background-color: var(--bg-raised);
+  background-color: var(--bg-input);
   box-shadow: var(--shadow-dialog);
   color: var(--neutral-1000);
 
