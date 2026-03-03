@@ -2,6 +2,7 @@ import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import ShortUniqueId from "short-unique-id";
 import { eventTable } from "./events";
 import z from "zod";
+import { userTable } from "./users";
 
 const uid = new ShortUniqueId();
 
@@ -10,6 +11,9 @@ export const imageTable = sqliteTable("images", {
   eventId: text()
     .notNull()
     .references(() => eventTable.id),
+  userId: text()
+    .notNull()
+    .references(() => userTable.id),
   isApproved: integer({ mode: "boolean" }),
   createdAt: integer({ mode: "timestamp" })
     .notNull()
