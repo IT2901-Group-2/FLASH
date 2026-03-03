@@ -33,6 +33,7 @@ export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
                 onChange={e =>
                   updateFormData("uploadLimit", Math.max(1, Number(e.target.value)))
                 }
+                required={limitMode == "limited"}
               />
             </div>
           }
