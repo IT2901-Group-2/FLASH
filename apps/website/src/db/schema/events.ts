@@ -33,7 +33,7 @@ export const eventCodeTable = sqliteTable(
     code: text().primaryKey().$defaultFn(code.rnd),
     eventId: text()
       .notNull()
-      .references(() => eventTable.id),
+      .references(() => eventTable.id, { onDelete: "cascade" }),
     isModerator: integer({ mode: "boolean" }).notNull(),
   },
   t => [unique("codeConstraint").on(t.code, t.eventId, t.isModerator)]

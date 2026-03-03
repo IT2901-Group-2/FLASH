@@ -2,7 +2,7 @@ CREATE TABLE `eventCodes` (
 	`code` text PRIMARY KEY NOT NULL,
 	`eventId` text NOT NULL,
 	`isModerator` integer NOT NULL,
-	FOREIGN KEY (`eventId`) REFERENCES `events`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`eventId`) REFERENCES `events`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `codeConstraint` ON `eventCodes` (`code`,`eventId`,`isModerator`);--> statement-breakpoint
@@ -25,5 +25,5 @@ CREATE TABLE `images` (
 	`isApproved` integer,
 	`createdAt` integer NOT NULL,
 	`updatedAt` integer NOT NULL,
-	FOREIGN KEY (`eventId`) REFERENCES `events`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`eventId`) REFERENCES `events`(`id`) ON UPDATE no action ON DELETE cascade
 );

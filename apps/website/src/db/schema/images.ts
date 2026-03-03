@@ -9,7 +9,7 @@ export const imageTable = sqliteTable("images", {
   id: text().primaryKey().$defaultFn(uid.rnd),
   eventId: text()
     .notNull()
-    .references(() => eventTable.id),
+    .references(() => eventTable.id, { onDelete: "cascade" }),
   isApproved: integer({ mode: "boolean" }),
   createdAt: integer({ mode: "timestamp" })
     .notNull()

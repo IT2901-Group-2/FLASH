@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "fd56b128-0660-4cc1-9027-642242390227",
+  "id": "85505668-020e-40eb-a70c-fadd5e42051e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "eventCodes": {
@@ -51,7 +51,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -190,7 +190,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
