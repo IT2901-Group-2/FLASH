@@ -28,20 +28,10 @@ export default async function readResponseError(res: Response): Promise<string> 
  * repetitive error handling and type casting at every call site.
  */
 export async function fetchJson<T>(
-  input: RequestInfo | URL,
+  endpoint: RequestInfo | URL,
   init?: RequestInit
 ): Promise<T> {
-  const res = await fetch(input, init);
+  const res = await fetch(endpoint, init);
   if (!res.ok) throw new Error(await readResponseError(res));
-  if (res.status === 204) return undefined as T;
   return (await res.json()) as T;
-}
-
-/**
- * Normalizes a date value to an ISO 8601 string for API serialization.
- * Returns undefined if no value is provided.
- */
-export function toIso(value?: Date): string | undefined {
-  if (value === undefined) return undefined;
-  return value instanceof Date ? value.toISOString() : value;
 }

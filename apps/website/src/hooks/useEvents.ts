@@ -1,9 +1,9 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { EventDTO, CreateEventInput, UpdateEventInput } from "@/types/eventTypes";
+import { EventDTO } from "@/types/eventTypes";
 import { fetchJson, toIso } from "@/lib/utils/api";
-import { GetEventCode, GetEvents } from "@/db";
+import { CreateEvent, GetEventCode, GetEvents, UpdateEvent } from "@/db";
 
 /**
  * Serializes an `GetEvents` object into a URL query string (e.g. `?status=active&archived=false`).
@@ -46,13 +46,10 @@ export const eventsKeys = {
 /**
  * Fetches a list of events, optionally filtered by the provided query params.
  */
-export function useEventsQuery(params?: GetEvents, enabled = true) {
+export function useEventsQuery(params?: GetEvents, enabled: boolean = true) {
   return useQuery({
     queryKey: eventsKeys.list(params),
-    queryFn: async () => {
-      const url = `/api/events${toEventsSearchParams(params)}`;
-      return fetchJson<EventDTO[]>(url);
-    },
+    queryFn: () => fetchJson<EventDTO[]>(`/api/events${toEventsSearchParams(params)}`),
     enabled,
   });
 }
@@ -75,15 +72,11 @@ export function useCreateEventMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: CreateEventInput) => {
+    mutationFn: (input: CreateEvent) => {
       return fetchJson<EventDTO>("/api/events", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...input,
-          startDate: toIso(input.startDate),
-          endDate: toIso(input.endDate),
-        }),
+        body: JSON.stringify(input),
       });
     },
     onSuccess: async () => {
@@ -101,15 +94,11 @@ export function useUpdateEventMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ eventId, data }: { eventId: string; data: UpdateEventInput }) => {
+    mutationFn: ({ eventId, data }: { eventId: string; data: UpdateEvent }) => {
       return fetchJson<EventDTO>(`/api/events/${eventId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...data,
-          startDate: toIso(data.startDate),
-          endDate: toIso(data.endDate),
-        }),
+        body: JSON.stringify(data),
       });
     },
     onSuccess: async () => {
