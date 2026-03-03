@@ -18,7 +18,16 @@ const ReviewStep = ({
 
   const displayLink = displayCode ? `${window.location.origin}/event/${displayCode}` : "";
 
-  if (status === "pending") return <Loader />;
+  const handleRoleChange = useCallback(
+    (role: string) => {
+      if (role !== "guest" && role !== "moderator") {
+        return;
+      }
+
+      setShareRole(role);
+    },
+    [setShareRole]
+  );
 
   /**
    * Function to handle downloading the QR code as an SVG file.
@@ -33,16 +42,7 @@ const ReviewStep = ({
     }
   };
 
-  const handleRoleChange = useCallback(
-    (role: string) => {
-      if (role !== "guest" && role !== "moderator") {
-        return;
-      }
-
-      setShareRole(role);
-    },
-    [setShareRole]
-  );
+  if (status === "pending") return <Loader />;
 
   return (
     <>
