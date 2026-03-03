@@ -40,6 +40,8 @@ export default function ModeratePage() {
     handleBulkReject,
   } = useImageSelection(images, eventId);
 
+  const BUTTON_COLOR = "brand-purple" as const;
+
   // Button matrix by tab:
   //   pending:  primary=Approve, secondary=Reject  (both actions make sense)
   //   approved: primary=Reject,  secondary=none    (already approved; only rejection is a new action)
@@ -48,13 +50,13 @@ export default function ModeratePage() {
     if (activeTab === "pending" || activeTab === "rejected") {
       return {
         text: "Approve selected photos",
-        "data-color": "brand-purple" as const,
+        "data-color": BUTTON_COLOR,
         onClick: handleBulkApprove,
       };
     }
     return {
       text: "Reject selected photos",
-      "data-color": "brand-purple" as const,
+      "data-color": BUTTON_COLOR,
       onClick: handleBulkReject,
     };
   })();
@@ -63,10 +65,12 @@ export default function ModeratePage() {
     activeTab === "pending"
       ? {
           text: "Reject selected photos",
-          "data-color": "brand-purple" as const,
+          "data-color": BUTTON_COLOR,
           onClick: handleBulkReject,
         }
       : undefined;
+
+  const selectionDescription = `${selectedIds.size} photo${selectedIds.size > 1 ? "s" : ""} selected`;
 
   return (
     <div className={styles.pageWrapper}>
@@ -83,7 +87,7 @@ export default function ModeratePage() {
 
       <div className={styles.content}>
         <div className={styles.tabContainer}>
-          <div className={`${selectMode ? ` ${styles.tabDisabled}` : ""}`}>
+          <div className={selectMode ? styles.tabDisabled : undefined}>
             <SegmentedControl
               fill
               data-color="accent"
@@ -141,16 +145,14 @@ export default function ModeratePage() {
 
       {/* Announces selection count to screen readers when it changes */}
       <div aria-live="polite" aria-atomic="true" className={styles.srOnly}>
-        {selectedIds.size > 0
-          ? `${selectedIds.size} photo${selectedIds.size > 1 ? "s" : ""} selected`
-          : ""}
+        {selectedIds.size > 0 ? selectionDescription : ""}
       </div>
 
       {selectedIds.size > 0 && (
         <div className={styles.actionCardContainer}>
           <ActionCard
             data-color="background-secondary"
-            description={`${selectedIds.size} photo${selectedIds.size > 1 ? "s" : ""} selected`}
+            description={selectionDescription}
             primaryButton={primaryButton}
             secondaryButton={secondaryButton}
           />
