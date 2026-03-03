@@ -39,7 +39,7 @@ export const eventCodeTable = sqliteTable(
   t => [unique("codeConstraint").on(t.code, t.eventId, t.isModerator)]
 );
 
-export const getEventsSchema = z.object({
+export const getEventsParamsSchema = z.object({
   id: z.string().array().min(1).optional(),
   name: z
     .tuple([z.string()])
@@ -56,11 +56,24 @@ export const getEventsSchema = z.object({
     .optional(),
 });
 
-export const getEventCodeSchema = z.object({
+export const getEventCodeParamsSchema = z.object({
   role: z
     .tuple([z.enum(["guest", "moderator"])])
     .transform(([str]) => str)
     .prefault(["guest"]),
+});
+
+// TODO: Assert equal to Event type
+export const getEventSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date(),
+  uploadLimit: z.number().positive().nullable(),
+  isArchived: z.boolean(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
 });
 
 export const createEventSchema = z.object({
@@ -82,7 +95,8 @@ export const updateEventSchema = z.object({
 });
 
 export type Event = typeof eventTable.$inferSelect;
+export type GetEventsParams = z.infer<typeof getEventsParamsSchema>;
+export type GetEventCodeParams = z.infer<typeof getEventCodeParamsSchema>;
 export type GetEvents = z.infer<typeof getEventsSchema>;
-export type GetEventCode = z.infer<typeof getEventCodeSchema>;
 export type CreateEvent = z.infer<typeof createEventSchema>;
 export type UpdateEvent = z.infer<typeof updateEventSchema>;
