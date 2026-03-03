@@ -1,4 +1,4 @@
-import { GetImages, Image, UpdateImage } from "@/db";
+import { GetImagesParams, Image, UpdateImage } from "@/db";
 import { fetchJson } from "@/lib/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -10,7 +10,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
  * the events hooks serialize array values.
  * `approval` is a single enum string after the zod tuple transform.
  */
-function toImagesSearchParams(params?: GetImages): string {
+function toImagesSearchParams(params?: GetImagesParams): string {
   if (!params) return "";
 
   const sp = new URLSearchParams();
@@ -40,14 +40,14 @@ function toImagesSearchParams(params?: GetImages): string {
 export const imagesKeys = {
   all: ["images"] as const,
   event: (eventId: string) => [...imagesKeys.all, eventId] as const,
-  list: (eventId: string, params?: GetImages) =>
+  list: (eventId: string, params?: GetImagesParams) =>
     [...imagesKeys.event(eventId), "list", toImagesSearchParams(params)] as const,
 };
 
 /**
  * Fetches a list of images for the given event, optionally filtered by the provided query params.
  */
-export function useImagesQuery(eventId: string, params?: GetImages) {
+export function useImagesQuery(eventId: string, params?: GetImagesParams) {
   return useQuery({
     queryKey: imagesKeys.list(eventId, params),
     queryFn: () =>
