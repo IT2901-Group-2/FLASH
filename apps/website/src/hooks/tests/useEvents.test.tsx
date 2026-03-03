@@ -5,9 +5,23 @@ import {
   eventsKeys,
   useCreateEventMutation,
   useDeleteEventMutation,
+  useEventCodeQuery,
   useEventsQuery,
   useUpdateEventMutation,
 } from "../useEvents";
+import { Event } from "@/db";
+
+const mockEvent: Event = {
+  id: "1",
+  name: "Test event",
+  description: "",
+  startDate: new Date(),
+  endDate: new Date(),
+  uploadLimit: 5,
+  isArchived: false,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
 
 function createWrapper() {
   const queryClient = new QueryClient({
@@ -30,13 +44,11 @@ describe("useEventsQuery", () => {
   });
 
   it("fetches events successfully", async () => {
-    const fakeEvents = [{ id: "1", name: "Test event" }];
-
     vi.stubGlobal(
       "fetch",
       vi.fn(
         async () =>
-          new Response(JSON.stringify(fakeEvents), {
+          new Response(JSON.stringify([mockEvent]), {
             status: 200,
             headers: { "Content-Type": "application/json" },
           })
@@ -51,7 +63,7 @@ describe("useEventsQuery", () => {
       expect(result.current.isSuccess).toBe(true);
     });
 
-    expect(result.current.data).toEqual(fakeEvents);
+    expect(result.current.data).toStrictEqual([mockEvent]);
   });
 
   it("handles fetch error", async () => {
@@ -115,6 +127,31 @@ describe("useEventsQuery", () => {
   });
 });
 
+describe("useEventCodeQuery", () => {
+  it("Fetches event code successfully", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify("event-code"), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          })
+      ) as unknown as typeof fetch
+    );
+
+    const { result } = renderHook(() => useEventCodeQuery("eventId"), {
+      wrapper: createWrapper().wrapper,
+    });
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+
+    expect(result.current.data).toStrictEqual("event-code");
+  });
+});
+
 describe("useCreateEventMutation", () => {
   it("creates an event and invalidates cache", async () => {
     const { wrapper, queryClient } = createWrapper();
@@ -122,7 +159,7 @@ describe("useCreateEventMutation", () => {
     const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
     const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(JSON.stringify({ id: "1" }), { status: 200 })
+      async () => new Response(JSON.stringify(mockEvent), { status: 200 })
     );
 
     vi.stubGlobal("fetch", fetchMock);
@@ -161,7 +198,7 @@ describe("useUpdateEventMutation", () => {
     const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
     const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(JSON.stringify({ id: "1" }), { status: 200 })
+      async () => new Response(JSON.stringify(mockEvent), { status: 200 })
     );
 
     vi.stubGlobal("fetch", fetchMock);

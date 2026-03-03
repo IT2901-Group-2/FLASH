@@ -71,5 +71,5 @@ export async function makeRequest<T>(
     throw new Error(await readResponseError(response));
   }
 
-  return z.parseAsync(schema, await response.json());
+  return z.parseAsync(schema, await response.json().catch(() => undefined));
 }
