@@ -25,7 +25,9 @@
               "name": "Event Name",
               "description": "Event Description",
               "startDate": "Start Date",
-              "endDate": "End Date"
+              "endDate": "End Date",
+              "startTime": "Start Time",
+              "endTime": "End Time"
             }
           },
           "options": {

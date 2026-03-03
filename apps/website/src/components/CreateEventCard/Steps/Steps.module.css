@@ -38,3 +38,10 @@
   align-items: start;
   justify-content: center;
 }
+
+.timeContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  white-space: nowrap;
+}
