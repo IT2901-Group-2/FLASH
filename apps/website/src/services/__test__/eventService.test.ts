@@ -3,22 +3,36 @@ import { describe, it, beforeEach, expect, vi, afterEach } from "vitest";
 import { DatabaseService } from "../databaseService";
 import { Result } from "typescript-result";
 import { EventService } from "../eventService";
-import { eventTable } from "@/db";
+import { Event, eventTable } from "@/db";
 import { subDays, addDays, subHours, addHours, setMilliseconds } from "date-fns";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { eq } from "drizzle-orm";
 
 const NOW = new Date();
 
-const mockEvents: (typeof eventTable.$inferInsert)[] = [
+function getMockedEvent(data: Partial<Event> = {}): Event {
+  return {
+    id: "id",
+    name: "name",
+    description: "description",
+    startDate: new Date(),
+    endDate: new Date(),
+    uploadLimit: 5,
+    isArchived: false,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...data,
+  };
+}
+
+const mockEvents: Event[] = [
   {
     id: "birthday-1",
     name: "Birthday 1",
+    description: "birthday event",
     startDate: subHours(NOW, 6),
     endDate: subHours(NOW, 5),
     uploadLimit: 5,
-    guestCode: "birthday-1-guest",
-    moderatorCode: "birthday-1-moderator",
   },
   {
     id: "birthday-2",
@@ -26,8 +40,6 @@ const mockEvents: (typeof eventTable.$inferInsert)[] = [
     startDate: subHours(NOW, 2),
     endDate: addHours(NOW, 10),
     uploadLimit: 5,
-    guestCode: "birthday-2-guest",
-    moderatorCode: "birthday-2-moderator",
     isArchived: true,
   },
   {
@@ -36,34 +48,26 @@ const mockEvents: (typeof eventTable.$inferInsert)[] = [
     startDate: addDays(NOW, 10),
     endDate: addDays(NOW, 11),
     uploadLimit: 10,
-    guestCode: "wedding-1-guest",
-    moderatorCode: "wedding-1-moderator",
   },
   {
     id: "wedding-2",
     name: "Wedding 2",
     startDate: subDays(NOW, 5),
     endDate: subDays(NOW, 4),
-    guestCode: "wedding-2-guest",
-    moderatorCode: "wedding-2-moderator",
   },
   {
     id: "lowercase-1",
     name: "lowercase",
     startDate: subDays(NOW, 1),
     endDate: subDays(NOW, 1),
-    guestCode: "lowercase-1-guest",
-    moderatorCode: "lowercase-1-moderator",
   },
   {
     id: "uppercase-1",
     name: "UPPERCASE",
     startDate: subHours(NOW, 1),
     endDate: addHours(NOW, 1),
-    guestCode: "uppercase-1-guest",
-    moderatorCode: "uppercase-1-moderator",
   },
-];
+].map(getMockedEvent);
 
 let eventService: EventService;
 
@@ -152,38 +156,6 @@ describe("EventService getEvents", () => {
     ).toStrictEqual(new Set(["uppercase-1"]));
   });
 
-  it("Should correctly filter by guest code", async () => {
-    expect(
-      await eventService
-        .getEvents({ guestCode: "birthday-1-moderator", archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
-        .getOrThrow()
-    ).toStrictEqual(new Set([]));
-
-    expect(
-      await eventService
-        .getEvents({ guestCode: "birthday-1-guest", archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
-        .getOrThrow()
-    ).toStrictEqual(new Set(["birthday-1"]));
-  });
-
-  it("Should correctly filter by moderator code", async () => {
-    expect(
-      await eventService
-        .getEvents({ moderatorCode: "wedding-2-guest", archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
-        .getOrThrow()
-    ).toStrictEqual(new Set([]));
-
-    expect(
-      await eventService
-        .getEvents({ moderatorCode: "wedding-2-moderator", archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
-        .getOrThrow()
-    ).toStrictEqual(new Set(["wedding-2"]));
-  });
-
   it("Should correctly filter by status", async () => {
     expect(
       await eventService
@@ -258,7 +230,7 @@ describe("EventService getEvents", () => {
 
     expect(
       await eventService
-        .getEvents({ status: "finished", name: "1", guestCode: "birthday-1-guest" })
+        .getEvents({ status: "finished", name: "1" })
         .map(rows => new Set(rows.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["birthday-1"]));
@@ -405,11 +377,9 @@ describe("eventService deleteEvent", () => {
     const deletedEvent = await eventService.deleteEvent("birthday-1").getOrThrow();
 
     expect(deletedEvent.name).toBe("Birthday 1");
-    expect(deletedEvent.description).toBe("");
+    expect(deletedEvent.description).toBe("birthday event");
     expect(deletedEvent.uploadLimit).toBe(5);
     expect(deletedEvent.isArchived).toBe(false);
-    expect(deletedEvent.guestCode).toBe("birthday-1-guest");
-    expect(deletedEvent.moderatorCode).toBe("birthday-1-moderator");
 
     expect(
       await eventService["dbService"].db
