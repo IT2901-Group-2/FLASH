@@ -57,9 +57,7 @@ export function useImageSelection(images: Image[], eventId: string) {
       exitSelectMode();
       const failed = results.filter(r => r.status === "rejected").length;
       if (failed > 0) {
-        setBulkError(
-          `${failed} photo${failed > 1 ? "s" : ""} could not be updated.`
-        );
+        setBulkError(`${failed} photo${failed > 1 ? "s" : ""} could not be updated.`);
       }
     },
     [selectedIds, updateImage, eventId, exitSelectMode]
