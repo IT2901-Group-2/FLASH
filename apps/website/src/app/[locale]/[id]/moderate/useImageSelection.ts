@@ -48,14 +48,16 @@ export function useImageSelection(images: Image[], eventId: string) {
   const handleBulkAction = useCallback(
     async (isApproved: boolean) => {
       setBulkError(null);
-      const results = await Promise.allSettled(
-        Array.from(selectedIds).map(imageId =>
-          updateImage({ eventId, imageId, data: { isApproved } })
-        )
-      );
+      let failed = 0;
+      for (const imageId of Array.from(selectedIds)) {
+        try {
+          await updateImage({ eventId, imageId, data: { isApproved } });
+        } catch {
+          failed++;
+        }
+      }
       // Always exit select mode, partially applied changes cannot be undone by retrying the same selection.
       exitSelectMode();
-      const failed = results.filter(r => r.status === "rejected").length;
       if (failed > 0) {
         setBulkError(`${failed} photo${failed > 1 ? "s" : ""} could not be updated.`);
       }
