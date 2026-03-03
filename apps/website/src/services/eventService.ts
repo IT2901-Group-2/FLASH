@@ -110,7 +110,8 @@ export class EventService {
             await this.dbService.db.delete(eventTable).where(eq(eventTable.id, event.id));
           })
       )
-      .onSuccess(() => this.dbService.flush());
+      .onSuccess(() => this.dbService.flush())
+      .onFailure(err => console.log(err));
   }
 
   /**

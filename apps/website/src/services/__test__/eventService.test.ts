@@ -3,7 +3,7 @@ import { describe, it, beforeEach, expect, vi, afterEach } from "vitest";
 import { DatabaseService } from "../databaseService";
 import { Result } from "typescript-result";
 import { EventService } from "../eventService";
-import { Event, eventTable } from "@/db";
+import { Event, eventCodeTable, eventTable } from "@/db";
 import { subDays, addDays, subHours, addHours, setMilliseconds } from "date-fns";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { eq } from "drizzle-orm";
@@ -69,6 +69,16 @@ const mockEvents: Event[] = [
   },
 ].map(getMockedEvent);
 
+const mockGuestCodes: Record<string, string> = {
+  "birthday-1": "birth1guest",
+  "birthday-2": "birth2guest",
+};
+
+const mockModeratorCodes: Record<string, string> = {
+  "birthday-1": "birth1mod",
+  "birthday-2": "birth2mod",
+};
+
 let eventService: EventService;
 
 beforeEach(async () => {
@@ -79,6 +89,16 @@ beforeEach(async () => {
   await dbService.initialize().getOrThrow();
 
   await dbService.db.insert(eventTable).values(mockEvents);
+  await Promise.all(
+    mockEvents.map(async e => {
+      await dbService.db
+        .insert(eventCodeTable)
+        .values({ eventId: e.id, code: mockModeratorCodes[e.id], isModerator: true });
+      await dbService.db
+        .insert(eventCodeTable)
+        .values({ eventId: e.id, code: mockGuestCodes[e.id], isModerator: false });
+    })
+  );
 
   eventService = new EventService(dbService);
 });
@@ -251,6 +271,36 @@ describe("EventService getEvents", () => {
   });
 });
 
+describe("eventService getEventCode", () => {
+  it("Should return Err when database call fails", async () => {
+    vi.spyOn(BetterSQLite3Database.prototype, "select").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(await eventService.getEventCode("birthday-1", { role: "guest" }));
+  });
+
+  it("Should correctly return guest code", async () => {
+    expect(
+      await eventService.getEventCode("birthday-1", { role: "guest" }).getOrThrow()
+    ).toBe("birth1guest");
+
+    expect(
+      await eventService.getEventCode("birthday-2", { role: "guest" }).getOrThrow()
+    ).toBe("birth2guest");
+  });
+
+  it("Should correctly return moderator code", async () => {
+    expect(
+      await eventService.getEventCode("birthday-1", { role: "moderator" }).getOrThrow()
+    ).toBe("birth1mod");
+
+    expect(
+      await eventService.getEventCode("birthday-2", { role: "moderator" }).getOrThrow()
+    ).toBe("birth2mod");
+  });
+});
+
 describe("eventService createEvent", () => {
   it("Should return Err when database call fails", async () => {
     vi.spyOn(BetterSQLite3Database.prototype, "insert").mockImplementationOnce(() => {
@@ -264,6 +314,26 @@ describe("eventService createEvent", () => {
         endDate: NOW,
       })
     );
+  });
+
+  it("Should return Err and clean up event when code insert fails", async () => {
+    const deleteSpy = vi.spyOn(BetterSQLite3Database.prototype, "delete");
+    const originalInsert = BetterSQLite3Database.prototype.insert;
+    vi.spyOn(BetterSQLite3Database.prototype, "insert")
+      .mockImplementationOnce(originalInsert)
+      .mockImplementationOnce(() => {
+        throw new Error();
+      });
+
+    Result.assertError(
+      await eventService.createEvent({
+        name: "newEvent",
+        startDate: NOW,
+        endDate: NOW,
+      })
+    );
+
+    expect(deleteSpy).toHaveBeenCalledOnce();
   });
 
   it("Should correctly create event", async () => {
@@ -302,6 +372,13 @@ describe("eventService createEvent", () => {
         newEvent.id,
       ])
     );
+
+    const codes = await eventService["dbService"].db
+      .select()
+      .from(eventCodeTable)
+      .where(eq(eventCodeTable.eventId, newEvent.id));
+    expect(codes).toHaveLength(2);
+    expect(new Set(codes.map(c => c.isModerator))).toStrictEqual(new Set([true, false]));
   });
 
   it("Should flush after creating event", async () => {
