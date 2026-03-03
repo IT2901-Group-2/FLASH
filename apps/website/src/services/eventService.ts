@@ -50,6 +50,14 @@ export class EventService {
     );
   }
 
+  /**
+   * Fetches the join code for the specified event.
+   * Fethes the guest code if `role` is 'guest' and the moderator code if `role` is 'moderator'.
+   *
+   * @param eventId The event to fetch the code for.
+   * @param options The type of join code to fetch.
+   * @returns A code that can be used to join the specified event.
+   */
   getEventCode(eventId: string, { role }: GetEventCode): AsyncResult<string, Error> {
     return Result.try(() =>
       this.dbService.db
