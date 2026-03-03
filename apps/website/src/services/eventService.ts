@@ -10,7 +10,7 @@ import {
 } from "@/db";
 import { AsyncResult, Result } from "typescript-result";
 import { getFirstRow } from "@/lib/utils/sql";
-import { and, eq, like, inArray, lt, lte, gte, gt, exists, SQL } from "drizzle-orm";
+import { and, eq, like, inArray, lt, lte, gte, gt } from "drizzle-orm";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 
 export class EventService {
@@ -28,29 +28,8 @@ export class EventService {
    * @param filters The filters to apply to the query.
    * @returns A result with a list of events or an error.
    */
-  getEvents({
-    id,
-    name,
-    guestCode,
-    moderatorCode,
-    status,
-    archived,
-  }: GetEvents = {}): AsyncResult<Event[], Error> {
+  getEvents({ id, name, status, archived }: GetEvents = {}): AsyncResult<Event[], Error> {
     const now = new Date();
-
-    const hasCode = (code: string, moderator: boolean): SQL =>
-      exists(
-        this.dbService.db
-          .select()
-          .from(eventCodeTable)
-          .where(
-            and(
-              eq(eventCodeTable.eventId, eventTable.id),
-              eq(eventCodeTable.code, code),
-              eq(eventCodeTable.isModerator, moderator)
-            )
-          )
-      );
 
     return Result.try(() =>
       this.dbService.db
@@ -60,8 +39,6 @@ export class EventService {
           and(
             id !== undefined ? inArray(eventTable.id, id) : undefined,
             name !== undefined ? like(eventTable.name, `%${name}%`) : undefined,
-            guestCode !== undefined ? hasCode(guestCode, false) : undefined,
-            moderatorCode !== undefined ? hasCode(moderatorCode, true) : undefined,
             archived !== undefined ? eq(eventTable.isArchived, archived) : undefined,
             status === "upcoming" ? gt(eventTable.startDate, now) : undefined,
             status === "active"

@@ -45,14 +45,6 @@ export const getEventsSchema = z.object({
     .tuple([z.string()])
     .transform(([str]) => str)
     .optional(),
-  guestCode: z
-    .tuple([z.string()])
-    .transform(([str]) => str)
-    .optional(),
-  moderatorCode: z
-    .tuple([z.string()])
-    .transform(([str]) => str)
-    .optional(),
   status: z
     .tuple([z.enum(["upcoming", "active", "finished"])])
     .transform(([str]) => str)
