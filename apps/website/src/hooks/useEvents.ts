@@ -1,19 +1,15 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  EventsQueryParams,
-  EventDTO,
-  CreateEventInput,
-  UpdateEventInput,
-} from "@/types/eventTypes";
+import { EventDTO, CreateEventInput, UpdateEventInput } from "@/types/eventTypes";
 import { fetchJson, toIso } from "@/lib/utils/api";
+import { GetEventCode, GetEvents } from "@/db";
 
 /**
- * Serializes an `EventsQueryParams` object into a URL query string (e.g. `?status=active&archived=false`).
+ * Serializes an `GetEvents` object into a URL query string (e.g. `?status=active&archived=false`).
  * Returns an empty string when no params are provided.
  */
-function toEventsSearchParams(params?: EventsQueryParams): string {
+function toEventsSearchParams(params?: GetEvents): string {
   if (!params) return "";
 
   const sp = new URLSearchParams();
@@ -21,15 +17,8 @@ function toEventsSearchParams(params?: EventsQueryParams): string {
   const ids = params.id?.slice().sort();
   if (ids && ids.length > 0) ids.forEach(id => sp.append("id", id));
   if (params.name) sp.append("name", params.name);
-  if (params.guestCode) sp.append("guestCode", params.guestCode);
-  if (params.moderatorCode) sp.append("moderatorCode", params.moderatorCode);
   if (params.status) sp.append("status", params.status);
-  if (params.archived !== undefined) {
-    sp.append(
-      "archived",
-      params.archived === "all" ? "all" : params.archived ? "true" : "false"
-    );
-  }
+  if (params.archived !== undefined) sp.append("archived", params.archived.toString());
 
   const qs = sp.toString();
   return qs ? `?${qs}` : "";
@@ -44,18 +33,20 @@ function toEventsSearchParams(params?: EventsQueryParams): string {
  * Structure:
  *   eventsKeys.all           → ["events"]
  *   eventsKeys.list(params)  → ["events", "list", "?status=active&..."]
+ *   eventsKeys.code(role)    → ["events", "code", role]
  */
 
 export const eventsKeys = {
   all: ["events"] as const,
-  list: (params?: EventsQueryParams) =>
+  list: (params?: GetEvents) =>
     [...eventsKeys.all, "list", toEventsSearchParams(params)] as const,
+  code: (role: GetEventCode["role"]) => [...eventsKeys.all, "code", role] as const,
 };
 
 /**
  * Fetches a list of events, optionally filtered by the provided query params.
  */
-export function useEventsQuery(params?: EventsQueryParams, enabled = true) {
+export function useEventsQuery(params?: GetEvents, enabled = true) {
   return useQuery({
     queryKey: eventsKeys.list(params),
     queryFn: async () => {
@@ -63,6 +54,16 @@ export function useEventsQuery(params?: EventsQueryParams, enabled = true) {
       return fetchJson<EventDTO[]>(url);
     },
     enabled,
+  });
+}
+
+/**
+ * Fetches the join code of an event. `role` specifies access level.
+ */
+export function useEventCodeQuery(eventId: string, role: GetEventCode["role"] = "guest") {
+  return useQuery({
+    queryKey: eventsKeys.code(role),
+    queryFn: () => fetchJson<string>(`/api/events/${eventId}/code?role=${role}`),
   });
 }
 
