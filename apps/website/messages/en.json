@@ -38,7 +38,7 @@
                 "unlimited": "Unlimited"
               },
               "autoApprove": "Auto-Approve Photos",
-              "autoGenerate": "Auto-Generate Code"
+              "guestSeeAll": "Auto-Generate Code"
             }
           },
           "review": {
