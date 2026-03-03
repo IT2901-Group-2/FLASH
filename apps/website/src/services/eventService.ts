@@ -4,8 +4,8 @@ import {
   Event,
   eventCodeTable,
   eventTable,
-  GetEventCode,
-  GetEvents,
+  GetEventCodeParams,
+  GetEventsParams,
   UpdateEvent,
 } from "@/db";
 import { AsyncResult, Result } from "typescript-result";
@@ -28,7 +28,10 @@ export class EventService {
    * @param filters The filters to apply to the query.
    * @returns A result with a list of events or an error.
    */
-  getEvents({ id, name, status, archived }: GetEvents = {}): AsyncResult<Event[], Error> {
+  getEvents({ id, name, status, archived }: GetEventsParams = {}): AsyncResult<
+    Event[],
+    Error
+  > {
     const now = new Date();
 
     return Result.try(() =>
@@ -58,7 +61,10 @@ export class EventService {
    * @param options The type of join code to fetch.
    * @returns A code that can be used to join the specified event.
    */
-  getEventCode(eventId: string, { role }: GetEventCode): AsyncResult<string, Error> {
+  getEventCode(
+    eventId: string,
+    { role }: GetEventCodeParams
+  ): AsyncResult<string, Error> {
     return Result.try(() =>
       this.dbService.db
         .select({ code: eventCodeTable.code })
