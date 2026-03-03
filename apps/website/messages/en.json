@@ -53,7 +53,9 @@
               "linkDescription": "Everyone with the link below will be able to uploaded images to this event"
             },
             "moderator": {
-              "name": "Moderator"
+              "name": "Moderator",
+              "linkTitle": "Moderator Link",
+              "linkDescription": "Everyone with the link below can moderate the sendt inn images"
             }
           }
         },
