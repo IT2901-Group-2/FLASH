@@ -75,7 +75,7 @@ export const getEventSchema = z.object({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
-assertEqual<Event, z.infer<typeof getEventSchema>>;
+void assertEqual<Event, z.infer<typeof getEventSchema>>;
 
 export const createEventSchema = z.object({
   name: z.string(),

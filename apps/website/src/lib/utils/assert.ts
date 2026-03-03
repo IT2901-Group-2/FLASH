@@ -4,14 +4,14 @@
  *
  * @example
  * ```typescript
- * assertEqual<{a: number}, {a: number}> // Will trigger a type error
- * assertEqual<{a: number}, {a: string}> // Will trigger a type error
+ * void assertEqual<{a: number}, {a: number}> // Will pass
+ * void assertEqual<{a: number}, {a: string}> // Will trigger a type error
  *
- * assertEqual<Record<string, number>, {[key: string]: number}> // Will pass
- * assertEqual<Record<string, number>, {[key: string]: number, a: boolean}> // Will trigger a type error
+ * void assertEqual<Record<string, number>, {[key: string]: number}> // Will pass
+ * void assertEqual<Record<string, number>, {[key: string]: number, a: boolean}> // Will trigger a type error
  * ```
  */
-// @ts-expect-error
-export function assertEqual<T, U extends T, R extends U = T>(): never {
+// @ts-expect-error This is supposed to throw when the types don't match
+export function assertEqual<T, U extends T, _ extends U = T>(): never {
   throw new Error("This function should never be called.");
 }
