@@ -142,6 +142,26 @@ vi.mock("ui", () => ({
 
 beforeEach(() => {
   vi.clearAllMocks();
+  // Reset useImagesQuery to the default data after each test, since some tests
+  // override it with mockReturnValue (e.g. the empty-state test) and
+  // vi.clearAllMocks() does not reset mock return values / implementations.
+  vi.mocked(useImagesModule.useImagesQuery).mockImplementation(
+    () =>
+      ({
+        data: [
+          { id: "img-1", eventId: "event-1", isApproved: null },
+          { id: "img-2", eventId: "event-1", isApproved: null },
+          { id: "img-3", eventId: "event-1", isApproved: null },
+        ],
+        isLoading: false,
+      }) as unknown as ReturnType<typeof useImagesModule.useImagesQuery>
+  );
+  vi.mocked(useImagesModule.useUpdateImageMutation).mockImplementation(
+    () =>
+      ({
+        mutateAsync: mockUpdateImage,
+      }) as unknown as ReturnType<typeof useImagesModule.useUpdateImageMutation>
+  );
 });
 
 describe("ModeratePage", () => {
