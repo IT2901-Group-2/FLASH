@@ -61,6 +61,7 @@ describe("EventCard", () => {
     const data = getMockedEvent({
       name: "Picnic",
       startDate: new Date("2026-02-25T10:00:00.000Z"),
+      uploadLimit: undefined,
     });
 
     render(<EventCard data={data} />);
