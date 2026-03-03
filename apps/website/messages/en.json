@@ -40,7 +40,7 @@
                 "unlimited": "Unlimited"
               },
               "autoApprove": "Auto-Approve Photos",
-              "guestSeeAll": "Auto-Generate Code"
+              "guestSeeAll": "Let guests see all photos"
             }
           },
           "review": {
