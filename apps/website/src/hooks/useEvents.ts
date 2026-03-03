@@ -65,12 +65,13 @@ export function useEventsQuery(params?: GetEventsParams, enabled: boolean = true
  * Fetches the join code of an event. `role` specifies access level.
  */
 export function useEventCodeQuery(
-  eventId: string,
+  eventId?: string,
   role: GetEventCodeParams["role"] = "guest"
 ) {
   return useQuery({
     queryKey: eventsKeys.code(role),
     queryFn: () => makeRequest(z.string(), `/api/events/${eventId}/code?role=${role}`),
+    enabled: eventId !== undefined,
   });
 }
 

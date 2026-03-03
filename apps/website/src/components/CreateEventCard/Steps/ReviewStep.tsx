@@ -14,7 +14,7 @@ const ReviewStep = ({
   const t = useTranslations("admin.dashboard.event.create.review");
   const [shareRole, setShareRole] = useState<"guest" | "moderator">("guest");
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
-  const { data: displayCode } = useEventCodeQuery(result?.id ?? "", shareRole);
+  const { data: displayCode } = useEventCodeQuery(result?.id, shareRole);
 
   const displayLink = displayCode ? `${window.location.origin}/event/${displayCode}` : "";
 
