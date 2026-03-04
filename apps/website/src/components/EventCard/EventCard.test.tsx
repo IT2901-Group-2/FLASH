@@ -1,7 +1,22 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
-import type { EventDTO } from "@/types/eventTypes";
+import type { Event } from "@/db";
 import EventCard from "./EventCard";
+
+function getMockedEvent(data: Partial<Event> = {}): Event {
+  return {
+    id: "id",
+    name: "name",
+    description: "description",
+    startDate: new Date(),
+    endDate: new Date(),
+    uploadLimit: 5,
+    isArchived: false,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...data,
+  };
+}
 
 afterEach(() => {
   cleanup();
@@ -14,11 +29,11 @@ describe("EventCard", () => {
       .spyOn(Date.prototype, "toLocaleString")
       .mockReturnValue("Feb 25, 2026, 10:00 AM");
 
-    const data = {
+    const data = getMockedEvent({
       name: "Birthday Bash",
-      startDate: "2026-02-25T10:00:00.000Z",
+      startDate: new Date("2026-02-25T10:00:00.000Z"),
       uploadLimit: 5,
-    } as EventDTO;
+    });
 
     render(<EventCard data={data} />);
 
@@ -31,11 +46,11 @@ describe("EventCard", () => {
   });
 
   test("shows upload limit when present", () => {
-    const data = {
+    const data = getMockedEvent({
       name: "Wedding",
-      startDate: "2026-02-25T10:00:00.000Z",
+      startDate: new Date("2026-02-25T10:00:00.000Z"),
       uploadLimit: 12,
-    } as EventDTO;
+    });
 
     render(<EventCard data={data} />);
 
@@ -43,10 +58,11 @@ describe("EventCard", () => {
   });
 
   test("shows no photo limit when upload limit is missing", () => {
-    const data = {
+    const data = getMockedEvent({
       name: "Picnic",
-      startDate: "2026-02-25T10:00:00.000Z",
-    } as EventDTO;
+      startDate: new Date("2026-02-25T10:00:00.000Z"),
+      uploadLimit: undefined,
+    });
 
     render(<EventCard data={data} />);
 
@@ -54,10 +70,10 @@ describe("EventCard", () => {
   });
 
   test("renders summary labels", () => {
-    const data = {
+    const data = getMockedEvent({
       name: "Launch Party",
-      startDate: "2026-02-25T10:00:00.000Z",
-    } as EventDTO;
+      startDate: new Date("2026-02-25T10:00:00.000Z"),
+    });
 
     render(<EventCard data={data} />);
 

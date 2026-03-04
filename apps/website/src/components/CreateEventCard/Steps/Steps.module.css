@@ -16,6 +16,12 @@
   gap: 2rem;
 }
 
+@media screen and (max-width: 768px) {
+  .infoContainer {
+    flex-direction: column-reverse;
+  }
+}
+
 .QRCodeContainer {
   display: flex;
   flex-direction: column;

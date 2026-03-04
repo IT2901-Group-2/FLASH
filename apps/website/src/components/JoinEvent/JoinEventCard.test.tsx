@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import JoinEventCard from "./JoinEventCard";
-import { createQueryClientWrapper, mockFetch } from "@test-config";
+import { createQueryClientWrapper, mockRouter } from "@test-config";
 
 describe("JoinEventCard", () => {
   let user: ReturnType<typeof userEvent.setup>;
@@ -48,7 +48,7 @@ describe("JoinEventCard", () => {
     expect(await screen.findAllByText("error.noCode")).toBeDefined();
   });
 
-  test("calls API and routes to event page on successful lookup", async () => {
+  test("redirects to event page on successful lookup", async () => {
     render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
 
     const codeInput = screen.getByPlaceholderText("eventCodePlaceholder");
@@ -58,7 +58,7 @@ describe("JoinEventCard", () => {
     await user.click(button);
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalled();
+      expect(mockRouter.push).toHaveBeenCalled();
     });
   });
 
@@ -85,7 +85,7 @@ describe("JoinEventCard", () => {
     await user.keyboard("{Enter}");
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalled();
+      expect(mockRouter.push).toHaveBeenCalled();
     });
   });
 });

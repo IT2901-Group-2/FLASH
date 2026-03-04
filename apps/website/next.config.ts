@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
   transpilePackages: ["ui", "file-storage"],
-  serverExternalPackages: ["better-sqlite3"],
+  serverExternalPackages: ["better-sqlite3", "typescript-result"],
   outputFileTracingIncludes: {
     "/": ["drizzle/**/*"],
   },
