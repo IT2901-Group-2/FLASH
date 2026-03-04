@@ -114,6 +114,6 @@
   /* Desktop button width override (height from Button default size) */
   .desktopButton {
     width: 142px;
-    min-width: unset;
+    min-width: 10rem;
   }
 }

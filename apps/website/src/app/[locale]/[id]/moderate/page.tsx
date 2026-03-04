@@ -32,9 +32,10 @@ export default function ModeratePage() {
   const {
     selectMode,
     selectedIds,
+    allSelected,
     bulkError,
     handleSelectToggle,
-    handleSelectAll,
+    handleSelectAllToggle,
     handleImageClick,
     handleBulkApprove,
     handleBulkReject,
@@ -78,7 +79,8 @@ export default function ModeratePage() {
         onBack={() => router.back()}
         selectMode={selectMode}
         onSelectToggle={handleSelectToggle}
-        onSelectAll={handleSelectAll}
+        allSelected={allSelected}
+        onSelectAll={handleSelectAllToggle}
         breadcrumbItems={[
           { label: "Event", href: `/${locale}/${eventId}` },
           { label: "Moderate" },

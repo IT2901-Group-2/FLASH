@@ -20,9 +20,15 @@ export function useImageSelection(images: Image[], eventId: string) {
     else setSelectMode(true);
   }, [selectMode, exitSelectMode]);
 
-  const handleSelectAll = useCallback(() => {
-    setSelectedIds(new Set(images.map(img => img.id)));
-  }, [images]);
+  const allSelected = images.length > 0 && selectedIds.size === images.length;
+
+  const handleSelectAllToggle = useCallback(() => {
+    if (allSelected) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(images.map(img => img.id)));
+    }
+  }, [allSelected, images]);
 
   const toggleSelection = useCallback((imageId: string) => {
     setSelectedIds(prev => {
@@ -72,10 +78,11 @@ export function useImageSelection(images: Image[], eventId: string) {
     // state
     selectMode,
     selectedIds,
+    allSelected,
     bulkError,
     // handlers
     handleSelectToggle,
-    handleSelectAll,
+    handleSelectAllToggle,
     handleImageClick,
     handleBulkApprove,
     handleBulkReject,

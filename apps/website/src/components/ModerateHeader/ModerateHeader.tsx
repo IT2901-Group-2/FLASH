@@ -14,6 +14,8 @@ export interface ModerateHeaderProps {
   onSelectToggle: () => void;
   /** Selects all images in the active tab. Only relevant when selectMode is true. */
   onSelectAll: () => void;
+  /** Whether all images are currently selected. Controls the Select All / Deselect All label. */
+  allSelected?: boolean;
   /**
    * Breadcrumb items for the mobile bottom bar.
    * Defaults to a home link + "Moderate" current page label.
@@ -36,9 +38,11 @@ export const ModerateHeader = ({
   selectMode,
   onSelectToggle,
   onSelectAll,
+  allSelected = false,
   breadcrumbItems = [{ label: "Event" }, { label: "Moderate" }],
 }: ModerateHeaderProps) => {
   const [scrolled, setScrolled] = useState(false);
+  const selectAllLabel = allSelected ? "Deselect All" : "Select All";
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 0);
@@ -77,7 +81,7 @@ export const ModerateHeader = ({
                 className={styles.desktopButton}
                 onClick={onSelectAll}
               >
-                Select All
+                {selectAllLabel}
               </Button>
             )}
             <Button
@@ -123,7 +127,7 @@ export const ModerateHeader = ({
               className={styles.mobileSelectAllButton}
               onClick={onSelectAll}
             >
-              Select All
+              {selectAllLabel}
             </Button>
             <Button
               variant="secondary"
