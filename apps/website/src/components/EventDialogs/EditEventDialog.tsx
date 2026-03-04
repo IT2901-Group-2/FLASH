@@ -5,7 +5,7 @@ import { useUpdateEventMutation } from "@/hooks/useEvents";
 import { BasicInfoStep } from "./Steps/BasicInfoStep";
 import { OptionsStep } from "./Steps/OptionsStep";
 import { FormStepConfig } from "./Steps/types";
-import styles from "./CreateEventCard.module.css";
+import styles from "./CreateEventDialog.module.css";
 import { CreateEvent, Event } from "@/db";
 
 const EDIT_STEPS: FormStepConfig[] = [

@@ -1,6 +1,6 @@
 import { RefAttributes, useRef, useState } from "react";
 import { Button, Dialog, ProgressDots } from "ui";
-import styles from "./CreateEventCard.module.css";
+import styles from "./CreateEventDialog.module.css";
 import { BasicInfoStep, OptionsStep, ReviewStep } from "./Steps";
 import { useTranslations } from "next-intl";
 import { useCreateEventMutation } from "@/hooks/useEvents";

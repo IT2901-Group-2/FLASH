@@ -5,7 +5,7 @@ import { cl } from "@/utils/className";
 import { Event } from "@/db";
 import { useDeleteEventMutation } from "@/hooks/useEvents";
 import { MouseEvent, useRef } from "react";
-import EditEventCard from "../CreateEventCard/EditEventCard";
+import EditEventCard from "../EventDialogs/EditEventDialog";
 
 export interface EventCardProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
