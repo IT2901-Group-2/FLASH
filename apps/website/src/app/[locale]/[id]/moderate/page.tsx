@@ -153,7 +153,6 @@ export default function ModeratePage() {
       {selectedIds.size > 0 && (
         <div className={styles.actionCardContainer}>
           <ActionCard
-            data-color="background-secondary"
             description={selectionDescription}
             primaryButton={primaryButton}
             secondaryButton={secondaryButton}
