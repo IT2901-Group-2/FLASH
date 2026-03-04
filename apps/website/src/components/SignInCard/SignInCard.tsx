@@ -37,7 +37,7 @@ export default function SignInCard() {
         {t("buttonTitle")}
       </Button>
       <span>
-        {t("linkToGuest")}
+        {t("linkToGuest")}{" "}
         <Link role="link" href={"/"}>
           {t("guest")}
         </Link>

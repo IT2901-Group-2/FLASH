@@ -80,7 +80,7 @@ const JoinEventCard = () => {
         />
       </DropdownControl>
       <span>
-        {t("linkToAdmin")}
+        {t("linkToAdmin")}{" "}
         <Link role="link" href={"/admin"}>
           {t("admin")}
         </Link>
