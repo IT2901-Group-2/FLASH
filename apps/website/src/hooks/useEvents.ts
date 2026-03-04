@@ -25,6 +25,8 @@ function toEventsSearchParams(params?: GetEventsParams): string {
   if (params.name) sp.append("name", params.name);
   if (params.status) sp.append("status", params.status);
   if (params.archived !== undefined) sp.append("archived", params.archived.toString());
+  if (params.sortBy !== undefined) sp.append("sortBy", params.sortBy);
+  if (params.order !== undefined) sp.append("order", params.order);
 
   const qs = sp.toString();
   return qs ? `?${qs}` : "";
