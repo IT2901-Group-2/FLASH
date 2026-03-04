@@ -1,3 +1,8 @@
+import { JSONObject, parseAsJSON } from "./json";
+import z from "zod";
+
+export type HTTPMethod = "GET" | "HEAD" | "OPTIONS" | "POST" | "PUT" | "DELETE" | "PATCH";
+
 /**
  * Attempts to extract a human-readable error message from a failed HTTP response.
  * Tries to parse a JSON body first (looking for a `message` field), then falls
@@ -23,25 +28,41 @@ export default async function readResponseError(res: Response): Promise<string> 
 }
 
 /**
- * Wrapper around `fetch` that throws a descriptive error on non-2xx
- * responses and returns the parsed JSON body typed as `T`, avoiding
- * repetitive error handling and type casting at every call site.
+ * Helper function that fetches from the specified endpoint and parses
+ * the response with the provided schema.
+ * A JSON or Blob body can optionally be attached to the request.
+ *
+ * @param schema The schema to validate/transform the response with.
+ * @param endpoint The endpoint to send the fetch request to.
+ * @param method The HTTP method to use for the fetch request.
+ * @param body The body to send with the fetch request.
+ * @returns The response parsed by the provided schema.
  */
-export async function fetchJson<T>(
-  input: RequestInfo | URL,
-  init?: RequestInit
+export async function makeRequest<T>(
+  schema: z.ZodType<T>,
+  endpoint: RequestInfo | URL,
+  method: HTTPMethod = "GET",
+  data?: JSONObject | Blob
 ): Promise<T> {
-  const res = await fetch(input, init);
-  if (!res.ok) throw new Error(await readResponseError(res));
-  if (res.status === 204) return undefined as T;
-  return (await res.json()) as T;
-}
+  const body =
+    data === undefined
+      ? null
+      : data instanceof Blob
+        ? await data.arrayBuffer()
+        : JSON.stringify(parseAsJSON(data));
 
-/**
- * Normalizes a date value to an ISO 8601 string for API serialization.
- * Returns undefined if no value is provided.
- */
-export function toIso(value?: Date): string | undefined {
-  if (value === undefined) return undefined;
-  return value instanceof Date ? value.toISOString() : value;
+  const contentType =
+    data === undefined ? null : data instanceof Blob ? data.type : "application/json";
+
+  const response = await fetch(endpoint, {
+    method,
+    body,
+    headers: contentType !== null ? { "Content-Type": contentType } : {},
+  });
+
+  if (!response.ok) {
+    throw new Error(await readResponseError(response));
+  }
+
+  return z.parseAsync(schema, await response.json().catch(() => undefined));
 }

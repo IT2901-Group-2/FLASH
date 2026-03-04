@@ -1,21 +1,22 @@
-import { useRef, useState } from "react";
 import { Title, QRDisplay, Button, Input, Loader, DropdownControl } from "ui";
+import { useRef, useState } from "react";
 import { Copy, Download } from "lucide-react";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 import { downloadQrSvg } from "@/utils/downloadqrcode";
 import { ReviewStepProps } from "./types";
+import { useEventCodeQuery } from "@/hooks/useEvents";
 
 const ReviewStep = ({ status, result }: ReviewStepProps) => {
   const t = useTranslations("admin.dashboard.event.create.review");
   const [shareRole, setShareRole] = useState<string>("guest");
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
+  const { data: displayCode } = useEventCodeQuery(
+    result?.id,
+    shareRole as "guest" | "moderator"
+  );
 
-  const displayCode =
-    shareRole === "moderator" ? result?.moderatorCode : result?.guestCode;
   const displayLink = displayCode ? `${window.location.origin}/event/${displayCode}` : "";
-
-  if (status === "pending") return <Loader />;
 
   /**
    * Function to handle downloading the QR code as an SVG file.
@@ -27,6 +28,8 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
     const svg = qrContainerRef.current?.querySelector("svg");
     if (svg && displayCode) downloadQrSvg(svg, `qr-${displayCode.toLowerCase()}.svg`);
   };
+
+  if (status === "pending") return <Loader />;
 
   return (
     <>

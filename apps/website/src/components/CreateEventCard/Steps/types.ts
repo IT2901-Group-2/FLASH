@@ -1,15 +1,12 @@
-import { CreateEventInput, EventDTO } from "@/types/eventTypes";
+import { CreateEvent, Event } from "@/db";
 
 /**
  * Props shared by all form steps (BasicInfo, Options).
  * ReviewStep intentionally does NOT use these since it has no editable form data.
  */
 export interface StepProps {
-  formData: CreateEventInput;
-  updateFormData: <K extends keyof CreateEventInput>(
-    field: K,
-    value: CreateEventInput[K]
-  ) => void;
+  formData: CreateEvent;
+  updateFormData: <K extends keyof CreateEvent>(field: K, value: CreateEvent[K]) => void;
 }
 
 /**
@@ -19,7 +16,7 @@ export interface StepProps {
  */
 export interface ReviewStepProps {
   status: "idle" | "pending" | "success" | "error";
-  result: EventDTO | null | undefined;
+  result: Event | null | undefined;
 }
 
 /**

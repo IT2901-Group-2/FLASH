@@ -155,5 +155,21 @@
     },
     "title": "PhotoEvent Admin",
     "undertext": "Self-hosted Photo Event Management System"
+  },
+  "guest": {
+    "login": {
+      "joinedEventsTitle": "Dine Events",
+      "unlimited": "Uendelig",
+      "photos": "Bilder"
+    },
+    "nickname": {
+      "back": "Tilbake",
+      "title": "Velkommen til",
+      "description": "Velg et kallenavn så vertne vet hvem som laster opp bildet",
+      "input": {
+        "title": "Kallenavn",
+        "placeholder": "Ola Nordmann"
+      }
+    }
   }
 }

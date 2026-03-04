@@ -4,12 +4,11 @@ import styles from "./CreateEventCard.module.css";
 import { BasicInfoStep, OptionsStep, ReviewStep } from "./Steps";
 import { useTranslations } from "next-intl";
 import { useCreateEventMutation } from "@/hooks/useEvents";
-import { CreateEventInput, EventDTO } from "@/types/eventTypes";
 import { FormStepConfig } from "./Steps/types";
-
 export type { StepProps } from "./Steps/types";
+import { Event, CreateEvent } from "@/db";
 
-const DEFAULT_FORM_DATA: CreateEventInput = {
+const DEFAULT_FORM_DATA: CreateEvent = {
   name: "",
   description: "",
   uploadLimit: 1,
@@ -40,14 +39,11 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
   const { mutateAsync, status } = useCreateEventMutation();
 
   const formRef = useRef<HTMLFormElement>(null);
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [formData, setFormData] = useState<CreateEventInput>(DEFAULT_FORM_DATA);
-  const [eventResult, setEventResult] = useState<EventDTO | null>(null);
-
-  const updateFormData = <K extends keyof CreateEventInput>(
-    field: K,
-    value: CreateEventInput[K]
-  ) => setFormData(prev => ({ ...prev, [field]: value }));
+  const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
+  const [formData, setFormData] = useState<CreateEvent>(DEFAULT_FORM_DATA);
+  const [eventResult, setEventResult] = useState<Event | null>(null);
+  const updateFormData = <K extends keyof CreateEvent>(field: K, value: CreateEvent[K]) =>
+    setFormData(prev => ({ ...prev, [field]: value }));
 
   const isOnReviewStep = currentStepIndex >= FORM_STEPS.length;
   const isOnFirstStep = currentStepIndex === 0;

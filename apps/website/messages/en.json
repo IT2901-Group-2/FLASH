@@ -155,5 +155,21 @@
       "uploadImage": "Upload Image",
       "takePhoto": "Take Photo"
     }
+  },
+  "guest": {
+    "login": {
+      "joinedEventsTitle": "Your Events",
+      "unlimited": "Unlimited",
+      "photos": "Photos"
+    },
+    "nickname": {
+      "back": "Back",
+      "title": "Welcome to",
+      "description": "Enter a nickname so the host knows who uploaded the photos",
+      "input": {
+        "title": "Nickname",
+        "placeholder": "John Doe"
+      }
+    }
   }
 }
