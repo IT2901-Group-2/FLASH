@@ -8,19 +8,19 @@ import { subDays, addDays, subHours, addHours, setMilliseconds } from "date-fns"
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { eq } from "drizzle-orm";
 
-const NOW = new Date();
+const NOW = setMilliseconds(new Date(), 0);
 
 function getMockedEvent(data: Partial<Event> = {}): Event {
   return {
     id: "id",
     name: "name",
     description: "description",
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: setMilliseconds(new Date(), 0),
+    endDate: setMilliseconds(new Date(), 0),
     uploadLimit: 5,
     isArchived: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: setMilliseconds(new Date(), 0),
+    updatedAt: setMilliseconds(new Date(), 0),
     ...data,
   };
 }
@@ -268,6 +268,158 @@ describe("EventService getEvents", () => {
         .map(rows => new Set(rows.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["birthday-2"]));
+  });
+
+  it("Should correctly sort by name", async () => {
+    expect(
+      await eventService
+        .getEvents({ sortBy: "name", order: "ascending" })
+        .map(rows => rows.map(row => row.name))
+        .getOrThrow()
+    ).toStrictEqual(mockEvents.map(e => e.name).sort());
+    expect(
+      await eventService
+        .getEvents({ sortBy: "name", order: "descending" })
+        .map(rows => rows.map(row => row.name))
+        .getOrThrow()
+    ).toStrictEqual(
+      mockEvents
+        .map(e => e.name)
+        .sort()
+        .reverse()
+    );
+  });
+
+  it("Should correctly sort by description", async () => {
+    expect(
+      await eventService
+        .getEvents({ sortBy: "description", order: "ascending" })
+        .map(rows => rows.map(row => row.description))
+        .getOrThrow()
+    ).toStrictEqual(mockEvents.map(e => e.description).sort());
+    expect(
+      await eventService
+        .getEvents({ sortBy: "description", order: "descending" })
+        .map(rows => rows.map(row => row.description))
+        .getOrThrow()
+    ).toStrictEqual(
+      mockEvents
+        .map(e => e.description)
+        .sort()
+        .reverse()
+    );
+  });
+
+  it("Should correctly sort by startDate", async () => {
+    expect(
+      await eventService
+        .getEvents({ sortBy: "startDate", order: "ascending" })
+        .map(rows => rows.map(row => row.startDate))
+        .getOrThrow()
+    ).toStrictEqual(
+      mockEvents.map(e => e.startDate).sort((a, b) => a.getTime() - b.getTime())
+    );
+    expect(
+      await eventService
+        .getEvents({ sortBy: "startDate", order: "descending" })
+        .map(rows => rows.map(row => row.startDate))
+        .getOrThrow()
+    ).toStrictEqual(
+      mockEvents
+        .map(e => e.startDate)
+        .sort((a, b) => a.getTime() - b.getTime())
+        .reverse()
+    );
+  });
+
+  it("Should correctly sort by endDate", async () => {
+    expect(
+      await eventService
+        .getEvents({ sortBy: "endDate", order: "ascending" })
+        .map(rows => rows.map(row => row.endDate))
+        .getOrThrow()
+    ).toStrictEqual(
+      mockEvents.map(e => e.endDate).sort((a, b) => a.getTime() - b.getTime())
+    );
+    expect(
+      await eventService
+        .getEvents({ sortBy: "endDate", order: "descending" })
+        .map(rows => rows.map(row => row.endDate))
+        .getOrThrow()
+    ).toStrictEqual(
+      mockEvents
+        .map(e => e.endDate)
+        .sort((a, b) => a.getTime() - b.getTime())
+        .reverse()
+    );
+  });
+
+  it("Should correctly sort by upload limit", async () => {
+    expect(
+      await eventService
+        .getEvents({ sortBy: "uploadLimit", order: "ascending" })
+        .map(rows => rows.map(row => row.uploadLimit))
+        .getOrThrow()
+    ).toStrictEqual(
+      mockEvents
+        .map(e => e.uploadLimit)
+        .sort((a, b) => (a === null || b === null ? 0 : a - b))
+    );
+    expect(
+      await eventService
+        .getEvents({ sortBy: "uploadLimit", order: "descending" })
+        .map(rows => rows.map(row => row.uploadLimit))
+        .getOrThrow()
+    ).toStrictEqual(
+      mockEvents
+        .map(e => e.uploadLimit)
+        .sort((a, b) => (a === null || b === null ? 0 : a - b))
+        .reverse()
+    );
+  });
+
+  it("Should correctly sort by createdAt", async () => {
+    expect(
+      await eventService
+        .getEvents({ sortBy: "createdAt", order: "ascending" })
+        .map(rows => rows.map(row => row.createdAt))
+        .getOrThrow()
+    ).toStrictEqual(
+      mockEvents.map(e => e.createdAt).sort((a, b) => a.getTime() - b.getTime())
+    );
+    expect(
+      await eventService
+        .getEvents({ sortBy: "createdAt", order: "descending" })
+        .map(rows => rows.map(row => row.createdAt))
+        .getOrThrow()
+    ).toStrictEqual(
+      mockEvents
+        .map(e => e.createdAt)
+        .sort((a, b) => a.getTime() - b.getTime())
+        .reverse()
+    );
+  });
+
+  it("Should correctly sort by updatedAt", async () => {
+    expect(
+      await eventService
+        .getEvents({ sortBy: "updatedAt", order: "ascending" })
+        .map(rows => rows.map(row => row.updatedAt))
+        .getOrThrow()
+    ).toStrictEqual(
+      mockEvents.map(e => e.updatedAt).sort((a, b) => a.getTime() - b.getTime())
+    );
+    expect(
+      await eventService
+        .getEvents({ sortBy: "updatedAt", order: "descending" })
+        .map(rows => rows.map(row => row.updatedAt))
+        .getOrThrow()
+    ).toStrictEqual(
+      mockEvents
+        .map(e => e.updatedAt)
+        .sort((a, b) => a.getTime() - b.getTime())
+        .reverse()
+    );
   });
 });
 
