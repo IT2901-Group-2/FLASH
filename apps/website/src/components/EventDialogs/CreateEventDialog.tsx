@@ -30,11 +30,11 @@ const FORM_STEPS: FormStepConfig[] = [
   { Component: OptionsStep },
 ];
 
-interface CreateEventCardProps extends RefAttributes<HTMLDialogElement> {
+interface CreateEventDialogProps extends RefAttributes<HTMLDialogElement> {
   onClose: () => void;
 }
 
-export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps) => {
+export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogProps) => {
   const t = useTranslations("admin.dashboard.event.create");
   const { mutateAsync, status } = useCreateEventMutation();
 
@@ -124,4 +124,4 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
     </Dialog>
   );
 };
-export default CreateEventCard;
+export default CreateEventDialog;

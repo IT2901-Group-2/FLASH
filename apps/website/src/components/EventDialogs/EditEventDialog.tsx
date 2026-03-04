@@ -13,12 +13,17 @@ const EDIT_STEPS: FormStepConfig[] = [
   { Component: OptionsStep },
 ];
 
-interface EditEventCardProps extends RefAttributes<HTMLDialogElement> {
+interface EditEventDialogProps extends RefAttributes<HTMLDialogElement> {
   event: Event;
   onClose: () => void;
 }
 
-export const EditEventCard = ({ ref, event, onClose, ...rest }: EditEventCardProps) => {
+export const EditEventDialog = ({
+  ref,
+  event,
+  onClose,
+  ...rest
+}: EditEventDialogProps) => {
   const t = useTranslations("admin.dashboard.event.edit");
   const { mutateAsync, status } = useUpdateEventMutation();
 
@@ -103,4 +108,4 @@ export const EditEventCard = ({ ref, event, onClose, ...rest }: EditEventCardPro
   );
 };
 
-export default EditEventCard;
+export default EditEventDialog;
