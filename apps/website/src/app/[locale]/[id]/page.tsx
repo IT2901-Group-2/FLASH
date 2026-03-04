@@ -6,7 +6,7 @@ import { ActionCard, PhoneHeader } from "ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
-import { useEventsQuery } from "@/hooks/useEvents";
+import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { hasNicknameForEvent } from "@/hooks/useRememberEvents";
 
 export default function Page() {

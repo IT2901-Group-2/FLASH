@@ -1,7 +1,7 @@
 "use client";
 
 import { useEventsQuery } from "@/hooks/useEvents";
-import { EventDTO } from "@/types/eventTypes";
+import { Event } from "@/db";
 import { Calendar, ChevronRight } from "lucide-react";
 import { Card, Title } from "ui";
 import styles from "./RememberedEvents.module.css";
@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { getAllJoinedEvents } from "@/hooks/useRememberEvents";
 import { useTranslations } from "next-intl";
 
-const RememberedEvent = ({ name, uploadLimit, id }: EventDTO) => {
+const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
   const t = useTranslations("guest.login");
   const navigation = useRouter();
   return (
