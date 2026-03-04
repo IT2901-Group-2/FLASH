@@ -24,7 +24,7 @@ export async function DELETE(
   const { eventId } = await params;
 
   return eventService.deleteEvent(eventId).fold(
-    () => new NextResponse(null, { status: 200 }),
+    event => NextResponse.json(event),
     err => NextResponse.json({ message: err.message }, { status: 500 })
   );
 }
