@@ -80,7 +80,11 @@ const JoinEventCard = () => {
         />
       </DropdownControl>
       <span>
-        Not a guest? Administer events as <Link href={"/admin"}>Admin</Link>.
+        Not a guest? Administer events as{" "}
+        <Link role="link" href={"/admin"}>
+          Admin
+        </Link>
+        .
       </span>
     </Card>
   );

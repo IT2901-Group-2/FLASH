@@ -47,6 +47,22 @@ vi.mock("next/navigation", () => ({
   notFound: vi.fn(),
 }));
 
+vi.mock("next/link", () => ({
+  default: ({
+    children,
+    href,
+    ...props
+  }: {
+    children: React.ReactNode;
+    href: string;
+    [key: string]: unknown;
+  }) => (
+    <a href={href} {...props}>
+      {children}
+    </a>
+  ),
+}));
+
 export const mockFetch = vi.fn();
 globalThis.fetch = mockFetch;
 

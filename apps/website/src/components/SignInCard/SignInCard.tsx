@@ -37,7 +37,11 @@ export default function SignInCard() {
         {t("buttonTitle")}
       </Button>
       <span>
-        Not an admin? Join an event as a <Link href={"/"}>Guest</Link>.
+        Not an admin? Join an event as a{" "}
+        <Link role="link" href={"/"}>
+          Guest
+        </Link>
+        .
       </span>
     </Card>
   );
