@@ -2,7 +2,6 @@ import { describe, it, expect, afterEach, vi } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import Page from "./page";
 import * as useFileUploadModule from "@/hooks/useFileUpload";
-import * as nextNavigation from "next/navigation";
 import * as useEventsModule from "@/hooks/useEvents";
 import * as uiModule from "ui";
 import { Event } from "@/db";
@@ -11,15 +10,6 @@ import { Event } from "@/db";
 vi.mock("ui", () => ({
   PhoneHeader: vi.fn(() => <div data-testid="phone-header">PhoneHeader</div>),
   ActionCard: vi.fn(() => <div data-testid="action-card">ActionCard</div>),
-}));
-
-vi.mock("next-intl", () => ({
-  useTranslations: vi.fn(() => (key: string) => key),
-}));
-
-vi.mock("next/navigation", () => ({
-  useParams: vi.fn(() => ({ id: "event-1", locale: "en" })),
-  useSearchParams: vi.fn(() => ({ get: vi.fn(() => null) })),
 }));
 
 vi.mock("@/hooks/useEvents", () => ({
@@ -65,22 +55,6 @@ afterEach(() => {
 });
 
 describe("Guest Upload Page", () => {
-  it("uses nickname from query param as subtitle", () => {
-    vi.mocked(nextNavigation.useSearchParams).mockReturnValueOnce({
-      get: vi.fn((key: string) => (key === "nickname" ? "Alex" : null)),
-    } as unknown as ReturnType<typeof nextNavigation.useSearchParams>);
-
-    render(<Page />);
-
-    const phoneHeaderMock = vi.mocked(uiModule.PhoneHeader);
-    expect(phoneHeaderMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        subtitle: "Alex",
-      }),
-      undefined
-    );
-  });
-
   it("passes fetched event data to PhoneHeader", () => {
     render(<Page />);
 
@@ -135,21 +109,6 @@ describe("Guest Upload Page", () => {
     render(<Page />);
 
     expect(screen.getByText("Could not load event details for this link.")).toBeDefined();
-  });
-
-  it("falls back to empty id filter when route param is missing", () => {
-    vi.mocked(nextNavigation.useParams).mockReturnValueOnce({
-      locale: "en",
-    } as ReturnType<typeof nextNavigation.useParams>);
-    vi.mocked(useEventsModule.useEventsQuery).mockReturnValueOnce({
-      data: undefined,
-      isLoading: false,
-      isError: false,
-    } as ReturnType<typeof useEventsModule.useEventsQuery>);
-
-    render(<Page />);
-
-    expect(vi.mocked(useEventsModule.useEventsQuery)).toHaveBeenCalledWith(undefined);
   });
 
   it("should render without crashing", () => {

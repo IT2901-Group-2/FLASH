@@ -38,22 +38,11 @@ describe("JoinEventCard", () => {
     expect(screen.getByText("joinButton")).toBeDefined();
   });
 
-  test("shows validation error when nickname is empty", async () => {
-    render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
-
-    const button = screen.getByText("joinButton");
-    await user.click(button);
-
-    expect(screen.getAllByText("error.invalidNickname")).toBeDefined();
-  });
-
   test("shows validation error when event code is empty", async () => {
     render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
 
-    const input = screen.getByText("nicknameLabel");
     const button = screen.getByText("joinButton");
 
-    await user.type(input, "NICKNAME");
     await user.click(button);
 
     expect(await screen.findAllByText("error.noCode")).toBeDefined();
@@ -62,11 +51,9 @@ describe("JoinEventCard", () => {
   test("redirects to event page on successful lookup", async () => {
     render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
 
-    const nicknameInput = screen.getByText("nicknameLabel");
     const codeInput = screen.getByPlaceholderText("eventCodePlaceholder");
     const button = screen.getByText("joinButton");
 
-    await user.type(nicknameInput, "NICKNAME");
     await user.type(codeInput, "ABC123");
     await user.click(button);
 
@@ -92,10 +79,8 @@ describe("JoinEventCard", () => {
   test("submits when pressing Enter in the code field", async () => {
     render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
 
-    const nicknameInput = screen.getByText("nicknameLabel");
     const input = screen.getByPlaceholderText("eventCodePlaceholder");
 
-    await user.type(nicknameInput, "NICKNAME");
     await user.type(input, "ENTER1");
     await user.keyboard("{Enter}");
 

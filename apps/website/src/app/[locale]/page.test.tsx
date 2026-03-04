@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import Page from "./page";
+import { createQueryClientWrapper } from "@test-config";
 
 // Track which translation keys are requested
 const translationKeys: string[] = [];
@@ -36,19 +37,19 @@ describe("Page", () => {
   });
 
   test("renders the Logo component", () => {
-    render(<Page />);
+    render(<Page />, { wrapper: createQueryClientWrapper() });
     const logo = screen.getByTestId("logo");
     expect(logo).toBeDefined();
   });
 
   test("renders the JoinEventCard component", () => {
-    render(<Page />);
+    render(<Page />, { wrapper: createQueryClientWrapper() });
     const joinEventCard = screen.getByTestId("join-event-card");
     expect(joinEventCard).toBeDefined();
   });
 
   test("renders all main components together", () => {
-    render(<Page />);
+    render(<Page />, { wrapper: createQueryClientWrapper() });
 
     // Verify both Logo and JoinEventCard are present
     expect(screen.getByTestId("logo")).toBeDefined();
@@ -56,7 +57,7 @@ describe("Page", () => {
   });
 
   test("uses correct translation keys", () => {
-    render(<Page />);
+    render(<Page />, { wrapper: createQueryClientWrapper() });
 
     // Verify that the component requests the correct translation keys
     expect(translationKeys).toContain("appTitle");
@@ -64,7 +65,7 @@ describe("Page", () => {
   });
 
   test("displays translated content", () => {
-    render(<Page />);
+    render(<Page />, { wrapper: createQueryClientWrapper() });
 
     // Verify the translated text appears in the document
     expect(screen.getByText("PhotoEvent")).toBeDefined();
