@@ -37,9 +37,9 @@ export default function SignInCard() {
         {t("buttonTitle")}
       </Button>
       <span>
-        Not an admin? Join an event as a{" "}
+        {t("linkToGuest")}
         <Link role="link" href={"/"}>
-          Guest
+          {t("guest")}
         </Link>
         .
       </span>
