@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Camera, Upload } from "lucide-react";
 import styles from "./UploadImage.module.css";
 import { ActionCard, PhoneHeader } from "ui";
@@ -45,7 +45,9 @@ export default function Page() {
   });
   const [isQrOpen, setIsQrOpen] = useState(false);
 
-  if (!hasNicknameForEvent(eventId)) navigation.push(`${eventId}/nickname`);
+  useEffect(() => {
+    if (!hasNicknameForEvent(eventId)) navigation.push(`/${eventId}/nickname`);
+  }, [eventId, navigation]);
 
   return (
     <div className={styles.pageWrapper}>
