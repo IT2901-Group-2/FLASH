@@ -5,6 +5,7 @@ import { AsyncResult, Result } from "typescript-result";
 import { cookies } from "next/headers";
 import { eq } from "drizzle-orm";
 import { getFirstRow } from "@/lib/utils/sql";
+import jwt from "jsonwebtoken";
 
 export class UserService {
   private readonly dbService: DatabaseService;
@@ -37,7 +38,7 @@ export class UserService {
       .onSuccess(() => this.dbService.flush());
   }
 
-  joinEvent(code: string, userData: CreateUser): AsyncResult<EventCode, Error> {
+  joinEvent(code: string, userData: CreateUser): AsyncResult<User, Error> {
     return Result.genCatching(this, async function* () {
       const eventCode = yield* this.getEventByCode(code);
 
@@ -46,14 +47,15 @@ export class UserService {
       const user = yield* this.createUser(eventCode, userData);
 
       const cookieStore = await cookies();
-
-      // TODO: Make JWT
       cookieStore.set(
         `event-${eventCode.eventId}`,
-        JSON.stringify({ name: user.name, isModerator: eventCode.isModerator })
+        jwt.sign(
+          { userId: user.id, name: user.name, isModerator: user.isModerator },
+          "SUPER_SECRET_KEY"
+        )
       );
 
-      return eventCode;
+      return user;
     });
   }
 }
