@@ -25,7 +25,9 @@
               "name": "Event Name",
               "description": "Event Description",
               "startDate": "Start Date",
-              "endDate": "End Date"
+              "endDate": "End Date",
+              "startTime": "Start Time",
+              "endTime": "End Time"
             }
           },
           "options": {
@@ -38,7 +40,7 @@
                 "unlimited": "Unlimited"
               },
               "autoApprove": "Auto-Approve Photos",
-              "autoGenerate": "Auto-Generate Code"
+              "guestSeeAll": "Let guests see all photos"
             }
           },
           "review": {
@@ -51,7 +53,9 @@
               "linkDescription": "Everyone with the link below will be able to uploaded images to this event"
             },
             "moderator": {
-              "name": "Moderator"
+              "name": "Moderator",
+              "linkTitle": "Moderator Link",
+              "linkDescription": "Everyone with the link below can moderate the sendt inn images"
             }
           }
         },

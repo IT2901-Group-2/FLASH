@@ -1,33 +1,22 @@
-import { useCallback, useRef, useState } from "react";
-import { StepProps } from "../CreateEventCard";
-import { Title, SegmentedControl, QRDisplay, Button, Input, Loader } from "ui";
+import { Title, QRDisplay, Button, Input, Loader, DropdownControl } from "ui";
+import { useRef, useState } from "react";
 import { Copy, Download } from "lucide-react";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 import { downloadQrSvg } from "@/utils/downloadqrcode";
+import { ReviewStepProps } from "./types";
 import { useEventCodeQuery } from "@/hooks/useEvents";
 
-const ReviewStep = ({
-  status,
-  result,
-}: Omit<StepProps, "formData" | "updateFormData">) => {
+const ReviewStep = ({ status, result }: ReviewStepProps) => {
   const t = useTranslations("admin.dashboard.event.create.review");
-  const [shareRole, setShareRole] = useState<"guest" | "moderator">("guest");
+  const [shareRole, setShareRole] = useState<string>("guest");
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
-  const { data: displayCode } = useEventCodeQuery(result?.id, shareRole);
+  const { data: displayCode } = useEventCodeQuery(
+    result?.id,
+    shareRole as "guest" | "moderator"
+  );
 
   const displayLink = displayCode ? `${window.location.origin}/event/${displayCode}` : "";
-
-  const handleRoleChange = useCallback(
-    (role: string) => {
-      if (role !== "guest" && role !== "moderator") {
-        return;
-      }
-
-      setShareRole(role);
-    },
-    [setShareRole]
-  );
 
   /**
    * Function to handle downloading the QR code as an SVG file.
@@ -37,9 +26,7 @@ const ReviewStep = ({
    */
   const handleDownloadQR = () => {
     const svg = qrContainerRef.current?.querySelector("svg");
-    if (svg && displayCode) {
-      downloadQrSvg(svg, `qr-${displayCode.toLowerCase()}.svg`);
-    }
+    if (svg && displayCode) downloadQrSvg(svg, `qr-${displayCode.toLowerCase()}.svg`);
   };
 
   if (status === "pending") return <Loader />;
@@ -49,30 +36,70 @@ const ReviewStep = ({
       <Title size="medium" description={t("description")}>
         {t("title")}
       </Title>
-      <SegmentedControl onChange={handleRoleChange} value={shareRole} fill>
-        <SegmentedControl.Item label={t("guest.name")} value="guest" />
-        <SegmentedControl.Item label={t("moderator.name")} value="moderator" />
-      </SegmentedControl>
-      <div className={styles.infoContainer}>
-        <div className={styles.QRCodeContainer} ref={qrContainerRef}>
-          <QRDisplay value={displayLink} code={displayCode} />
-          <Button variant="secondary" icon={<Download />} onClick={handleDownloadQR}>
-            {t("download")}
-          </Button>
-        </div>
-        <div className={styles.linkContainer}>
-          <Title size="medium" description={t("guest.linkDescription")}>
-            {t("guest.linkTitle")}
-          </Title>
-          <Input
-            aria-label="link"
-            readOnly
-            value={displayLink}
-            icon={<Copy />}
-            iconPosition="right"
-          />
-        </div>
-      </div>
+      <DropdownControl onChange={setShareRole} value={shareRole}>
+        <DropdownControl.Item
+          label={t("guest.name")}
+          value="guest"
+          content={
+            <div className={styles.infoContainer}>
+              <div className={styles.QRCodeContainer} ref={qrContainerRef}>
+                <QRDisplay value={displayLink} code={displayCode} />
+                <Button
+                  variant="secondary"
+                  icon={<Download />}
+                  onClick={handleDownloadQR}
+                >
+                  {t("download")}
+                </Button>
+              </div>
+              <div className={styles.linkContainer} data-color="neutral">
+                <Title size="medium" description={t("guest.linkDescription")}>
+                  {t("guest.linkTitle")}
+                </Title>
+                <Input
+                  aria-label="link"
+                  readOnly
+                  value={displayLink}
+                  icon={<Copy />}
+                  iconPosition="right"
+                  fill
+                />
+              </div>
+            </div>
+          }
+        />
+        <DropdownControl.Item
+          label={t("moderator.name")}
+          value="moderator"
+          content={
+            <div className={styles.infoContainer}>
+              <div className={styles.QRCodeContainer} ref={qrContainerRef}>
+                <QRDisplay value={displayLink} code={displayCode} />
+                <Button
+                  variant="secondary"
+                  icon={<Download />}
+                  onClick={handleDownloadQR}
+                >
+                  {t("download")}
+                </Button>
+              </div>
+              <div className={styles.linkContainer} data-color="neutral">
+                <Title size="medium" description={t("moderator.linkDescription")}>
+                  {t("moderator.linkTitle")}
+                </Title>
+                <Input
+                  aria-label="link"
+                  readOnly
+                  value={displayLink}
+                  icon={<Copy />}
+                  iconPosition="right"
+                  fill
+                />
+              </div>
+            </div>
+          }
+        />
+      </DropdownControl>
     </>
   );
 };

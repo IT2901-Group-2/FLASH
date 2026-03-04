@@ -14,14 +14,14 @@ const Page = () => {
   const navigation = useRouter();
 
   const { id } = useParams();
-  const { data } = useEventsQuery({ id: [id?.toString() || ""] });
+  const { data, status } = useEventsQuery({ id: [id?.toString() || ""] });
   if (data === undefined) return;
   const eventData = data[0];
 
   return (
     <>
       <Dialog ref={qrCodeRef}>
-        <ReviewStep result={eventData} />
+        <ReviewStep result={eventData} status={status} />
         <Button
           variant="secondary"
           data-color="neutral"
@@ -37,7 +37,7 @@ const Page = () => {
         className={styles.goToEventButton}
         icon={<ArrowRight />}
         iconPosition="right"
-        onClick={() => navigation.push(`/${eventData?.id}`)}
+        onClick={() => navigation.push(`/${id}`)}
       >
         Open Event
       </Button>

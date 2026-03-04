@@ -1,10 +1,18 @@
 import { Calendar } from "lucide-react";
 import { Title, Input } from "ui";
-import { StepProps } from "../CreateEventCard";
 import { useTranslations } from "next-intl";
+import { StepProps } from "./types";
+import styles from "./Steps.module.css";
+import {
+  formatDateForInput,
+  formatTimeForInput,
+  makeDateTimeHandler,
+} from "@/utils/date-utils";
 
 export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
   const t = useTranslations("admin.dashboard.event.create.basicInfo");
+
+  const startDateValue = formData.startDate.toISOString().split("T")[0];
 
   return (
     <>
@@ -14,6 +22,8 @@ export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
         onChange={e => updateFormData("name", e.target.value)}
         label={t("input.name")}
         aria-label="eventName"
+        minLength={3}
+        required
       />
       <Input
         value={formData.description}
@@ -21,22 +31,49 @@ export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
         label={t("input.description")}
         aria-label="eventDescription"
       />
-      <Input
-        value={formData.startDate.toISOString().split("T")[0]}
-        onChange={e => updateFormData("startDate", new Date(e.target.value))}
-        label={t("input.startDate")}
-        aria-label="eventStartDate"
-        type="date"
-        icon={<Calendar />}
-      />
-      <Input
-        value={formData.endDate.toISOString().split("T")[0]}
-        onChange={e => updateFormData("endDate", new Date(e.target.value))}
-        label={t("input.endDate")}
-        aria-label="eventEndDate"
-        type="date"
-        icon={<Calendar />}
-      />
+      <div className={styles.timeContainer}>
+        <Input
+          value={formatDateForInput(formData.startDate)}
+          onChange={makeDateTimeHandler("startDate", "date", formData, updateFormData)}
+          label={t("input.startDate")}
+          aria-label="eventStartDate"
+          type="date"
+          icon={<Calendar />}
+          required
+          fill
+        />
+        <Input
+          value={formatTimeForInput(formData.startDate)}
+          onChange={makeDateTimeHandler("startDate", "time", formData, updateFormData)}
+          label={t("input.startTime")}
+          aria-label="eventStartDate"
+          type="time"
+          icon={<Calendar />}
+          required
+        />
+      </div>
+      <div className={styles.timeContainer}>
+        <Input
+          value={formatDateForInput(formData.endDate)}
+          onChange={makeDateTimeHandler("endDate", "date", formData, updateFormData)}
+          label={t("input.endDate")}
+          aria-label="eventEndDate"
+          min={startDateValue}
+          type="date"
+          icon={<Calendar />}
+          required
+          fill
+        />
+        <Input
+          value={formatTimeForInput(formData.endDate)}
+          onChange={makeDateTimeHandler("endDate", "time", formData, updateFormData)}
+          label={t("input.endTime")}
+          aria-label="eventStartDate"
+          type="time"
+          icon={<Calendar />}
+          required
+        />
+      </div>
     </>
   );
 };

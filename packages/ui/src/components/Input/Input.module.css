@@ -2,6 +2,10 @@
   --color-warning: var(--text-danger-decoration);
   --color-success: var(--text-success-decoration);
   --color-text-primary: var(--text-neutral);
+
+  &[data-fill="true"] {
+    width: 100%;
+  }
 }
 .inputContainer {
   --color-base: var(--border-default);

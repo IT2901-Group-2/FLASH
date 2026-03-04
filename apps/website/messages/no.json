@@ -19,7 +19,9 @@
               "startDate": "Hendelsesdato",
               "endDate": "Sluttdato",
               "description": "Beskrivelse",
-              "name": "Navn på hendelse"
+              "name": "Navn på hendelse",
+              "endTime": "Slutttid",
+              "startTime": "Starttid"
             },
             "title": "Opprett event"
           },
@@ -30,12 +32,12 @@
             "description": "Konfigurer hendelsesinnstillinger.",
             "input": {
               "autoApprove": "Autogodkjenn bilder",
-              "autoGenerate": "Auto-generer kode",
               "uploads": {
                 "limited": "Begrenset",
                 "title": "Sett maks antall opplastinger til",
                 "unlimited": "Ubegrenset"
-              }
+              },
+              "guestSeeAll": "La gjester se alle bilder"
             },
             "title": "Hendelsesinnstillinger"
           },
@@ -49,7 +51,9 @@
               "name": "Gjest"
             },
             "moderator": {
-              "name": "Moderator"
+              "name": "Moderator",
+              "linkDescription": "Alle med lenken nedenfor kan moderere de sendte inn-bildene",
+              "linkTitle": "Moderatorlink"
             },
             "title": "La andre bli med!"
           },
@@ -63,7 +67,6 @@
       }
     },
     "login": {
-      "title": "FotoArrangemang Administrator",
       "description": "Administrer fotoarrangementene dine enkelt",
       "undertext": "Selvhostet system for adminstrasjon av fotoarrangementer",
       "signIn": {
@@ -71,7 +74,8 @@
         "titleDescription": "Skriv inn legitimasjonen din for å få tilgang til administrasjonspanelet",
         "buttonTitle": "Logg inn",
         "inputLabel": "Passord"
-      }
+      },
+      "pageTitle": "PhotoEvent Admin"
     }
   },
   "JoinEventPage": {
@@ -140,6 +144,17 @@
       "uploadImage": "Last opp bilde",
       "takePhoto": "Ta bilde"
     }
+  },
+  "login": {
+    "description": "Administrer bildebegivenhetene dine på en enkel måte",
+    "signIn": {
+      "buttonTitle": "Logg på",
+      "inputLabel": "Passord",
+      "title": "Logg på",
+      "titleDescription": "Skriv inn legitimasjonen din for å få tilgang til administrasjonspanelet"
+    },
+    "title": "PhotoEvent Admin",
+    "undertext": "Self-hosted Photo Event Management System"
   },
   "guest": {
     "login": {
