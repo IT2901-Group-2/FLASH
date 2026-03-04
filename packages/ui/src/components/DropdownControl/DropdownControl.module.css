@@ -19,7 +19,7 @@
     padding 200ms ease;
 
   &[data-open="true"] {
-    max-height: 30rem;
+    max-height: 100vh;
     padding: 1rem 0;
 
     .panelInner {

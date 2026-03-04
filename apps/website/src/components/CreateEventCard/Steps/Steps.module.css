@@ -25,6 +25,7 @@
 .QRCodeContainer {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 1rem;
 
   > button {
@@ -37,4 +38,11 @@
   flex-direction: column;
   align-items: start;
   justify-content: center;
+}
+
+.timeContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  white-space: nowrap;
 }

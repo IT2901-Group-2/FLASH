@@ -45,7 +45,7 @@
 
 @media screen and (max-width: 768px) {
   .sidebar {
-    position: absolute;
+    position: fixed;
     left: -100%;
 
     transition-property: width, left;

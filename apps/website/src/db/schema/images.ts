@@ -2,6 +2,7 @@ import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import ShortUniqueId from "short-unique-id";
 import { eventTable } from "./events";
 import z from "zod";
+import { assertEqual } from "@/lib/utils/assert";
 
 const uid = new ShortUniqueId();
 
@@ -9,7 +10,7 @@ export const imageTable = sqliteTable("images", {
   id: text().primaryKey().$defaultFn(uid.rnd),
   eventId: text()
     .notNull()
-    .references(() => eventTable.id),
+    .references(() => eventTable.id, { onDelete: "cascade" }),
   isApproved: integer({ mode: "boolean" }),
   createdAt: integer({ mode: "timestamp" })
     .notNull()
@@ -20,7 +21,7 @@ export const imageTable = sqliteTable("images", {
     .$onUpdate(() => new Date()),
 });
 
-export const getImagesSchema = z.object({
+export const getImagesParamsSchema = z.object({
   id: z.string().array().min(1).optional(),
   approval: z
     .tuple([z.enum(["pending", "approved", "rejected"])])
@@ -28,10 +29,19 @@ export const getImagesSchema = z.object({
     .optional(),
 });
 
+export const getImageSchema = z.object({
+  id: z.string(),
+  eventId: z.string(),
+  isApproved: z.boolean().nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+});
+void assertEqual<Image, z.infer<typeof getImageSchema>>;
+
 export const updateImageSchema = z.object({
   isApproved: z.boolean().nullable().optional(),
 });
 
 export type Image = typeof imageTable.$inferSelect;
-export type GetImages = z.infer<typeof getImagesSchema>;
+export type GetImagesParams = z.infer<typeof getImagesParamsSchema>;
 export type UpdateImage = z.infer<typeof updateImageSchema>;
