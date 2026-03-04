@@ -1,12 +1,12 @@
 import { RefAttributes, useState } from "react";
-import { Button, Card, ProgressDots } from "ui";
+import { Button, Dialog, ProgressDots } from "ui";
 import styles from "./CreateEventCard.module.css";
 import { BasicInfoStep, OptionsStep, ReviewStep } from "./Steps";
 import { useTranslations } from "next-intl";
 import { useCreateEventMutation } from "@/hooks/useEvents";
-import { CreateEventInput, EventDTO } from "@/types/eventTypes";
+import { Event, CreateEvent } from "@/db";
 
-const DefaultFormData: CreateEventInput = {
+const DefaultFormData: CreateEvent = {
   name: "",
   description: "",
   uploadLimit: 1,
@@ -19,13 +19,13 @@ interface CreateEventCardProps extends RefAttributes<HTMLDialogElement> {
 }
 
 export interface StepProps {
-  formData: CreateEventInput;
+  formData: CreateEvent;
   updateFormData: (
-    field: keyof CreateEventInput,
-    value: CreateEventInput[keyof CreateEventInput]
+    field: keyof CreateEvent,
+    value: CreateEvent[keyof CreateEvent]
   ) => void;
   status?: "idle" | "pending" | "success" | "error";
-  result?: EventDTO | null;
+  result?: Event | null;
 }
 
 export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps) => {
@@ -33,13 +33,11 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
   const { mutateAsync, status } = useCreateEventMutation();
 
   const [progress, setProgress] = useState<number>(1);
-  const [formdata, setFormData] = useState<CreateEventInput>(DefaultFormData);
-  const [eventResult, setEventResult] = useState<EventDTO | null>(null);
+  const [formdata, setFormData] = useState<CreateEvent>(DefaultFormData);
+  const [eventResult, setEventResult] = useState<Event | null>(null);
 
-  const updateFormData = <K extends keyof CreateEventInput>(
-    k: K,
-    v: CreateEventInput[K]
-  ) => setFormData(prev => ({ ...prev, [k]: v }));
+  const updateFormData = <K extends keyof CreateEvent>(k: K, v: CreateEvent[K]) =>
+    setFormData(prev => ({ ...prev, [k]: v }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,46 +61,44 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
   const isMiddleStep = !isFirstStep && !isLastStep;
   const isSecondToLastStep = progress === steps.length - 1;
   return (
-    <dialog ref={ref} className={styles.container} {...rest} autoFocus>
-      <Card className={styles.card}>
-        <ProgressDots maxValue={3} value={progress} data-color="brand-purple" />
-        <form className={styles.form}>
-          <CurrentStep
-            formData={formdata}
-            updateFormData={updateFormData}
-            status={status}
-            result={eventResult}
-          />
-          <div className={styles.buttonGroup}>
-            {!isLastStep && (
-              <Button variant="tertiary" onClick={exitForm}>
-                {t("cancel")}
-              </Button>
-            )}
-            {isMiddleStep && (
-              <Button variant="secondary" onClick={prevStep}>
-                {t("previous")}
-              </Button>
-            )}
-            {!isLastStep && !isSecondToLastStep && (
-              <Button variant="secondary" onClick={nextStep}>
-                {t("next")}
-              </Button>
-            )}
-            {isSecondToLastStep && (
-              <Button variant="secondary" onClick={handleSubmit}>
-                {t("create")}
-              </Button>
-            )}
-            {isLastStep && (
-              <Button variant="primary" data-color="brand-purple" onClick={exitForm}>
-                {t("finish")}
-              </Button>
-            )}
-          </div>
-        </form>
-      </Card>
-    </dialog>
+    <Dialog ref={ref} {...rest}>
+      <ProgressDots maxValue={3} value={progress} data-color="brand-purple" />
+      <form className={styles.form}>
+        <CurrentStep
+          formData={formdata}
+          updateFormData={updateFormData}
+          status={status}
+          result={eventResult}
+        />
+        <div className={styles.buttonGroup}>
+          {!isLastStep && (
+            <Button variant="tertiary" onClick={exitForm}>
+              {t("cancel")}
+            </Button>
+          )}
+          {isMiddleStep && (
+            <Button variant="secondary" onClick={prevStep}>
+              {t("previous")}
+            </Button>
+          )}
+          {!isLastStep && !isSecondToLastStep && (
+            <Button variant="secondary" onClick={nextStep}>
+              {t("next")}
+            </Button>
+          )}
+          {isSecondToLastStep && (
+            <Button variant="secondary" onClick={handleSubmit}>
+              {t("create")}
+            </Button>
+          )}
+          {isLastStep && (
+            <Button variant="primary" data-color="brand-purple" onClick={exitForm}>
+              {t("finish")}
+            </Button>
+          )}
+        </div>
+      </form>
+    </Dialog>
   );
 };
 export default CreateEventCard;

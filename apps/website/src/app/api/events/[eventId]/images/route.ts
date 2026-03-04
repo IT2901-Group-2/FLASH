@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { imageService } from "@/services/imageService";
 import { Result } from "typescript-result";
 import { parseSearchParams } from "@/lib/utils/validation";
-import { getImagesSchema } from "@/db";
+import { getImagesParamsSchema } from "@/db";
 
 export async function GET(
   req: NextRequest,
@@ -10,7 +10,7 @@ export async function GET(
 ): Promise<NextResponse> {
   const { eventId } = await params;
 
-  return parseSearchParams(req.nextUrl.searchParams, getImagesSchema)
+  return parseSearchParams(req.nextUrl.searchParams, getImagesParamsSchema)
     .map(filters => imageService.getImages(eventId, filters))
     .fold(
       images => NextResponse.json(images),

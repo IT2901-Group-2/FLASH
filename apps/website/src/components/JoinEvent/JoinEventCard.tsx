@@ -6,41 +6,22 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import styles from "./JoinEventCard.module.css";
 import { QrCode } from "lucide-react";
-import { useEventsQuery } from "@/hooks/useEvents";
 
 const JoinEventCard = () => {
   const t = useTranslations("JoinEvent");
   const router = useRouter();
   const [code, setCode] = useState<string>("");
   const [error, setError] = useState<string | undefined>("");
-  const [nickname, setNickname] = useState<string>("");
-
-  const { refetch, isFetching } = useEventsQuery({ guestCode: code }, false);
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!nickname.trim()) {
-      setError(t("error.invalidNickname"));
-      return;
-    }
     if (!code.trim()) {
       setError(t("error.noCode"));
       return;
     }
 
-    const { data, isError, error } = await refetch();
-
-    if (isError) {
-      setError(error.message);
-      return;
-    }
-    if (!data?.[0]) {
-      setError(t("error.invalidCode"));
-      return;
-    }
-
     setError(undefined);
-    router.push(`/${data[0]?.id}`);
+    router.push(`/${code}/nickname`);
   };
 
   return (
@@ -54,15 +35,6 @@ const JoinEventCard = () => {
           label={t("enterCodeTab")}
           content={
             <form className={styles.content} onSubmit={handleSubmit}>
-              <Input
-                label={t("nicknameLabel")}
-                placeholder={t("nicknamePlaceholder")}
-                icon={<TextAlignStart size={24} />}
-                aria-label={t("nicknameLabel")}
-                value={nickname}
-                onChange={e => setNickname(e.target.value)}
-                error={error}
-              />
               <Input
                 label={t("eventCodeLabel")}
                 placeholder={t("eventCodePlaceholder")}
@@ -79,7 +51,6 @@ const JoinEventCard = () => {
                 className={styles.fullWidthButton}
                 data-color="brand-purple"
                 type="submit"
-                loading={isFetching}
                 fill
               >
                 {t("joinButton")}

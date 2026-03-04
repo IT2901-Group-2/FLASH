@@ -1,14 +1,14 @@
-import { EventDTO } from "@/types/eventTypes";
 import { Calendar, Image as ImageIcon, Users } from "lucide-react";
 import { Card } from "ui";
 import styles from "./EventCard.module.css";
 import { cl } from "@/utils/className";
+import { Event } from "@/db";
 
 export interface EventCardProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Event name.
    */
-  data: EventDTO;
+  data: Event;
 }
 
 const EventCard = ({ data, ...rest }: EventCardProps) => {

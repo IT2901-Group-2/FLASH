@@ -1,7 +1,7 @@
 import { FileStorage } from "file-storage";
 import { DatabaseService, dbService } from "./databaseService";
 import { AsyncResult, Result } from "typescript-result";
-import { GetImages, Image, imageTable, UpdateImage } from "@/db";
+import { GetImagesParams, Image, imageTable, UpdateImage } from "@/db";
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
 import { getFirstRow } from "@/lib/utils/sql";
@@ -51,7 +51,7 @@ export class ImageService {
    */
   getImages(
     eventId: string,
-    { id, approval }: GetImages = {}
+    { id, approval }: GetImagesParams = {}
   ): AsyncResult<Image[], Error> {
     return Result.try(() =>
       this.dbService.db
