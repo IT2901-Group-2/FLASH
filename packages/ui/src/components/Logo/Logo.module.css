@@ -3,11 +3,11 @@
     .primaryGroup,
     .secondaryGroup {
       transform-origin: calc(100% / 2) calc(100% / 2);
-      animation: spin-cw 3s infinite linear;
+      animation: spin-cw 5s infinite linear;
     }
     .star {
       transform-origin: calc(100% / 2) calc(100% / 2);
-      animation: spin-ccw 2s linear infinite;
+      animation: spin-ccw 3s linear infinite;
     }
   }
   &[data-hover="true"]:hover {
