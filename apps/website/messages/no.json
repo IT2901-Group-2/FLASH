@@ -63,6 +63,12 @@
           "description": "Administrer hendelsene dine.",
           "title": "Events",
           "createNew": "Lag ny hendelse"
+        },
+        "edit": {
+          "cancel": "Kansellere",
+          "next": "Neste",
+          "previous": "Tidligere",
+          "save": "Spare"
         }
       }
     },

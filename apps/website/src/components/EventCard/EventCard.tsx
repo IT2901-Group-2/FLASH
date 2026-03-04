@@ -4,7 +4,8 @@ import styles from "./EventCard.module.css";
 import { cl } from "@/utils/className";
 import { Event } from "@/db";
 import { useDeleteEventMutation } from "@/hooks/useEvents";
-import { MouseEvent } from "react";
+import { MouseEvent, useRef } from "react";
+import EditEventCard from "../CreateEventCard/EditEventCard";
 
 export interface EventCardProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
@@ -15,6 +16,7 @@ export interface EventCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const EventCard = ({ data, ...rest }: EventCardProps) => {
   const { mutateAsync } = useDeleteEventMutation();
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const { name, startDate, uploadLimit, id } = data;
 
   const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
@@ -22,8 +24,18 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
     mutateAsync({ eventId: id });
   };
 
+  const handleEdit = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    dialogRef.current?.showModal();
+  };
+
   return (
     <>
+      <EditEventCard
+        ref={dialogRef}
+        event={data}
+        onClose={() => dialogRef.current?.close()}
+      />
       <Card {...rest} className={styles.card}>
         <div className={styles.column}>
           <h3 className={styles.title}>{name}</h3>
@@ -59,7 +71,7 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
             </span>
           </div>
           <div className={styles.row}>
-            <button className={styles.actionButton}>
+            <button className={styles.actionButton} onClick={handleEdit}>
               <EditIcon size={20} />
             </button>
             <button
