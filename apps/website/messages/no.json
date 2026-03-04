@@ -75,7 +75,7 @@
         "buttonTitle": "Logg inn",
         "inputLabel": "Passord",
         "guest": "Gjest",
-        "linkToGuest": "Ikke administrator? \nBli med på et arrangement som en"
+        "linkToGuest": "Ikke administrator? Bli med på et arrangement som en"
       },
       "pageTitle": "PhotoEvent Admin"
     }
@@ -102,7 +102,7 @@
       "invalidNickname": "Skriv inn et kallenavn."
     },
     "admin": "Admin",
-    "linkToAdmin": "Ikke gjest? \nAdministrer arrangementer som"
+    "linkToAdmin": "Ikke gjest? Administrer arrangementer som en"
   },
   "ShareEventPage": {
     "create": {
