@@ -453,6 +453,36 @@ describe("eventService getEventCode", () => {
   });
 });
 
+describe("eventService getEventCode", () => {
+  it("Should return Err when database call fails", async () => {
+    vi.spyOn(BetterSQLite3Database.prototype, "select").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(await eventService.getEventCode("birthday-1", { role: "guest" }));
+  });
+
+  it("Should correctly return guest code", async () => {
+    expect(
+      await eventService.getEventCode("birthday-1", { role: "guest" }).getOrThrow()
+    ).toBe("birth1guest");
+
+    expect(
+      await eventService.getEventCode("birthday-2", { role: "guest" }).getOrThrow()
+    ).toBe("birth2guest");
+  });
+
+  it("Should correctly return moderator code", async () => {
+    expect(
+      await eventService.getEventCode("birthday-1", { role: "moderator" }).getOrThrow()
+    ).toBe("birth1mod");
+
+    expect(
+      await eventService.getEventCode("birthday-2", { role: "moderator" }).getOrThrow()
+    ).toBe("birth2mod");
+  });
+});
+
 describe("eventService createEvent", () => {
   it("Should return Err when database call fails", async () => {
     vi.spyOn(BetterSQLite3Database.prototype, "insert").mockImplementationOnce(() => {

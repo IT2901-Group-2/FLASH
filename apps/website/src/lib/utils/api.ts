@@ -1,4 +1,4 @@
-import { JSONObject, parseJSON } from "./json";
+import { JSONObject, parseAsJSON } from "./json";
 import z from "zod";
 
 export type HTTPMethod = "GET" | "HEAD" | "OPTIONS" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -49,7 +49,7 @@ export async function makeRequest<T>(
       ? null
       : data instanceof Blob
         ? await data.arrayBuffer()
-        : JSON.stringify(parseJSON(data));
+        : JSON.stringify(parseAsJSON(data));
 
   const contentType =
     data === undefined ? null : data instanceof Blob ? data.type : "application/json";
