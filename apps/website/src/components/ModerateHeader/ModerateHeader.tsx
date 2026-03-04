@@ -51,6 +51,7 @@ export const ModerateHeader = ({
       {/* ── Desktop layout (hidden on mobile via CSS) ── */}
       <div className={styles.desktopRow}>
         <Button
+          className={styles.desktopBackButton}
           variant="tertiary"
           icon={<ArrowLeft aria-hidden="true" />}
           onClick={onBack}
