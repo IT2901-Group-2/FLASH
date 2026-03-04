@@ -96,7 +96,7 @@
     "scanQrTab": "Scan QR",
     "scanQrDescription": "Use your camera to scan the event QR code",
     "openCameraButton": "Open Camera",
-    "linkToAdmin": "Not a guest? Administer events as",
+    "linkToAdmin": "Not a guest? Administer events as an",
     "error": {
       "noCode": "Please enter an event code.",
       "invalidCode": "Invalid guest code. Please try again.",
