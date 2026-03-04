@@ -73,7 +73,9 @@
         "title": "Logg inn",
         "titleDescription": "Skriv inn legitimasjonen din for å få tilgang til administrasjonspanelet",
         "buttonTitle": "Logg inn",
-        "inputLabel": "Passord"
+        "inputLabel": "Passord",
+        "guest": "Gjest",
+        "linkToGuest": "Ikke administrator? Bli med på et arrangement som en"
       },
       "pageTitle": "PhotoEvent Admin"
     }
@@ -98,7 +100,9 @@
       "invalidCode": "Fyll inn en gyldig event kode",
       "noCode": "Ugyldig kode. Venligst prøv igjenn.",
       "invalidNickname": "Skriv inn et kallenavn."
-    }
+    },
+    "admin": "Admin",
+    "linkToAdmin": "Ikke gjest? Administrer arrangementer som en"
   },
   "ShareEventPage": {
     "create": {

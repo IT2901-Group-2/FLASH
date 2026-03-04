@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import styles from "./JoinEventCard.module.css";
 import { QrCode } from "lucide-react";
+import Link from "next/link";
 
 const JoinEventCard = () => {
   const t = useTranslations("JoinEvent");
@@ -78,6 +79,13 @@ const JoinEventCard = () => {
           }
         />
       </DropdownControl>
+      <span>
+        {t("linkToAdmin")}{" "}
+        <Link role="link" href={"/admin"}>
+          {t("admin")}
+        </Link>
+        .
+      </span>
     </Card>
   );
 };

@@ -74,7 +74,9 @@
         "title": "Sign in",
         "titleDescription": "Enter your credentials to access the admin panel",
         "buttonTitle": "Sign in",
-        "inputLabel": "Password"
+        "inputLabel": "Password",
+        "linkToGuest": "Not an admin? Join an event as a",
+        "guest": "Guest"
       }
     }
   },
@@ -94,11 +96,13 @@
     "scanQrTab": "Scan QR",
     "scanQrDescription": "Use your camera to scan the event QR code",
     "openCameraButton": "Open Camera",
+    "linkToAdmin": "Not a guest? Administer events as an",
     "error": {
       "noCode": "Please enter an event code.",
       "invalidCode": "Invalid guest code. Please try again.",
       "invalidNickname": "Please enter a nickname."
-    }
+    },
+    "admin": "Admin"
   },
   "login": {
     "title": "PhotoEvent Admin",

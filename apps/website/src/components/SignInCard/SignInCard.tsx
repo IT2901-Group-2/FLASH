@@ -2,6 +2,7 @@ import { Button, Card, Input, Title } from "ui";
 import styles from "./SignInCard.module.css";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function SignInCard() {
   const navigate = useRouter();
@@ -35,6 +36,13 @@ export default function SignInCard() {
       >
         {t("buttonTitle")}
       </Button>
+      <span>
+        {t("linkToGuest")}{" "}
+        <Link role="link" href={"/"}>
+          {t("guest")}
+        </Link>
+        .
+      </span>
     </Card>
   );
 }
