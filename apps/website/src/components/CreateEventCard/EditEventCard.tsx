@@ -23,7 +23,7 @@ export const EditEventCard = ({ ref, event, onClose, ...rest }: EditEventCardPro
   const { mutateAsync, status } = useUpdateEventMutation();
 
   const formRef = useRef<HTMLFormElement>(null);
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
 
   const [formData, setFormData] = useState<CreateEvent>({
     name: event.name,
@@ -51,6 +51,7 @@ export const EditEventCard = ({ ref, event, onClose, ...rest }: EditEventCardPro
   const handleSave = async () => {
     if (!formRef.current?.reportValidity()) return;
     await mutateAsync({ eventId: event.id, data: formData });
+    setCurrentStepIndex(0);
     onClose();
   };
 
