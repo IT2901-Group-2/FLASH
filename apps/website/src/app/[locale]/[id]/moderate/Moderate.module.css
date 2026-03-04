@@ -40,6 +40,15 @@
     grid-template-columns: repeat(6, 1fr);
     padding: 1em 1em 0.3em;
   }
+
+  .actionCardContainer {
+    position: sticky;
+    padding: 1rem;
+    background: transparent;
+    z-index: 9999;
+    min-width: 40rem;
+    margin: auto;
+  }
 }
 
 .actionCardContainer {
