@@ -1,7 +1,7 @@
 import React from "react";
 import { Loader } from "../Loader";
 import styles from "./Input.module.css";
-import { cl } from "@/util/helpers/";
+import { cl } from "@/util/helpers";
 import { ColorName } from "../types";
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
