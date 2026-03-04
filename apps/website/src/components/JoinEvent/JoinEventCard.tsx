@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import styles from "./JoinEventCard.module.css";
 import { QrCode } from "lucide-react";
-import { useEventsQuery } from "@/hooks/useEvents";
 
 const JoinEventCard = () => {
   const t = useTranslations("JoinEvent");
@@ -14,8 +13,6 @@ const JoinEventCard = () => {
   const [code, setCode] = useState<string>("");
   const [error, setError] = useState<string | undefined>("");
   const [nickname, setNickname] = useState<string>("");
-
-  const { refetch, isFetching } = useEventsQuery({ guestCode: code }, false);
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,19 +25,8 @@ const JoinEventCard = () => {
       return;
     }
 
-    const { data, isError, error } = await refetch();
-
-    if (isError) {
-      setError(error.message);
-      return;
-    }
-    if (!data?.[0]) {
-      setError(t("error.invalidCode"));
-      return;
-    }
-
     setError(undefined);
-    router.push(`/${data[0]?.id}`);
+    router.push(`/api/join/${code}`);
   };
 
   return (
@@ -79,7 +65,6 @@ const JoinEventCard = () => {
                 className={styles.fullWidthButton}
                 data-color="brand-purple"
                 type="submit"
-                loading={isFetching}
                 fill
               >
                 {t("joinButton")}

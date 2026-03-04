@@ -1,7 +1,8 @@
-import { integer, sqliteTable, text, check } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text, check, unique } from "drizzle-orm/sqlite-core";
 import ShortUniqueId from "short-unique-id";
 import { lte } from "drizzle-orm";
 import { z } from "zod";
+import { assertEqual } from "@/lib/utils/assert";
 
 const uid = new ShortUniqueId();
 const code = new ShortUniqueId({ length: 6, dictionary: "alphanum_upper" });
@@ -15,8 +16,6 @@ export const eventTable = sqliteTable(
     startDate: integer({ mode: "timestamp" }).notNull(),
     endDate: integer({ mode: "timestamp" }).notNull(),
     uploadLimit: integer(),
-    guestCode: text().unique().notNull().$defaultFn(code.rnd),
-    moderatorCode: text().unique().notNull().$defaultFn(code.rnd),
     createdAt: integer({ mode: "timestamp" })
       .notNull()
       .$defaultFn(() => new Date()),
@@ -29,17 +28,21 @@ export const eventTable = sqliteTable(
   t => [check("dateConstraint", lte(t.startDate, t.endDate))]
 );
 
-export const getEventSchema = z.object({
+export const eventCodeTable = sqliteTable(
+  "eventCodes",
+  {
+    code: text().primaryKey().$defaultFn(code.rnd),
+    eventId: text()
+      .notNull()
+      .references(() => eventTable.id, { onDelete: "cascade" }),
+    isModerator: integer({ mode: "boolean" }).notNull(),
+  },
+  t => [unique("codeConstraint").on(t.code, t.eventId, t.isModerator)]
+);
+
+export const getEventsParamsSchema = z.object({
   id: z.string().array().min(1).optional(),
   name: z
-    .tuple([z.string()])
-    .transform(([str]) => str)
-    .optional(),
-  guestCode: z
-    .tuple([z.string()])
-    .transform(([str]) => str)
-    .optional(),
-  moderatorCode: z
     .tuple([z.string()])
     .transform(([str]) => str)
     .optional(),
@@ -52,7 +55,46 @@ export const getEventSchema = z.object({
     .transform(([str]) => (str === "all" ? undefined : str === "true"))
     .prefault(["false"])
     .optional(),
+  sortBy: z
+    .tuple([
+      z.enum([
+        "name",
+        "description",
+        "startDate",
+        "endDate",
+        "uploadLimit",
+        "createdAt",
+        "updatedAt",
+      ]),
+    ])
+    .transform(([str]) => str)
+    .optional(),
+  order: z
+    .tuple([z.enum(["ascending", "descending"])])
+    .transform(([str]) => str)
+    .prefault(["ascending"])
+    .optional(),
 });
+
+export const getEventCodeParamsSchema = z.object({
+  role: z
+    .tuple([z.enum(["guest", "moderator"])])
+    .transform(([str]) => str)
+    .prefault(["guest"]),
+});
+
+export const getEventSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date(),
+  uploadLimit: z.number().positive().nullable(),
+  isArchived: z.boolean(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+});
+void assertEqual<Event, z.infer<typeof getEventSchema>>;
 
 export const createEventSchema = z.object({
   name: z.string(),
@@ -73,6 +115,7 @@ export const updateEventSchema = z.object({
 });
 
 export type Event = typeof eventTable.$inferSelect;
-export type GetEvent = z.infer<typeof getEventSchema>;
+export type GetEventsParams = z.infer<typeof getEventsParamsSchema>;
+export type GetEventCodeParams = z.infer<typeof getEventCodeParamsSchema>;
 export type CreateEvent = z.infer<typeof createEventSchema>;
 export type UpdateEvent = z.infer<typeof updateEventSchema>;
