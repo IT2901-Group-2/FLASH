@@ -12,7 +12,10 @@ export async function POST(
   return parseRequestBody(req, createUserSchema)
     .map(data => userService.joinEvent(code, data))
     .fold(
-      () => NextResponse.redirect("https://www.google.com", { status: 303 }),
+      ({ eventId }) =>
+        NextResponse.redirect(new URL(`/${eventId}`, req.url), {
+          status: 303,
+        }),
       err => NextResponse.json({ message: err.message }, { status: 500 })
     );
 }

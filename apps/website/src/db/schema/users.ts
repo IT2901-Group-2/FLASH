@@ -27,7 +27,7 @@ export const userTable = sqliteTable(
 
 export const createUserSchema = z.object({
   name: z.string(),
-  role: z.enum(["guest", "moderator"]),
 });
 
+export type User = typeof userTable.$inferSelect;
 export type CreateUser = z.infer<typeof createUserSchema>;
