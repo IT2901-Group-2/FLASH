@@ -10,8 +10,9 @@ import {
 } from "@/db";
 import { AsyncResult, Result } from "typescript-result";
 import { getFirstRow } from "@/lib/utils/sql";
-import { and, eq, like, inArray, lt, lte, gte, gt } from "drizzle-orm";
+import { and, eq, like, inArray, lt, lte, gte, gt, desc, asc } from "drizzle-orm";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
+import { SQLiteColumn } from "drizzle-orm/sqlite-core";
 
 export class EventService {
   private readonly dbService: DatabaseService;
@@ -28,14 +29,29 @@ export class EventService {
    * @param filters The filters to apply to the query.
    * @returns A result with a list of events or an error.
    */
-  getEvents({ id, name, status, archived }: GetEventsParams = {}): AsyncResult<
-    Event[],
-    Error
-  > {
+  getEvents({
+    id,
+    name,
+    status,
+    archived,
+    sortBy,
+    order,
+  }: GetEventsParams = {}): AsyncResult<Event[], Error> {
     const now = new Date();
 
-    return Result.try(() =>
-      this.dbService.db
+    const sortOrder = order === "descending" ? desc : asc;
+    const sortColumnMap: Record<NonNullable<GetEventsParams["sortBy"]>, SQLiteColumn> = {
+      name: eventTable.name,
+      description: eventTable.description,
+      startDate: eventTable.startDate,
+      endDate: eventTable.endDate,
+      uploadLimit: eventTable.uploadLimit,
+      createdAt: eventTable.createdAt,
+      updatedAt: eventTable.updatedAt,
+    };
+
+    return Result.try(() => {
+      const baseQuery = this.dbService.db
         .select()
         .from(eventTable)
         .where(
@@ -49,8 +65,12 @@ export class EventService {
               : undefined,
             status === "finished" ? lt(eventTable.endDate, now) : undefined
           )
-        )
-    );
+        );
+
+      return sortBy === undefined
+        ? baseQuery
+        : baseQuery.orderBy(sortOrder(sortColumnMap[sortBy]));
+    });
   }
 
   /**

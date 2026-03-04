@@ -55,6 +55,25 @@ export const getEventsParamsSchema = z.object({
     .transform(([str]) => (str === "all" ? undefined : str === "true"))
     .prefault(["false"])
     .optional(),
+  sortBy: z
+    .tuple([
+      z.enum([
+        "name",
+        "description",
+        "startDate",
+        "endDate",
+        "uploadLimit",
+        "createdAt",
+        "updatedAt",
+      ]),
+    ])
+    .transform(([str]) => str)
+    .optional(),
+  order: z
+    .tuple([z.enum(["ascending", "descending"])])
+    .transform(([str]) => str)
+    .prefault(["ascending"])
+    .optional(),
 });
 
 export const getEventCodeParamsSchema = z.object({
