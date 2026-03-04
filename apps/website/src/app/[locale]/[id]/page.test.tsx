@@ -5,6 +5,7 @@ import * as useFileUploadModule from "@/hooks/useFileUpload";
 import * as nextNavigation from "next/navigation";
 import * as useEventsModule from "@/hooks/useEvents";
 import * as uiModule from "ui";
+import { Event } from "@/db";
 
 // Mock the UI components
 vi.mock("ui", () => ({
@@ -28,10 +29,20 @@ vi.mock("@/hooks/useEvents", () => ({
         id: "event-1",
         name: "Test Event",
         description: "",
-        guestCode: "ABC123",
+        startDate: new Date(),
+        endDate: new Date(),
         uploadLimit: 5,
+        isArchived: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
-    ],
+    ] satisfies Event[],
+    isLoading: false,
+    isError: false,
+  })),
+
+  useEventCodeQuery: vi.fn(() => ({
+    data: "ABC123",
     isLoading: false,
     isError: false,
   })),

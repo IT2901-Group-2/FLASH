@@ -1,24 +1,33 @@
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { StepProps } from "../CreateEventCard";
 import { Title, SegmentedControl, QRDisplay, Button, Input, Loader } from "ui";
 import { Copy, Download } from "lucide-react";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 import { downloadQrSvg } from "@/utils/downloadqrcode";
+import { useEventCodeQuery } from "@/hooks/useEvents";
 
 const ReviewStep = ({
   status,
   result,
 }: Omit<StepProps, "formData" | "updateFormData">) => {
   const t = useTranslations("admin.dashboard.event.create.review");
-  const [shareRole, setShareRole] = useState<string>("guest");
+  const [shareRole, setShareRole] = useState<"guest" | "moderator">("guest");
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
+  const { data: displayCode } = useEventCodeQuery(result?.id, shareRole);
 
-  const displayCode =
-    shareRole === "moderator" ? result?.moderatorCode : result?.guestCode;
   const displayLink = displayCode ? `${window.location.origin}/event/${displayCode}` : "";
 
-  if (status === "pending") return <Loader />;
+  const handleRoleChange = useCallback(
+    (role: string) => {
+      if (role !== "guest" && role !== "moderator") {
+        return;
+      }
+
+      setShareRole(role);
+    },
+    [setShareRole]
+  );
 
   /**
    * Function to handle downloading the QR code as an SVG file.
@@ -33,12 +42,14 @@ const ReviewStep = ({
     }
   };
 
+  if (status === "pending") return <Loader />;
+
   return (
     <>
       <Title size="medium" description={t("description")}>
         {t("title")}
       </Title>
-      <SegmentedControl onChange={setShareRole} value={shareRole} fill>
+      <SegmentedControl onChange={handleRoleChange} value={shareRole} fill>
         <SegmentedControl.Item label={t("guest.name")} value="guest" />
         <SegmentedControl.Item label={t("moderator.name")} value="moderator" />
       </SegmentedControl>

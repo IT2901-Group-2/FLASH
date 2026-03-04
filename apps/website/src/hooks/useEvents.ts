@@ -1,19 +1,21 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { makeRequest } from "@/lib/utils/api";
 import {
-  EventsQueryParams,
-  EventDTO,
-  CreateEventInput,
-  UpdateEventInput,
-} from "@/types/eventTypes";
-import { fetchJson, toIso } from "@/lib/utils/api";
+  CreateEvent,
+  GetEventCodeParams,
+  GetEventsParams,
+  getEventSchema,
+  UpdateEvent,
+} from "@/db";
+import z from "zod";
 
 /**
- * Serializes an `EventsQueryParams` object into a URL query string (e.g. `?status=active&archived=false`).
+ * Serializes an `GetEvents` object into a URL query string (e.g. `?status=active&archived=false`).
  * Returns an empty string when no params are provided.
  */
-function toEventsSearchParams(params?: EventsQueryParams): string {
+function toEventsSearchParams(params?: GetEventsParams): string {
   if (!params) return "";
 
   const sp = new URLSearchParams();
@@ -21,15 +23,8 @@ function toEventsSearchParams(params?: EventsQueryParams): string {
   const ids = params.id?.slice().sort();
   if (ids && ids.length > 0) ids.forEach(id => sp.append("id", id));
   if (params.name) sp.append("name", params.name);
-  if (params.guestCode) sp.append("guestCode", params.guestCode);
-  if (params.moderatorCode) sp.append("moderatorCode", params.moderatorCode);
   if (params.status) sp.append("status", params.status);
-  if (params.archived !== undefined) {
-    sp.append(
-      "archived",
-      params.archived === "all" ? "all" : params.archived ? "true" : "false"
-    );
-  }
+  if (params.archived !== undefined) sp.append("archived", params.archived.toString());
 
   const qs = sp.toString();
   return qs ? `?${qs}` : "";
@@ -42,27 +37,42 @@ function toEventsSearchParams(params?: EventsQueryParams): string {
  * events-related query in one go.
  *
  * Structure:
- *   eventsKeys.all           → ["events"]
- *   eventsKeys.list(params)  → ["events", "list", "?status=active&..."]
+ *   eventsKeys.all                 → ["events"]
+ *   eventsKeys.list(params)        → ["events", "list", "?status=active&..."]
+ *   eventsKeys.code(eventId, role) → ["events", eventId, "code", role]
  */
 
 export const eventsKeys = {
   all: ["events"] as const,
-  list: (params?: EventsQueryParams) =>
+  list: (params?: GetEventsParams) =>
     [...eventsKeys.all, "list", toEventsSearchParams(params)] as const,
+  code: (eventId?: string, role: GetEventCodeParams["role"] = "guest") =>
+    [...eventsKeys.all, eventId, "code", role] as const,
 };
 
 /**
  * Fetches a list of events, optionally filtered by the provided query params.
  */
-export function useEventsQuery(params?: EventsQueryParams, enabled = true) {
+export function useEventsQuery(params?: GetEventsParams, enabled: boolean = true) {
   return useQuery({
     queryKey: eventsKeys.list(params),
-    queryFn: async () => {
-      const url = `/api/events${toEventsSearchParams(params)}`;
-      return fetchJson<EventDTO[]>(url);
-    },
+    queryFn: () =>
+      makeRequest(z.array(getEventSchema), `/api/events${toEventsSearchParams(params)}`),
     enabled,
+  });
+}
+
+/**
+ * Fetches the join code of an event. `role` specifies access level.
+ */
+export function useEventCodeQuery(
+  eventId?: string,
+  role: GetEventCodeParams["role"] = "guest"
+) {
+  return useQuery({
+    queryKey: eventsKeys.code(eventId, role),
+    queryFn: () => makeRequest(z.string(), `/api/events/${eventId}/code?role=${role}`),
+    enabled: !!eventId,
   });
 }
 
@@ -74,17 +84,8 @@ export function useCreateEventMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: CreateEventInput) => {
-      return fetchJson<EventDTO>("/api/events", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...input,
-          startDate: toIso(input.startDate),
-          endDate: toIso(input.endDate),
-        }),
-      });
-    },
+    mutationFn: (input: CreateEvent) =>
+      makeRequest(getEventSchema, "/api/events", "POST", input),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: eventsKeys.all });
     },
@@ -100,17 +101,8 @@ export function useUpdateEventMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ eventId, data }: { eventId: string; data: UpdateEventInput }) => {
-      return fetchJson<EventDTO>(`/api/events/${eventId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...data,
-          startDate: toIso(data.startDate),
-          endDate: toIso(data.endDate),
-        }),
-      });
-    },
+    mutationFn: ({ eventId, data }: { eventId: string; data: UpdateEvent }) =>
+      makeRequest(getEventSchema, `/api/events/${eventId}`, "PATCH", data),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: eventsKeys.all });
     },
@@ -124,9 +116,8 @@ export function useDeleteEventMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ eventId }: { eventId: string }) => {
-      return fetchJson<unknown>(`/api/events/${eventId}`, { method: "DELETE" });
-    },
+    mutationFn: ({ eventId }: { eventId: string }) =>
+      makeRequest(getEventSchema, `/api/events/${eventId}`, "DELETE"),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: eventsKeys.all });
     },

@@ -3,22 +3,36 @@ import { describe, it, beforeEach, expect, vi, afterEach } from "vitest";
 import { DatabaseService } from "../databaseService";
 import { Result } from "typescript-result";
 import { EventService } from "../eventService";
-import { eventTable } from "@/db";
+import { Event, eventCodeTable, eventTable } from "@/db";
 import { subDays, addDays, subHours, addHours, setMilliseconds } from "date-fns";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { eq } from "drizzle-orm";
 
 const NOW = new Date();
 
-const mockEvents: (typeof eventTable.$inferInsert)[] = [
+function getMockedEvent(data: Partial<Event> = {}): Event {
+  return {
+    id: "id",
+    name: "name",
+    description: "description",
+    startDate: new Date(),
+    endDate: new Date(),
+    uploadLimit: 5,
+    isArchived: false,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...data,
+  };
+}
+
+const mockEvents: Event[] = [
   {
     id: "birthday-1",
     name: "Birthday 1",
+    description: "birthday event",
     startDate: subHours(NOW, 6),
     endDate: subHours(NOW, 5),
     uploadLimit: 5,
-    guestCode: "birthday-1-guest",
-    moderatorCode: "birthday-1-moderator",
   },
   {
     id: "birthday-2",
@@ -26,8 +40,6 @@ const mockEvents: (typeof eventTable.$inferInsert)[] = [
     startDate: subHours(NOW, 2),
     endDate: addHours(NOW, 10),
     uploadLimit: 5,
-    guestCode: "birthday-2-guest",
-    moderatorCode: "birthday-2-moderator",
     isArchived: true,
   },
   {
@@ -36,34 +48,36 @@ const mockEvents: (typeof eventTable.$inferInsert)[] = [
     startDate: addDays(NOW, 10),
     endDate: addDays(NOW, 11),
     uploadLimit: 10,
-    guestCode: "wedding-1-guest",
-    moderatorCode: "wedding-1-moderator",
   },
   {
     id: "wedding-2",
     name: "Wedding 2",
     startDate: subDays(NOW, 5),
     endDate: subDays(NOW, 4),
-    guestCode: "wedding-2-guest",
-    moderatorCode: "wedding-2-moderator",
   },
   {
     id: "lowercase-1",
     name: "lowercase",
     startDate: subDays(NOW, 1),
     endDate: subDays(NOW, 1),
-    guestCode: "lowercase-1-guest",
-    moderatorCode: "lowercase-1-moderator",
   },
   {
     id: "uppercase-1",
     name: "UPPERCASE",
     startDate: subHours(NOW, 1),
     endDate: addHours(NOW, 1),
-    guestCode: "uppercase-1-guest",
-    moderatorCode: "uppercase-1-moderator",
   },
-];
+].map(getMockedEvent);
+
+const mockGuestCodes: Record<string, string> = {
+  "birthday-1": "birth1guest",
+  "birthday-2": "birth2guest",
+};
+
+const mockModeratorCodes: Record<string, string> = {
+  "birthday-1": "birth1mod",
+  "birthday-2": "birth2mod",
+};
 
 let eventService: EventService;
 
@@ -75,6 +89,16 @@ beforeEach(async () => {
   await dbService.initialize().getOrThrow();
 
   await dbService.db.insert(eventTable).values(mockEvents);
+  await Promise.all(
+    mockEvents.map(async e => {
+      await dbService.db
+        .insert(eventCodeTable)
+        .values({ eventId: e.id, code: mockModeratorCodes[e.id], isModerator: true });
+      await dbService.db
+        .insert(eventCodeTable)
+        .values({ eventId: e.id, code: mockGuestCodes[e.id], isModerator: false });
+    })
+  );
 
   eventService = new EventService(dbService);
 });
@@ -152,38 +176,6 @@ describe("EventService getEvents", () => {
     ).toStrictEqual(new Set(["uppercase-1"]));
   });
 
-  it("Should correctly filter by guest code", async () => {
-    expect(
-      await eventService
-        .getEvents({ guestCode: "birthday-1-moderator", archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
-        .getOrThrow()
-    ).toStrictEqual(new Set([]));
-
-    expect(
-      await eventService
-        .getEvents({ guestCode: "birthday-1-guest", archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
-        .getOrThrow()
-    ).toStrictEqual(new Set(["birthday-1"]));
-  });
-
-  it("Should correctly filter by moderator code", async () => {
-    expect(
-      await eventService
-        .getEvents({ moderatorCode: "wedding-2-guest", archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
-        .getOrThrow()
-    ).toStrictEqual(new Set([]));
-
-    expect(
-      await eventService
-        .getEvents({ moderatorCode: "wedding-2-moderator", archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
-        .getOrThrow()
-    ).toStrictEqual(new Set(["wedding-2"]));
-  });
-
   it("Should correctly filter by status", async () => {
     expect(
       await eventService
@@ -258,7 +250,7 @@ describe("EventService getEvents", () => {
 
     expect(
       await eventService
-        .getEvents({ status: "finished", name: "1", guestCode: "birthday-1-guest" })
+        .getEvents({ status: "finished", name: "1" })
         .map(rows => new Set(rows.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["birthday-1"]));
@@ -279,6 +271,36 @@ describe("EventService getEvents", () => {
   });
 });
 
+describe("eventService getEventCode", () => {
+  it("Should return Err when database call fails", async () => {
+    vi.spyOn(BetterSQLite3Database.prototype, "select").mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    Result.assertError(await eventService.getEventCode("birthday-1", { role: "guest" }));
+  });
+
+  it("Should correctly return guest code", async () => {
+    expect(
+      await eventService.getEventCode("birthday-1", { role: "guest" }).getOrThrow()
+    ).toBe("birth1guest");
+
+    expect(
+      await eventService.getEventCode("birthday-2", { role: "guest" }).getOrThrow()
+    ).toBe("birth2guest");
+  });
+
+  it("Should correctly return moderator code", async () => {
+    expect(
+      await eventService.getEventCode("birthday-1", { role: "moderator" }).getOrThrow()
+    ).toBe("birth1mod");
+
+    expect(
+      await eventService.getEventCode("birthday-2", { role: "moderator" }).getOrThrow()
+    ).toBe("birth2mod");
+  });
+});
+
 describe("eventService createEvent", () => {
   it("Should return Err when database call fails", async () => {
     vi.spyOn(BetterSQLite3Database.prototype, "insert").mockImplementationOnce(() => {
@@ -292,6 +314,26 @@ describe("eventService createEvent", () => {
         endDate: NOW,
       })
     );
+  });
+
+  it("Should return Err and clean up event when code insert fails", async () => {
+    const deleteSpy = vi.spyOn(BetterSQLite3Database.prototype, "delete");
+    const originalInsert = BetterSQLite3Database.prototype.insert;
+    vi.spyOn(BetterSQLite3Database.prototype, "insert")
+      .mockImplementationOnce(originalInsert)
+      .mockImplementationOnce(() => {
+        throw new Error();
+      });
+
+    Result.assertError(
+      await eventService.createEvent({
+        name: "newEvent",
+        startDate: NOW,
+        endDate: NOW,
+      })
+    );
+
+    expect(deleteSpy).toHaveBeenCalledOnce();
   });
 
   it("Should correctly create event", async () => {
@@ -330,6 +372,13 @@ describe("eventService createEvent", () => {
         newEvent.id,
       ])
     );
+
+    const codes = await eventService["dbService"].db
+      .select()
+      .from(eventCodeTable)
+      .where(eq(eventCodeTable.eventId, newEvent.id));
+    expect(codes).toHaveLength(2);
+    expect(new Set(codes.map(c => c.isModerator))).toStrictEqual(new Set([true, false]));
   });
 
   it("Should flush after creating event", async () => {
@@ -405,11 +454,9 @@ describe("eventService deleteEvent", () => {
     const deletedEvent = await eventService.deleteEvent("birthday-1").getOrThrow();
 
     expect(deletedEvent.name).toBe("Birthday 1");
-    expect(deletedEvent.description).toBe("");
+    expect(deletedEvent.description).toBe("birthday event");
     expect(deletedEvent.uploadLimit).toBe(5);
     expect(deletedEvent.isArchived).toBe(false);
-    expect(deletedEvent.guestCode).toBe("birthday-1-guest");
-    expect(deletedEvent.moderatorCode).toBe("birthday-1-moderator");
 
     expect(
       await eventService["dbService"].db
