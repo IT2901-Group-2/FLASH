@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import { eq } from "drizzle-orm";
 import { getFirstRow } from "@/lib/utils/sql";
 import jwt from "jsonwebtoken";
+import { setEventCookie, verifyEventCookie } from "@/lib/utils/eventCookie";
 
 export class UserService {
   private readonly dbService: DatabaseService;
@@ -41,19 +42,10 @@ export class UserService {
   joinEvent(code: string, userData: CreateUser): AsyncResult<User, Error> {
     return Result.genCatching(this, async function* () {
       const eventCode = yield* this.getEventByCode(code);
-
-      // TODO: Check if user is already logged in
+      yield* verifyEventCookie(eventCode.eventId, "SUPER_SECRET_KEY");
 
       const user = yield* this.createUser(eventCode, userData);
-
-      const cookieStore = await cookies();
-      cookieStore.set(
-        `event-${eventCode.eventId}`,
-        jwt.sign(
-          { userId: user.id, name: user.name, isModerator: user.isModerator },
-          "SUPER_SECRET_KEY"
-        )
-      );
+      yield* setEventCookie(user, "SUPER_SECRET_KEY");
 
       return user;
     });

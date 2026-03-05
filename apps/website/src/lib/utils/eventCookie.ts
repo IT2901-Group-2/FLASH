@@ -1,0 +1,47 @@
+import { AsyncResult, Result } from "typescript-result";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
+import { User } from "@/db";
+import z from "zod";
+
+export const eventCookieSchema = z.object({
+  userId: z.string(),
+  name: z.string(),
+  isModerator: z.boolean(),
+});
+
+export type EventCookie = z.infer<typeof eventCookieSchema>;
+
+export function getEventCookie(eventId: string): AsyncResult<EventCookie, Error> {
+  return Result.try(cookies)
+    .map(cs => cs.get(`event-${eventId}`))
+    .mapCatching(c => z.parseAsync(z.string(), c))
+    .mapCatching(c => jwt.decode(c))
+    .mapCatching(c => z.parseAsync(eventCookieSchema, c));
+}
+
+export function verifyEventCookie(
+  eventId: string,
+  secret: string
+): AsyncResult<EventCookie, Error> {
+  return Result.try(cookies).map(cs =>
+    Result.ok(cs.get(`event-${eventId}`))
+      .mapCatching(c => z.parseAsync(z.string(), c))
+      .mapCatching(c => jwt.verify(c, secret))
+      .mapCatching(c => z.parseAsync(eventCookieSchema, c))
+      .onFailure(() => {
+        cs.delete(`event-${eventId}`);
+      })
+  );
+}
+
+export function setEventCookie(
+  { eventId, id: userId, name, isModerator }: User,
+  secret: string
+): AsyncResult<void, Error> {
+  return Result.try(cookies).map(cs =>
+    Result.try(() => jwt.sign({ userId, name, isModerator }, secret)).map(c => {
+      cs.set(`event-${eventId}`, c);
+    })
+  );
+}
