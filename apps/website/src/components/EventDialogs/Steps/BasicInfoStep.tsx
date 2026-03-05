@@ -32,7 +32,6 @@ export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
         label={t("input.description")}
         aria-label="eventDescription"
         data-testid="description"
-        required
       />
       <div className={styles.timeContainer}>
         <Input

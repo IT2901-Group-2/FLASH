@@ -37,7 +37,8 @@ describe("BasicInfoStep", () => {
   it("marks name and description as required", () => {
     renderStep();
     expect(screen.getByTestId("name")).toBeRequired();
-    expect(screen.getByTestId("description")).toBeRequired();
+    expect(screen.getByTestId("startDate")).toBeRequired();
+    expect(screen.getByTestId("endDate")).toBeRequired();
   });
 
   it("sets the end date min attribute to the current start date", () => {
