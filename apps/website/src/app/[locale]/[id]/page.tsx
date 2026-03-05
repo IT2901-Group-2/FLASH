@@ -7,15 +7,15 @@ import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { useEventsQuery } from "@/hooks/useEvents";
-import { useEventAuth } from "@/hooks/useEventAuth";
 import { useRouter } from "next/navigation";
+import { useEventAuth } from "@/providers/EventAuthProvider";
 
 export default function Page() {
   const router = useRouter();
   const t = useTranslations("EventPage");
   const { id } = useParams<{ id: string }>();
   const eventId = typeof id === "string" ? id : "";
-  const eventAuth = useEventAuth(eventId);
+  const eventAuth = useEventAuth();
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );

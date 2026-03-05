@@ -6,7 +6,7 @@ import z from "zod";
 
 export function getEventCookie(eventId: string): AsyncResult<EventCookie, Error> {
   return Result.try(cookies)
-    .map(cs => cs.get(`event-${eventId}`))
+    .map(cs => cs.get(`event-${eventId}`)?.value)
     .mapCatching(c => z.parseAsync(z.string(), c))
     .mapCatching(c => jwt.decode(c))
     .mapCatching(c => z.parseAsync(eventCookieSchema, c));
