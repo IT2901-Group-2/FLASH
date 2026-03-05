@@ -30,5 +30,12 @@ export const createUserSchema = z.object({
   name: z.tuple([z.string()]).transform(([str]) => str),
 });
 
+export const eventCookieSchema = z.object({
+  userId: z.string(),
+  name: z.string(),
+  isModerator: z.boolean(),
+});
+
 export type User = typeof userTable.$inferSelect;
 export type CreateUser = z.infer<typeof createUserSchema>;
+export type EventCookie = z.infer<typeof eventCookieSchema>;

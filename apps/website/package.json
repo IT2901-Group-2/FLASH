@@ -17,6 +17,7 @@
     "@google-cloud/storage": "^7.18.0",
     "@tanstack/react-query": "^5.90.21",
     "better-sqlite3": "^12.6.2",
+    "cookies-next": "^6.1.1",
     "drizzle-kit": "^0.31.9",
     "drizzle-orm": "^0.45.1",
     "file-storage": "workspace:*",

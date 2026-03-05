@@ -7,6 +7,7 @@ import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+import { useEventAuth } from "@/hooks/useEventAuth";
 
 export default function Page() {
   const t = useTranslations("EventPage");
@@ -18,6 +19,7 @@ export default function Page() {
   );
   const { data: guestCode } = useEventCodeQuery(eventId, "guest");
   const eventData = data?.[0];
+  useEventAuth(eventId);
 
   const eventName = eventData?.name ?? (isLoading ? "Loading event..." : "Event");
   const nicknameParam = searchParams.get("nickname")?.trim();

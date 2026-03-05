@@ -1,16 +1,8 @@
 import { AsyncResult, Result } from "typescript-result";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-import { User } from "@/db";
+import { EventCookie, eventCookieSchema, User } from "@/db";
 import z from "zod";
-
-export const eventCookieSchema = z.object({
-  userId: z.string(),
-  name: z.string(),
-  isModerator: z.boolean(),
-});
-
-export type EventCookie = z.infer<typeof eventCookieSchema>;
 
 export function getEventCookie(eventId: string): AsyncResult<EventCookie, Error> {
   return Result.try(cookies)
