@@ -3,6 +3,7 @@ import { imageService } from "@/services/imageService";
 import { Result } from "typescript-result";
 import { parseRequestBody, parseSearchParams } from "@/lib/utils/validation";
 import { getImagesParamsSchema } from "@/db";
+import { BATCH_IMAGE_LIMIT } from "@/config";
 import { errorResponse } from "@/lib/utils/error";
 import z from "zod";
 
@@ -18,7 +19,7 @@ export async function GET(
 }
 
 const batchUpdateSchema = z.object({
-  ids: z.string().array().max(25),
+  ids: z.string().array().max(BATCH_IMAGE_LIMIT),
   isApproved: z.boolean(),
 });
 

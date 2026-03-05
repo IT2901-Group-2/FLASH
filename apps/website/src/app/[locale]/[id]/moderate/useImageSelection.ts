@@ -1,8 +1,7 @@
 import { useState, useCallback } from "react";
 import { useBatchUpdateImageMutation } from "@/hooks/useImages";
+import { BATCH_IMAGE_LIMIT } from "@/config";
 import type { Image } from "@/db";
-
-const BATCH_SIZE = 25;
 
 export function useImageSelection(images: Image[], eventId: string) {
   const { mutateAsync: batchUpdateImage } = useBatchUpdateImageMutation();
@@ -59,8 +58,8 @@ export function useImageSelection(images: Image[], eventId: string) {
       const allIds = Array.from(selectedIds);
       let failed = 0;
 
-      for (let i = 0; i < allIds.length; i += BATCH_SIZE) {
-        const chunk = allIds.slice(i, i + BATCH_SIZE);
+      for (let i = 0; i < allIds.length; i += BATCH_IMAGE_LIMIT) {
+        const chunk = allIds.slice(i, i + BATCH_IMAGE_LIMIT);
         try {
           await batchUpdateImage({ eventId, ids: chunk, isApproved });
         } catch {
