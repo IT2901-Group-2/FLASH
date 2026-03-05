@@ -15,7 +15,7 @@ export default function Page() {
   const t = useTranslations("EventPage");
   const { id } = useParams<{ id: string }>();
   const eventId = typeof id === "string" ? id : "";
-  const { eventAuth, isLoading: eventAuthLoading } = useEventAuth(eventId);
+  const eventAuth = useEventAuth(eventId);
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );
@@ -38,10 +38,10 @@ export default function Page() {
   const [isQrOpen, setIsQrOpen] = useState(false);
 
   useEffect(() => {
-    if (!eventAuthLoading && !eventAuth.isAuthenticated) {
+    if (eventAuth !== undefined && !eventAuth.isAuthenticated) {
       router.push("/");
     }
-  }, [eventAuth, eventAuthLoading, router]);
+  }, [eventAuth, router]);
 
   return (
     <div className={styles.pageWrapper}>

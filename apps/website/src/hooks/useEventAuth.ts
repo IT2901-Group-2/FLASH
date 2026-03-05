@@ -19,18 +19,8 @@ export type EventAuth =
       isModerator: boolean;
     };
 
-export type EventAuthWrapper =
-  | {
-      isLoading: true;
-      eventAuth: undefined;
-    }
-  | { isLoading: false; eventAuth: EventAuth };
-
-export function useEventAuth(eventId: string): EventAuthWrapper {
-  const [eventAuth, setEventAuth] = useState<EventAuthWrapper>({
-    isLoading: true,
-    eventAuth: undefined,
-  });
+export function useEventAuth(eventId: string): EventAuth | undefined {
+  const [eventAuth, setEventAuth] = useState<EventAuth | undefined>(undefined);
 
   useEffect(() => {
     Result.try(() => z.parseAsync(z.string(), getCookie(`event-${eventId}`)))
@@ -39,21 +29,15 @@ export function useEventAuth(eventId: string): EventAuthWrapper {
       .fold(
         cookie =>
           setEventAuth({
-            isLoading: false,
-            eventAuth: {
-              isAuthenticated: true,
-              nickname: cookie.name,
-              isModerator: cookie.isModerator,
-            },
+            isAuthenticated: true,
+            nickname: cookie.name,
+            isModerator: cookie.isModerator,
           }),
         () =>
           setEventAuth({
-            isLoading: false,
-            eventAuth: {
-              isAuthenticated: false,
-              nickname: undefined,
-              isModerator: undefined,
-            },
+            isAuthenticated: false,
+            nickname: undefined,
+            isModerator: undefined,
           })
       );
   }, [eventCookieSchema, jwt.decode, getCookie, setEventAuth]);
