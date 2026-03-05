@@ -1,7 +1,7 @@
 import React from "react";
 import { Loader } from "../Loader";
 import styles from "./Input.module.css";
-import { cl } from "@/util/helpers/";
+import { cl } from "@/util/helpers";
 import { ColorName } from "../types";
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -68,6 +68,11 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
    * @default "large"
    */
   visualSize?: "small" | "medium" | "large" | "xlarge";
+  /**
+   * If the container fills the available space
+   * @default false
+   */
+  fill?: boolean;
 }
 /**
  * An input allows the user to enter and edit text or data.
@@ -89,6 +94,7 @@ export const Input = ({
   required = false,
   "aria-label": ariaLabel,
   id,
+  fill = false,
   visualSize = "large",
   ...props
 }: InputProps) => {
@@ -99,6 +105,7 @@ export const Input = ({
       className={cl(styles.inputWrapper, className)}
       data-color={data}
       data-variant={variant}
+      data-fill={fill}
     >
       {label && (
         <label htmlFor={inputId} className={styles.label} data-size={visualSize}>

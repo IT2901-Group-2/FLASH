@@ -1,0 +1,161 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { ArrowLeft, ChevronLeft } from "lucide-react";
+import { Breadcrumb, Button, Title } from "ui";
+import styles from "./ModerateHeader.module.css";
+
+export interface ModerateHeaderProps {
+  /** Callback invoked when the back arrow is clicked. */
+  onBack: () => void;
+  /** Whether the page is currently in multi-select mode. */
+  selectMode: boolean;
+  /** Toggles between Select and Cancel mode. */
+  onSelectToggle: () => void;
+  /** Selects all images in the active tab. Only relevant when selectMode is true. */
+  onSelectAll: () => void;
+  /** Whether all images are currently selected. Controls the Select All / Deselect All label. */
+  allSelected?: boolean;
+  /**
+   * Breadcrumb items for the mobile bottom bar.
+   * Defaults to a home link + "Moderate" current page label.
+   */
+  breadcrumbItems?: { label: string; href?: string }[];
+}
+
+/**
+ * A header for the moderator image review page.
+ *
+ * - **Mobile default**: two rows — title bar (centred heading + ChevronLeft) and
+ *   bottom bar (Breadcrumb + "Select" pill).
+ * - **Mobile select mode**: same title bar, bottom bar shows "Select All" + "Cancel".
+ * - **Desktop**: single row — ArrowLeft + title + action button(s). No breadcrumb.
+ *
+ * > _Last updated: `2026-03-01`_
+ */
+export const ModerateHeader = ({
+  onBack,
+  selectMode,
+  onSelectToggle,
+  onSelectAll,
+  allSelected = false,
+  breadcrumbItems = [{ label: "Event" }, { label: "Moderate" }],
+}: ModerateHeaderProps) => {
+  const [scrolled, setScrolled] = useState(false);
+  const selectAllLabel = allSelected ? "Deselect All" : "Select All";
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 0);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <header className={`${styles.header}${scrolled ? ` ${styles.scrolled}` : ""}`}>
+      {/* ── Desktop layout (hidden on mobile via CSS) ── */}
+      <div className={styles.desktopRow}>
+        <Button
+          className={styles.desktopBackButton}
+          variant="tertiary"
+          icon={<ArrowLeft aria-hidden="true" />}
+          onClick={onBack}
+          aria-label="Go back"
+        />
+
+        <div className={styles.desktopCenter}>
+          <Title
+            as="h1"
+            size="xlarge"
+            weight="bold"
+            align="left"
+            data-color="brand-purple"
+          >
+            Moderate
+          </Title>
+
+          <div className={styles.desktopActions}>
+            {selectMode && (
+              <Button
+                variant="primary"
+                data-color="brand-purple"
+                className={styles.desktopButton}
+                onClick={onSelectAll}
+              >
+                {selectAllLabel}
+              </Button>
+            )}
+            <Button
+              variant={selectMode ? "secondary" : "primary"}
+              data-color="brand-purple"
+              className={styles.desktopButton}
+              onClick={onSelectToggle}
+            >
+              {selectMode ? "Cancel" : "Select"}
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Mobile title bar (hidden on desktop via CSS) ── */}
+      <div className={styles.mobileTitleBar}>
+        <Button
+          className={styles.mobileBackButton}
+          variant="tertiary"
+          icon={<ChevronLeft aria-hidden="true" />}
+          onClick={onBack}
+          aria-label="Go back"
+        />
+        <Title
+          as="h1"
+          size="xlarge"
+          weight="bold"
+          align="center"
+          data-color="brand-purple"
+        >
+          Moderate
+        </Title>
+      </div>
+
+      {/* ── Mobile bottom bar (hidden on desktop via CSS) ── */}
+      <div className={styles.mobileBottomBar}>
+        {selectMode ? (
+          <div className={styles.mobileSelectActions}>
+            <Button
+              variant="primary"
+              size="xsmall"
+              data-color="brand-purple"
+              className={styles.mobileSelectAllButton}
+              onClick={onSelectAll}
+            >
+              {selectAllLabel}
+            </Button>
+            <Button
+              variant="secondary"
+              size="xsmall"
+              data-color="brand-purple"
+              className={styles.mobileSelectButton}
+              onClick={onSelectToggle}
+            >
+              Cancel
+            </Button>
+          </div>
+        ) : (
+          <>
+            <Breadcrumb items={breadcrumbItems} data-color="brand-purple" />
+            <Button
+              variant="primary"
+              size="xsmall"
+              data-color="brand-purple"
+              className={styles.mobileSelectButton}
+              onClick={onSelectToggle}
+            >
+              Select
+            </Button>
+          </>
+        )}
+      </div>
+    </header>
+  );
+};
+
+export default ModerateHeader;

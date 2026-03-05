@@ -7,7 +7,9 @@ import { useTranslations } from "next-intl";
 export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
   const t = useTranslations("admin.dashboard.event.create.options");
 
-  const [limitMode, setLimitMode] = useState<string>("limited");
+  const [limitMode, setLimitMode] = useState<string>(
+    formData.uploadLimit === undefined ? "unlimited" : "limited"
+  );
 
   useEffect(() => {
     if (limitMode === "unlimited") updateFormData("uploadLimit", undefined);
@@ -31,14 +33,27 @@ export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
                 onChange={e =>
                   updateFormData("uploadLimit", Math.max(1, Number(e.target.value)))
                 }
+                required={limitMode == "limited"}
               />
             </div>
           }
         />
         <DropdownControl.Item value="unlimited" label={t("input.uploads.unlimited")} />
       </DropdownControl>
-      <Switch position="right">
+      {/* // TODO: When database is updated, uncomment these */}
+      <Switch
+        position="right"
+        // checked={formData.autoApprove}
+        // onChange={(checked: boolean) => updateFormData("autoApprove", checked)}
+      >
         <b>{t("input.autoApprove")}</b>
+      </Switch>
+      <Switch
+        position="right"
+        // checked={formData.seeAllPictures}
+        // onChange={(checked: boolean) => updateFormData("seeAllPictures", checked)}
+      >
+        <b>{t("input.guestSeeAll")}</b>
       </Switch>
     </>
   );

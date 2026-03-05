@@ -152,3 +152,51 @@
   background-color: var(--color-brand-purple-500);
   box-shadow: 0 4px 17px 4px var(--color-brand-purple-500);
 }
+
+/* preview2 variant */
+
+.imageCard[data-variant="preview2"] {
+  border: none;
+  border-radius: 0;
+  width: unset;
+  height: unset;
+
+  .imageWrapper {
+    height: 100%;
+  }
+  .titleBox {
+    display: none;
+  }
+}
+
+.imageCard[data-variant="preview2"].selected {
+  background-color: transparent;
+  box-shadow: none;
+
+  .image {
+    opacity: 0.5;
+  }
+}
+
+.moderateCheckBadge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  background: var(--color-neutral-1000);
+  /* TODO: Implement with variable when shadow color is added */
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 2;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    color: var(--color-foreground-100);
+  }
+}

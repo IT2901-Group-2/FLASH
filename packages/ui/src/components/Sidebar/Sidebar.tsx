@@ -5,7 +5,7 @@ import SidebarGroup, { SidebarGroupProps } from "./SidebarGroup";
 import SidebarHeader, { SidebarHeaderProps } from "./SidebarHeader";
 import SidebarFooter, { SidebarFooterProps } from "./SidebarFooter";
 import SidebarProvider, { useSidebar } from "./SidebarContext";
-import { cl } from "@/util/helpers/";
+import { cl } from "@/util/helpers";
 import SidebarTrigger from "./SidebarTrigger";
 
 export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {

@@ -2,6 +2,7 @@ import { parseSearchParams } from "@/lib/utils/validation";
 import { getEventCodeParamsSchema } from "@/db";
 import { NextRequest, NextResponse } from "next/server";
 import { eventService } from "@/services/eventService";
+import { errorResponse } from "@/lib/utils/error";
 
 export async function GET(
   req: NextRequest,
@@ -11,8 +12,5 @@ export async function GET(
 
   return parseSearchParams(req.nextUrl.searchParams, getEventCodeParamsSchema)
     .map(data => eventService.getEventCode(eventId, data))
-    .fold(
-      events => NextResponse.json(events),
-      err => NextResponse.json({ message: err.message }, { status: 500 })
-    );
+    .fold(events => NextResponse.json(events), errorResponse);
 }

@@ -4,6 +4,7 @@ import Logo from "@/components/Logo/Logo";
 import { useTranslations } from "next-intl";
 import styles from "./JoinEvent.module.css";
 import { Title } from "ui";
+import RememberedEvents from "@/components/RememberedEvents/RememberedEvents";
 
 const Page = () => {
   const t = useTranslations("JoinEventPage");
@@ -15,6 +16,7 @@ const Page = () => {
         {t("appTitle")}
       </Title>
       <JoinEventCard />
+      <RememberedEvents />
     </div>
   );
 };
