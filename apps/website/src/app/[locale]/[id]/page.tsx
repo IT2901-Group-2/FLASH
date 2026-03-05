@@ -1,34 +1,26 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Camera, Upload } from "lucide-react";
 import styles from "./UploadImage.module.css";
 import { ActionCard, PhoneHeader } from "ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
-import { useParams, useSearchParams } from "next/navigation";
-import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+import { useParams } from "next/navigation";
+import { useEventsQuery } from "@/hooks/useEvents";
 import { useEventAuth } from "@/hooks/useEventAuth";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const router = useRouter();
   const t = useTranslations("EventPage");
   const { id } = useParams<{ id: string }>();
-  const searchParams = useSearchParams();
   const eventId = typeof id === "string" ? id : "";
+  const { eventAuth, isLoading: eventAuthLoading } = useEventAuth(eventId);
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );
-  const { data: guestCode } = useEventCodeQuery(eventId, "guest");
   const eventData = data?.[0];
-  useEventAuth(eventId);
-
   const eventName = eventData?.name ?? (isLoading ? "Loading event..." : "Event");
-  const nicknameParam = searchParams.get("nickname")?.trim();
-  const nickname =
-    nicknameParam && nicknameParam.length > 0
-      ? nicknameParam
-      : guestCode !== undefined
-        ? `Code: ${guestCode}`
-        : "Guest";
   const uploadsRemaining =
     typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
 
@@ -45,12 +37,18 @@ export default function Page() {
   });
   const [isQrOpen, setIsQrOpen] = useState(false);
 
+  useEffect(() => {
+    if (!eventAuthLoading && !eventAuth.isAuthenticated) {
+      router.push("/");
+    }
+  }, [eventAuth, eventAuthLoading, router]);
+
   return (
     <div className={styles.pageWrapper}>
       <FileInput />
       <PhoneHeader
         title={eventName}
-        subtitle={nickname}
+        subtitle={eventAuth?.nickname ?? ""}
         rightLabel="Live"
         rightVariant="primary"
         rightAriaLabel="live-button"
