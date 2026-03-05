@@ -38,9 +38,9 @@ export class UserService {
       .onSuccess(() => this.dbService.flush());
   }
 
-  joinEvent(code: string, userData: CreateUser): AsyncResult<string, Error> {
+  joinEvent(userData: CreateUser): AsyncResult<string, Error> {
     return Result.gen(this, async function* () {
-      const eventCode = yield* this.getEventByCode(code);
+      const eventCode = yield* this.getEventByCode(userData.eventCode);
 
       const cookieResult = await verifyEventCookie(eventCode.eventId, JWT_SECRET);
       if (cookieResult.ok) {

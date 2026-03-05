@@ -26,7 +26,8 @@ export const userTable = sqliteTable(
 );
 
 export const createUserSchema = z.object({
-  name: z.string(),
+  eventCode: z.tuple([z.string()]).transform(([str]) => str),
+  name: z.tuple([z.string()]).transform(([str]) => str),
 });
 
 export type User = typeof userTable.$inferSelect;

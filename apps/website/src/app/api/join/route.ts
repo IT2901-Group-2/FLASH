@@ -1,16 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { parseRequestBody } from "@/lib/utils/validation";
+import { parseFormData } from "@/lib/utils/validation";
 import { createUserSchema } from "@/db";
 import { userService } from "@/services/userService";
+import { Result } from "typescript-result";
 
-export async function POST(
-  req: NextRequest,
-  { params }: RouteContext<"/api/join/[code]">
-): Promise<NextResponse> {
-  const { code } = await params;
-
-  return parseRequestBody(req, createUserSchema)
-    .map(data => userService.joinEvent(code, data))
+export async function POST(req: NextRequest): Promise<NextResponse> {
+  return Result.try(() => req.formData())
+    .map(formData => parseFormData(formData, createUserSchema))
+    .map(data => userService.joinEvent(data))
     .fold(
       eventId =>
         NextResponse.redirect(new URL(`/${eventId}`, req.url), {

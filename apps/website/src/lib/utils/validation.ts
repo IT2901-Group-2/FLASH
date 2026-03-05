@@ -39,3 +39,25 @@ export function parseSearchParams<T>(
 
   return Result.try(() => z.parseAsync(schema, params)).mapError(mapZodError);
 }
+
+/**
+ * Utility function to validate `FormData` against a `zod` schema.
+ *
+ * @param formData The `FormData` object to validate.
+ * @param schema The `zod` schema to validate against.
+ * @returns A result with the search params or an error.
+ */
+export function parseFormData<T>(
+  formData: FormData,
+  schema: z.ZodType<T>
+): AsyncResult<T, Error> {
+  const data = formData
+    .keys()
+    .reduce(
+      (acc, key) => ({ ...acc, [key]: formData.getAll(key) }),
+      {} as Record<string, unknown>
+    );
+  console.log(data);
+
+  return Result.try(() => z.parseAsync(schema, data)).mapError(mapZodError);
+}
