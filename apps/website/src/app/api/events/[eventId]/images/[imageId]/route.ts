@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { imageService } from "@/services/imageService";
 import { parseRequestBody } from "@/lib/utils/validation";
 import { updateImageSchema } from "@/db";
+import { errorResponse } from "@/lib/utils/error";
 
 export async function GET(
   _: NextRequest,
@@ -17,7 +18,7 @@ export async function GET(
           "Cache-Control": `public, max-age=${10 * 60 * 60}`,
         },
       }),
-    err => NextResponse.json({ message: err.message }, { status: 500 })
+    errorResponse
   );
 }
 
@@ -29,10 +30,7 @@ export async function PATCH(
 
   return parseRequestBody(req, updateImageSchema)
     .map(data => imageService.updateImage(eventId, imageId, data))
-    .fold(
-      image => NextResponse.json(image),
-      err => NextResponse.json({ message: err.message }, { status: 500 })
-    );
+    .fold(image => NextResponse.json(image), errorResponse);
 }
 
 export async function DELETE(
@@ -41,8 +39,7 @@ export async function DELETE(
 ): Promise<NextResponse> {
   const { eventId, imageId } = await params;
 
-  return imageService.deleteImage(eventId, imageId).fold(
-    image => NextResponse.json(image),
-    err => NextResponse.json({ message: err.message }, { status: 500 })
-  );
+  return imageService
+    .deleteImage(eventId, imageId)
+    .fold(image => NextResponse.json(image), errorResponse);
 }
