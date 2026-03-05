@@ -99,6 +99,7 @@
     "error": {
       "invalidCode": "Fyll inn en gyldig event kode",
       "noCode": "Ugyldig kode. Venligst prøv igjenn.",
+      "futureEvent": "Dette arrangementet har ikke startet ennå.",
       "invalidNickname": "Skriv inn et kallenavn."
     },
     "admin": "Admin",
