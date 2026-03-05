@@ -13,6 +13,9 @@ import { getFirstRow } from "@/lib/utils/sql";
 import { and, eq, like, inArray, lt, lte, gte, gt, desc, asc } from "drizzle-orm";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { SQLiteColumn } from "drizzle-orm/sqlite-core";
+import { verifyEventCookie } from "@/lib/utils/eventCookie";
+import { JWT_SECRET } from "@/config";
+import { HTTPError } from "@/lib/utils/error";
 
 export class EventService {
   private readonly dbService: DatabaseService;
@@ -85,18 +88,32 @@ export class EventService {
     eventId: string,
     { role }: GetEventCodeParams
   ): AsyncResult<string, Error> {
-    return Result.try(() =>
-      this.dbService.db
-        .select({ code: eventCodeTable.code })
-        .from(eventCodeTable)
-        .where(
-          and(
-            eq(eventCodeTable.eventId, eventId),
-            eq(eventCodeTable.isModerator, role === "moderator")
+    return Result.gen(this, function* () {
+      if (role === "moderator") {
+        yield* verifyEventCookie(eventId, JWT_SECRET).map(({ isModerator }) =>
+          isModerator
+            ? Result.ok()
+            : Result.error(
+                new HTTPError(
+                  `User does is not a moderator for event with id ${eventId}`,
+                  403
+                )
+              )
+        );
+      }
+    })
+      .mapCatching(() =>
+        this.dbService.db
+          .select({ code: eventCodeTable.code })
+          .from(eventCodeTable)
+          .where(
+            and(
+              eq(eventCodeTable.eventId, eventId),
+              eq(eventCodeTable.isModerator, role === "moderator")
+            )
           )
-        )
-        .limit(1)
-    )
+          .limit(1)
+      )
       .map(rows => getFirstRow(rows))
       .map(row => row.code);
   }

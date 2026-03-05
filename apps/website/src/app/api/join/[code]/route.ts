@@ -12,7 +12,7 @@ export async function POST(
   return parseRequestBody(req, createUserSchema)
     .map(data => userService.joinEvent(code, data))
     .fold(
-      ({ eventId }) =>
+      eventId =>
         NextResponse.redirect(new URL(`/${eventId}`, req.url), {
           status: 303,
         }),

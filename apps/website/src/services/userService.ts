@@ -5,6 +5,7 @@ import { setEventCookie, verifyEventCookie } from "@/lib/utils/eventCookie";
 import { AsyncResult, Result } from "typescript-result";
 import { eq } from "drizzle-orm";
 import { getFirstRow } from "@/lib/utils/sql";
+import { JWT_SECRET } from "@/config";
 
 export class UserService {
   private readonly dbService: DatabaseService;
@@ -37,16 +38,20 @@ export class UserService {
       .onSuccess(() => this.dbService.flush());
   }
 
-  joinEvent(code: string, userData: CreateUser): AsyncResult<User, Error> {
-    return this.getEventByCode(code).map(eventCode =>
-      verifyEventCookie(eventCode.eventId, "SUPER_SECRET_KEY").fold(
-        () => Result.error(new Error()),
-        () =>
-          this.createUser(eventCode, userData).map(user =>
-            setEventCookie(user, "SUPER_SECRET_KEY").map(() => user)
-          )
-      )
-    );
+  joinEvent(code: string, userData: CreateUser): AsyncResult<string, Error> {
+    return Result.gen(this, async function* () {
+      const eventCode = yield* this.getEventByCode(code);
+
+      const cookieResult = await verifyEventCookie(eventCode.eventId, JWT_SECRET);
+      if (cookieResult.ok) {
+        return eventCode.eventId;
+      }
+
+      const user = yield* this.createUser(eventCode, userData);
+      yield* setEventCookie(user, JWT_SECRET);
+
+      return eventCode.eventId;
+    });
   }
 }
 

@@ -25,7 +25,8 @@ export function verifyEventCookie(
   secret: string
 ): AsyncResult<EventCookie, Error> {
   return Result.try(cookies).map(cs =>
-    Result.ok(cs.get(`event-${eventId}`))
+    Result.ok(cs.get(`event-${eventId}`)?.value)
+      .mapCatching(c => z.parseAsync(z.string(), c))
       .mapCatching(c => z.parseAsync(z.string(), c))
       .mapCatching(c => jwt.verify(c, secret))
       .mapCatching(c => z.parseAsync(eventCookieSchema, c))
