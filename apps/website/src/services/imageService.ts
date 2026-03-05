@@ -1,7 +1,7 @@
 import { FileStorage } from "file-storage";
 import { DatabaseService, dbService } from "./databaseService";
 import { AsyncResult, Result } from "typescript-result";
-import { EventCookie, GetImagesParams, Image, imageTable, UpdateImage } from "@/db";
+import { GetImagesParams, Image, imageTable, UpdateImage } from "@/db";
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
 import { getFirstRow } from "@/lib/utils/sql";
@@ -23,26 +23,6 @@ export class ImageService {
   }
 
   static readonly MAX_IMAGE_SIZE = 4 * 1024 * 1024;
-
-  private checkPermissions(
-    eventId: string,
-    role: "guest" | "moderator"
-  ): AsyncResult<EventCookie, Error> {
-    return getEventCookie(eventId, JWT_SECRET)
-      .mapError(
-        () => new HTTPError(`User is not logged in to event with id ${eventId}`, 403)
-      )
-      .map(({ isModerator }) => {
-        if (role === "moderator" && !isModerator) {
-          return Result.error(
-            new HTTPError(`User is not a moderator for event with id ${eventId}`, 403)
-          );
-        }
-
-        return Result.ok();
-      });
-  }
-
   /**
    * Validates the image metadata using `sharp`.
    * Checks that `sharp` is able to open the image file and that the size of the image does not exceed `ImageService.MAX_IMAGE_SIZE`.
@@ -74,7 +54,7 @@ export class ImageService {
     eventId: string,
     { id, approval }: GetImagesParams = {}
   ): AsyncResult<Image[], Error> {
-    return this.checkPermissions(eventId, "guest").mapCatching(() =>
+    return Result.try(() =>
       this.dbService.db
         .select()
         .from(imageTable)
@@ -103,14 +83,13 @@ export class ImageService {
     eventId: string,
     imageId: string
   ): AsyncResult<Buffer<ArrayBufferLike>, Error> {
-    return this.checkPermissions(eventId, "guest")
-      .mapCatching(() =>
-        this.dbService.db
-          .select()
-          .from(imageTable)
-          .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
-          .limit(1)
-      )
+    return Result.try(() =>
+      this.dbService.db
+        .select()
+        .from(imageTable)
+        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
+        .limit(1)
+    )
       .map(rows =>
         getFirstRow(
           rows,
@@ -130,25 +109,29 @@ export class ImageService {
   uploadImage(eventId: string, image: SharpInput): AsyncResult<Image, Error> {
     const imageId = uid.rnd();
 
-    return this.checkPermissions(eventId, "guest").map(({ userId }) =>
-      Result.try(() => sharp(image))
-        .map(sharpImage => this.validateImage(sharpImage))
-        .mapCatching(sharpImage => sharpImage.clone().webp().toBuffer())
-        .map(buff => this.storage.write(`${imageId}.webp`, buff))
-        .map(() =>
-          Result.try(() =>
-            this.dbService.db
-              .insert(imageTable)
-              .values({ id: imageId, userId, eventId })
-              .returning()
+    return getEventCookie(eventId, JWT_SECRET)
+      .mapError(
+        () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
+      )
+      .map(({ userId }) =>
+        Result.try(() => sharp(image))
+          .map(sharpImage => this.validateImage(sharpImage))
+          .mapCatching(sharpImage => sharpImage.clone().webp().toBuffer())
+          .map(buff => this.storage.write(`${imageId}.webp`, buff))
+          .map(() =>
+            Result.try(() =>
+              this.dbService.db
+                .insert(imageTable)
+                .values({ id: imageId, userId, eventId })
+                .returning()
+            )
+              .map(rows => getFirstRow(rows, "Failed to upload image"))
+              .onSuccess(() => this.dbService.flush())
+              .onFailure(async () => {
+                await this.storage.rm(`${imageId}.webp`).getOrNull();
+              })
           )
-            .map(rows => getFirstRow(rows, "Failed to upload image"))
-            .onSuccess(() => this.dbService.flush())
-            .onFailure(async () => {
-              await this.storage.rm(`${imageId}.webp`).getOrNull();
-            })
-        )
-    );
+      );
   }
 
   /**
@@ -165,14 +148,13 @@ export class ImageService {
     imageId: string,
     data: UpdateImage
   ): AsyncResult<Image, Error> {
-    return this.checkPermissions(eventId, "moderator")
-      .mapCatching(() =>
-        this.dbService.db
-          .update(imageTable)
-          .set(data)
-          .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
-          .returning()
-      )
+    return Result.try(() =>
+      this.dbService.db
+        .update(imageTable)
+        .set(data)
+        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
+        .returning()
+    )
       .map(rows =>
         getFirstRow(
           rows,
