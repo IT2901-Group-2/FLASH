@@ -1,7 +1,7 @@
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { DatabaseService, dbService } from "./databaseService";
 import { CreateUser, EventCode, eventCodeTable, User, userTable } from "@/db";
-import { setEventCookie, verifyEventCookie } from "@/lib/utils/eventCookie";
+import { setEventCookie, getEventCookie } from "@/lib/utils/eventCookie";
 import { AsyncResult, Result } from "typescript-result";
 import { eq } from "drizzle-orm";
 import { getFirstRow } from "@/lib/utils/sql";
@@ -42,7 +42,7 @@ export class UserService {
     return Result.gen(this, async function* () {
       const eventCode = yield* this.getEventByCode(userData.eventCode);
 
-      const cookieResult = await verifyEventCookie(eventCode.eventId, JWT_SECRET);
+      const cookieResult = await getEventCookie(eventCode.eventId, JWT_SECRET);
       if (cookieResult.ok) {
         return eventCode.eventId;
       }

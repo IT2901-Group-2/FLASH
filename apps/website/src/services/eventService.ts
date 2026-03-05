@@ -13,7 +13,7 @@ import { getFirstRow } from "@/lib/utils/sql";
 import { and, eq, like, inArray, lt, lte, gte, gt, desc, asc } from "drizzle-orm";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { SQLiteColumn } from "drizzle-orm/sqlite-core";
-import { verifyEventCookie } from "@/lib/utils/eventCookie";
+import { getEventCookie } from "@/lib/utils/eventCookie";
 import { JWT_SECRET } from "@/config";
 import { HTTPError } from "@/lib/utils/error";
 
@@ -90,7 +90,7 @@ export class EventService {
   ): AsyncResult<string, Error> {
     return Result.gen(this, function* () {
       if (role === "moderator") {
-        yield* verifyEventCookie(eventId, JWT_SECRET).map(({ isModerator }) =>
+        yield* getEventCookie(eventId, JWT_SECRET).map(({ isModerator }) =>
           isModerator
             ? Result.ok()
             : Result.error(

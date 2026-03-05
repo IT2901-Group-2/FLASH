@@ -3,9 +3,10 @@
 import { PropsWithChildren } from "react";
 import { EventAuth, EventAuthContextProvider } from "./EventAuthContext";
 import { getEventCookie } from "@/lib/utils/eventCookie";
+import { JWT_SECRET } from "@/config";
 
 export async function getEventAuth(eventId: string): Promise<EventAuth> {
-  return getEventCookie(eventId).fold(
+  return getEventCookie(eventId, JWT_SECRET).fold(
     ({ name, isModerator }) => ({
       isAuthenticated: true,
       nickname: name,

@@ -1,14 +1,14 @@
 import { FileStorage } from "file-storage";
 import { DatabaseService, dbService } from "./databaseService";
 import { AsyncResult, Result } from "typescript-result";
-import { GetImagesParams, Image, imageTable, UpdateImage } from "@/db";
+import { EventCookie, GetImagesParams, Image, imageTable, UpdateImage } from "@/db";
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
 import { getFirstRow } from "@/lib/utils/sql";
 import { and, eq, inArray, isNull } from "drizzle-orm";
 import { JWT_SECRET, storage } from "@/config";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
-import { EventCookie, verifyEventCookie } from "@/lib/utils/eventCookie";
+import { getEventCookie } from "@/lib/utils/eventCookie";
 import { HTTPError } from "@/lib/utils/error";
 
 const uid = new ShortUniqueId();
@@ -28,7 +28,7 @@ export class ImageService {
     eventId: string,
     role: "guest" | "moderator"
   ): AsyncResult<EventCookie, Error> {
-    return verifyEventCookie(eventId, JWT_SECRET)
+    return getEventCookie(eventId, JWT_SECRET)
       .mapError(
         () => new HTTPError(`User is not logged in to event with id ${eventId}`, 403)
       )

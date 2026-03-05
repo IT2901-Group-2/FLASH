@@ -4,14 +4,6 @@ import jwt from "jsonwebtoken";
 import { EventCookie, eventCookieSchema, User } from "@/db";
 import z from "zod";
 
-export function getEventCookie(eventId: string): AsyncResult<EventCookie, Error> {
-  return Result.try(cookies)
-    .map(cs => cs.get(`event-${eventId}`)?.value)
-    .mapCatching(c => z.parseAsync(z.string(), c))
-    .mapCatching(c => jwt.decode(c))
-    .mapCatching(c => z.parseAsync(eventCookieSchema, c));
-}
-
 // TODO: Delete malformed cookies
 // TODO: Cleanup
 export function getEventCookies(): AsyncResult<EventCookie[], Error> {
@@ -29,7 +21,7 @@ export function getEventCookies(): AsyncResult<EventCookie[], Error> {
     .map(cookies => cookies.filter(cookie => cookie !== null));
 }
 
-export function verifyEventCookie(
+export function getEventCookie(
   eventId: string,
   secret: string
 ): AsyncResult<EventCookie, Error> {
