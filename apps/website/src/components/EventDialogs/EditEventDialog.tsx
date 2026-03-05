@@ -55,9 +55,8 @@ export const EditEventDialog = ({
 
   const handleSave = async () => {
     if (!formRef.current?.reportValidity()) return;
-    await mutateAsync({ eventId: event.id, data: formData });
-    setCurrentStepIndex(0);
-    onClose();
+    // Added as .then(), so its easy to add if there are error popups in the future
+    await mutateAsync({ eventId: event.id, data: formData }).then(handleClose);
   };
 
   const handleClose = () => {
