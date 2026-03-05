@@ -3,13 +3,17 @@ import { render, screen, cleanup } from "@testing-library/react";
 import Page from "./page";
 import * as useFileUploadModule from "@/hooks/useFileUpload";
 import * as useEventsModule from "@/hooks/useEvents";
+import * as useImagesModule from "@/hooks/useImages";
 import * as uiModule from "ui";
-import { Event } from "@/db";
+import { Event, Image } from "@/db";
 
 // Mock the UI components
 vi.mock("ui", () => ({
   PhoneHeader: vi.fn(() => <div data-testid="phone-header">PhoneHeader</div>),
   ActionCard: vi.fn(() => <div data-testid="action-card">ActionCard</div>),
+  ImageCard: vi.fn(({ title }: { title: string }) => (
+    <div data-testid="image-card">{title}</div>
+  )),
 }));
 
 vi.mock("@/hooks/useEvents", () => ({
@@ -35,6 +39,25 @@ vi.mock("@/hooks/useEvents", () => ({
     data: "ABC123",
     isLoading: false,
     isError: false,
+  })),
+}));
+
+const mockUploadImage = vi.fn();
+
+vi.mock("@/hooks/useImages", () => ({
+  useUploadImageMutation: vi.fn(() => ({
+    mutateAsync: mockUploadImage,
+  })),
+  useImagesQuery: vi.fn(() => ({
+    data: [
+      {
+        id: "image-1",
+        eventId: "event-1",
+        isApproved: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ] satisfies Image[],
   })),
 }));
 
@@ -148,8 +171,14 @@ describe("Guest Upload Page", () => {
     );
   });
 
-  it("should execute onFilesSelected callback when files are selected", () => {
-    const consoleSpy = vi.spyOn(console, "log");
+  it("renders uploaded images", () => {
+    render(<Page />);
+
+    expect(screen.getByTestId("image-card")).toBeDefined();
+    expect(screen.getByText("Image 1")).toBeDefined();
+  });
+
+  it("shows upload error when callback runs without event id", async () => {
     render(<Page />);
 
     // Get the onFilesSelected callback that was passed to useFileUpload
@@ -170,10 +199,17 @@ describe("Guest Upload Page", () => {
 
     // Call it with mock FileList
     if (onFilesSelected) {
-      onFilesSelected(mockFileList);
+      await onFilesSelected(mockFileList);
     }
 
-    expect(consoleSpy).toHaveBeenCalledWith("Selected files:", mockFileList);
-    consoleSpy.mockRestore();
+    expect(
+      await screen.findByText("Unable to upload images for this event.")
+    ).toBeDefined();
+    expect(mockUploadImage).not.toHaveBeenCalled();
+  });
+
+  it("uses image query hook", () => {
+    render(<Page />);
+    expect(useImagesModule.useImagesQuery).toHaveBeenCalled();
   });
 });
