@@ -57,7 +57,6 @@ export function parseFormData<T>(
       (acc, key) => ({ ...acc, [key]: formData.getAll(key) }),
       {} as Record<string, unknown>
     );
-  console.log(data);
 
   return Result.try(() => z.parseAsync(schema, data)).mapError(mapZodError);
 }

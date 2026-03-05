@@ -3,6 +3,7 @@ import { parseFormData } from "@/lib/utils/validation";
 import { createUserSchema } from "@/db";
 import { userService } from "@/services/userService";
 import { Result } from "typescript-result";
+import { errorResponse } from "@/lib/utils/error";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   return Result.try(() => req.formData())
@@ -13,6 +14,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         NextResponse.redirect(new URL(`/${eventId}`, req.url), {
           status: 303,
         }),
-      err => NextResponse.json({ message: err.message }, { status: 500 })
+      errorResponse
     );
 }
