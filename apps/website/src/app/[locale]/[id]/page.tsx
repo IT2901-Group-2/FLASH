@@ -2,11 +2,12 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, Camera, Upload } from "lucide-react";
 import styles from "./UploadImage.module.css";
-import { ActionCard, PhoneHeader } from "ui";
+import { ActionCard, ImageCard, PhoneHeader } from "ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
 import { hasNicknameForEvent } from "@/hooks/useRememberEvents";
 
 export default function Page() {
@@ -15,9 +16,12 @@ export default function Page() {
   const { id } = useParams<{ id: string }>();
   const searchParams = useSearchParams();
   const eventId = typeof id === "string" ? id : "";
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );
+  const { mutateAsync: uploadImage } = useUploadImageMutation();
+  const { data: images } = useImagesQuery(eventId);
   const { data: guestCode } = useEventCodeQuery(eventId, "guest");
   const eventData = data?.[0];
 
@@ -38,9 +42,21 @@ export default function Page() {
       : "You have an unlimited number of uploads";
 
   const { openFilePicker, FileInput } = useFileUpload({
-    onFilesSelected: files => {
-      console.log("Selected files:", files);
-      // TODO: Handle file upload logic here
+    onFilesSelected: async files => {
+      if (!eventId) {
+        setUploadError("Unable to upload images for this event.");
+        return;
+      }
+
+      setUploadError(null);
+
+      const results = await Promise.allSettled(
+        Array.from(files).map(file => uploadImage({ eventId, file }))
+      );
+
+      if (results.some(result => result.status === "rejected")) {
+        setUploadError("One or more images failed to upload. Please try again.");
+      }
     },
   });
   const [isQrOpen, setIsQrOpen] = useState(false);
@@ -69,6 +85,26 @@ export default function Page() {
       {!isLoading && (isError || !eventData) ? (
         <p className={styles.errorText}>Could not load event details for this link.</p>
       ) : null}
+      {uploadError ? <p className={styles.errorText}>{uploadError}</p> : null}
+
+      <div className={styles.imageSection}>
+        {images && images.length > 0 ? (
+          <div className={styles.imageGrid}>
+            {images.map((image, index) => (
+              <ImageCard
+                key={image.id}
+                size="large"
+                src={`/api/events/${eventId}/images/${image.id}`}
+                alt={`Uploaded image ${index + 1}`}
+                title={`Image ${index + 1}`}
+              />
+            ))}
+          </div>
+        ) : (
+          <p className={styles.emptyText}>No images uploaded yet.</p>
+        )}
+      </div>
+
       <ActionCard
         className={`${styles.mobileOnly} ${isQrOpen ? styles.dimmed : ""}`}
         description={uploadsDescription}
