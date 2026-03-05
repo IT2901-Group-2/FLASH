@@ -1,12 +1,10 @@
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { DatabaseService, dbService } from "./databaseService";
 import { CreateUser, EventCode, eventCodeTable, User, userTable } from "@/db";
+import { setEventCookie, verifyEventCookie } from "@/lib/utils/eventCookie";
 import { AsyncResult, Result } from "typescript-result";
-import { cookies } from "next/headers";
 import { eq } from "drizzle-orm";
 import { getFirstRow } from "@/lib/utils/sql";
-import jwt from "jsonwebtoken";
-import { setEventCookie, verifyEventCookie } from "@/lib/utils/eventCookie";
 
 export class UserService {
   private readonly dbService: DatabaseService;
@@ -40,15 +38,15 @@ export class UserService {
   }
 
   joinEvent(code: string, userData: CreateUser): AsyncResult<User, Error> {
-    return Result.genCatching(this, async function* () {
-      const eventCode = yield* this.getEventByCode(code);
-      yield* verifyEventCookie(eventCode.eventId, "SUPER_SECRET_KEY");
-
-      const user = yield* this.createUser(eventCode, userData);
-      yield* setEventCookie(user, "SUPER_SECRET_KEY");
-
-      return user;
-    });
+    return this.getEventByCode(code).map(eventCode =>
+      verifyEventCookie(eventCode.eventId, "SUPER_SECRET_KEY").fold(
+        () => Result.error(new Error()),
+        () =>
+          this.createUser(eventCode, userData).map(user =>
+            setEventCookie(user, "SUPER_SECRET_KEY").map(() => user)
+          )
+      )
+    );
   }
 }
 
