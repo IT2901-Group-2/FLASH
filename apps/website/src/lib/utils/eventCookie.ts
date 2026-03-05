@@ -12,6 +12,23 @@ export function getEventCookie(eventId: string): AsyncResult<EventCookie, Error>
     .mapCatching(c => z.parseAsync(eventCookieSchema, c));
 }
 
+// TODO: Delete malformed cookies
+// TODO: Cleanup
+export function getEventCookies(): AsyncResult<EventCookie[], Error> {
+  return Result.try(cookies)
+    .map(cs => cs.getAll())
+    .map(cookies => cookies.filter(cookie => cookie.name.startsWith("event-")))
+    .map(cookies => cookies.map(cookie => jwt.decode(cookie.value)))
+    .map(cookies =>
+      Promise.all(
+        cookies.map(cookie =>
+          Result.try(() => z.parseAsync(eventCookieSchema, cookie)).getOrNull()
+        )
+      )
+    )
+    .map(cookies => cookies.filter(cookie => cookie !== null));
+}
+
 export function verifyEventCookie(
   eventId: string,
   secret: string
@@ -33,7 +50,7 @@ export function setEventCookie(
   secret: string
 ): AsyncResult<void, Error> {
   return Result.try(cookies).map(cs =>
-    Result.try(() => jwt.sign({ userId, name, isModerator }, secret)).map(c => {
+    Result.try(() => jwt.sign({ eventId, userId, name, isModerator }, secret)).map(c => {
       cs.set(`event-${eventId}`, c);
     })
   );

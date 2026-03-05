@@ -31,6 +31,7 @@ export const createUserSchema = z.object({
 });
 
 export const eventCookieSchema = z.object({
+  eventId: z.string(),
   userId: z.string(),
   name: z.string(),
   isModerator: z.boolean(),
