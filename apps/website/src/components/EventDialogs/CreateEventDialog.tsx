@@ -5,7 +5,6 @@ import { BasicInfoStep, OptionsStep, ReviewStep } from "./Steps";
 import { useTranslations } from "next-intl";
 import { useCreateEventMutation } from "@/hooks/useEvents";
 import { FormStepConfig } from "./Steps/types";
-export type { StepProps } from "./Steps/types";
 import { Event, CreateEvent } from "@/db";
 
 const DEFAULT_FORM_DATA: CreateEvent = {
