@@ -1,8 +1,7 @@
 import { NextRequest } from "next/server";
 import { AsyncResult, Result } from "typescript-result";
 import z from "zod";
-import { HTTPError, mapZodError } from "./error";
-import { parseAsJSON } from "./json";
+import { mapZodError } from "./error";
 
 /**
  * Utility function to validate a `NextRequest` body against a `zod` schema.
