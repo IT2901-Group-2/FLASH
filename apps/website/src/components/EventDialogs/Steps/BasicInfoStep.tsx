@@ -42,8 +42,8 @@ export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
           type="date"
           icon={<Calendar />}
           required
-          fill
           data-testid="startDate"
+          fill
         />
         <Input
           value={formatTimeForInput(formData.startDate)}
@@ -54,8 +54,6 @@ export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
           icon={<Calendar />}
           required
         />
-      </div>
-      <div className={styles.timeContainer}>
         <Input
           value={formatDateForInput(formData.endDate)}
           onChange={makeDateTimeHandler("endDate", "date", formData, updateFormData)}
@@ -65,8 +63,8 @@ export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
           type="date"
           icon={<Calendar />}
           required
-          fill
           data-testid="endDate"
+          fill
         />
         <Input
           value={formatTimeForInput(formData.endDate)}

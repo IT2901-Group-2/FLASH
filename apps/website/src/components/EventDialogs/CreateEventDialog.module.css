@@ -1,5 +1,5 @@
 .container {
-  width: clamp(16rem, 50%, 48rem);
+  width: clamp(28rem, 50%, 48rem);
   border: none;
   background-color: transparent;
   padding: 0;
