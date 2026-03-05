@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { AsyncResult, Result } from "typescript-result";
 import z from "zod";
+import { HTTPError, mapZodError } from "./error";
+import { parseAsJSON } from "./json";
 
 /**
  * Utility function to validate a `NextRequest` body against a `zod` schema.
@@ -13,7 +15,9 @@ export function parseRequestBody<T>(
   request: NextRequest,
   schema: z.ZodType<T>
 ): AsyncResult<T, Error> {
-  return Result.try(async () => z.parseAsync(schema, await request.json()));
+  return Result.try(async () => z.parseAsync(schema, await request.json())).mapError(
+    mapZodError
+  );
 }
 
 /**
@@ -34,5 +38,5 @@ export function parseSearchParams<T>(
       {} as Record<string, unknown[]>
     );
 
-  return Result.try(() => z.parseAsync(schema, params));
+  return Result.try(() => z.parseAsync(schema, params)).mapError(mapZodError);
 }
