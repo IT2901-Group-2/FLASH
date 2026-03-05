@@ -8,7 +8,7 @@ import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { useEventsQuery } from "@/hooks/useEvents";
 import { useRouter } from "next/navigation";
-import { useEventAuth } from "@/providers/EventAuthProvider";
+import { useEventAuth } from "@/providers/EventAuthContext";
 
 export default function Page() {
   const router = useRouter();

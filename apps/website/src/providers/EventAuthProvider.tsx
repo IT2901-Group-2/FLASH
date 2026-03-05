@@ -1,38 +1,29 @@
-"use client";
+"use server";
 
 import { PropsWithChildren } from "react";
-import { createContext, use, useContext } from "react";
+import { EventAuth, EventAuthContextProvider } from "./EventAuthContext";
+import { getEventCookie } from "@/lib/utils/eventCookie";
 
-export type EventAuth =
-  | {
-      isAuthenticated: false;
-      nickname: undefined;
-      isModerator: undefined;
-    }
-  | {
-      isAuthenticated: true;
-      nickname: string;
-      isModerator: boolean;
-    };
-
-export const EventAuthContext = createContext<Promise<EventAuth> | null>(null);
-
-export function EventAuthProvider({
-  eventAuthPromise,
-  children,
-}: PropsWithChildren<{ eventAuthPromise: Promise<EventAuth> }>) {
-  return (
-    <EventAuthContext.Provider value={eventAuthPromise}>
-      {children}
-    </EventAuthContext.Provider>
+export async function getEventAuth(eventId: string): Promise<EventAuth> {
+  return getEventCookie(eventId).fold(
+    ({ name, isModerator }) => ({
+      isAuthenticated: true,
+      nickname: name,
+      isModerator,
+    }),
+    () => ({ isAuthenticated: false, nickname: undefined, isModerator: undefined })
   );
 }
 
-export function useEventAuth(): EventAuth {
-  const eventAuth = useContext(EventAuthContext);
-  if (eventAuth === null) {
-    throw new Error("useEventAuth has to be used within an EventAuthProvider");
-  }
+export async function EventAuthProvider({
+  eventId,
+  children,
+}: PropsWithChildren<{ eventId: string }>) {
+  const eventAuthPromise = getEventAuth(eventId);
 
-  return use(eventAuth);
+  return (
+    <EventAuthContextProvider value={eventAuthPromise}>
+      {children}
+    </EventAuthContextProvider>
+  );
 }
