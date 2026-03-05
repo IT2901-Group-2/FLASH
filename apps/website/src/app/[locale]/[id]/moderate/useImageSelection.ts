@@ -1,9 +1,11 @@
 import { useState, useCallback } from "react";
-import { useUpdateImageMutation } from "@/hooks/useImages";
+import { useBatchUpdateImageMutation } from "@/hooks/useImages";
 import type { Image } from "@/db";
 
+const BATCH_SIZE = 25;
+
 export function useImageSelection(images: Image[], eventId: string) {
-  const { mutateAsync: updateImage } = useUpdateImageMutation();
+  const { mutateAsync: batchUpdateImage } = useBatchUpdateImageMutation();
 
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -54,21 +56,25 @@ export function useImageSelection(images: Image[], eventId: string) {
   const handleBulkAction = useCallback(
     async (isApproved: boolean) => {
       setBulkError(null);
+      const allIds = Array.from(selectedIds);
       let failed = 0;
-      for (const imageId of Array.from(selectedIds)) {
+
+      for (let i = 0; i < allIds.length; i += BATCH_SIZE) {
+        const chunk = allIds.slice(i, i + BATCH_SIZE);
         try {
-          await updateImage({ eventId, imageId, data: { isApproved } });
+          await batchUpdateImage({ eventId, ids: chunk, isApproved });
         } catch {
-          failed++;
+          failed += chunk.length;
         }
       }
+
       // Always exit select mode, partially applied changes cannot be undone by retrying the same selection.
       exitSelectMode();
       if (failed > 0) {
         setBulkError(`${failed} photo${failed > 1 ? "s" : ""} could not be updated.`);
       }
     },
-    [selectedIds, updateImage, eventId, exitSelectMode]
+    [selectedIds, batchUpdateImage, eventId, exitSelectMode]
   );
 
   const handleBulkApprove = useCallback(() => handleBulkAction(true), [handleBulkAction]);

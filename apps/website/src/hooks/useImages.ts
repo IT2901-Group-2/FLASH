@@ -106,6 +106,35 @@ export function useUpdateImageMutation() {
 }
 
 /**
+ * Batch-updates multiple images via PATCH /api/events/:eventId/images.
+ * Accepts an array of image IDs and an isApproved flag.
+ */
+export function useBatchUpdateImageMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      eventId,
+      ids,
+      isApproved,
+    }: {
+      eventId: string;
+      ids: string[];
+      isApproved: boolean;
+    }) =>
+      makeRequest(
+        z.array(getImageSchema),
+        `/api/events/${eventId}/images`,
+        "PATCH",
+        { ids, isApproved }
+      ),
+    onSuccess: async (_data, { eventId }) => {
+      await queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) });
+    },
+  });
+}
+
+/**
  * Deletes an image via DELETE /api/events/:eventId/images/:imageId.
  */
 export function useDeleteImageMutation() {

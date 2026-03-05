@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { imageService } from "@/services/imageService";
 import { Result } from "typescript-result";
-import { parseSearchParams } from "@/lib/utils/validation";
+import { parseRequestBody, parseSearchParams } from "@/lib/utils/validation";
 import { getImagesParamsSchema } from "@/db";
 import { errorResponse } from "@/lib/utils/error";
+import z from "zod";
 
 export async function GET(
   req: NextRequest,
@@ -13,6 +14,24 @@ export async function GET(
 
   return parseSearchParams(req.nextUrl.searchParams, getImagesParamsSchema)
     .map(filters => imageService.getImages(eventId, filters))
+    .fold(images => NextResponse.json(images), errorResponse);
+}
+
+const batchUpdateSchema = z.object({
+  ids: z.string().array().max(25),
+  isApproved: z.boolean(),
+});
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: RouteContext<"/api/events/[eventId]/images">
+): Promise<NextResponse> {
+  const { eventId } = await params;
+
+  return parseRequestBody(req, batchUpdateSchema)
+    .map(({ ids, isApproved }) =>
+      imageService.updateImages(eventId, ids, { isApproved })
+    )
     .fold(images => NextResponse.json(images), errorResponse);
 }
 
