@@ -56,7 +56,7 @@ export function setEventCookie(
 ): AsyncResult<void, Error> {
   return Result.try(cookies).map(cs =>
     Result.try(() => jwt.sign({ eventId, userId, name, isModerator }, secret)).map(c => {
-      cs.set(`event-${eventId}`, c);
+      cs.set(`event-${eventId}`, c, { secure: true, maxAge: 10 * 24 * 60 * 60 });
     })
   );
 }
