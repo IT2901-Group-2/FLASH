@@ -32,7 +32,6 @@ const Page = () => {
           {t("createNew")}
         </Button>
       </div>
-      <Title size="small">Events</Title>
       <div className={styles.eventsContainer}>
         {isLoading ? (
           <div className={styles.loadingContainer} data-testid="loading-spinner">

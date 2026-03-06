@@ -23,6 +23,7 @@
 .main {
   flex: 1;
   padding: 2rem;
+  position: relative;
 }
 
 @media screen and (min-width: 768px) {
