@@ -30,6 +30,10 @@ vi.mock("@/components/JoinEvent/JoinEventCard", () => ({
   default: () => <div data-testid="join-event-card">Join Event Card</div>,
 }));
 
+vi.mock("@/providers/JoinedEventsContext", () => ({
+  useJoinedEvents: vi.fn(() => []),
+}));
+
 describe("Page", () => {
   afterEach(() => {
     cleanup();
