@@ -5,9 +5,8 @@ import styles from "./UploadImage.module.css";
 import { ActionCard, PhoneHeader } from "ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEventsQuery } from "@/hooks/useEvents";
-import { useRouter } from "next/navigation";
 import { useEventAuth } from "@/providers/EventAuthContext";
 
 export default function Page() {
