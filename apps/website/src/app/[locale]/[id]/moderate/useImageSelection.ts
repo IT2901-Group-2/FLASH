@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { useBatchUpdateImageMutation } from "@/hooks/useImages";
-import { BATCH_IMAGE_LIMIT } from "@/config";
+import { BATCH_IMAGE_LIMIT } from "@/config/images";
 import type { Image } from "@/db";
 
 export function useImageSelection(images: Image[], eventId: string) {

@@ -141,8 +141,7 @@ export class ImageService {
     ids: string[],
     data: UpdateImage
   ): AsyncResult<Image[], Error> {
-    if (ids.length === 0) return Result.fromAsync(Promise.resolve([] as Image[]));
-
+    if (ids.length === 0) return Result.fromAsync(Promise.resolve(Result.ok([])));
     return Result.try(() =>
       this.dbService.db
         .update(imageTable)

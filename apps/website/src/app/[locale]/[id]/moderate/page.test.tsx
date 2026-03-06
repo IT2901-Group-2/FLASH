@@ -12,6 +12,7 @@ vi.mock("next/navigation", () => ({
 }));
 
 const mockUpdateImage = vi.fn(() => Promise.resolve({}));
+const mockBatchUpdateImage = vi.fn(() => Promise.resolve({}));
 
 vi.mock("@/hooks/useImages", () => ({
   useImagesQuery: vi.fn(() => ({
@@ -24,6 +25,9 @@ vi.mock("@/hooks/useImages", () => ({
   })),
   useUpdateImageMutation: vi.fn(() => ({
     mutateAsync: mockUpdateImage,
+  })),
+  useBatchUpdateImageMutation: vi.fn(() => ({
+    mutateAsync: mockBatchUpdateImage,
   })),
 }));
 
@@ -161,6 +165,12 @@ beforeEach(() => {
       ({
         mutateAsync: mockUpdateImage,
       }) as unknown as ReturnType<typeof useImagesModule.useUpdateImageMutation>
+  );
+  vi.mocked(useImagesModule.useBatchUpdateImageMutation).mockImplementation(
+    () =>
+      ({
+        mutateAsync: mockBatchUpdateImage,
+      }) as unknown as ReturnType<typeof useImagesModule.useBatchUpdateImageMutation>
   );
 });
 
@@ -336,16 +346,11 @@ describe("ModeratePage", () => {
     fireEvent.click(screen.getByTestId("primary-action"));
 
     await waitFor(() => {
-      expect(mockUpdateImage).toHaveBeenCalledTimes(2);
-      expect(mockUpdateImage).toHaveBeenCalledWith({
+      expect(mockBatchUpdateImage).toHaveBeenCalledTimes(1);
+      expect(mockBatchUpdateImage).toHaveBeenCalledWith({
         eventId: "event-1",
-        imageId: "img-1",
-        data: { isApproved: true },
-      });
-      expect(mockUpdateImage).toHaveBeenCalledWith({
-        eventId: "event-1",
-        imageId: "img-2",
-        data: { isApproved: true },
+        ids: ["img-1", "img-2"],
+        isApproved: true,
       });
     });
 
@@ -367,11 +372,11 @@ describe("ModeratePage", () => {
     fireEvent.click(screen.getByTestId("secondary-action"));
 
     await waitFor(() => {
-      expect(mockUpdateImage).toHaveBeenCalledTimes(1);
-      expect(mockUpdateImage).toHaveBeenCalledWith({
+      expect(mockBatchUpdateImage).toHaveBeenCalledTimes(1);
+      expect(mockBatchUpdateImage).toHaveBeenCalledWith({
         eventId: "event-1",
-        imageId: "img-1",
-        data: { isApproved: false },
+        ids: ["img-1"],
+        isApproved: false,
       });
     });
 

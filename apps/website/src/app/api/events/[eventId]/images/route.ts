@@ -30,9 +30,7 @@ export async function PATCH(
   const { eventId } = await params;
 
   return parseRequestBody(req, batchUpdateSchema)
-    .map(({ ids, isApproved }) =>
-      imageService.updateImages(eventId, ids, { isApproved })
-    )
+    .map(({ ids, isApproved }) => imageService.updateImages(eventId, ids, { isApproved }))
     .fold(images => NextResponse.json(images), errorResponse);
 }
 

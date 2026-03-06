@@ -328,9 +328,7 @@ describe("ImageService updateImages", () => {
       .updateImages("wedding", ["image-3", "image-4"], { isApproved: false })
       .getOrThrow();
 
-    expect(new Set(result.map(r => r.id))).toStrictEqual(
-      new Set(["image-3", "image-4"])
-    );
+    expect(new Set(result.map(r => r.id))).toStrictEqual(new Set(["image-3", "image-4"]));
     expect(result.every(r => r.isApproved === false)).toBe(true);
     expect(flush).toHaveBeenCalledOnce();
   });

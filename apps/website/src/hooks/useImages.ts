@@ -122,12 +122,10 @@ export function useBatchUpdateImageMutation() {
       ids: string[];
       isApproved: boolean;
     }) =>
-      makeRequest(
-        z.array(getImageSchema),
-        `/api/events/${eventId}/images`,
-        "PATCH",
-        { ids, isApproved }
-      ),
+      makeRequest(z.array(getImageSchema), `/api/events/${eventId}/images`, "PATCH", {
+        ids,
+        isApproved,
+      }),
     onSuccess: async (_data, { eventId }) => {
       await queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) });
     },
