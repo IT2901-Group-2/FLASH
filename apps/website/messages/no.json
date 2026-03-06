@@ -65,10 +65,10 @@
           "createNew": "Lag ny hendelse"
         },
         "edit": {
-          "cancel": "Kansellere",
+          "cancel": "Avbryt",
           "next": "Neste",
-          "previous": "Tidligere",
-          "save": "Spare"
+          "previous": "Forrige",
+          "save": "Lagre"
         }
       }
     },
