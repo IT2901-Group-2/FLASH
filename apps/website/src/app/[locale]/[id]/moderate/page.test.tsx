@@ -15,7 +15,7 @@ const mockUpdateImage = vi.fn(() => Promise.resolve({}));
 const mockBatchUpdateImage = vi.fn(() => Promise.resolve({}));
 const mockInvalidateQueries = vi.fn(() => Promise.resolve());
 
-vi.mock("@tanstack/react-query", async (importOriginal) => {
+vi.mock("@tanstack/react-query", async importOriginal => {
   const actual = await importOriginal<typeof import("@tanstack/react-query")>();
   return {
     ...actual,
