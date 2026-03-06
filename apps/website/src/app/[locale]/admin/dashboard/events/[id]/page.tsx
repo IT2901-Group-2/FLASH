@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import { Button, Dialog, Title } from "ui";
 import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
-import { ReviewStep } from "@/components/CreateEventCard/Steps";
+import { ReviewStep } from "@/components/EventDialogs/Steps";
 import { useRef } from "react";
 
 const Page = () => {

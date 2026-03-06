@@ -2,7 +2,7 @@
 import { Plus } from "lucide-react";
 import { Button, Loader, Title } from "ui";
 import styles from "./page.module.css";
-import CreateEventCard from "@/components/CreateEventCard/CreateEventCard";
+import CreateEventCard from "@/components/EventDialogs/CreateEventDialog";
 import { useRef } from "react";
 import { useTranslations } from "next-intl";
 import { useEventsQuery } from "@/hooks/useEvents";

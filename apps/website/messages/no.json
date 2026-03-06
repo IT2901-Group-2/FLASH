@@ -25,7 +25,7 @@
             },
             "title": "Opprett event"
           },
-          "cancel": "Kanseler",
+          "cancel": "Avbryt",
           "finish": "Fullfør",
           "next": "Neste",
           "options": {
@@ -63,6 +63,12 @@
           "description": "Administrer hendelsene dine.",
           "title": "Events",
           "createNew": "Lag ny hendelse"
+        },
+        "edit": {
+          "cancel": "Avbryt",
+          "next": "Neste",
+          "previous": "Forrige",
+          "save": "Lagre"
         }
       }
     },
