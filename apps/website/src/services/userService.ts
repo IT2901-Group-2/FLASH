@@ -14,6 +14,13 @@ export class UserService {
     this.dbService = dbService;
   }
 
+  /**
+   * Fetches an `EventCode` object from an event code.
+   * The `EventCode` contains all necessary information for joining an event.
+   *
+   * @param code The code to fetch the `EventCode` object for.
+   * @returns A result with an `EventCode` object or an error.
+   */
   private getEventByCode(code: string): AsyncResult<EventCode, Error> {
     return Result.try(() =>
       this.dbService.db
@@ -24,6 +31,13 @@ export class UserService {
     ).map(rows => getFirstRow(rows, `Unable to find event with code: ${code}`));
   }
 
+  /**
+   * Creates and returns a new user session in the database.
+   *
+   * @param eventCode An `EventCode` object contianing information about which event to join.
+   * @param data The data of the new user to be created.
+   * @returns A result with the newly created user session or an error.
+   */
   private createUser(
     { eventId, isModerator }: EventCode,
     { name }: CreateUser
@@ -38,6 +52,12 @@ export class UserService {
       .onSuccess(() => this.dbService.flush());
   }
 
+  /**
+   * Joins the event specified by the provided eventCode with the correct permissions.
+   *
+   * @param userData The data of the new user to be created.
+   * @returns A result with the id of the joined event or an error.
+   */
   joinEvent(userData: CreateUser): AsyncResult<string, Error> {
     return Result.gen(this, async function* () {
       const eventCode = yield* this.getEventByCode(userData.eventCode);
