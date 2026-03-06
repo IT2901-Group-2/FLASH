@@ -1,15 +1,11 @@
 import { beforeEach, describe, expect, it, test } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
 import JoinEventCard from "./JoinEventCard";
-import { createQueryClientWrapper, mockRouter } from "@test-config";
+import { createQueryClientWrapper } from "@test-config";
 
 describe("JoinEventCard", () => {
-  let user: ReturnType<typeof userEvent.setup>;
-
   beforeEach(() => {
     render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
-    user = userEvent.setup();
   });
 
   test("without crashing", () => {

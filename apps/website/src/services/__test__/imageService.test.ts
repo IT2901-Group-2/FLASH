@@ -6,7 +6,7 @@ import fs from "fs/promises";
 import { ImageService } from "../imageService";
 import { FSStorage } from "file-storage";
 import { DatabaseService } from "../databaseService";
-import { EventCookie, eventTable, imageTable, User, userTable } from "@/db";
+import { EventCookie, eventTable, imageTable, userTable } from "@/db";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { Result } from "typescript-result";
 import { getEventCookie } from "@/lib/utils/eventCookie";
