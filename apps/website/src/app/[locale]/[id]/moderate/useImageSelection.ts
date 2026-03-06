@@ -1,9 +1,11 @@
 import { useState, useCallback } from "react";
-import { useBatchUpdateImageMutation } from "@/hooks/useImages";
+import { useQueryClient } from "@tanstack/react-query";
+import { useBatchUpdateImageMutation, imagesKeys } from "@/hooks/useImages";
 import { BATCH_IMAGE_LIMIT } from "@/config/images";
 import type { Image } from "@/db";
 
 export function useImageSelection(images: Image[], eventId: string) {
+  const queryClient = useQueryClient();
   const { mutateAsync: batchUpdateImage } = useBatchUpdateImageMutation();
 
   const [selectMode, setSelectMode] = useState(false);
@@ -67,13 +69,19 @@ export function useImageSelection(images: Image[], eventId: string) {
         }
       }
 
+      // Invalidate once after all chunks so the UI updates in one batch.
+      // Fire-and-forget: don't block exitSelectMode on the refetch.
+      if (failed < allIds.length) {
+        queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) });
+      }
+
       // Always exit select mode, partially applied changes cannot be undone by retrying the same selection.
       exitSelectMode();
       if (failed > 0) {
         setBulkError(`${failed} photo${failed > 1 ? "s" : ""} could not be updated.`);
       }
     },
-    [selectedIds, batchUpdateImage, eventId, exitSelectMode]
+    [selectedIds, batchUpdateImage, eventId, exitSelectMode, queryClient]
   );
 
   const handleBulkApprove = useCallback(() => handleBulkAction(true), [handleBulkAction]);

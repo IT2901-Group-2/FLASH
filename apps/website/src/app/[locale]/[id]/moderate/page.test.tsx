@@ -13,8 +13,23 @@ vi.mock("next/navigation", () => ({
 
 const mockUpdateImage = vi.fn(() => Promise.resolve({}));
 const mockBatchUpdateImage = vi.fn(() => Promise.resolve({}));
+const mockInvalidateQueries = vi.fn(() => Promise.resolve());
+
+vi.mock("@tanstack/react-query", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@tanstack/react-query")>();
+  return {
+    ...actual,
+    useQueryClient: vi.fn(() => ({
+      invalidateQueries: mockInvalidateQueries,
+    })),
+  };
+});
 
 vi.mock("@/hooks/useImages", () => ({
+  imagesKeys: {
+    all: ["images"],
+    event: (eventId?: string) => ["images", eventId],
+  },
   useImagesQuery: vi.fn(() => ({
     data: [
       { id: "img-1", eventId: "event-1", isApproved: null },
