@@ -37,6 +37,7 @@
   border-top: 1px solid var(--border-focus);
   margin-top: 0.5rem;
   padding-top: 0.5rem;
+  flex-wrap: wrap;
 
   > :first-child:not(:only-child) {
     margin-right: auto;
