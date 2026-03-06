@@ -128,6 +128,29 @@ export class ImageService {
   }
 
   /**
+   * Updates multiple images in a single query.
+   * IDs not belonging to the event are silently ignored.
+   *
+   * @param eventId The id of the event the images belong to.
+   * @param ids The ids of the images to update.
+   * @param data The data to update the images with.
+   * @returns A result containing the updated `Image` objects or an error.
+   */
+  updateImages(
+    eventId: string,
+    ids: string[],
+    data: UpdateImage
+  ): AsyncResult<Image[], Error> {
+    return Result.try(() =>
+      this.dbService.db
+        .update(imageTable)
+        .set(data)
+        .where(and(eq(imageTable.eventId, eventId), inArray(imageTable.id, ids)))
+        .returning()
+    ).onSuccess(() => this.dbService.flush());
+  }
+
+  /**
    * Updates the image with the specified id.
    * Will fail if the image does not exist or does not belong to the specified event.
    *

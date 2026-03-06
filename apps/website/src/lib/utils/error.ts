@@ -33,8 +33,8 @@ export function mapZodError(error: Error, code: number = 400): Error {
 
 /**
  * Transforms an Error into an appropriate HTTP response.
- * If the error specifies a `code` propery it will be used as the HTTP status code.
- * If the error specified a `json` property it will be preferred over `message`.
+ * If the error specifies a `code` property it will be used as the HTTP status code.
+ * If the error specifies a `json` property it will be preferred over `message`.
  *
  * @param error The error to return as an HTTP response.
  * @returns An HTTP response which describes the error.
