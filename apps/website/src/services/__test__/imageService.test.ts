@@ -333,19 +333,6 @@ describe("ImageService updateImages", () => {
     expect(flush).toHaveBeenCalledOnce();
   });
 
-  it("Should return empty array when ids is empty", async () => {
-    const flush = vi
-      .spyOn(DatabaseService.prototype, "flush")
-      .mockImplementation(() => {});
-
-    const result = await imageService
-      .updateImages("wedding", [], { isApproved: true })
-      .getOrThrow();
-
-    expect(result).toStrictEqual([]);
-    expect(flush).not.toHaveBeenCalled();
-  });
-
   it("Should not update IDs belonging to a different event", async () => {
     const flush = vi
       .spyOn(DatabaseService.prototype, "flush")

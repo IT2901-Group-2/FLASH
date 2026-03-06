@@ -2,10 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { imageService } from "@/services/imageService";
 import { Result } from "typescript-result";
 import { parseRequestBody, parseSearchParams } from "@/lib/utils/validation";
-import { getImagesParamsSchema } from "@/db";
-import { BATCH_IMAGE_LIMIT } from "@/config";
+import { getImagesParamsSchema, updateImagesSchema } from "@/db";
 import { errorResponse } from "@/lib/utils/error";
-import z from "zod";
 
 export async function GET(
   req: NextRequest,
@@ -18,18 +16,13 @@ export async function GET(
     .fold(images => NextResponse.json(images), errorResponse);
 }
 
-const batchUpdateSchema = z.object({
-  ids: z.string().array().max(BATCH_IMAGE_LIMIT),
-  isApproved: z.boolean(),
-});
-
 export async function PATCH(
   req: NextRequest,
   { params }: RouteContext<"/api/events/[eventId]/images">
 ): Promise<NextResponse> {
   const { eventId } = await params;
 
-  return parseRequestBody(req, batchUpdateSchema)
+  return parseRequestBody(req, updateImagesSchema)
     .map(({ ids, isApproved }) => imageService.updateImages(eventId, ids, { isApproved }))
     .fold(images => NextResponse.json(images), errorResponse);
 }
