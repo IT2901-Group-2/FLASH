@@ -5,30 +5,21 @@ import styles from "./UploadImage.module.css";
 import { ActionCard, PhoneHeader } from "ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
-import { useParams, useSearchParams, useRouter } from "next/navigation";
-import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
-import { hasNicknameForEvent } from "@/hooks/useRememberEvents";
+import { useParams, useRouter } from "next/navigation";
+import { useEventsQuery } from "@/hooks/useEvents";
+import { useEventAuth } from "@/providers/EventAuthContext";
 
 export default function Page() {
-  const navigation = useRouter();
+  const router = useRouter();
   const t = useTranslations("EventPage");
   const { id } = useParams<{ id: string }>();
-  const searchParams = useSearchParams();
   const eventId = typeof id === "string" ? id : "";
+  const eventAuth = useEventAuth();
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );
-  const { data: guestCode } = useEventCodeQuery(eventId, "guest");
   const eventData = data?.[0];
-
   const eventName = eventData?.name ?? (isLoading ? "Loading event..." : "Event");
-  const nicknameParam = searchParams.get("nickname")?.trim();
-  const nickname =
-    nicknameParam && nicknameParam.length > 0
-      ? nicknameParam
-      : guestCode !== undefined
-        ? `Code: ${guestCode}`
-        : "Guest";
   const uploadsRemaining =
     typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
 
@@ -46,15 +37,17 @@ export default function Page() {
   const [isQrOpen, setIsQrOpen] = useState(false);
 
   useEffect(() => {
-    if (!hasNicknameForEvent(eventId)) navigation.push(`/${eventId}/nickname`);
-  }, [eventId, navigation]);
+    if (eventAuth !== undefined && !eventAuth.isAuthenticated) {
+      router.push("/");
+    }
+  }, [eventAuth, router]);
 
   return (
     <div className={styles.pageWrapper}>
       <FileInput />
       <PhoneHeader
         title={eventName}
-        subtitle={nickname}
+        subtitle={eventAuth?.nickname ?? ""}
         rightLabel="Live"
         rightVariant="primary"
         rightAriaLabel="live-button"

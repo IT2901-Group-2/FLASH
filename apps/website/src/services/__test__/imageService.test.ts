@@ -6,9 +6,13 @@ import fs from "fs/promises";
 import { ImageService } from "../imageService";
 import { FSStorage } from "file-storage";
 import { DatabaseService } from "../databaseService";
-import { eventTable, imageTable } from "@/db";
+import { EventCookie, eventTable, imageTable, userTable } from "@/db";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { Result } from "typescript-result";
+import { getEventCookie } from "@/lib/utils/eventCookie";
+
+vi.mock("@/lib/utils/eventCookie");
+const mockedGetEventCookie = vi.mocked(getEventCookie);
 
 let tmpDir: string;
 let imageService: ImageService;
@@ -28,6 +32,13 @@ const mockEvents: (typeof eventTable.$inferInsert)[] = [
   },
 ];
 
+const mockUsers: (typeof userTable.$inferInsert)[] = [
+  { id: "john1", name: "John Doe", eventId: "birthday", isModerator: false },
+  { id: "jane", name: "Jane Doe", eventId: "birthday", isModerator: false },
+  { id: "john2", name: "John Doe", eventId: "wedding", isModerator: false },
+  { id: "obama", name: "Barrack Obama", eventId: "birthday", isModerator: false },
+];
+
 const mockImageData: Buffer[] = [
   "UklGRpgAAABXRUJQVlA4IIwAAABwAgCdASoPAA8AAUAmJbACdAYwd2dm7KLX2flgAP71vYHO4Y3N7L8m20BqoD/9s8W6f7MwJ47iUuo6mo2cLVxnuo/O20m4Gw84D3fjBDBqrkZpcQ0r9QxvnZ30EnpHY7HYFVsqel1JCusf9WgFrW2TL+/cRGtH+A/46tFARCaB/kmzFBzXhGpNF1LAAA==",
   "UklGRpoAAABXRUJQVlA4II4AAABwAgCdASoPAA8AAUAmJYwCdAYuvmpigIIQjnUAAP7X3TXC7NYF9lM269VWbhJFInjaMjPlYFaMX0iafgeTq4jD+TCg0d/K62oKUEZKQYwP5X6Y8xR3FpR+jeairJWRQPE2KoQIMB4bjYgHp/OiXLO1fhXLg3tfoftmGJJBqJPDWYDitzMRK6DIFqVf9IgA",
@@ -39,30 +50,35 @@ type MockImage = typeof imageTable.$inferInsert & { imageData: Buffer };
 const mockImages: MockImage[] = [
   {
     id: "image-1",
+    userId: "john1",
     eventId: "birthday",
     isApproved: null,
     imageData: mockImageData[0]!,
   },
   {
     id: "image-2",
+    userId: "jane",
     eventId: "birthday",
     isApproved: true,
     imageData: mockImageData[1]!,
   },
   {
     id: "image-3",
+    userId: "john2",
     eventId: "wedding",
     isApproved: true,
     imageData: mockImageData[2]!,
   },
   {
     id: "image-4",
+    userId: "obama",
     eventId: "wedding",
     isApproved: false,
     imageData: mockImageData[3]!,
   },
   {
     id: "image-5",
+    userId: "john2",
     eventId: "wedding",
     isApproved: true,
     imageData: mockImageData[3]!,
@@ -77,6 +93,7 @@ beforeEach(async () => {
   imageService = new ImageService(dbService, storage);
 
   await dbService.db.insert(eventTable).values(mockEvents);
+  await dbService.db.insert(userTable).values(mockUsers);
   await dbService.db.insert(imageTable).values(mockImages);
   await Promise.all(
     mockImages.map(({ id, imageData }) =>
@@ -226,7 +243,26 @@ describe("ImageService downloadImage", () => {
 });
 
 describe("ImageService uploadImage", () => {
+  it("Should return Err when user is not authenticated", async () => {
+    mockedGetEventCookie.mockImplementationOnce(() =>
+      Result.fromAsync(async () => Result.error(new Error()))
+    );
+
+    Result.assertError(await imageService.uploadImage("wedding", mockImageData[0]!));
+  });
+
+  it("Should return Err when user does not exist", async () => {
+    mockedGetEventCookie.mockImplementationOnce(() =>
+      Result.fromAsync(async () => ({ userId: "jack" }) as EventCookie)
+    );
+
+    Result.assertError(await imageService.uploadImage("wedding", mockImageData[0]!));
+  });
+
   it("Should return Err when database call fails", async () => {
+    mockedGetEventCookie.mockImplementationOnce(() =>
+      Result.fromAsync(async () => ({ userId: "john2" }) as EventCookie)
+    );
     vi.spyOn(BetterSQLite3Database.prototype, "insert").mockImplementationOnce(() => {
       throw new Error();
     });
@@ -235,14 +271,30 @@ describe("ImageService uploadImage", () => {
   });
 
   it("Should return Err when event does not exist", async () => {
+    mockedGetEventCookie.mockImplementationOnce(() =>
+      Result.fromAsync(async () => ({ userId: "john2" }) as EventCookie)
+    );
+
     Result.assertError(await imageService.uploadImage("funeral", mockImageData[0]!));
   });
 
   it("Should return Err when image is invalid", async () => {
-    Result.assertError(await imageService.uploadImage("funeral", "not an image"));
+    mockedGetEventCookie.mockImplementationOnce(() =>
+      Result.fromAsync(async () => ({ userId: "john2" }) as EventCookie)
+    );
+
+    Result.assertError(await imageService.uploadImage("wedding", "not an image"));
   });
 
   it("Should correctly upload image", async () => {
+    mockedGetEventCookie
+      .mockImplementationOnce(() =>
+        Result.fromAsync(async () => ({ userId: "john2" }) as EventCookie)
+      )
+      .mockImplementationOnce(() =>
+        Result.fromAsync(async () => ({ userId: "john1" }) as EventCookie)
+      );
+
     const flush = vi
       .spyOn(DatabaseService.prototype, "flush")
       .mockImplementation(() => {});

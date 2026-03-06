@@ -6,8 +6,10 @@ import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
 import { getFirstRow } from "@/lib/utils/sql";
 import { and, eq, inArray, isNull } from "drizzle-orm";
-import { storage } from "@/config";
+import { JWT_SECRET, storage } from "@/config";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
+import { getEventCookie } from "@/lib/utils/eventCookie";
+import { HTTPError } from "@/lib/utils/error";
 
 const uid = new ShortUniqueId();
 
@@ -21,7 +23,6 @@ export class ImageService {
   }
 
   static readonly MAX_IMAGE_SIZE = 4 * 1024 * 1024;
-
   /**
    * Validates the image metadata using `sharp`.
    * Checks that `sharp` is able to open the image file and that the size of the image does not exceed `ImageService.MAX_IMAGE_SIZE`.
@@ -108,22 +109,28 @@ export class ImageService {
   uploadImage(eventId: string, image: SharpInput): AsyncResult<Image, Error> {
     const imageId = uid.rnd();
 
-    return Result.try(() => sharp(image))
-      .map(sharpImage => this.validateImage(sharpImage))
-      .mapCatching(sharpImage => sharpImage.clone().webp().toBuffer())
-      .map(buff => this.storage.write(`${imageId}.webp`, buff))
-      .map(() =>
-        Result.try(() =>
-          this.dbService.db
-            .insert(imageTable)
-            .values({ id: imageId, eventId })
-            .returning()
-        )
-          .map(rows => getFirstRow(rows, "Failed to upload image"))
-          .onSuccess(() => this.dbService.flush())
-          .onFailure(async () => {
-            await this.storage.rm(`${imageId}.webp`).getOrNull();
-          })
+    return getEventCookie(eventId, JWT_SECRET)
+      .mapError(
+        () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
+      )
+      .map(({ userId }) =>
+        Result.try(() => sharp(image))
+          .map(sharpImage => this.validateImage(sharpImage))
+          .mapCatching(sharpImage => sharpImage.clone().webp().toBuffer())
+          .map(buff => this.storage.write(`${imageId}.webp`, buff))
+          .map(() =>
+            Result.try(() =>
+              this.dbService.db
+                .insert(imageTable)
+                .values({ id: imageId, userId, eventId })
+                .returning()
+            )
+              .map(rows => getFirstRow(rows, "Failed to upload image"))
+              .onSuccess(() => this.dbService.flush())
+              .onFailure(async () => {
+                await this.storage.rm(`${imageId}.webp`).getOrNull();
+              })
+          )
       );
   }
 

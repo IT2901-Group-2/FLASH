@@ -2,6 +2,7 @@ import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import ShortUniqueId from "short-unique-id";
 import { eventTable } from "./events";
 import z from "zod";
+import { userTable } from "./users";
 import { assertEqual } from "@/lib/utils/assert";
 import { BATCH_IMAGE_LIMIT } from "@/config/images";
 
@@ -12,6 +13,9 @@ export const imageTable = sqliteTable("images", {
   eventId: text()
     .notNull()
     .references(() => eventTable.id, { onDelete: "cascade" }),
+  userId: text()
+    .notNull()
+    .references(() => userTable.id, { onDelete: "cascade" }),
   isApproved: integer({ mode: "boolean" }),
   createdAt: integer({ mode: "timestamp" })
     .notNull()
@@ -33,6 +37,7 @@ export const getImagesParamsSchema = z.object({
 export const getImageSchema = z.object({
   id: z.string(),
   eventId: z.string(),
+  userId: z.string(),
   isApproved: z.boolean().nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),

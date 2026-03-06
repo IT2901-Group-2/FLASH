@@ -38,6 +38,14 @@ vi.mock("@/hooks/useEvents", () => ({
   })),
 }));
 
+vi.mock("@/providers/EventAuthContext", () => ({
+  useEventAuth: vi.fn(() => ({
+    isAuthenticated: true,
+    nickname: "test-user",
+    isModerator: false,
+  })),
+}));
+
 const mockOpenFilePicker = vi.fn();
 const mockFileInput = () => <input type="file" data-testid="file-input" />;
 
@@ -55,20 +63,6 @@ afterEach(() => {
 });
 
 describe("Guest Upload Page", () => {
-  it("passes fetched event data to PhoneHeader", () => {
-    render(<Page />);
-
-    const phoneHeaderMock = vi.mocked(uiModule.PhoneHeader);
-    expect(phoneHeaderMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: "Test Event",
-        subtitle: "Code: ABC123",
-        uploadsRemaining: 5,
-      }),
-      undefined
-    );
-  });
-
   it("passes uploads description to ActionCard", () => {
     render(<Page />);
 
