@@ -27,6 +27,7 @@ const Page = () => {
           icon={<Plus />}
           data-color="brand-purple"
           onClick={() => dialogRef.current?.showModal()}
+          className={styles.createButton}
         >
           {t("createNew")}
         </Button>
