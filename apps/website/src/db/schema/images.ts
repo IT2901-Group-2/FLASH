@@ -4,6 +4,7 @@ import { eventTable } from "./events";
 import z from "zod";
 import { userTable } from "./users";
 import { assertEqual } from "@/lib/utils/assert";
+import { BATCH_IMAGE_LIMIT } from "@/config/images";
 
 const uid = new ShortUniqueId();
 
@@ -47,6 +48,12 @@ export const updateImageSchema = z.object({
   isApproved: z.boolean().nullable().optional(),
 });
 
+export const updateImagesSchema = z.object({
+  ids: z.string().array().min(1).max(BATCH_IMAGE_LIMIT),
+  isApproved: z.boolean(),
+});
+
 export type Image = typeof imageTable.$inferSelect;
 export type GetImagesParams = z.infer<typeof getImagesParamsSchema>;
 export type UpdateImage = z.infer<typeof updateImageSchema>;
+export type UpdateImages = z.infer<typeof updateImagesSchema>;

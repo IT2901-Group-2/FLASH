@@ -12,6 +12,12 @@
         "storage": "Storage"
       },
       "event": {
+        "edit": {
+          "cancel": "Cancel",
+          "previous": "Previous",
+          "next": "Next",
+          "save": "Save"
+        },
         "create": {
           "previous": "Previous",
           "cancel": "Cancel",

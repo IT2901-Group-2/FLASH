@@ -370,6 +370,51 @@ describe("ImageService updateImage", () => {
   });
 });
 
+describe("ImageService updateImages", () => {
+  it("Should update all valid IDs and return updated rows", async () => {
+    const flush = vi
+      .spyOn(DatabaseService.prototype, "flush")
+      .mockImplementation(() => {});
+
+    const result = await imageService
+      .updateImages("wedding", ["image-3", "image-4"], { isApproved: false })
+      .getOrThrow();
+
+    expect(new Set(result.map(r => r.id))).toStrictEqual(new Set(["image-3", "image-4"]));
+    expect(result.every(r => r.isApproved === false)).toBe(true);
+    expect(flush).toHaveBeenCalledOnce();
+  });
+
+  it("Should not update IDs belonging to a different event", async () => {
+    const flush = vi
+      .spyOn(DatabaseService.prototype, "flush")
+      .mockImplementation(() => {});
+
+    const result = await imageService
+      .updateImages("wedding", ["image-1", "image-2"], { isApproved: true })
+      .getOrThrow();
+
+    expect(result).toStrictEqual([]);
+    expect(flush).toHaveBeenCalledOnce();
+  });
+
+  it("Should only update valid IDs when mixed with invalid ones", async () => {
+    const flush = vi
+      .spyOn(DatabaseService.prototype, "flush")
+      .mockImplementation(() => {});
+
+    const result = await imageService
+      .updateImages("wedding", ["image-3", "image-1", "image-999"], {
+        isApproved: true,
+      })
+      .getOrThrow();
+
+    expect(result.map(r => r.id)).toStrictEqual(["image-3"]);
+    expect(result[0]!.isApproved).toBe(true);
+    expect(flush).toHaveBeenCalledOnce();
+  });
+});
+
 describe("ImageService deleteImage", () => {
   it("Should return Err when database call fails", async () => {
     vi.spyOn(BetterSQLite3Database.prototype, "delete").mockImplementationOnce(() => {
