@@ -3,22 +3,21 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { EventCookie, eventCookieSchema, User } from "@/db";
 import z from "zod";
+import { JWT_SECRET } from "@/config";
 
-// TODO: Delete malformed cookies
-// TODO: Cleanup
 export function getEventCookies(): AsyncResult<EventCookie[], Error> {
   return Result.try(cookies)
     .map(cs => cs.getAll())
     .map(cookies => cookies.filter(cookie => cookie.name.startsWith("event-")))
-    .map(cookies => cookies.map(cookie => jwt.decode(cookie.value)))
     .map(cookies =>
-      Promise.all(
-        cookies.map(cookie =>
-          Result.try(() => z.parseAsync(eventCookieSchema, cookie)).getOrNull()
+      cookies.map(cookie =>
+        Result.try(() => jwt.verify(cookie.value, JWT_SECRET)).mapCatching(cookie =>
+          z.parseAsync(eventCookieSchema, cookie)
         )
       )
     )
-    .map(cookies => cookies.filter(cookie => cookie !== null));
+    .map(cookies => Promise.all(cookies))
+    .map(cookies => cookies.filter(r => r.ok).map(r => r.value));
 }
 
 export function getEventCookie(
@@ -31,9 +30,6 @@ export function getEventCookie(
       .mapCatching(c => z.parseAsync(z.string(), c))
       .mapCatching(c => jwt.verify(c, secret))
       .mapCatching(c => z.parseAsync(eventCookieSchema, c))
-      .onFailure(() => {
-        cs.delete(`event-${eventId}`);
-      })
   );
 }
 
