@@ -3,6 +3,8 @@ import { makeRequest } from "@/lib/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import z from "zod";
 
+const imageArraySchema = z.array(getImageSchema);
+
 /**
  * Serializes `GetImages` filters into a URL query string.
  * Returns an empty string when no params are provided.
@@ -53,7 +55,7 @@ export function useImagesQuery(eventId?: string, params?: GetImagesParams) {
     queryKey: imagesKeys.list(eventId, params),
     queryFn: () =>
       makeRequest(
-        z.array(getImageSchema),
+        imageArraySchema,
         `/api/events/${eventId}/images${toImagesSearchParams(params)}`
       ),
     enabled: !!eventId,
@@ -122,7 +124,7 @@ export function useBatchUpdateImageMutation() {
       ids: string[];
       isApproved: boolean;
     }) =>
-      makeRequest(z.array(getImageSchema), `/api/events/${eventId}/images`, "PATCH", {
+      makeRequest(imageArraySchema, `/api/events/${eventId}/images`, "PATCH", {
         ids,
         isApproved,
       }),
