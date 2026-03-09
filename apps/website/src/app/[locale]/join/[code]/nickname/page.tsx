@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useEventsQuery } from "@/hooks/useEvents";
 import { useParams, useRouter } from "next/navigation";
-import { SubmitEvent, useState } from "react";
+import { useState } from "react";
 
 export default function Page() {
   const navigation = useRouter();
@@ -17,11 +17,6 @@ export default function Page() {
   const [nickname, setNickname] = useState<string>("");
   if (!data) return;
 
-  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    navigation.push(`/${id}`);
-  };
-
   return (
     <div className={styles.conatiner}>
       <div className={styles.navigation} onClick={navigation.back}>
@@ -29,7 +24,7 @@ export default function Page() {
         {t("back")}
       </div>
       <Card className={styles.card}>
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form className={styles.form} action="/api/join" method="POST">
           <Title
             data-testid="title"
             align="center"
@@ -48,6 +43,7 @@ export default function Page() {
             value={nickname}
             onChange={e => setNickname(e.target.value)}
           />
+          <input hidden value={id} name="eventCode" />
           <Button
             variant="primary"
             icon={<ArrowRight />}
