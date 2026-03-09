@@ -11,11 +11,8 @@ export default function Page() {
   const navigation = useRouter();
   const t = useTranslations("guest.nickname");
   const { id } = useParams<{ id: string }>();
-  const eventId = typeof id === "string" ? id : "";
-  const { data } = useEventsQuery(eventId ? { id: [eventId] } : undefined);
 
   const [nickname, setNickname] = useState<string>("");
-  if (!data) return;
 
   return (
     <div className={styles.conatiner}>
@@ -39,9 +36,10 @@ export default function Page() {
             aria-label="nickname-input"
             label={t("input.title")}
             placeholder={t("input.placeholder")}
-            required
+            name="name"
             value={nickname}
             onChange={e => setNickname(e.target.value)}
+            required
           />
           <input hidden value={id} name="eventCode" />
           <Button

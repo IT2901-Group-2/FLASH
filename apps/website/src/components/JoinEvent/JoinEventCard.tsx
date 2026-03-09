@@ -22,7 +22,7 @@ const JoinEventCard = () => {
       await fetch(`/api/events/by-code/${code}`)
         .then(e => {
           if (!e.ok) return setError(e.statusText);
-          e.json().then(e => router.push(`/join/${e.eventId}/nickname`));
+          e.json().then(e => router.push(`/join/${e.code}/nickname`));
         })
         .catch(console.log);
     },
