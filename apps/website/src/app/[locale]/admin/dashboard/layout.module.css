@@ -11,7 +11,7 @@
 
 .header {
   height: 4.15rem;
-  border-bottom: 0.1rem solid var(--color-neutral-500);
+  border-bottom: 0.1rem solid var(--color-border-base);
   padding: 1rem;
 
   display: flex;
