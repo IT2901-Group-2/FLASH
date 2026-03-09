@@ -5,13 +5,15 @@ import { setEventCookie, getEventCookie } from "@/lib/utils/eventCookie";
 import { AsyncResult, Result } from "typescript-result";
 import { getFirstRow } from "@/lib/utils/sql";
 import { JWT_SECRET } from "@/config";
-import { eventService } from "./eventService";
+import { EventService, eventService } from "./eventService";
 
 export class UserService {
   private readonly dbService: DatabaseService;
+  private readonly eventService: EventService;
 
-  constructor(dbService: DatabaseService) {
+  constructor(dbService: DatabaseService, eventService: EventService) {
     this.dbService = dbService;
+    this.eventService = eventService;
   }
 
   /**
@@ -43,7 +45,7 @@ export class UserService {
    */
   joinEvent(userData: CreateUser): AsyncResult<string, Error> {
     return Result.gen(this, async function* () {
-      const eventCode = yield* eventService.getEventByCode(userData.eventCode);
+      const eventCode = yield* this.eventService.getEventByCode(userData.eventCode);
 
       const cookieResult = await getEventCookie(eventCode.eventId, JWT_SECRET);
       if (cookieResult.ok) {
@@ -58,4 +60,7 @@ export class UserService {
   }
 }
 
-export const userService = makeGlobal("userService", () => new UserService(dbService));
+export const userService = makeGlobal(
+  "userService",
+  () => new UserService(dbService, eventService)
+);
