@@ -1,182 +1,77 @@
-.phoneheader {
-  --phoneheader-bg: var(--bg-raised);
-  --phoneheader-text: var(--text-default);
-  --phoneheader-border: var(--border-focus);
-  --phoneheader-subtitle: var(--text-subtle);
-  --phoneheader-focus: var(--bg-soft);
-}
-
 .container {
   display: flex;
-  align-items: center;
+  flex-direction: row;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 1.5rem;
-  background: var(--phoneheader-bg);
-  color: var(--phoneheader-text);
-  border-bottom: 1px solid var(--phoneheader-border);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.leftAction,
-.rightAction {
-  display: inline-flex;
   align-items: center;
+  width: 100%;
+  padding: 1rem 2rem;
+
+  background-color: var(--bg-raised);
+  border-bottom: 1px solid var(--border-focus);
+}
+
+.infoSection {
+  display: flex;
+  flex-direction: row;
   justify-content: center;
-  border: none;
-  background: transparent;
-  font: inherit;
-  color: inherit;
-}
+  align-items: center;
+  gap: 1rem;
 
-.leftAction {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: var(--radius-full);
-}
+  .backButton {
+    width: 2rem;
+    height: 2rem;
+    aspect-ratio: 1/1;
+    padding: 0.25rem;
+    border-radius: var(--radius-8);
+    cursor: pointer;
 
-.leftActionButton {
-  cursor: pointer;
-}
+    &:hover {
+      background-color: var(--bg-moderate);
+    }
 
-.leftActionButton:focus-visible {
-  outline: 2px solid var(--phoneheader-focus);
-  outline-offset: 2px;
+    &:active {
+      background-color: var(--bg-moderate-pressed);
+    }
+  }
 }
 
 .titleBlock {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  flex: 1;
-  min-width: 0;
-}
-
-.title {
-  margin: 0;
-  font-size: 1.8rem;
-  font-weight: 700;
-  line-height: 1.1;
-}
-
-.subtitle {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--phoneheader-subtitle);
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.uploadsInfo {
-  display: none;
-  font-size: 0.875rem;
-  color: var(--phoneheader-subtitle);
-  font-weight: 500;
-}
-
-.rightAction {
-  padding: 0.45rem 1rem;
-  border-radius: var(--radius-full);
-  gap: 0.5rem;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.1;
-  border: 1px solid transparent;
-}
-
-.iconWrapper {
-  display: inline-flex;
-  align-items: center;
   justify-content: center;
-}
+  align-items: start;
+  gap: 0.25rem;
 
-.iconWrapper svg {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-.leftSpacer,
-.rightSpacer {
-  width: 2.5rem;
-  height: 2.5rem;
-}
-
-/* Desktop actions */
-.desktopActions {
-  display: none;
-}
-
-/* Show desktop actions on larger screens */
-@media (min-width: 768px) {
-  .desktopActions {
+  > *:not(:first-child) {
     display: flex;
-    gap: 0.75rem;
+    flex-direction: row;
     align-items: center;
+    gap: 0.5rem;
+    justify-content: start;
+
+    font-size: var(--font-size-small);
+    color: var(--text-subtle);
+
+    &:not(:last-child) {
+      font-weight: var(--font-weight-bold);
+      font-size: var(--font-size-medium);
+    }
+  }
+}
+
+.childSection {
+  display: flex;
+  flex-direction: row;
+  width: min-content;
+  gap: 0.5rem;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding-inline: 1rem;
   }
 
-  .uploadsInfo {
-    display: block;
-  }
-
-  /* Hide the mobile right action on desktop */
-  .rightAction {
-    display: none !important;
-  }
-
-  .rightSpacer {
+  .titleBlock > *:last-child {
     display: none;
   }
-}
-
-/* Row wrapper for header content to keep buttons aligned horizontally */
-.headerRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  width: 100%;
-}
-
-/* Children wrapper renders beneath the header row and is inside the header background */
-.childrenWrapper {
-  width: 100%;
-  padding: 0 1.5rem 0.75rem;
-  box-sizing: border-box;
-}
-
-/* QR modal overlay */
-.qrOverlay {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 10000;
-}
-
-.qrDialog {
-  background: var(--phoneheader-bg);
-  color: var(--phoneheader-text);
-  padding: 2.25rem 2.25rem 2.25rem;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  position: relative;
-}
-
-.qrClose {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  background: transparent;
-  border: none;
-  color: inherit;
-  font-size: 1.25rem;
-  cursor: pointer;
-  z-index: 20;
 }
