@@ -10,7 +10,8 @@ import EventCard from "@/components/EventCard/EventCard";
 import { useRouter } from "next/navigation";
 
 const Page = () => {
-  const t = useTranslations("admin.dashboard.event.page");
+  const t = useTranslations("pages.adminEvents");
+  const c = useTranslations("common.actions");
   const navigation = useRouter();
 
   const { data, isLoading } = useEventsQuery();
@@ -28,10 +29,10 @@ const Page = () => {
           data-color="brand-purple"
           onClick={() => dialogRef.current?.showModal()}
         >
-          {t("createNew")}
+          {c("createNewEvent")}
         </Button>
       </div>
-      <Title size="small">Events</Title>
+      <Title size="small">{t("title")}</Title>
       <div className={styles.eventsContainer}>
         {isLoading ? (
           <div className={styles.loadingContainer} data-testid="loading-spinner">

@@ -11,7 +11,8 @@ import { downloadQrSvg } from "@/utils/downloadqrcode";
 type ShareOrigin = "create" | "share";
 
 export default function Page() {
-  const t = useTranslations("ShareEventPage");
+  const t = useTranslations("features.guest.event.share");
+  const c = useTranslations("common");
 
   const [shareRole, setShareRole] = useState<string>("guest");
 
@@ -33,14 +34,14 @@ export default function Page() {
   const originDependentContent =
     origin === "create"
       ? {
-          firstTitle: t("create.firstTitle"),
-          firstDescription: t("create.firstDescription"),
-          doneText: t("create.doneText"),
+          firstTitle: t("variants.eventCreated.title"),
+          firstDescription: t("variants.eventCreated.description"),
+          doneText: c("actions.done"),
         }
       : {
-          firstTitle: t("share.firstTitle"),
-          firstDescription: t("share.firstDescription"),
-          doneText: t("share.doneText"),
+          firstTitle: t("variants.share.title"),
+          firstDescription: t("variants.share.description"),
+          doneText: c("actions.done"),
         };
 
   const linkContent =
@@ -65,7 +66,7 @@ export default function Page() {
       timeoutRef.current = window.setTimeout(() => setCopied(false), 1200);
     } catch {
       setCopied(false);
-      setCopyError(t("errors.copyFailed"));
+      setCopyError(c("messages.copyFailed"));
     }
   };
 
@@ -102,8 +103,8 @@ export default function Page() {
           onChange={setShareRole}
           data-color="accent"
         >
-          <SegmentedControl.Item value="guest" label={t("controls.guest")} />
-          <SegmentedControl.Item value="moderator" label={t("controls.moderator")} />
+          <SegmentedControl.Item value="guest" label={c("roles.guest")} />
+          <SegmentedControl.Item value="moderator" label={c("roles.moderator")} />
         </SegmentedControl>
       </div>
 
@@ -146,15 +147,11 @@ export default function Page() {
           data-color="accent"
           icon={
             copied ? (
-              <Check
-                size={18}
-                aria-label={t("aria.copied")}
-                style={{ cursor: "pointer" }}
-              />
+              <Check size={18} style={{ cursor: "pointer" }} />
             ) : (
               <Copy
                 size={18}
-                aria-label={t("aria.copyLink")}
+                aria-label={t("aria.copyLinkButton")}
                 style={{ cursor: "pointer" }}
                 onClick={handleCopy}
               />
@@ -178,7 +175,7 @@ export default function Page() {
                     gap: "0.375rem",
                   }}
                 >
-                  {t("actions.downloadQr")}
+                  {c("actions.downloadQrCode")}
                   <Download size={18} />
                 </span>
               ),

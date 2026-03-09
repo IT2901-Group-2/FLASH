@@ -10,17 +10,18 @@ import {
 } from "@/utils/date-utils";
 
 export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
-  const t = useTranslations("admin.dashboard.event.create.basicInfo");
+  const tStep = useTranslations("features.admin.dashboard.event.create.basics");
+  const tFields = useTranslations("common.fields");
 
   const startDateValue = formData.startDate.toISOString().split("T")[0];
 
   return (
     <>
-      <Title description={t("description")}>{t("title")}</Title>
+      <Title description={tStep("description")}>{tStep("title")}</Title>
       <Input
         value={formData.name}
         onChange={e => updateFormData("name", e.target.value)}
-        label={t("input.name")}
+        label={tFields("eventName")}
         aria-label="eventName"
         minLength={3}
         required
@@ -29,7 +30,7 @@ export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
       <Input
         value={formData.description}
         onChange={e => updateFormData("description", e.target.value)}
-        label={t("input.description")}
+        label={tFields("eventDescription")}
         aria-label="eventDescription"
         data-testid="description"
       />
@@ -37,7 +38,7 @@ export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
         <Input
           value={formatDateForInput(formData.startDate)}
           onChange={makeDateTimeHandler("startDate", "date", formData, updateFormData)}
-          label={t("input.startDate")}
+          label={tFields("startDate")}
           aria-label="eventStartDate"
           type="date"
           icon={<Calendar />}
@@ -48,7 +49,7 @@ export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
         <Input
           value={formatTimeForInput(formData.startDate)}
           onChange={makeDateTimeHandler("startDate", "time", formData, updateFormData)}
-          label={t("input.startTime")}
+          label={tFields("startTime")}
           aria-label="eventStartDate"
           type="time"
           icon={<Calendar />}
@@ -57,7 +58,7 @@ export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
         <Input
           value={formatDateForInput(formData.endDate)}
           onChange={makeDateTimeHandler("endDate", "date", formData, updateFormData)}
-          label={t("input.endDate")}
+          label={tFields("endDate")}
           aria-label="eventEndDate"
           min={startDateValue}
           type="date"
@@ -69,7 +70,7 @@ export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
         <Input
           value={formatTimeForInput(formData.endDate)}
           onChange={makeDateTimeHandler("endDate", "time", formData, updateFormData)}
-          label={t("input.endTime")}
+          label={tFields("endTime")}
           aria-label="eventStartDate"
           type="time"
           icon={<Calendar />}

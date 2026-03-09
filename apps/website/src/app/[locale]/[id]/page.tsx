@@ -11,7 +11,7 @@ import { useEventAuth } from "@/providers/EventAuthContext";
 
 export default function Page() {
   const router = useRouter();
-  const t = useTranslations("EventPage");
+  const c = useTranslations("common");
   const { id } = useParams<{ id: string }>();
   const eventId = typeof id === "string" ? id : "";
   const eventAuth = useEventAuth();
@@ -25,8 +25,8 @@ export default function Page() {
 
   const uploadsDescription =
     typeof uploadsRemaining === "number"
-      ? `You have ${uploadsRemaining} uploads remaining`
-      : "You have an unlimited number of uploads";
+      ? `${uploadsRemaining} ${c("values.photos")}`
+      : c("values.unlimited");
 
   const { openFilePicker, FileInput } = useFileUpload({
     onFilesSelected: files => {
@@ -54,9 +54,10 @@ export default function Page() {
         leftIcon={<ArrowLeft />}
         leftAriaLabel="back-button"
         uploadsRemaining={uploadsRemaining}
+        uploadsInfoText={uploadsDescription}
         onPrimaryClick={openFilePicker}
-        primaryText={t("actions.uploadImage")}
-        secondaryText={t("actions.takePhoto")}
+        primaryText={c("actions.uploadImage")}
+        secondaryText={c("actions.takePhoto")}
         onQrOpenChange={setIsQrOpen}
       ></PhoneHeader>
       {!isLoading && (isError || !eventData) ? (
@@ -69,14 +70,14 @@ export default function Page() {
           "data-color": "brand-purple",
           icon: <Upload size={18} />,
           iconPosition: "right",
-          text: t("actions.uploadImage"),
+          text: c("actions.uploadImage"),
           onClick: openFilePicker,
         }}
         secondaryButton={{
           "data-color": "brand-purple",
           icon: <Camera size={18} />,
           iconPosition: "right",
-          text: t("actions.takePhoto"),
+          text: c("actions.takePhoto"),
         }}
       />
     </div>

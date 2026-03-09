@@ -16,7 +16,7 @@ import Logo from "../Logo/Logo";
  */
 export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) => {
   const navigation = useRouter();
-  const t = useTranslations("admin.dashboard.sidebar");
+  const t = useTranslations("common.navigation");
   const { resolvedTheme, toggleTheme } = useTheme();
 
   const mounted = useIsMounted();
@@ -35,7 +35,7 @@ export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivEleme
           icon={<Calendar />}
           onClick={() => navigation.push("/admin/dashboard/events")}
         >
-          {t("event")}
+          {t("events")}
         </Sidebar.Item>
       </Sidebar.Group>
       <Sidebar.Group title="Config" position="bottom">

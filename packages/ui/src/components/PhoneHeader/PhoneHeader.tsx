@@ -54,6 +54,8 @@ export interface PhoneHeaderProps {
   className?: string;
   /** Number of uploads remaining (shown on desktop only). */
   uploadsRemaining?: number;
+  /** Optional localized text shown for uploads information on desktop. */
+  uploadsInfoText?: ReactNode;
   /** Optional value to encode in the QR code shown by the tertiary action. Defaults to current location if available. */
   qrValue?: string;
   /** Optional children rendered beneath the header (e.g., Breadcrumb). */
@@ -85,6 +87,7 @@ export const PhoneHeader = ({
   tertiaryText,
   className,
   uploadsRemaining,
+  uploadsInfoText,
   qrValue,
   children,
   onQrOpenChange,
@@ -152,9 +155,9 @@ export const PhoneHeader = ({
               <span>{subtitle}</span>
             </div>
           ) : null}
-          {uploadsRemaining !== undefined && (
+          {(uploadsInfoText !== undefined || uploadsRemaining !== undefined) && (
             <div className={styles.uploadsInfo}>
-              You have {uploadsRemaining} uploads remaining
+              {uploadsInfoText ?? `You have ${uploadsRemaining} uploads remaining`}
             </div>
           )}
         </div>

@@ -24,7 +24,7 @@ export const EditEventDialog = ({
   onClose,
   ...rest
 }: EditEventDialogProps) => {
-  const t = useTranslations("admin.dashboard.event.edit");
+  const t = useTranslations("common.actions");
   const { mutateAsync, status } = useUpdateEventMutation();
 
   const formRef = useRef<HTMLFormElement>(null);

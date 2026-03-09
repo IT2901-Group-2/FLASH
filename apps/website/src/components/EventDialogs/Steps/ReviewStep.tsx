@@ -8,7 +8,9 @@ import { ReviewStepProps } from "./types";
 import { useEventCodeQuery } from "@/hooks/useEvents";
 
 const ReviewStep = ({ status, result }: ReviewStepProps) => {
-  const t = useTranslations("admin.dashboard.event.create.review");
+  const tReview = useTranslations("features.admin.dashboard.event.create.review");
+  const tShare = useTranslations("features.guest.event.share.links");
+  const tCommon = useTranslations("common");
   const [shareRole, setShareRole] = useState<string>("guest");
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
   const { data: displayCode } = useEventCodeQuery(
@@ -33,12 +35,12 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
 
   return (
     <>
-      <Title size="medium" description={t("description")}>
-        {t("title")}
+      <Title size="medium" description={tReview("description")}>
+        {tReview("title")}
       </Title>
       <DropdownControl onChange={setShareRole} value={shareRole}>
         <DropdownControl.Item
-          label={t("guest.name")}
+          label={tCommon("roles.guest")}
           value="guest"
           content={
             <div className={styles.infoContainer}>
@@ -49,12 +51,12 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   icon={<Download />}
                   onClick={handleDownloadQR}
                 >
-                  {t("download")}
+                  {tCommon("actions.download")}
                 </Button>
               </div>
               <div className={styles.linkContainer} data-color="neutral">
-                <Title size="medium" description={t("guest.linkDescription")}>
-                  {t("guest.linkTitle")}
+                <Title size="medium" description={tShare("guest.description")}>
+                  {tShare("guest.title")}
                 </Title>
                 <Input
                   aria-label="link"
@@ -69,7 +71,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
           }
         />
         <DropdownControl.Item
-          label={t("moderator.name")}
+          label={tCommon("roles.moderator")}
           value="moderator"
           content={
             <div className={styles.infoContainer}>
@@ -80,12 +82,12 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   icon={<Download />}
                   onClick={handleDownloadQR}
                 >
-                  {t("download")}
+                  {tCommon("actions.download")}
                 </Button>
               </div>
               <div className={styles.linkContainer} data-color="neutral">
-                <Title size="medium" description={t("moderator.linkDescription")}>
-                  {t("moderator.linkTitle")}
+                <Title size="medium" description={tShare("moderator.description")}>
+                  {tShare("moderator.title")}
                 </Title>
                 <Input
                   aria-label="link"
