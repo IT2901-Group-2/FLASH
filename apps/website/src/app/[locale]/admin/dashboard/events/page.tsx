@@ -28,11 +28,11 @@ const Page = () => {
           icon={<Plus />}
           data-color="brand-purple"
           onClick={() => dialogRef.current?.showModal()}
+          className={styles.createButton}
         >
           {c("createNewEvent")}
         </Button>
       </div>
-      <Title size="small">{t("title")}</Title>
       <div className={styles.eventsContainer}>
         {isLoading ? (
           <div className={styles.loadingContainer} data-testid="loading-spinner">
