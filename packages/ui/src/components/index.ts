@@ -4,7 +4,7 @@ export * from "./Card";
 export * from "./Dialog";
 export * from "./ProgressBar";
 export * from "./ProgressDots";
-export * from "./Input";
+export * from "./Form/TextField";
 export * from "./ImageCard";
 export * from "./Sidebar";
 export * from "./Switch";

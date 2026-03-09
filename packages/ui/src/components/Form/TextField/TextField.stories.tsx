@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Input } from "./Input";
+import { Input } from "./TextField";
 import { expect, fn, userEvent, within } from "storybook/test";
 import { Search, Mail, Check, X } from "lucide-react";
 
@@ -7,45 +7,7 @@ const meta: Meta<typeof Input> = {
   title: "Building Blocks/Components/Input",
   component: Input,
   tags: ["autodocs"],
-  argTypes: {
-    variant: {
-      control: "select",
-      options: ["primary", "secondary", "tertiary"],
-      description:
-        "Changes design and interaction-visuals. As of now only the primary variant has been designed",
-    },
-    "data-color": {
-      control: "select",
-      options: [],
-      description: "Overrides inherited color scheme",
-    },
-    iconPosition: {
-      control: "select",
-      options: ["left", "right"],
-      description: "Icon position in input",
-    },
-    disabled: {
-      control: "boolean",
-      description: "Prevent user interaction",
-    },
-    loading: {
-      control: "boolean",
-      description: "Shows loader inside input",
-    },
-    success: {
-      control: "boolean",
-      description: "Shows success state styling",
-    },
-    required: {
-      control: "boolean",
-      description: "Marks the input as required (adds asterisk to label)",
-    },
-    size: {
-      control: "select",
-      options: ["small", "medium", "large", "xlarge"],
-      description: "Sets the visual size of the input",
-    },
-  },
+  argTypes: {},
   args: {
     onChange: fn(),
     onFocus: fn(),
