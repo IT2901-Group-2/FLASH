@@ -107,7 +107,7 @@ export function verifyRefreshToken(req: NextRequest): TokenPayload | null {
       throw new Error("Invalid token payload");
     }
     return decoded;
-  } catch (err) {
+  } catch {
     throw new Error("Invalid or expired refresh token");
   }
 }
