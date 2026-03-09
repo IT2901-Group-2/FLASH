@@ -10,6 +10,7 @@ import styles from "./Moderate.module.css";
 
 type Tab = "pending" | "approved" | "rejected";
 
+//TODO: Replace hardcoded strings with translations
 const TAB_HEADINGS: Record<Tab, string> = {
   pending: "Photos to approve",
   approved: "Approved photos",

@@ -8,6 +8,7 @@
   "common": {
     "actions": {
       "back": "Back",
+      "close": "Close",
       "cancel": "Cancel",
       "previous": "Previous",
       "next": "Next",
@@ -31,10 +32,14 @@
       "admin": "Admin"
     },
     "navigation": {
+      "main": "Main",
+      "config": "Config",
       "desktop": "Desktop",
       "events": "Events",
       "settings": "Settings",
-      "storage": "Storage"
+      "storage": "Storage",
+      "darkMode": "Dark mode",
+      "lightMode": "Light mode"
     },
     "fields": {
       "password": "Password",
@@ -54,7 +59,8 @@
     },
     "messages": {
       "copySuccess": "Copied successfully!",
-      "copyFailed": "Failed to copy link to clipboard"
+      "copyFailed": "Failed to copy link to clipboard",
+      "scanToUploadPhotos": "Scan to upload photos"
     }
   },
   "pages": {
@@ -154,6 +160,58 @@
       "event": {
         "list": {
           "title": "Your Events"
+        },
+        "moderate": {
+          "title": "Moderate",
+          "selectionDescription": "{count, plural, one {# photo selected} other {# photos selected}}",
+          "emptyState": {
+            "pending": "No pending photos found",
+            "approved": "No approved photos found",
+            "rejected": "No rejected photos found"
+          },
+          "imageAlt": "Photo {index} of {total}",
+          "imageTitle": "Photo {index}",
+          "tabs": {
+            "pending": "Pending",
+            "approved": "Approved",
+            "rejected": "Rejected"
+          },
+          "headings": {
+            "pending": "Photos to approve",
+            "approved": "Approved photos",
+            "rejected": "Rejected photos"
+          },
+          "breadcrumb": {
+            "event": "Event",
+            "moderate": "Moderate"
+          },
+          "actions": {
+            "approveSelected": "Approve selected photos",
+            "rejectSelected": "Reject selected photos",
+            "select": "Select",
+            "cancel": "Cancel",
+            "selectAll": "Select all",
+            "deselectAll": "Deselect all"
+          },
+          "aria": {
+            "goBack": "Go back",
+            "home": "Home",
+            "goTo": "Go to"
+          },
+          "imageStates": {
+            "pending": "Pending...",
+            "loading": "Loading...",
+            "rejected": "Rejected",
+            "selected": "Selected",
+            "approved": "Approved"
+          }
+        },
+        "upload": {
+          "loadingEvent": "Loading event...",
+          "eventFallbackName": "Event",
+          "eventLoadFailed": "Could not load event details for this link.",
+          "unlimited": "unlimited",
+          "description": "You can upload {uploadsRemaining} photos"
         },
         "share": {
           "aria": {

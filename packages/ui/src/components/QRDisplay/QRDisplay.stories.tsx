@@ -15,6 +15,9 @@ const meta: Meta<typeof QRDisplay> = {
     },
   },
   decorators: [Story => <Story />],
+  args: {
+    helperText: "Scan to upload photos",
+  },
 } satisfies Meta<typeof QRDisplay>;
 
 export default meta;
@@ -66,9 +69,24 @@ export const LongURL: Story = {
 export const Sizes: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "1.5rem", alignItems: "flex-start" }}>
-      <QRDisplay value={"https://example.com/s1"} code="SM" size="small" />
-      <QRDisplay value={"https://example.com/m1"} code="MD" size="medium" />
-      <QRDisplay value={"https://example.com/l1"} code="LG" size="large" />
+      <QRDisplay
+        value={"https://example.com/s1"}
+        code="SM"
+        size="small"
+        helperText="Scan to upload photos"
+      />
+      <QRDisplay
+        value={"https://example.com/m1"}
+        code="MD"
+        size="medium"
+        helperText="Scan to upload photos"
+      />
+      <QRDisplay
+        value={"https://example.com/l1"}
+        code="LG"
+        size="large"
+        helperText="Scan to upload photos"
+      />
     </div>
   ),
   play: async ({ canvasElement }) => {

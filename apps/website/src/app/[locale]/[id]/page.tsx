@@ -12,7 +12,8 @@ import PhoneHeader from "@/components/PhoneHeader/PhoneHeader";
 
 export default function Page() {
   const router = useRouter();
-  const c = useTranslations("common");
+  const tCommon = useTranslations("common");
+  const tUpload = useTranslations("features.guest.event.upload");
   const { id } = useParams<{ id: string }>();
   const eventId = typeof id === "string" ? id : "";
   const eventAuth = useEventAuth();
@@ -20,14 +21,16 @@ export default function Page() {
     eventId ? { id: [eventId] } : undefined
   );
   const eventData = data?.[0];
-  const eventName = eventData?.name ?? (isLoading ? "Loading event..." : "Event");
+  const eventName =
+    eventData?.name ??
+    (isLoading ? tUpload("loadingEvent") : tUpload("eventFallbackName"));
   const uploadsRemaining =
     typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
 
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const uploadDescription = t("uploadDescription", {
+  const uploadDescription = tUpload("description", {
     uploadsRemaining:
-      typeof uploadsRemaining === "number" ? uploadsRemaining : "unlimited",
+      typeof uploadsRemaining === "number" ? uploadsRemaining : tUpload("unlimited"),
   });
 
   const { openFilePicker, FileInput } = useFileUpload({
@@ -48,14 +51,18 @@ export default function Page() {
       <FileInput />
       <Dialog ref={dialogRef} className={styles.qrCodeContainer}>
         <div className={styles.qrCodeContainer}>
-          <QRDisplay value="www.example.com" size="large" />
+          <QRDisplay
+            value="www.example.com"
+            size="large"
+            helperText={tCommon("messages.scanToUploadPhotos")}
+          />
           <Button
             variant="secondary"
             data-color="neutral"
             onClick={() => dialogRef.current?.close()}
             fill
           >
-            Close
+            {tCommon("actions.close")}
           </Button>
         </div>
       </Dialog>
@@ -80,7 +87,7 @@ export default function Page() {
             variant="secondary"
             className={styles.desktopOnly}
           >
-            {t("actions.takePhoto")}
+            {tCommon("actions.takePhoto")}
           </Button>
           <Button
             icon={<Upload />}
@@ -90,11 +97,11 @@ export default function Page() {
             onClick={openFilePicker}
             className={styles.desktopOnly}
           >
-            {t("actions.uploadImage")}
+            {tCommon("actions.uploadImage")}
           </Button>
         </PhoneHeader>
         {!isLoading && (isError || !eventData) ? (
-          <p className={styles.errorText}>Could not load event details for this link.</p>
+          <p className={styles.errorText}>{tUpload("eventLoadFailed")}</p>
         ) : null}
         <ActionCard
           className={`${styles.mobileOnly}`}
@@ -103,14 +110,14 @@ export default function Page() {
             "data-color": "brand-purple",
             icon: <Upload size={18} />,
             iconPosition: "right",
-            text: t("actions.uploadImage"),
+            text: tCommon("actions.uploadImage"),
             onClick: openFilePicker,
           }}
           secondaryButton={{
             "data-color": "brand-purple",
             icon: <Camera size={18} />,
             iconPosition: "right",
-            text: t("actions.takePhoto"),
+            text: tCommon("actions.takePhoto"),
           }}
         />
       </div>
