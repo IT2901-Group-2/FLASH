@@ -31,3 +31,7 @@
   margin: 0;
   font-weight: var(--font-weight-bold);
 }
+
+.openCameraButton {
+  width: 100%;
+}
