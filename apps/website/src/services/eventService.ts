@@ -14,6 +14,7 @@ import { getFirstRow } from "@/lib/utils/sql";
 import { and, eq, like, inArray, lt, lte, gte, gt, desc, asc } from "drizzle-orm";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { SQLiteColumn } from "drizzle-orm/sqlite-core";
+import { HTTPError } from "@/lib/utils/error";
 
 export class EventService {
   private readonly dbService: DatabaseService;
@@ -116,7 +117,9 @@ export class EventService {
         .from(eventCodeTable)
         .where(eq(eventCodeTable.code, code))
         .limit(1)
-    ).map(rows => getFirstRow(rows, `Unable to find event with code: ${code}`));
+    )
+      .map(rows => getFirstRow(rows, `Unable to find event with code: ${code}`))
+      .mapError(err => new HTTPError(err.message, 404));
   }
 
   /**
