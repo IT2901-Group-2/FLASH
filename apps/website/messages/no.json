@@ -153,7 +153,8 @@
     "actions": {
       "uploadImage": "Last opp bilde",
       "takePhoto": "Ta bilde"
-    }
+    },
+    "uploadDescription": "{uploadsRemaining, select, unlimited {Du har ubegrenset antall opplastinger} other {{uploadsRemaining, plural, =0 {Du har ingen opplastinger igjen} one {Du har # opplasting igjen} other {Du har # opplastinger igjen}}}}"
   },
   "login": {
     "description": "Administrer bildebegivenhetene dine på en enkel måte",

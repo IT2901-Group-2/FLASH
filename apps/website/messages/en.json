@@ -164,7 +164,8 @@
     "actions": {
       "uploadImage": "Upload Image",
       "takePhoto": "Take Photo"
-    }
+    },
+    "uploadDescription": "{uploadsRemaining, select, unlimited {You have an unlimited number of uploads} other {{uploadsRemaining, plural, =0 {You have no uploads remaining} one {You have # upload remaining} other {You have # uploads remaining}}}}"
   },
   "guest": {
     "login": {

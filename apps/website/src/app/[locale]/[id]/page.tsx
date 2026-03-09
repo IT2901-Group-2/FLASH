@@ -25,10 +25,10 @@ export default function Page() {
     typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
 
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const uploadsDescription =
-    typeof uploadsRemaining === "number"
-      ? `You have ${uploadsRemaining} uploads remaining`
-      : "You have an unlimited number of uploads";
+  const uploadDescription = t("uploadDescription", {
+    uploadsRemaining:
+      typeof uploadsRemaining === "number" ? uploadsRemaining : "unlimited",
+  });
 
   const { openFilePicker, FileInput } = useFileUpload({
     onFilesSelected: files => {
@@ -64,7 +64,7 @@ export default function Page() {
         <PhoneHeader
           title={eventName}
           username={eventAuth?.nickname ?? ""}
-          description={uploadsDescription}
+          description={uploadDescription}
         >
           <Button
             icon={<QrCode />}
@@ -98,7 +98,7 @@ export default function Page() {
         ) : null}
         <ActionCard
           className={`${styles.mobileOnly}`}
-          description={uploadsDescription}
+          description={uploadDescription}
           primaryButton={{
             "data-color": "brand-purple",
             icon: <Upload size={18} />,
