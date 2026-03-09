@@ -8,8 +8,6 @@ const authTokenSchema = z.object({
   expiresIn: z.number(),
 });
 
-type AuthTokenResponse = z.infer<typeof authTokenSchema>;
-
 /**
  * Logs in with a password via POST /api/auth/login.
  * On success, returns an access token + expiry.
