@@ -1,6 +1,6 @@
 import React, { useContext, useId } from "react";
-import { FieldsetContext } from "./fieldset/context";
 import { cl } from "@/util/helpers";
+import { FieldsetContext } from "./Fieldset/Fieldset.context";
 
 export interface FormFieldProps {
   /**
@@ -53,33 +53,33 @@ export interface FormFieldType {
 /**
  * Handles props and their state for various form-fields in context with Fieldset
  */
-export const useFormField = (props: FormFieldProps, prefix: string): FormFieldType => {
-  const { size, error, errorId: propErrorId } = props;
-
+export const useFormField = (
+  {
+    readOnly: _readOnly,
+    id: _id,
+    error,
+    size,
+    description,
+    disabled: _disabled,
+    errorId: _errorId,
+  }: FormFieldProps,
+  prefix: string
+): FormFieldType => {
   const fieldset = useContext(FieldsetContext);
 
   const genId = useId();
 
-  const id = props.id ?? `${prefix}-${genId}`;
-  const errorId = propErrorId ?? `${prefix}-error-${genId}`;
+  const id = _id ?? `${prefix}-${genId}`;
+  const errorId = _errorId ?? `${prefix}-error-${genId}`;
   const inputDescriptionId = `${prefix}-description-${genId}`;
 
-  const disabled = fieldset?.disabled || props.disabled;
-  const readOnly = ((fieldset?.readOnly || props.readOnly) && !disabled) || undefined;
+  const disabled = fieldset?.disabled || _disabled;
+  const readOnly = ((fieldset?.readOnly || _readOnly) && !disabled) || undefined;
 
   const hasError: boolean = !disabled && !readOnly && !!(error || fieldset?.error);
   const showErrorMsg = !disabled && !readOnly && !!error && typeof error !== "boolean";
 
   const ariaInvalid = { ...(hasError ? { "aria-invalid": true } : {}) };
-
-  if ((props as any)?.required && process.env.NODE_ENV !== "production") {
-    console.warn(
-      "Aksel: Use of 'required' in form-elements is heavily discuouraged. Docs about why here:"
-    );
-    console.warn(
-      "https://aksel.nav.no/god-praksis/artikler/obligatoriske-og-valgfrie-skjemafelter#dc7a536235fa"
-    );
-  }
 
   return {
     showErrorMsg,
@@ -92,27 +92,16 @@ export const useFormField = (props: FormFieldProps, prefix: string): FormFieldTy
       id,
       ...ariaInvalid,
       "aria-describedby":
-        cl(props["aria-describedby"], {
-          [inputDescriptionId]: props.description && !containsReadMore(props.description),
-          [errorId]: showErrorMsg,
-          [fieldset?.errorId ?? ""]: hasError && fieldset?.error,
-        }) || undefined,
+        cl(
+          //props["aria-describedby"],
+          {
+            [inputDescriptionId]: description,
+            [errorId]: showErrorMsg,
+            [fieldset?.errorId ?? ""]: hasError && fieldset?.error,
+          }
+        ) || undefined,
 
       disabled,
     },
   };
 };
-
-export function containsReadMore(children: React.ReactNode, checkNested = true): boolean {
-  if (React.isValidElement<{ children?: any }>(children)) {
-    if (children.type === ReadMore) {
-      return true;
-    }
-    if (children.props.children && checkNested) {
-      return containsReadMore(children.props.children, false);
-    }
-  } else if (Array.isArray(children)) {
-    return children.some(child => containsReadMore(child, checkNested));
-  }
-  return false;
-}
