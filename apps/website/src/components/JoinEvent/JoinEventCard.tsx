@@ -54,24 +54,18 @@ const JoinEventCard = () => {
           value="enter-code"
           label={t("enterCodeTab")}
           content={
-            <form className={styles.content} action="/api/join" method="POST">
-              <Input
-                label={t("nicknameLabel")}
-                placeholder={t("nicknamePlaceholder")}
-                icon={<TextAlignStart />}
-                aria-label={t("nicknameLabel")}
-                name="name"
-                type="text"
-                required
-              />
+            <form className={styles.content} onSubmit={handleSubmit}>
               <Input
                 label={t("eventCodeLabel")}
                 placeholder={t("eventCodePlaceholder")}
                 icon={<TextAlignStart />}
                 aria-label={t("eventCodeLabel")}
-                name="eventCode"
-                type="text"
-                required
+                value={code}
+                onChange={e => {
+                  setCode(e.target.value);
+                  setError(undefined);
+                }}
+                error={error}
               />
               <Button
                 className={styles.fullWidthButton}
