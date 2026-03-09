@@ -143,12 +143,7 @@ export const ModerateHeader = ({
           </div>
         ) : (
           <>
-            <Breadcrumb
-              items={breadcrumbItems}
-              data-color="brand-purple"
-              homeAriaLabel={t("aria.home")}
-              linkAriaPrefix={t("aria.goTo")}
-            />
+            <Breadcrumb items={breadcrumbItems} data-color="brand-purple" />
             <Button
               variant="primary"
               size="xsmall"

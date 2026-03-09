@@ -49,11 +49,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
           content={
             <div className={styles.infoContainer}>
               <div className={styles.QRCodeContainer} ref={qrContainerRef}>
-                <QRDisplay
-                  value={displayLink}
-                  code={displayCode}
-                  helperText={tCommon("messages.scanToUploadPhotos")}
-                />
+                <QRDisplay value={displayLink} code={displayCode} />
                 <Button
                   variant="secondary"
                   icon={<Download />}
@@ -84,11 +80,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
           content={
             <div className={styles.infoContainer}>
               <div className={styles.QRCodeContainer} ref={qrContainerRef}>
-                <QRDisplay
-                  value={displayLink}
-                  code={displayCode}
-                  helperText={tCommon("messages.scanToUploadPhotos")}
-                />
+                <QRDisplay value={displayLink} code={displayCode} />
                 <Button
                   variant="secondary"
                   icon={<Download />}

@@ -59,8 +59,7 @@
     },
     "messages": {
       "copySuccess": "Copied successfully!",
-      "copyFailed": "Failed to copy link to clipboard",
-      "scanToUploadPhotos": "Scan to upload photos"
+      "copyFailed": "Failed to copy link to clipboard"
     }
   },
   "pages": {

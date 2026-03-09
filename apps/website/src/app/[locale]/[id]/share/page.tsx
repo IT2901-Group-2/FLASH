@@ -101,11 +101,7 @@ export default function Page() {
         ref={qrContainerRef}
         style={{ alignSelf: "center", margin: "0.5rem 0 0.25rem" }}
       >
-        <QRDisplay
-          value={shareUrl}
-          code={displayCode}
-          helperText={tCommon("messages.scanToUploadPhotos")}
-        />
+        <QRDisplay value={shareUrl} code={displayCode} />
       </div>
 
       <Title

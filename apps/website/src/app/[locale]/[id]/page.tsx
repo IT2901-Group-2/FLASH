@@ -51,11 +51,7 @@ export default function Page() {
       <FileInput />
       <Dialog ref={dialogRef} className={styles.qrCodeContainer}>
         <div className={styles.qrCodeContainer}>
-          <QRDisplay
-            value="www.example.com"
-            size="large"
-            helperText={tCommon("messages.scanToUploadPhotos")}
-          />
+          <QRDisplay value="www.example.com" size="large" />
           <Button
             variant="secondary"
             data-color="neutral"
