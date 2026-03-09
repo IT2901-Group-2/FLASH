@@ -7,6 +7,8 @@ import { QrCode } from "lucide-react";
 import Link from "next/link";
 import { useCallback, SubmitEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { makeRequest } from "@/lib/utils/api";
+import { getEventCodeSchema } from "@/db";
 
 const JoinEventCard = () => {
   const router = useRouter();
@@ -19,12 +21,9 @@ const JoinEventCard = () => {
       const code = new FormData(e.currentTarget).get("eventCode");
       if (typeof code !== "string") return;
 
-      await fetch(`/api/events/by-code/${code}`)
-        .then(e => {
-          if (!e.ok) return setError(e.statusText);
-          e.json().then(e => router.push(`/join/${e.code}/nickname`));
-        })
-        .catch(console.log);
+      await makeRequest(getEventCodeSchema, `/api/events/by-code/${code}`)
+        .then(() => router.push(`/join/${code}`))
+        .catch(console.error);
     },
     [router]
   );
