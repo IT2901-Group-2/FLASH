@@ -1,12 +1,14 @@
 "use client";
-
-import { fetchJson } from "@/lib/utils/api";
+import { makeRequest } from "@/lib/utils/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
 
-type AuthTokenResponse = {
-  accessToken: string;
-  expiresIn: number;
-};
+const authTokenSchema = z.object({
+  accessToken: z.string(),
+  expiresIn: z.number(),
+});
+
+type AuthTokenResponse = z.infer<typeof authTokenSchema>;
 
 /**
  * Logs in with a password via POST /api/auth/login.
@@ -16,11 +18,7 @@ type AuthTokenResponse = {
 export function useLoginMutation() {
   return useMutation({
     mutationFn: ({ password }: { password: string }) =>
-      fetchJson<AuthTokenResponse>("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
-      }),
+      makeRequest(authTokenSchema, "/api/auth/login", "POST", { password }),
   });
 }
 
@@ -32,7 +30,8 @@ export function useLoginMutation() {
 export function useLogoutMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => fetchJson<{ ok: true }>("/api/auth/logout", { method: "POST" }),
+    mutationFn: () =>
+      makeRequest(z.object({ ok: z.literal(true) }), "/api/auth/logout", "POST"),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["auth"] });
     },
@@ -46,7 +45,6 @@ export function useLogoutMutation() {
  */
 export function useRefreshMutation() {
   return useMutation({
-    mutationFn: () =>
-      fetchJson<AuthTokenResponse>("/api/auth/refresh", { method: "POST" }),
+    mutationFn: () => makeRequest(authTokenSchema, "/api/auth/refresh", "POST"),
   });
 }
