@@ -11,5 +11,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  // matcher: ["app/api/data/:path*"],
+  matcher: ["app/[locale]/admin/dashboard/:path*"],
 };
