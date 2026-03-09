@@ -3,7 +3,6 @@ import { Button, Card, Input, Title } from "ui";
 import styles from "./nickname.module.css";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useEventsQuery } from "@/hooks/useEvents";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
