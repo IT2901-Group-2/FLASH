@@ -18,7 +18,7 @@ const meta: Meta<typeof ImageCard> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["primary", "secondary", "tertiary"],
+      options: ["primary", "secondary", "tertiary", "preview2"],
     },
     size: {
       control: "select",
@@ -468,6 +468,39 @@ export const InteractiveGallery: Story = {
       const selectedText = await canvas.findByText(/selected/i);
       await expect(selectedText).toBeInTheDocument();
     });
+  },
+};
+
+// Preview2 Variant Tests
+export const Preview2Default: Story = {
+  args: {
+    variant: "preview2",
+    src: SAMPLE_IMAGE,
+    alt: "Moderate preview image",
+    title: "img-001",
+    state: "default",
+  },
+  play: async ({ canvasElement }) => {
+    const card = canvasElement.querySelector('[data-variant="preview2"]');
+    await expect(card).toBeInTheDocument();
+    const image = within(canvasElement).getByRole("img");
+    await expect(image).toBeInTheDocument();
+  },
+};
+
+export const Preview2Selected: Story = {
+  args: {
+    variant: "preview2",
+    src: SAMPLE_IMAGE,
+    alt: "Selected moderate image",
+    title: "img-002",
+    state: "selected",
+    onClick: fn(),
+  },
+  play: async ({ canvasElement }) => {
+    const card = canvasElement.querySelector('[data-variant="preview2"]');
+    await expect(card).toBeInTheDocument();
+    await expect(card).toHaveAttribute("data-state", "selected");
   },
 };
 

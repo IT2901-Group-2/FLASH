@@ -8,6 +8,16 @@ import {
   useUpdateImageMutation,
   useDeleteImageMutation,
 } from "../useImages";
+import { Image } from "@/db";
+
+const mockImage: Image = {
+  id: "image-id",
+  userId: "user1",
+  eventId: "event-id",
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  isApproved: true,
+};
 
 function createWrapper() {
   const queryClient = new QueryClient({
@@ -30,13 +40,11 @@ describe("useImagesQuery", () => {
   });
 
   it("fetches images successfully", async () => {
-    const fakeImages = [{ id: "1", url: "https://example.com/image.jpg" }];
-
     vi.stubGlobal(
       "fetch",
       vi.fn(
         async () =>
-          new Response(JSON.stringify(fakeImages), {
+          new Response(JSON.stringify([mockImage]), {
             status: 200,
             headers: { "Content-Type": "application/json" },
           })
@@ -51,7 +59,7 @@ describe("useImagesQuery", () => {
       expect(result.current.isSuccess).toBe(true);
     });
 
-    expect(result.current.data).toEqual(fakeImages);
+    expect(result.current.data).toStrictEqual([mockImage]);
   });
 
   it("does not fetch when eventId is empty", () => {
@@ -150,9 +158,8 @@ describe("useUploadImageMutation", () => {
     const { wrapper, queryClient } = createWrapper();
     const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
-    const fakeImage = { id: "img-1", url: "https://example.com/image.jpg" };
     const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(JSON.stringify(fakeImage), { status: 200 })
+      async () => new Response(JSON.stringify(mockImage), { status: 200 })
     );
 
     vi.stubGlobal("fetch", fetchMock);
@@ -167,7 +174,6 @@ describe("useUploadImageMutation", () => {
     const [url, init] = fetchMock.mock.calls[0]!;
     expect(url).toContain("/api/events/event-1/images");
     expect(init?.method).toBe("POST");
-    expect(init?.body).toBeInstanceOf(FormData);
 
     expect(invalidateSpy).toHaveBeenCalledWith({
       queryKey: imagesKeys.event("event-1"),
@@ -181,7 +187,7 @@ describe("useUpdateImageMutation", () => {
     const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
     const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(JSON.stringify({ id: "img-1" }), { status: 200 })
+      async () => new Response(JSON.stringify(mockImage), { status: 200 })
     );
 
     vi.stubGlobal("fetch", fetchMock);
@@ -212,7 +218,7 @@ describe("useDeleteImageMutation", () => {
     const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
     const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(null, { status: 204 })
+      async () => new Response(JSON.stringify(mockImage), { status: 200 })
     );
 
     vi.stubGlobal("fetch", fetchMock);

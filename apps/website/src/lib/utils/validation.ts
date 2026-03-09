@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { AsyncResult, Result } from "typescript-result";
 import z from "zod";
+import { mapZodError } from "./error";
 
 /**
  * Utility function to validate a `NextRequest` body against a `zod` schema.
@@ -13,7 +14,9 @@ export function parseRequestBody<T>(
   request: NextRequest,
   schema: z.ZodType<T>
 ): AsyncResult<T, Error> {
-  return Result.try(async () => z.parseAsync(schema, await request.json()));
+  return Result.try(async () => z.parseAsync(schema, await request.json())).mapError(
+    mapZodError
+  );
 }
 
 /**
@@ -34,5 +37,26 @@ export function parseSearchParams<T>(
       {} as Record<string, unknown[]>
     );
 
-  return Result.try(() => z.parseAsync(schema, params));
+  return Result.try(() => z.parseAsync(schema, params)).mapError(mapZodError);
+}
+
+/**
+ * Utility function to validate `FormData` against a `zod` schema.
+ *
+ * @param formData The `FormData` object to validate.
+ * @param schema The `zod` schema to validate against.
+ * @returns A result with the search params or an error.
+ */
+export function parseFormData<T>(
+  formData: FormData,
+  schema: z.ZodType<T>
+): AsyncResult<T, Error> {
+  const data = formData
+    .keys()
+    .reduce(
+      (acc, key) => ({ ...acc, [key]: formData.getAll(key) }),
+      {} as Record<string, unknown>
+    );
+
+  return Result.try(() => z.parseAsync(schema, data)).mapError(mapZodError);
 }

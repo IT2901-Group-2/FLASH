@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./ProgressBar.module.css";
-import { cl } from "@/util/helpers/";
+import { cl } from "@/util/helpers";
 import { ColorName } from "../types";
 
 export interface ProgressBarProps extends Omit<

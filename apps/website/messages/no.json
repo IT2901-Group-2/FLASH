@@ -19,23 +19,25 @@
               "startDate": "Hendelsesdato",
               "endDate": "Sluttdato",
               "description": "Beskrivelse",
-              "name": "Navn på hendelse"
+              "name": "Navn på hendelse",
+              "endTime": "Slutttid",
+              "startTime": "Starttid"
             },
             "title": "Opprett event"
           },
-          "cancel": "Kanseler",
+          "cancel": "Avbryt",
           "finish": "Fullfør",
           "next": "Neste",
           "options": {
             "description": "Konfigurer hendelsesinnstillinger.",
             "input": {
               "autoApprove": "Autogodkjenn bilder",
-              "autoGenerate": "Auto-generer kode",
               "uploads": {
                 "limited": "Begrenset",
                 "title": "Sett maks antall opplastinger til",
                 "unlimited": "Ubegrenset"
-              }
+              },
+              "guestSeeAll": "La gjester se alle bilder"
             },
             "title": "Hendelsesinnstillinger"
           },
@@ -49,7 +51,9 @@
               "name": "Gjest"
             },
             "moderator": {
-              "name": "Moderator"
+              "name": "Moderator",
+              "linkDescription": "Alle med lenken nedenfor kan moderere de sendte inn-bildene",
+              "linkTitle": "Moderatorlink"
             },
             "title": "La andre bli med!"
           },
@@ -59,19 +63,27 @@
           "description": "Administrer hendelsene dine.",
           "title": "Events",
           "createNew": "Lag ny hendelse"
+        },
+        "edit": {
+          "cancel": "Avbryt",
+          "next": "Neste",
+          "previous": "Forrige",
+          "save": "Lagre"
         }
       }
     },
     "login": {
-      "title": "FotoArrangemang Administrator",
       "description": "Administrer fotoarrangementene dine enkelt",
       "undertext": "Selvhostet system for adminstrasjon av fotoarrangementer",
       "signIn": {
         "title": "Logg inn",
         "titleDescription": "Skriv inn legitimasjonen din for å få tilgang til administrasjonspanelet",
         "buttonTitle": "Logg inn",
-        "inputLabel": "Passord"
-      }
+        "inputLabel": "Passord",
+        "guest": "Gjest",
+        "linkToGuest": "Ikke administrator? Bli med på et arrangement som en"
+      },
+      "pageTitle": "PhotoEvent Admin"
     }
   },
   "JoinEventPage": {
@@ -94,7 +106,9 @@
       "invalidCode": "Fyll inn en gyldig event kode",
       "noCode": "Ugyldig kode. Venligst prøv igjenn.",
       "invalidNickname": "Skriv inn et kallenavn."
-    }
+    },
+    "admin": "Admin",
+    "linkToAdmin": "Ikke gjest? Administrer arrangementer som en"
   },
   "ShareEventPage": {
     "create": {
@@ -139,6 +153,34 @@
     "actions": {
       "uploadImage": "Last opp bilde",
       "takePhoto": "Ta bilde"
+    },
+    "uploadDescription": "{uploadsRemaining, select, unlimited {Du har ubegrenset antall opplastinger} other {{uploadsRemaining, plural, =0 {Du har ingen opplastinger igjen} one {Du har # opplasting igjen} other {Du har # opplastinger igjen}}}}"
+  },
+  "login": {
+    "description": "Administrer bildebegivenhetene dine på en enkel måte",
+    "signIn": {
+      "buttonTitle": "Logg på",
+      "inputLabel": "Passord",
+      "title": "Logg på",
+      "titleDescription": "Skriv inn legitimasjonen din for å få tilgang til administrasjonspanelet"
+    },
+    "title": "PhotoEvent Admin",
+    "undertext": "Self-hosted Photo Event Management System"
+  },
+  "guest": {
+    "login": {
+      "joinedEventsTitle": "Dine Events",
+      "unlimited": "Uendelig",
+      "photos": "Bilder"
+    },
+    "nickname": {
+      "back": "Tilbake",
+      "title": "Velkommen til",
+      "description": "Velg et kallenavn så vertne vet hvem som laster opp bildet",
+      "input": {
+        "title": "Kallenavn",
+        "placeholder": "Ola Nordmann"
+      }
     }
   }
 }

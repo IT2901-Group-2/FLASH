@@ -12,6 +12,12 @@
         "storage": "Storage"
       },
       "event": {
+        "edit": {
+          "cancel": "Cancel",
+          "previous": "Previous",
+          "next": "Next",
+          "save": "Save"
+        },
         "create": {
           "previous": "Previous",
           "cancel": "Cancel",
@@ -25,7 +31,9 @@
               "name": "Event Name",
               "description": "Event Description",
               "startDate": "Start Date",
-              "endDate": "End Date"
+              "endDate": "End Date",
+              "startTime": "Start Time",
+              "endTime": "End Time"
             }
           },
           "options": {
@@ -38,7 +46,7 @@
                 "unlimited": "Unlimited"
               },
               "autoApprove": "Auto-Approve Photos",
-              "autoGenerate": "Auto-Generate Code"
+              "guestSeeAll": "Let guests see all photos"
             }
           },
           "review": {
@@ -51,7 +59,9 @@
               "linkDescription": "Everyone with the link below will be able to uploaded images to this event"
             },
             "moderator": {
-              "name": "Moderator"
+              "name": "Moderator",
+              "linkTitle": "Moderator Link",
+              "linkDescription": "Everyone with the link below can moderate the sendt inn images"
             }
           }
         },
@@ -70,7 +80,9 @@
         "title": "Sign in",
         "titleDescription": "Enter your credentials to access the admin panel",
         "buttonTitle": "Sign in",
-        "inputLabel": "Password"
+        "inputLabel": "Password",
+        "linkToGuest": "Not an admin? Join an event as a",
+        "guest": "Guest"
       }
     }
   },
@@ -90,11 +102,13 @@
     "scanQrTab": "Scan QR",
     "scanQrDescription": "Use your camera to scan the event QR code",
     "openCameraButton": "Open Camera",
+    "linkToAdmin": "Not a guest? Administer events as an",
     "error": {
       "noCode": "Please enter an event code.",
       "invalidCode": "Invalid guest code. Please try again.",
       "invalidNickname": "Please enter a nickname."
-    }
+    },
+    "admin": "Admin"
   },
   "login": {
     "title": "PhotoEvent Admin",
@@ -150,6 +164,23 @@
     "actions": {
       "uploadImage": "Upload Image",
       "takePhoto": "Take Photo"
+    },
+    "uploadDescription": "{uploadsRemaining, select, unlimited {You have an unlimited number of uploads} other {{uploadsRemaining, plural, =0 {You have no uploads remaining} one {You have # upload remaining} other {You have # uploads remaining}}}}"
+  },
+  "guest": {
+    "login": {
+      "joinedEventsTitle": "Your Events",
+      "unlimited": "Unlimited",
+      "photos": "Photos"
+    },
+    "nickname": {
+      "back": "Back",
+      "title": "Welcome to",
+      "description": "Enter a nickname so the host knows who uploaded the photos",
+      "input": {
+        "title": "Nickname",
+        "placeholder": "John Doe"
+      }
     }
   }
 }

@@ -1,6 +1,7 @@
 export * from "./Button";
 export * from "./Loader";
 export * from "./Card";
+export * from "./Dialog";
 export * from "./ProgressBar";
 export * from "./ProgressDots";
 export * from "./Input";
@@ -11,6 +12,5 @@ export * from "./Title";
 export * from "./SegmentedControl";
 export * from "./DropdownControl";
 export * from "./Breadcrumb";
-export * from "./PhoneHeader";
 export * from "./QRDisplay";
 export * from "./ActionCard";

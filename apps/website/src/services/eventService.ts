@@ -1,9 +1,18 @@
 import { DatabaseService, dbService } from "./databaseService";
-import { CreateEvent, Event, eventTable, GetEvent, UpdateEvent } from "@/db";
+import {
+  CreateEvent,
+  Event,
+  eventCodeTable,
+  eventTable,
+  GetEventCodeParams,
+  GetEventsParams,
+  UpdateEvent,
+} from "@/db";
 import { AsyncResult, Result } from "typescript-result";
 import { getFirstRow } from "@/lib/utils/sql";
-import { and, eq, like, inArray, lt, lte, gte, gt } from "drizzle-orm";
+import { and, eq, like, inArray, lt, lte, gte, gt, desc, asc } from "drizzle-orm";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
+import { SQLiteColumn } from "drizzle-orm/sqlite-core";
 
 export class EventService {
   private readonly dbService: DatabaseService;
@@ -23,25 +32,32 @@ export class EventService {
   getEvents({
     id,
     name,
-    guestCode,
-    moderatorCode,
     status,
     archived,
-  }: GetEvent = {}): AsyncResult<Event[], Error> {
+    sortBy,
+    order,
+  }: GetEventsParams = {}): AsyncResult<Event[], Error> {
     const now = new Date();
 
-    return Result.try(() =>
-      this.dbService.db
+    const sortOrder = order === "descending" ? desc : asc;
+    const sortColumnMap: Record<NonNullable<GetEventsParams["sortBy"]>, SQLiteColumn> = {
+      name: eventTable.name,
+      description: eventTable.description,
+      startDate: eventTable.startDate,
+      endDate: eventTable.endDate,
+      uploadLimit: eventTable.uploadLimit,
+      createdAt: eventTable.createdAt,
+      updatedAt: eventTable.updatedAt,
+    };
+
+    return Result.try(() => {
+      const baseQuery = this.dbService.db
         .select()
         .from(eventTable)
         .where(
           and(
             id !== undefined ? inArray(eventTable.id, id) : undefined,
             name !== undefined ? like(eventTable.name, `%${name}%`) : undefined,
-            guestCode !== undefined ? eq(eventTable.guestCode, guestCode) : undefined,
-            moderatorCode !== undefined
-              ? eq(eventTable.moderatorCode, moderatorCode)
-              : undefined,
             archived !== undefined ? eq(eventTable.isArchived, archived) : undefined,
             status === "upcoming" ? gt(eventTable.startDate, now) : undefined,
             status === "active"
@@ -49,8 +65,40 @@ export class EventService {
               : undefined,
             status === "finished" ? lt(eventTable.endDate, now) : undefined
           )
+        );
+
+      return sortBy === undefined
+        ? baseQuery
+        : baseQuery.orderBy(sortOrder(sortColumnMap[sortBy]));
+    });
+  }
+
+  /**
+   * Fetches the join code for the specified event.
+   * Fethes the guest code if `role` is 'guest' and the moderator code if `role` is 'moderator'.
+   *
+   * @param eventId The event to fetch the code for.
+   * @param options The type of join code to fetch.
+   * @returns A code that can be used to join the specified event.
+   */
+  getEventCode(
+    eventId: string,
+    { role }: GetEventCodeParams
+  ): AsyncResult<string, Error> {
+    return Result.try(() =>
+      this.dbService.db
+        .select({ code: eventCodeTable.code })
+        .from(eventCodeTable)
+        .where(
+          and(
+            eq(eventCodeTable.eventId, eventId),
+            eq(eventCodeTable.isModerator, role === "moderator")
+          )
         )
-    );
+        .limit(1)
+    )
+      .map(rows => getFirstRow(rows))
+      .map(row => row.code);
   }
 
   /**
@@ -63,6 +111,25 @@ export class EventService {
   createEvent(data: CreateEvent): AsyncResult<Event, Error> {
     return Result.try(() => this.dbService.db.insert(eventTable).values(data).returning())
       .map(rows => getFirstRow(rows, "Unable to create event"))
+      .map(event =>
+        Result.try(() =>
+          this.dbService.db
+            .insert(eventCodeTable)
+            .values([
+              { eventId: event.id, isModerator: true },
+              { eventId: event.id, isModerator: false },
+            ])
+            .returning()
+        )
+          .map(rows =>
+            rows.length === 2
+              ? Result.ok(event)
+              : Result.error(new Error("Unable to create event codes"))
+          )
+          .onFailure(async () => {
+            await this.dbService.db.delete(eventTable).where(eq(eventTable.id, event.id));
+          })
+      )
       .onSuccess(() => this.dbService.flush());
   }
 

@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./Title.module.css";
-import { cl } from "@/util/helpers/";
+import { cl } from "@/util/helpers";
 import { ColorName } from "../types";
 
 export interface TitleProps extends React.HTMLAttributes<HTMLHeadingElement> {

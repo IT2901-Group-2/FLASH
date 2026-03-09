@@ -1,26 +1,42 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
-import type { EventDTO } from "@/types/eventTypes";
+import type { Event } from "@/db";
 import EventCard from "./EventCard";
+import { createQueryClientWrapper } from "@test-config";
 
-afterEach(() => {
-  cleanup();
-  vi.restoreAllMocks();
-});
+function getMockedEvent(data: Partial<Event> = {}): Event {
+  return {
+    id: "id",
+    name: "name",
+    description: "description",
+    startDate: new Date(),
+    endDate: new Date(),
+    uploadLimit: 5,
+    isArchived: false,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...data,
+  };
+}
 
 describe("EventCard", () => {
+  afterEach(() => {
+    cleanup();
+    vi.restoreAllMocks();
+  });
+
   test("renders event name and formatted date", () => {
     const dateSpy = vi
       .spyOn(Date.prototype, "toLocaleString")
       .mockReturnValue("Feb 25, 2026, 10:00 AM");
 
-    const data = {
+    const data = getMockedEvent({
       name: "Birthday Bash",
-      startDate: "2026-02-25T10:00:00.000Z",
+      startDate: new Date("2026-02-25T10:00:00.000Z"),
       uploadLimit: 5,
-    } as EventDTO;
+    });
 
-    render(<EventCard data={data} />);
+    render(<EventCard data={data} />, { wrapper: createQueryClientWrapper() });
 
     expect(screen.getByText("Birthday Bash")).toBeDefined();
     expect(dateSpy).toHaveBeenCalledWith(undefined, {
@@ -31,35 +47,36 @@ describe("EventCard", () => {
   });
 
   test("shows upload limit when present", () => {
-    const data = {
+    const data = getMockedEvent({
       name: "Wedding",
-      startDate: "2026-02-25T10:00:00.000Z",
+      startDate: new Date("2026-02-25T10:00:00.000Z"),
       uploadLimit: 12,
-    } as EventDTO;
+    });
 
-    render(<EventCard data={data} />);
+    render(<EventCard data={data} />, { wrapper: createQueryClientWrapper() });
 
     expect(screen.getByText("12 photos per person")).toBeDefined();
   });
 
   test("shows no photo limit when upload limit is missing", () => {
-    const data = {
+    const data = getMockedEvent({
       name: "Picnic",
-      startDate: "2026-02-25T10:00:00.000Z",
-    } as EventDTO;
+      startDate: new Date("2026-02-25T10:00:00.000Z"),
+      uploadLimit: undefined,
+    });
 
-    render(<EventCard data={data} />);
+    render(<EventCard data={data} />, { wrapper: createQueryClientWrapper() });
 
     expect(screen.getByText("No photo limit")).toBeDefined();
   });
 
   test("renders summary labels", () => {
-    const data = {
+    const data = getMockedEvent({
       name: "Launch Party",
-      startDate: "2026-02-25T10:00:00.000Z",
-    } as EventDTO;
+      startDate: new Date("2026-02-25T10:00:00.000Z"),
+    });
 
-    render(<EventCard data={data} />);
+    render(<EventCard data={data} />, { wrapper: createQueryClientWrapper() });
 
     expect(screen.getByText("Total Photos")).toBeDefined();
     expect(screen.getByText("Approved")).toBeDefined();

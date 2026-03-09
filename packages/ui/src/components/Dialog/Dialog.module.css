@@ -38,18 +38,3 @@
     gap: 1rem;
   }
 }
-
-.buttonGroup {
-  display: flex;
-  flex-direction: row;
-  justify-content: end;
-  gap: 1rem;
-
-  border-top: 1px solid var(--border-focus);
-  margin-top: 0.5rem;
-  padding-top: 0.5rem;
-
-  > :first-child:not(:only-child) {
-    margin-right: auto;
-  }
-}

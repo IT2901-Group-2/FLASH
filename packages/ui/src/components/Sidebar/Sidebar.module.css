@@ -45,7 +45,7 @@
 
 @media screen and (max-width: 768px) {
   .sidebar {
-    position: absolute;
+    position: fixed;
     left: -100%;
 
     transition-property: width, left;
@@ -53,8 +53,8 @@
 
     &[data-open="true"] {
       left: 0;
-      width: calc(100% - 10rem);
-      max-width: calc(100% - 10rem);
+      width: 75%;
+      max-width: 75%;
     }
   }
 }

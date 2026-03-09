@@ -2,23 +2,16 @@ import { describe, it, expect, afterEach, vi } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import Page from "./page";
 import * as useFileUploadModule from "@/hooks/useFileUpload";
-import * as nextNavigation from "next/navigation";
 import * as useEventsModule from "@/hooks/useEvents";
-import * as uiModule from "ui";
+import { Event } from "@/db";
 
 // Mock the UI components
 vi.mock("ui", () => ({
-  PhoneHeader: vi.fn(() => <div data-testid="phone-header">PhoneHeader</div>),
   ActionCard: vi.fn(() => <div data-testid="action-card">ActionCard</div>),
-}));
-
-vi.mock("next-intl", () => ({
-  useTranslations: vi.fn(() => (key: string) => key),
-}));
-
-vi.mock("next/navigation", () => ({
-  useParams: vi.fn(() => ({ id: "event-1", locale: "en" })),
-  useSearchParams: vi.fn(() => ({ get: vi.fn(() => null) })),
+  Dialog: vi.fn(() => <div data-testid="dialog">Dialog</div>),
+  QRDisplay: vi.fn(() => <div data-testid="qr-display">QRDisplay</div>),
+  Button: vi.fn(() => <button data-testid="button">Button</button>),
+  Title: vi.fn(() => <h1 data-testid="title">Title</h1>),
 }));
 
 vi.mock("@/hooks/useEvents", () => ({
@@ -28,12 +21,30 @@ vi.mock("@/hooks/useEvents", () => ({
         id: "event-1",
         name: "Test Event",
         description: "",
-        guestCode: "ABC123",
+        startDate: new Date(),
+        endDate: new Date(),
         uploadLimit: 5,
+        isArchived: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
-    ],
+    ] satisfies Event[],
     isLoading: false,
     isError: false,
+  })),
+
+  useEventCodeQuery: vi.fn(() => ({
+    data: "ABC123",
+    isLoading: false,
+    isError: false,
+  })),
+}));
+
+vi.mock("@/providers/EventAuthContext", () => ({
+  useEventAuth: vi.fn(() => ({
+    isAuthenticated: true,
+    nickname: "test-user",
+    isModerator: false,
   })),
 }));
 
@@ -54,66 +65,6 @@ afterEach(() => {
 });
 
 describe("Guest Upload Page", () => {
-  it("uses nickname from query param as subtitle", () => {
-    vi.mocked(nextNavigation.useSearchParams).mockReturnValueOnce({
-      get: vi.fn((key: string) => (key === "nickname" ? "Alex" : null)),
-    } as unknown as ReturnType<typeof nextNavigation.useSearchParams>);
-
-    render(<Page />);
-
-    const phoneHeaderMock = vi.mocked(uiModule.PhoneHeader);
-    expect(phoneHeaderMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        subtitle: "Alex",
-      }),
-      undefined
-    );
-  });
-
-  it("passes fetched event data to PhoneHeader", () => {
-    render(<Page />);
-
-    const phoneHeaderMock = vi.mocked(uiModule.PhoneHeader);
-    expect(phoneHeaderMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: "Test Event",
-        subtitle: "Code: ABC123",
-        uploadsRemaining: 5,
-      }),
-      undefined
-    );
-  });
-
-  it("passes uploads description to ActionCard", () => {
-    render(<Page />);
-
-    const actionCardMock = vi.mocked(uiModule.ActionCard);
-    expect(actionCardMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        description: "You have 5 uploads remaining",
-      }),
-      undefined
-    );
-  });
-
-  it("uses loading title when event is still loading", () => {
-    vi.mocked(useEventsModule.useEventsQuery).mockReturnValueOnce({
-      data: undefined,
-      isLoading: true,
-      isError: false,
-    } as ReturnType<typeof useEventsModule.useEventsQuery>);
-
-    render(<Page />);
-
-    const phoneHeaderMock = vi.mocked(uiModule.PhoneHeader);
-    expect(phoneHeaderMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: "Loading event...",
-      }),
-      undefined
-    );
-  });
-
   it("renders fallback error message when event fails to load", () => {
     vi.mocked(useEventsModule.useEventsQuery).mockReturnValueOnce({
       data: undefined,
@@ -126,30 +77,9 @@ describe("Guest Upload Page", () => {
     expect(screen.getByText("Could not load event details for this link.")).toBeDefined();
   });
 
-  it("falls back to empty id filter when route param is missing", () => {
-    vi.mocked(nextNavigation.useParams).mockReturnValueOnce({
-      locale: "en",
-    } as ReturnType<typeof nextNavigation.useParams>);
-    vi.mocked(useEventsModule.useEventsQuery).mockReturnValueOnce({
-      data: undefined,
-      isLoading: false,
-      isError: false,
-    } as ReturnType<typeof useEventsModule.useEventsQuery>);
-
-    render(<Page />);
-
-    expect(vi.mocked(useEventsModule.useEventsQuery)).toHaveBeenCalledWith(undefined);
-  });
-
   it("should render without crashing", () => {
     render(<Page />);
-    expect(screen.getByTestId("phone-header")).toBeDefined();
     expect(screen.getByTestId("action-card")).toBeDefined();
-  });
-
-  it("should render PhoneHeader component", () => {
-    render(<Page />);
-    expect(screen.getByTestId("phone-header")).toBeDefined();
   });
 
   it("should render ActionCard component", () => {

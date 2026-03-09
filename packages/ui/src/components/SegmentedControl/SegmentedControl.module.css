@@ -59,9 +59,9 @@
   background-color: transparent;
 
   min-height: 2.5rem;
-  min-width: max-content;
+  min-width: 0;
 
-  padding: 0 1.5rem;
+  padding: 0 0.5rem;
   margin: var(--inset-distance);
   border-radius: inherit;
   border: none;
@@ -108,4 +108,11 @@
   left: var(--backdrop-pos);
 
   transition: left 0.2s ease-in-out;
+}
+
+@media (min-width: 480px) {
+  .controlButton {
+    min-width: max-content;
+    padding: 0 1.5rem;
+  }
 }
