@@ -21,15 +21,6 @@ const JoinEventCard = () => {
           content={
             <form className={styles.content} action="/api/join" method="POST">
               <Input
-                label={t("nicknameLabel")}
-                placeholder={t("nicknamePlaceholder")}
-                icon={<TextAlignStart />}
-                aria-label={t("nicknameLabel")}
-                name="name"
-                type="text"
-                required
-              />
-              <Input
                 label={t("eventCodeLabel")}
                 placeholder={t("eventCodePlaceholder")}
                 icon={<TextAlignStart />}
