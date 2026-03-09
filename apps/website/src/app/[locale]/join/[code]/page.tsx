@@ -9,7 +9,7 @@ import { useState } from "react";
 export default function Page() {
   const navigation = useRouter();
   const t = useTranslations("guest.nickname");
-  const { id } = useParams<{ id: string }>();
+  const { code } = useParams<{ code: string }>();
 
   const [nickname, setNickname] = useState<string>("");
 
@@ -40,7 +40,7 @@ export default function Page() {
             onChange={e => setNickname(e.target.value)}
             required
           />
-          <input hidden value={id} name="eventCode" />
+          <input hidden value={code} name="eventCode" />
           <Button
             variant="primary"
             icon={<ArrowRight />}
