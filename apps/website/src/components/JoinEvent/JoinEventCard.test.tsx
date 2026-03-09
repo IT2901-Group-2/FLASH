@@ -17,6 +17,7 @@ describe("JoinEventCard", () => {
   let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
+    user = userEvent.setup();
     mockRouter.push.mockReset();
     mockRouter.replace.mockReset();
     mockRouter.prefetch.mockReset();
@@ -43,7 +44,6 @@ describe("JoinEventCard", () => {
     });
 
     render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
-    user = userEvent.setup();
   });
 
   test("without crashing", () => {

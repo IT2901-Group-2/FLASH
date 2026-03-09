@@ -1,5 +1,4 @@
 "use client";
-import { useState, SubmitEvent } from "react";
 import { TextAlignStart } from "lucide-react";
 import { Card, Input, Button, Title, DropdownControl } from "ui";
 import { useTranslations } from "next-intl";
@@ -8,6 +7,7 @@ import { useEventsQuery } from "@/hooks/useEvents";
 import styles from "./JoinEventCard.module.css";
 import { QrCode } from "lucide-react";
 import Link from "next/link";
+import { useState, SubmitEvent } from "react";
 
 const JoinEventCard = () => {
   const t = useTranslations("JoinEvent");
@@ -54,18 +54,24 @@ const JoinEventCard = () => {
           value="enter-code"
           label={t("enterCodeTab")}
           content={
-            <form className={styles.content} onSubmit={handleSubmit}>
+            <form className={styles.content} action="/api/join" method="POST">
+              <Input
+                label={t("nicknameLabel")}
+                placeholder={t("nicknamePlaceholder")}
+                icon={<TextAlignStart />}
+                aria-label={t("nicknameLabel")}
+                name="name"
+                type="text"
+                required
+              />
               <Input
                 label={t("eventCodeLabel")}
                 placeholder={t("eventCodePlaceholder")}
                 icon={<TextAlignStart />}
                 aria-label={t("eventCodeLabel")}
-                value={code}
-                onChange={e => {
-                  setCode(e.target.value);
-                  setError(undefined);
-                }}
-                error={error}
+                name="eventCode"
+                type="text"
+                required
               />
               <Button
                 className={styles.fullWidthButton}

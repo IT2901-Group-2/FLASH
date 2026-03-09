@@ -36,7 +36,11 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
       <Title size="medium" description={t("description")}>
         {t("title")}
       </Title>
-      <DropdownControl onChange={setShareRole} value={shareRole}>
+      <DropdownControl
+        onChange={setShareRole}
+        value={shareRole}
+        className={styles.scroll}
+      >
         <DropdownControl.Item
           label={t("guest.name")}
           value="guest"

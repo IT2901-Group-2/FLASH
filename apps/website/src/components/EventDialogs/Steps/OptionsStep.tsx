@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { StepProps } from "../CreateEventCard";
+import { StepProps } from "./types";
 import { Title, DropdownControl, Input, Switch } from "ui";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";

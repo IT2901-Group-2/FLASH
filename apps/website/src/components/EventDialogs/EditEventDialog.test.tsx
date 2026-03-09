@@ -1,0 +1,109 @@
+import { Event } from "@/db";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import EditEventDialog from "./EditEventDialog";
+
+// --- Mocks ----------------------------------------------------------------
+
+const mockMutateAsync = vi.fn();
+
+vi.mock("@/hooks/useEvents", () => ({
+  useUpdateEventMutation: () => ({
+    mutateAsync: mockMutateAsync,
+    status: "idle",
+  }),
+}));
+
+// -------------------------------------------------------------------------
+
+const onClose = vi.fn();
+
+const existingEvent: Event = {
+  id: "event-1",
+  name: "Existing Event",
+  description: "Existing description",
+  uploadLimit: 5,
+  startDate: new Date("2026-03-01"),
+  endDate: new Date("2026-03-10"),
+  createdAt: new Date("2026-01-01"),
+  updatedAt: new Date("2026-01-01"),
+  isArchived: false,
+};
+
+const renderCard = () => {
+  render(<EditEventDialog event={existingEvent} onClose={onClose} />);
+};
+
+const mockReportValidity = (valid: boolean) => {
+  HTMLFormElement.prototype.reportValidity = vi.fn().mockReturnValue(valid);
+};
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  mockMutateAsync.mockResolvedValue(existingEvent);
+});
+
+describe("EditEventDialog — pre-population", () => {
+  it("pre-populates the name field with the existing event name", () => {
+    renderCard();
+    expect(screen.getByLabelText("eventName")).toHaveValue("Existing Event");
+  });
+
+  it("pre-populates the description field", () => {
+    renderCard();
+    expect(screen.getByLabelText("eventDescription")).toHaveValue("Existing description");
+  });
+});
+
+describe("EditEventDialog — navigation", () => {
+  it("renders the first step on mount", () => {
+    renderCard();
+    expect(screen.getByLabelText("eventName")).toBeInTheDocument();
+  });
+
+  it("does not advance when validation fails", async () => {
+    mockReportValidity(false);
+    renderCard();
+    await userEvent.click(screen.getByText("next"));
+    expect(screen.getByLabelText("eventName")).toBeInTheDocument();
+  });
+
+  it("advances to step 2 when validation passes", async () => {
+    mockReportValidity(true);
+    renderCard();
+    await userEvent.click(screen.getByText("next"));
+    expect(screen.getByLabelText("maxImages")).toBeInTheDocument();
+  });
+
+  it("does not show ReviewStep at any point", async () => {
+    mockReportValidity(true);
+    renderCard();
+    await userEvent.click(screen.getByText("next"));
+    // After the last step, save is called — there is no review
+    expect(screen.queryByText("finish")).not.toBeInTheDocument();
+  });
+});
+
+describe("EditEventDialog — saving", () => {
+  it("calls onClose after saving", async () => {
+    mockReportValidity(true);
+    renderCard();
+    await userEvent.click(screen.getByText("next"));
+    await userEvent.click(screen.getByText("save"));
+    await vi.waitFor(() => expect(onClose).toHaveBeenCalledOnce());
+  });
+
+  it("does not call mutateAsync when validation fails on the last step", async () => {
+    mockReportValidity(false);
+    renderCard();
+    // Manually bump to the last step by mocking valid on first click then invalid
+    HTMLFormElement.prototype.reportValidity = vi
+      .fn()
+      .mockReturnValueOnce(true) // passes on Next
+      .mockReturnValue(false); // fails on Save
+    await userEvent.click(screen.getByText("next"));
+    await userEvent.click(screen.getByText("save"));
+    expect(mockMutateAsync).not.toHaveBeenCalled();
+  });
+});

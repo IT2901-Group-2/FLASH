@@ -2,7 +2,7 @@
 import { Plus } from "lucide-react";
 import { Button, Loader, Title } from "ui";
 import styles from "./page.module.css";
-import CreateEventCard from "@/components/CreateEventCard/CreateEventCard";
+import CreateEventCard from "@/components/EventDialogs/CreateEventDialog";
 import { useRef } from "react";
 import { useTranslations } from "next-intl";
 import { useEventsQuery } from "@/hooks/useEvents";
@@ -27,11 +27,11 @@ const Page = () => {
           icon={<Plus />}
           data-color="brand-purple"
           onClick={() => dialogRef.current?.showModal()}
+          className={styles.createButton}
         >
           {t("createNew")}
         </Button>
       </div>
-      <Title size="small">Events</Title>
       <div className={styles.eventsContainer}>
         {isLoading ? (
           <div className={styles.loadingContainer} data-testid="loading-spinner">

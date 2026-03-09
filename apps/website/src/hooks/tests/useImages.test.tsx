@@ -12,6 +12,7 @@ import { Image } from "@/db";
 
 const mockImage: Image = {
   id: "image-id",
+  userId: "user1",
   eventId: "event-id",
   createdAt: new Date(),
   updatedAt: new Date(),
