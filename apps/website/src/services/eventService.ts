@@ -2,6 +2,7 @@ import { DatabaseService, dbService } from "./databaseService";
 import {
   CreateEvent,
   Event,
+  EventCode,
   eventCodeTable,
   eventTable,
   GetEventCodeParams,
@@ -99,6 +100,23 @@ export class EventService {
     )
       .map(rows => getFirstRow(rows))
       .map(row => row.code);
+  }
+
+  /**
+   * Fetches an `EventCode` object from an event code.
+   * The `EventCode` contains all necessary information for joining an event.
+   *
+   * @param code The code to fetch the `EventCode` object for.
+   * @returns A result with an `EventCode` object or an error.
+   */
+  getEventByCode(code: string): AsyncResult<EventCode, Error> {
+    return Result.try(() =>
+      this.dbService.db
+        .select()
+        .from(eventCodeTable)
+        .where(eq(eventCodeTable.code, code))
+        .limit(1)
+    ).map(rows => getFirstRow(rows, `Unable to find event with code: ${code}`));
   }
 
   /**
