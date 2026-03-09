@@ -2,21 +2,6 @@ import jwt from "jsonwebtoken";
 import type { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 
-// Environment validation:
-// function requireEnv(name: string): string {
-//   const value = process.env[name];
-//   if (!value) {
-//     throw new Error(`${name} not defined`);
-//   }
-//   return value;
-// }
-// export const env = {
-//   ADMIN_PASSWORD: requireEnv("ADMIN_PASSWORD"),
-//   ACCESS_TOKEN_SECRET: requireEnv("ACCESS_TOKEN_SECRET"),
-//   REFRESH_TOKEN_SECRET: requireEnv("REFRESH_TOKEN_SECRET"),
-//   NODE_ENV: process.env.NODE_ENV ?? "development",
-// };
-
 function getEnv(name: string): string {
   const value = process.env[name];
   if (!value) throw new Error(`${name} not defined`);
@@ -26,8 +11,6 @@ function getEnv(name: string): string {
 // Config:
 const ACCESS_TOKEN_EXPIRY = 15 * 60; // 15 minutes (seconds)
 const REFRESH_TOKEN_EXPIRY = 7 * 24 * 60 * 60; // 7 days (seconds)
-
-// const isProduction = env.NODE_ENV === "production";
 
 // Types
 export type TokenPayload = {
