@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import DropdownControl from "./DropdownControl";
 import { useState } from "react";
-import { Input } from "../Form/TextField";
+import { TextField } from "../Form/TextField";
 import { expect, userEvent, within } from "storybook/test";
 import { Button } from "../Button";
 
@@ -80,7 +80,10 @@ export const WithInput: Story = {
               }}
             >
               <span>Set maximum uploads to:</span>
-              <Input
+              <TextField
+                label="maxUploads"
+                hideLabel
+                data-color="brand-purple"
                 aria-label="limit-input"
                 value={text}
                 onChange={e => setText(e.currentTarget.value)}
