@@ -40,7 +40,7 @@ export default function Page() {
             onChange={e => setNickname(e.target.value)}
             required
           />
-          <input hidden value={code} name="eventCode" />
+          <input hidden defaultValue={code} name="eventCode" />
           <Button
             variant="primary"
             icon={<ArrowRight />}
