@@ -74,7 +74,7 @@ describe("Guest Upload Page", () => {
 
     render(<Page />);
 
-    expect(screen.getByText("Could not load event details for this link.")).toBeDefined();
+    expect(screen.getByText("eventLoadFailed")).toBeDefined();
   });
 
   it("should render without crashing", () => {
