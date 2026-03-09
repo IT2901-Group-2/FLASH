@@ -20,7 +20,8 @@ export default function Page() {
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );
-  const { data: images } = useImagesQuery(eventId);
+  const { data: imagesData } = useImagesQuery(eventId);
+  const images = imagesData ?? [];
 
   const [uploadError, setUploadError] = useState<string | null>(null);
   const { mutateAsync: uploadImage } = useUploadImageMutation();
@@ -134,23 +135,24 @@ export default function Page() {
         />
       </div>
 
-      <div className={styles.imageSection}>
-        {images && images.length > 0 ? (
-          <div className={styles.imageGrid}>
-            {images.map((image, index) => (
-              <ImageCard
-                key={image.id}
-                size="large"
-                src={`/api/events/${eventId}/images/${image.id}`}
-                alt={`Uploaded image ${index + 1}`}
-                title={`Image ${index + 1}`}
-              />
-            ))}
-          </div>
-        ) : (
-          <p className={styles.emptyText}>No images uploaded yet.</p>
-        )}
-      </div>
+      {!isLoading && images.length === 0 ? (
+        <div role="status" className={styles.emptyState}>
+          No photos found
+        </div>
+      ) : (
+        <div className={styles.grid}>
+          {images.map((image, index) => (
+            <ImageCard
+              key={image.id}
+              variant="preview2"
+              src={`/api/events/${eventId}/images/${image.id}`}
+              alt={`Photo ${index + 1} of ${images.length}`}
+              title={`Photo ${index + 1}`}
+              data-image-id={image.id}
+            />
+          ))}
+        </div>
+      )}
     </>
   );
 }

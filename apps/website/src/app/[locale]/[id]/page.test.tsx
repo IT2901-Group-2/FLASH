@@ -117,12 +117,12 @@ describe("Guest Upload Page", () => {
   it("renders uploaded images", () => {
     render(<Page />);
     expect(screen.getByTestId("image-card")).toBeDefined();
-    expect(screen.getByText("Image 1")).toBeDefined();
+    expect(screen.getByText("Photo 1")).toBeDefined();
   });
 
   it("uses image query hook", () => {
     render(<Page />);
-    expect(useImagesModule.useImagesQuery).toHaveBeenCalled();
+    expect(useImagesModule.useImagesQuery).toHaveBeenCalledWith("");
   });
 
   it("shows upload error when callback runs without event id", async () => {
