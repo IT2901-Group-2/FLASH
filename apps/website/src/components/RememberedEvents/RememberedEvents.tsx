@@ -6,8 +6,8 @@ import { Calendar, ChevronRight } from "lucide-react";
 import { Card, Title } from "ui";
 import styles from "./RememberedEvents.module.css";
 import { useRouter } from "next/navigation";
-import { getAllJoinedEvents } from "@/hooks/useRememberEvents";
 import { useTranslations } from "next-intl";
+import { useJoinedEvents } from "@/providers/JoinedEventsContext";
 
 const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
   const t = useTranslations("guest.login");
@@ -27,7 +27,7 @@ const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
 
 const RememberedEvents = () => {
   const t = useTranslations("guest.login");
-  const eventIDs = getAllJoinedEvents();
+  const eventIDs = useJoinedEvents();
   const events = useEventsQuery(
     {
       id: eventIDs,

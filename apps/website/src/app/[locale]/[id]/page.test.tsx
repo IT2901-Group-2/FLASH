@@ -1,18 +1,25 @@
 import { describe, it, expect, afterEach, vi } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
+import type { ReactNode } from "react";
 import Page from "./page";
 import * as useFileUploadModule from "@/hooks/useFileUpload";
 import * as useEventsModule from "@/hooks/useEvents";
 import * as useImagesModule from "@/hooks/useImages";
-import * as uiModule from "ui";
 import { Event, Image } from "@/db";
 
-// Mock the UI components
 vi.mock("ui", () => ({
-  PhoneHeader: vi.fn(() => <div data-testid="phone-header">PhoneHeader</div>),
   ActionCard: vi.fn(() => <div data-testid="action-card">ActionCard</div>),
   ImageCard: vi.fn(({ title }: { title: string }) => (
     <div data-testid="image-card">{title}</div>
+  )),
+  Dialog: vi.fn(() => <div data-testid="dialog">Dialog</div>),
+  QRDisplay: vi.fn(() => <div data-testid="qr-display">QRDisplay</div>),
+  Button: vi.fn(() => <button data-testid="button">Button</button>),
+}));
+
+vi.mock("@/components/PhoneHeader/PhoneHeader", () => ({
+  PhoneHeader: vi.fn(({ children }: { children?: ReactNode }) => (
+    <div data-testid="phone-header">{children}</div>
   )),
 }));
 
@@ -34,12 +41,6 @@ vi.mock("@/hooks/useEvents", () => ({
     isLoading: false,
     isError: false,
   })),
-
-  useEventCodeQuery: vi.fn(() => ({
-    data: "ABC123",
-    isLoading: false,
-    isError: false,
-  })),
 }));
 
 const mockUploadImage = vi.fn();
@@ -53,6 +54,7 @@ vi.mock("@/hooks/useImages", () => ({
       {
         id: "image-1",
         eventId: "event-1",
+        userId: "user-1",
         isApproved: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -61,10 +63,17 @@ vi.mock("@/hooks/useImages", () => ({
   })),
 }));
 
+vi.mock("@/providers/EventAuthContext", () => ({
+  useEventAuth: vi.fn(() => ({
+    isAuthenticated: true,
+    nickname: "test-user",
+    isModerator: false,
+  })),
+}));
+
 const mockOpenFilePicker = vi.fn();
 const mockFileInput = () => <input type="file" data-testid="file-input" />;
 
-// Mock the useFileUpload hook
 vi.mock("@/hooks/useFileUpload", () => ({
   useFileUpload: vi.fn(() => ({
     openFilePicker: mockOpenFilePicker,
@@ -78,50 +87,6 @@ afterEach(() => {
 });
 
 describe("Guest Upload Page", () => {
-  it("passes fetched event data to PhoneHeader", () => {
-    render(<Page />);
-
-    const phoneHeaderMock = vi.mocked(uiModule.PhoneHeader);
-    expect(phoneHeaderMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: "Test Event",
-        subtitle: "Code: ABC123",
-        uploadsRemaining: 5,
-      }),
-      undefined
-    );
-  });
-
-  it("passes uploads description to ActionCard", () => {
-    render(<Page />);
-
-    const actionCardMock = vi.mocked(uiModule.ActionCard);
-    expect(actionCardMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        description: "You have 5 uploads remaining",
-      }),
-      undefined
-    );
-  });
-
-  it("uses loading title when event is still loading", () => {
-    vi.mocked(useEventsModule.useEventsQuery).mockReturnValueOnce({
-      data: undefined,
-      isLoading: true,
-      isError: false,
-    } as ReturnType<typeof useEventsModule.useEventsQuery>);
-
-    render(<Page />);
-
-    const phoneHeaderMock = vi.mocked(uiModule.PhoneHeader);
-    expect(phoneHeaderMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: "Loading event...",
-      }),
-      undefined
-    );
-  });
-
   it("renders fallback error message when event fails to load", () => {
     vi.mocked(useEventsModule.useEventsQuery).mockReturnValueOnce({
       data: undefined,
@@ -130,39 +95,17 @@ describe("Guest Upload Page", () => {
     } as ReturnType<typeof useEventsModule.useEventsQuery>);
 
     render(<Page />);
-
     expect(screen.getByText("Could not load event details for this link.")).toBeDefined();
   });
 
-  it("should render without crashing", () => {
+  it("renders basic page parts", () => {
     render(<Page />);
     expect(screen.getByTestId("phone-header")).toBeDefined();
     expect(screen.getByTestId("action-card")).toBeDefined();
+    expect(screen.getByTestId("file-input")).toBeDefined();
   });
 
-  it("should render PhoneHeader component", () => {
-    render(<Page />);
-    expect(screen.getByTestId("phone-header")).toBeDefined();
-  });
-
-  it("should render ActionCard component", () => {
-    render(<Page />);
-    expect(screen.getByTestId("action-card")).toBeDefined();
-  });
-
-  it("should render file input from useFileUpload hook", () => {
-    render(<Page />);
-    const fileInput = screen.getByTestId("file-input");
-    expect(fileInput).toBeDefined();
-    expect(fileInput.getAttribute("type")).toBe("file");
-  });
-
-  it("should use useFileUpload hook", () => {
-    render(<Page />);
-    expect(useFileUploadModule.useFileUpload).toHaveBeenCalled();
-  });
-
-  it("should call useFileUpload with onFilesSelected callback", () => {
+  it("uses useFileUpload with onFilesSelected callback", () => {
     render(<Page />);
     expect(useFileUploadModule.useFileUpload).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -173,20 +116,22 @@ describe("Guest Upload Page", () => {
 
   it("renders uploaded images", () => {
     render(<Page />);
-
     expect(screen.getByTestId("image-card")).toBeDefined();
     expect(screen.getByText("Image 1")).toBeDefined();
+  });
+
+  it("uses image query hook", () => {
+    render(<Page />);
+    expect(useImagesModule.useImagesQuery).toHaveBeenCalled();
   });
 
   it("shows upload error when callback runs without event id", async () => {
     render(<Page />);
 
-    // Get the onFilesSelected callback that was passed to useFileUpload
     const useFileUploadCall = vi.mocked(useFileUploadModule.useFileUpload).mock.calls[0];
     const options = useFileUploadCall?.[0];
     const onFilesSelected = options?.onFilesSelected;
 
-    // Create a mock FileList
     const mockFile = new File(["content"], "test.jpg", { type: "image/jpeg" });
     const mockFileList = {
       0: mockFile,
@@ -197,7 +142,6 @@ describe("Guest Upload Page", () => {
       },
     } as FileList;
 
-    // Call it with mock FileList
     if (onFilesSelected) {
       await onFilesSelected(mockFileList);
     }
@@ -206,10 +150,5 @@ describe("Guest Upload Page", () => {
       await screen.findByText("Unable to upload images for this event.")
     ).toBeDefined();
     expect(mockUploadImage).not.toHaveBeenCalled();
-  });
-
-  it("uses image query hook", () => {
-    render(<Page />);
-    expect(useImagesModule.useImagesQuery).toHaveBeenCalled();
   });
 });

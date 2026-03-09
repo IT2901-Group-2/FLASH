@@ -1,11 +1,10 @@
 import { RefAttributes, useRef, useState } from "react";
 import { Button, Dialog, ProgressDots } from "ui";
-import styles from "./CreateEventCard.module.css";
+import styles from "./CreateEventDialog.module.css";
 import { BasicInfoStep, OptionsStep, ReviewStep } from "./Steps";
 import { useTranslations } from "next-intl";
 import { useCreateEventMutation } from "@/hooks/useEvents";
 import { FormStepConfig } from "./Steps/types";
-export type { StepProps } from "./Steps/types";
 import { Event, CreateEvent } from "@/db";
 
 const DEFAULT_FORM_DATA: CreateEvent = {
@@ -30,11 +29,11 @@ const FORM_STEPS: FormStepConfig[] = [
   { Component: OptionsStep },
 ];
 
-interface CreateEventCardProps extends RefAttributes<HTMLDialogElement> {
+interface CreateEventDialogProps extends RefAttributes<HTMLDialogElement> {
   onClose: () => void;
 }
 
-export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps) => {
+export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogProps) => {
   const t = useTranslations("admin.dashboard.event.create");
   const { mutateAsync, status } = useCreateEventMutation();
 
@@ -124,4 +123,4 @@ export const CreateEventCard = ({ ref, onClose, ...rest }: CreateEventCardProps)
     </Dialog>
   );
 };
-export default CreateEventCard;
+export default CreateEventDialog;

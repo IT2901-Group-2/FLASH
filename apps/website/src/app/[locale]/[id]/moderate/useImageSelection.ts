@@ -1,9 +1,12 @@
 import { useState, useCallback } from "react";
-import { useUpdateImageMutation } from "@/hooks/useImages";
+import { useQueryClient } from "@tanstack/react-query";
+import { useBatchUpdateImageMutation, imagesKeys } from "@/hooks/useImages";
+import { BATCH_IMAGE_LIMIT } from "@/config/images";
 import type { Image } from "@/db";
 
 export function useImageSelection(images: Image[], eventId: string) {
-  const { mutateAsync: updateImage } = useUpdateImageMutation();
+  const queryClient = useQueryClient();
+  const { mutateAsync: batchUpdateImage } = useBatchUpdateImageMutation();
 
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -54,21 +57,31 @@ export function useImageSelection(images: Image[], eventId: string) {
   const handleBulkAction = useCallback(
     async (isApproved: boolean) => {
       setBulkError(null);
+      const allIds = Array.from(selectedIds);
       let failed = 0;
-      for (const imageId of Array.from(selectedIds)) {
+
+      for (let i = 0; i < allIds.length; i += BATCH_IMAGE_LIMIT) {
+        const chunk = allIds.slice(i, i + BATCH_IMAGE_LIMIT);
         try {
-          await updateImage({ eventId, imageId, data: { isApproved } });
+          await batchUpdateImage({ eventId, ids: chunk, isApproved });
         } catch {
-          failed++;
+          failed += chunk.length;
         }
       }
+
+      // Invalidate once after all chunks so the UI updates in one batch.
+      // Fire-and-forget: don't block exitSelectMode on the refetch.
+      if (failed < allIds.length) {
+        queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) });
+      }
+
       // Always exit select mode, partially applied changes cannot be undone by retrying the same selection.
       exitSelectMode();
       if (failed > 0) {
         setBulkError(`${failed} photo${failed > 1 ? "s" : ""} could not be updated.`);
       }
     },
-    [selectedIds, updateImage, eventId, exitSelectMode]
+    [selectedIds, batchUpdateImage, eventId, exitSelectMode, queryClient]
   );
 
   const handleBulkApprove = useCallback(() => handleBulkAction(true), [handleBulkAction]);

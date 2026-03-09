@@ -7,6 +7,14 @@
   align-items: center;
 }
 
+.qrCodeContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+
 .mobileOnly {
   display: flex;
   width: 80vw;
@@ -25,12 +33,14 @@
   text-align: center;
 }
 
-.dimmed {
-  filter: brightness(0.5);
-}
-
 @media (min-width: 768px) {
   .pageWrapper .mobileOnly {
     display: none;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .desktopOnly {
+    display: none !important;
   }
 }

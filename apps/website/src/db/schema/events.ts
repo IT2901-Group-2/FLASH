@@ -115,6 +115,7 @@ export const updateEventSchema = z.object({
 });
 
 export type Event = typeof eventTable.$inferSelect;
+export type EventCode = typeof eventCodeTable.$inferSelect;
 export type GetEventsParams = z.infer<typeof getEventsParamsSchema>;
 export type GetEventCodeParams = z.infer<typeof getEventCodeParamsSchema>;
 export type CreateEvent = z.infer<typeof createEventSchema>;

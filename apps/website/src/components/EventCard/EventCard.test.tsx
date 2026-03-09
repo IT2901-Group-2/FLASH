@@ -2,6 +2,7 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import type { Event } from "@/db";
 import EventCard from "./EventCard";
+import { createQueryClientWrapper } from "@test-config";
 
 function getMockedEvent(data: Partial<Event> = {}): Event {
   return {
@@ -18,12 +19,12 @@ function getMockedEvent(data: Partial<Event> = {}): Event {
   };
 }
 
-afterEach(() => {
-  cleanup();
-  vi.restoreAllMocks();
-});
-
 describe("EventCard", () => {
+  afterEach(() => {
+    cleanup();
+    vi.restoreAllMocks();
+  });
+
   test("renders event name and formatted date", () => {
     const dateSpy = vi
       .spyOn(Date.prototype, "toLocaleString")
@@ -35,7 +36,7 @@ describe("EventCard", () => {
       uploadLimit: 5,
     });
 
-    render(<EventCard data={data} />);
+    render(<EventCard data={data} />, { wrapper: createQueryClientWrapper() });
 
     expect(screen.getByText("Birthday Bash")).toBeDefined();
     expect(dateSpy).toHaveBeenCalledWith(undefined, {
@@ -52,7 +53,7 @@ describe("EventCard", () => {
       uploadLimit: 12,
     });
 
-    render(<EventCard data={data} />);
+    render(<EventCard data={data} />, { wrapper: createQueryClientWrapper() });
 
     expect(screen.getByText("12 photos per person")).toBeDefined();
   });
@@ -64,7 +65,7 @@ describe("EventCard", () => {
       uploadLimit: undefined,
     });
 
-    render(<EventCard data={data} />);
+    render(<EventCard data={data} />, { wrapper: createQueryClientWrapper() });
 
     expect(screen.getByText("No photo limit")).toBeDefined();
   });
@@ -75,7 +76,7 @@ describe("EventCard", () => {
       startDate: new Date("2026-02-25T10:00:00.000Z"),
     });
 
-    render(<EventCard data={data} />);
+    render(<EventCard data={data} />, { wrapper: createQueryClientWrapper() });
 
     expect(screen.getByText("Total Photos")).toBeDefined();
     expect(screen.getByText("Approved")).toBeDefined();

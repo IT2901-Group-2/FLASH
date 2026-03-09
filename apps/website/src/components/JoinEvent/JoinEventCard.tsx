@@ -1,29 +1,13 @@
 "use client";
-import { useState, SubmitEvent } from "react";
 import { TextAlignStart } from "lucide-react";
 import { Card, Input, Button, Title, DropdownControl } from "ui";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import styles from "./JoinEventCard.module.css";
 import { QrCode } from "lucide-react";
 import Link from "next/link";
 
 const JoinEventCard = () => {
   const t = useTranslations("JoinEvent");
-  const router = useRouter();
-  const [code, setCode] = useState<string>("");
-  const [error, setError] = useState<string | undefined>("");
-
-  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!code.trim()) {
-      setError(t("error.noCode"));
-      return;
-    }
-
-    setError(undefined);
-    router.push(`/${code}/nickname`);
-  };
 
   return (
     <Card>
@@ -35,18 +19,24 @@ const JoinEventCard = () => {
           value="enter-code"
           label={t("enterCodeTab")}
           content={
-            <form className={styles.content} onSubmit={handleSubmit}>
+            <form className={styles.content} action="/api/join" method="POST">
+              <Input
+                label={t("nicknameLabel")}
+                placeholder={t("nicknamePlaceholder")}
+                icon={<TextAlignStart />}
+                aria-label={t("nicknameLabel")}
+                name="name"
+                type="text"
+                required
+              />
               <Input
                 label={t("eventCodeLabel")}
                 placeholder={t("eventCodePlaceholder")}
                 icon={<TextAlignStart />}
                 aria-label={t("eventCodeLabel")}
-                value={code}
-                onChange={e => {
-                  setCode(e.target.value);
-                  setError(undefined);
-                }}
-                error={error}
+                name="eventCode"
+                type="text"
+                required
               />
               <Button
                 className={styles.fullWidthButton}

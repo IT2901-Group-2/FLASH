@@ -53,8 +53,8 @@
 
     &[data-open="true"] {
       left: 0;
-      width: calc(100% - 10rem);
-      max-width: calc(100% - 10rem);
+      width: 75%;
+      max-width: 75%;
     }
   }
 }
