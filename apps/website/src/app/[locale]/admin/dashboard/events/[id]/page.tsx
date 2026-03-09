@@ -3,7 +3,7 @@
 import { useEventsQuery } from "@/hooks/useEvents";
 import { ArrowLeft, ArrowRight, Download, Play } from "lucide-react";
 import { useParams } from "next/navigation";
-import { Button, Dialog, Title } from "ui";
+import { Button, Card, Dialog, Title } from "ui";
 import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
 import { ReviewStep } from "@/components/EventDialogs/Steps";
@@ -32,21 +32,12 @@ const Page = () => {
         </Button>
       </Dialog>
 
-      <Button
-        data-color="brand-purple"
-        className={styles.goToEventButton}
-        icon={<ArrowRight />}
-        iconPosition="right"
-        onClick={() => navigation.push(`/${id}`)}
-      >
-        Open Event
-      </Button>
       <div className={styles.header}>
         <div className={styles.headerItem}>
           <ArrowLeft className={styles.back} onClick={navigation.back} />
           <Title description={eventData?.description}>{eventData?.name}</Title>
         </div>
-        <div className={styles.header}>
+        <Card className={styles.card}>
           <Button
             data-color="brand-purple"
             icon={<Download />}
@@ -58,7 +49,16 @@ const Page = () => {
           <Button data-color="brand-purple" icon={<Play />}>
             Slideshow
           </Button>
-        </div>
+          <Button
+            data-color="brand-purple"
+            className={styles.goToEventButton}
+            icon={<ArrowRight />}
+            iconPosition="right"
+            onClick={() => navigation.push(`/${id}`)}
+          >
+            Open Event
+          </Button>
+        </Card>
       </div>
     </>
   );

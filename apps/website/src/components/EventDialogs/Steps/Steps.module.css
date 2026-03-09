@@ -16,6 +16,10 @@
   gap: 2rem;
 }
 
+.scroll {
+  overflow-y: scroll;
+}
+
 @media screen and (max-width: 768px) {
   .infoContainer {
     flex-direction: column-reverse;
@@ -43,7 +47,6 @@
 .timeContainer {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
   gap: 1rem;
   width: 100%;
 
@@ -51,5 +54,15 @@
 
   > * {
     margin-right: auto;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .timeContainer {
+    grid-template-columns: repeat(1, 1fr);
+    > * {
+      margin-right: none;
+      width: 100%;
+    }
   }
 }
