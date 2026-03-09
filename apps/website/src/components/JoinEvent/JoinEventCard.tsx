@@ -5,9 +5,29 @@ import { useTranslations } from "next-intl";
 import styles from "./JoinEventCard.module.css";
 import { QrCode } from "lucide-react";
 import Link from "next/link";
+import { useCallback, SubmitEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const JoinEventCard = () => {
+  const router = useRouter();
   const t = useTranslations("JoinEvent");
+  const [error, setError] = useState<string>("");
+
+  const handleSubmit = useCallback(
+    async (e: SubmitEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const code = new FormData(e.currentTarget).get("eventCode");
+      if (typeof code !== "string") return;
+
+      await fetch(`/api/events/by-code/${code}`)
+        .then(e => {
+          if (!e.ok) return setError(e.statusText);
+          e.json().then(e => router.push(`/${e.eventId}/nickname`));
+        })
+        .catch(console.log);
+    },
+    [router]
+  );
 
   return (
     <Card>
@@ -19,7 +39,7 @@ const JoinEventCard = () => {
           value="enter-code"
           label={t("enterCodeTab")}
           content={
-            <form className={styles.content} action="/api/join" method="POST">
+            <form className={styles.content} onSubmit={handleSubmit}>
               <Input
                 label={t("eventCodeLabel")}
                 placeholder={t("eventCodePlaceholder")}
@@ -27,6 +47,8 @@ const JoinEventCard = () => {
                 aria-label={t("eventCodeLabel")}
                 name="eventCode"
                 type="text"
+                onKeyDown={() => setError("")}
+                error={error}
                 required
               />
               <Button
