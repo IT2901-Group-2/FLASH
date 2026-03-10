@@ -9,36 +9,34 @@ const themeToken = (light: string, dark: string, theme: ColorTheme): SurfaceToke
 export const surfaceTokens = (theme: ColorTheme) => ({
   color: {
     "background-base":  themeToken("#F8F2F5", "#0D0D11", theme),
-    "background-dark":  themeToken("#D3CED0", "#0B0B0E", theme),
-    "background-light": themeToken("#F9F3F6", "#313135", theme),
+    "background-dark":  themeToken("#f0eaed", "#09090C", theme),
+    "background-light": themeToken("#F9F5F7", "#111115", theme),
 
     "primary-base":  themeToken("#F2E7EA", "#1C181D", theme),
-    "primary-dark":  themeToken("#CEC4C7", "#181419", theme),
-    "primary-light": themeToken("#F4EBED", "#3E3B3F", theme),
-
+    "primary-dark":  themeToken("#DAD0D3", "#181419", theme),
+    "primary-light": themeToken("#f6eef0", "#221e23", theme),
+    
     "secondary-base":  themeToken("#F8EEF1", "#29252B", theme),
-    "secondary-dark":  themeToken("#D3CACD", "#231F25", theme),
-    "secondary-light": themeToken("#F9F1F3", "#49464B", theme),
+    "secondary-dark":  themeToken("#F2E8EB", "#19161A", theme),
+    "secondary-light": themeToken("#F9F1F3", "#1f1b20", theme),
 
-    // accent — dark values match light for now; update second arg when dark-mode accent is defined
-    "accent-base":  themeToken("#C7A18F", "#C7A18F", theme),
-    "accent-dark":  themeToken("#A9897A", "#A9897A", theme),
-    "accent-light": themeToken("#CFAFA0", "#CFAFA0", theme),
+    "accent-base":  themeToken("#C7A18F", "#8A6654", theme),
+    "accent-dark":  themeToken("#BD9988", "#8a6654", theme),
+    "accent-light": themeToken("#CAA695", "#8d6a58", theme),
 
     "brand-base":  themeToken("#774262", "#60344E", theme),
-    "brand-dark":  themeToken("#653853", "#522C42", theme),
-    "brand-light": themeToken("#8B5E7A", "#785269", theme),
+    "brand-dark":  themeToken("#6B3B58", "#593048", theme),
+    "brand-light": themeToken("#7a4766", "#643952", theme),
 
-    // text secondary and tertiary token values are the same now, need to update this later
     "text-base":      themeToken("#101028", "#F1F0F4", theme),
     "text-dark":      themeToken("#0E0E22", "#CDCCCE", theme),
     "text-light":     themeToken("#343448", "#F3F2F6", theme),
-    "text-secondary": themeToken("#828284", "#828284", theme),
-    "text-tertiary":  themeToken("#474747", "#474747", theme),
+    "text-secondary": themeToken("#828284", "#8F8F90", theme),
+    "text-tertiary":  themeToken("#474747", "#C7C7C8", theme),
 
     "border-base":  themeToken("#C9BDC0", "#272529", theme),
-    "border-dark":  themeToken("#ABA1A3", "#211F23", theme),
-    "border-light": themeToken("#D1C7C9", "#474649", theme),
+    "border-dark":  themeToken("#797173", "#1b1a1d", theme),
+    "border-light": themeToken("#D9D1D3", "#3D3B3E", theme),
 
     // status tokens — theme-invariant; update second args when dark-mode values are decided
     "destructive-base":  themeToken("#e22948", "#e22948", theme),
