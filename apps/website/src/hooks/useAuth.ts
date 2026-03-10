@@ -18,7 +18,10 @@ type AuthToken = z.infer<typeof authTokenSchema> | null;
 export function useAuth() {
   return useQuery<AuthToken>({
     queryKey: ["auth"],
-    queryFn: async () => null,
+    queryFn: async () => {
+      const res = await makeRequest(authTokenSchema, "/api/auth/refresh", "POST");
+      return res ?? null;
+    },
     staleTime: Infinity,
   });
 }
