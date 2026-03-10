@@ -4,14 +4,60 @@ import { NextRequest, NextResponse } from "next/server";
 import { getEventCookie } from "./lib/utils/eventCookie";
 import { JWT_SECRET } from "./config";
 import { cookies } from "next/headers";
+import { makeRequest } from "./lib/utils/api";
+import { getEventCodeSchema } from "./db";
 
 const handleI18nRouting = createMiddleware(routing);
+
+/**
+ * Checks whether the request was made to an event join route.
+ *
+ * @param request The request to check.
+ * @returns A boolean indicating whether the request is sent to a join route or not.
+ */
+function isJoinRoute(request: NextRequest): boolean {
+  return /^\/.*\/join\/.+/.test(request.nextUrl.pathname);
+}
+
+/**
+ * Retrieves the join code from the route path.
+ * Only usable within join routes, check with `isJoinRoute` before invoking.
+ *
+ * @param request The request to retrieve the join code from.
+ * @returns The join code of the event the request is joining.
+ */
+function getJoinCode(request: NextRequest): string {
+  const code = /^\/.*\/join\/([^\/]*)/.exec(request.nextUrl.pathname)?.[1];
+  if (code === undefined) {
+    throw new Error("getJoinCode must only be invoked within a join route");
+  }
+  return code;
+}
+
+/**
+ * Fetches the eventId of the event a join code belongs to.
+ *
+ * @param code The join code to fetch the event for.
+ * @param request The request that triggered this check.
+ * @returns The eventId of the associated event or null if the join code is invalid.
+ */
+async function getEventByCode(
+  request: NextRequest,
+  code: string
+): Promise<string | null> {
+  return makeRequest(
+    getEventCodeSchema,
+    new URL(`/api/events/by-code/${code}`, request.url)
+  )
+    .then(c => c.eventId)
+    .catch(() => null);
+}
 
 /**
  * Checks whether the request was made to a route that requires event session authentication.
  *
  * @param request The request to check.
- * @param A boolean indicating whether the request is sent to an event route or not.
+ * @returns A boolean indicating whether the request is sent to an event route or not.
  */
 function isEventRoute(request: NextRequest): boolean {
   return /^\/.*\/events\/.+/.test(request.nextUrl.pathname);
@@ -56,6 +102,22 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
     const isAuthenticated = await checkEventCookie(getEventId(request));
     if (!isAuthenticated) {
       return NextResponse.redirect(new URL("/", request.url));
+    }
+  }
+
+  if (isJoinRoute(request)) {
+    const code = getJoinCode(request);
+    const eventId = await getEventByCode(request, code);
+
+    if (eventId === null) {
+      return new NextResponse(`Event with join code ${code} does not exist.`, {
+        status: 404,
+      });
+    }
+
+    const isAuthenticated = await checkEventCookie(eventId);
+    if (isAuthenticated) {
+      return NextResponse.redirect(new URL(`/events/${eventId}`, request.url));
     }
   }
 
