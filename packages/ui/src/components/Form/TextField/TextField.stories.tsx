@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TextField } from "./TextField";
 import { Text } from "lucide-react";
+import { expect, userEvent, within } from "storybook/test";
 
 const meta: Meta<typeof TextField> = {
   title: "Building Blocks/Components/TextField",
@@ -23,6 +24,14 @@ export const Medium: Story = {
     icon: <Text />,
     placeholder: "John Doe",
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByPlaceholderText("John Doe");
+    expect(input).toBeInTheDocument();
+    expect(canvas.getByText("Nickname")).toBeInTheDocument();
+    await userEvent.type(input, "Hello");
+    expect(input).toHaveValue("Hello");
+  },
 };
 
 export const Small: Story = {
@@ -31,6 +40,12 @@ export const Small: Story = {
     size: "small",
     placeholder: "John Doe",
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const textfield = canvas.getByTestId("textfield");
+    expect(textfield).toBeInTheDocument();
+    expect(textfield).toHaveAttribute("data-size", "small"); // adjust to your actual class
+  },
 };
 
 export const Description: Story = {
@@ -38,6 +53,12 @@ export const Description: Story = {
     label: "Nickname",
     description: "What you will be known as.",
     placeholder: "John Doe",
+    icon: <Text />,
+    iconPosition: "right",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    expect(canvas.getByText("What you will be known as.")).toBeInTheDocument();
   },
 };
 
@@ -47,6 +68,10 @@ export const HideLabel: Story = {
     hideLabel: true,
     placeholder: "John Doe",
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    expect(canvas.queryByText("Nickname")).not.toBeVisible();
+  },
 };
 
 export const Error: Story = {
@@ -54,6 +79,14 @@ export const Error: Story = {
     label: "Nickname",
     error: "Nickname must be filled out.",
     placeholder: "John Doe",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    expect(canvas.getByText("Nickname must be filled out.")).toBeInTheDocument();
+    expect(canvas.getByPlaceholderText("John Doe")).toHaveAttribute(
+      "aria-invalid",
+      "true"
+    );
   },
 };
 
@@ -63,18 +96,11 @@ export const Disabled: Story = {
     disabled: true,
     placeholder: "John Doe",
   },
-};
-
-export const AllTypes: Story = {
-  render: () => (
-    <>
-      <TextField type="email" label="email" />
-      <TextField type="number" label="number" />
-      <TextField type="password" label="password" />
-      <TextField type="tel" label="tel" />
-      <TextField type="text" label="text" />
-      <TextField type="url" label="url" />
-      <TextField type="time" label="time" />
-    </>
-  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByPlaceholderText("John Doe");
+    expect(input).toBeDisabled();
+    await userEvent.type(input, "Hello");
+    expect(input).toHaveValue("");
+  },
 };
