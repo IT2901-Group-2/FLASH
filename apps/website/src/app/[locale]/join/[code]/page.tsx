@@ -14,7 +14,7 @@ export default function Page() {
   const [nickname, setNickname] = useState<string>("");
 
   return (
-    <div className={styles.conatiner}>
+    <div className={styles.container}>
       <div className={styles.navigation} onClick={navigation.back}>
         <ArrowLeft />
         {t("back")}
