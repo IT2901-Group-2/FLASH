@@ -54,6 +54,7 @@ export const MaxLength: Story = {
   args: {
     label: "Description",
     maxLength: 100,
+    size: "small",
   },
 };
 

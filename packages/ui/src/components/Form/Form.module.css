@@ -29,6 +29,7 @@
   }
 }
 
+.error,
 .error > * {
   margin: 0;
   display: flex;

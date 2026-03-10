@@ -9,8 +9,7 @@ export interface TextareaProps
   extends FormFieldProps, React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   /**
    * Allowed character-count for content
-   *
-   * This is just a visual indicator! You will still need to handle actual character-limits/validation if needed.
+   * This is just a visual indicator and has to be checked manually.
    */
   maxLength?: number;
   /**
@@ -22,11 +21,11 @@ export interface TextareaProps
    */
   defaultValue?: string;
   /**
-   * Maximum number of character rows to display.
+   * Maximum number of rows to display.
    */
   maxRows?: number;
   /**
-   * Minimum number of character-rows to display when empty.
+   * Minimum number of rows to display when empty.
    */
   minRows?: number;
   /**
@@ -107,27 +106,44 @@ export const Textarea = ({
         ref={inputRef}
         data-scroll={scroll}
         data-resize={resize}
-        onChange={() => {
-          resizeArea();
-          composeEventHandlers(
-            rest.onChange,
-            value === undefined ? e => setUncontrolledValue(e.target.value) : undefined
-          );
-        }}
+        onChange={composeEventHandlers(
+          resizeArea,
+          rest.onChange,
+          value === undefined ? e => setUncontrolledValue(e.target.value) : undefined
+        )}
         rows={rest.minRows || minRows}
         readOnly={readOnly}
         disabled={disabled}
         className={styles.input}
       />
       {hasMaxLength && !readOnly && !inputProps.disabled && (
-        <span>
-          {value?.length ?? uncontrolledValue.length}/{maxLength}
-        </span>
+        <Counter
+          currentLength={value?.length ?? uncontrolledValue.length}
+          maxLength={maxLength}
+        />
       )}
       <div className={formStyles.error} id={errorId}>
         {showErrorMsg && <p>{rest.error}</p>}
       </div>
     </div>
+  );
+};
+
+interface CounterProps {
+  maxLength: number;
+  currentLength: number;
+}
+
+const Counter = ({ maxLength, currentLength }: CounterProps) => {
+  return (
+    <span
+      className={cl(
+        formStyles.description,
+        currentLength > maxLength && formStyles.error
+      )}
+    >
+      {currentLength}/{maxLength}
+    </span>
   );
 };
 
