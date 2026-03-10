@@ -10,7 +10,7 @@ import { cookies } from "next/headers";
  * @returns A boolean indicating whether the request is sent to an event route or not.
  */
 export function isEventRoute(request: NextRequest): boolean {
-  return /^\/.*\/events\/.+/.test(request.nextUrl.pathname);
+  return /^\/[^\/]*\/events\/.+/.test(request.nextUrl.pathname);
 }
 
 /**
@@ -21,7 +21,7 @@ export function isEventRoute(request: NextRequest): boolean {
  * @returns The eventId of the event the request is accessing.
  */
 export function getEventId(request: NextRequest): string {
-  const eventId = /^\/.*\/events\/([^\/]*)/.exec(request.nextUrl.pathname)?.[1];
+  const eventId = /^\/[^\/]*\/events\/([^\/]*)/.exec(request.nextUrl.pathname)?.[1];
   if (eventId === undefined || eventId === "") {
     throw new Error("getEventId must only be invoked within an event route");
   }

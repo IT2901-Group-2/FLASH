@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { Result } from "typescript-result";
+import { checkEventCookie, getEventId, isEventRoute } from "../eventRoute";
+import { getEventCookie } from "@/lib/utils/eventCookie";
 
 const deleteCookieMock = vi.fn();
 vi.mock("next/headers", () => ({ cookies: vi.fn(() => ({ delete: deleteCookieMock })) }));
@@ -10,9 +12,6 @@ vi.mock(
   "@/lib/utils/eventCookie",
   vi.fn(() => ({ getEventCookie: vi.fn() }))
 );
-
-import { checkEventCookie, getEventId, isEventRoute } from "../eventRoute";
-import { getEventCookie } from "../../eventCookie";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -25,6 +24,9 @@ describe("isEventRoute", () => {
     ).toBe(false);
     expect(isEventRoute(new NextRequest("http://www.test.com/en/events/"))).toBe(false);
     expect(isEventRoute(new NextRequest("http://www.test.com/events/a"))).toBe(false);
+    expect(
+      isEventRoute(new NextRequest("https://www.test.com/en/not-events/events/event-id"))
+    ).toBe(false);
     expect(isEventRoute(new NextRequest("http://www.test.com/en/events/a"))).toBe(true);
     expect(
       isEventRoute(new NextRequest("http://www.test.com/no/events/eventId/moderate"))
@@ -39,6 +41,9 @@ describe("getEventId", () => {
     ).toThrow();
     expect(() => getEventId(new NextRequest("http://www.test.com/en/events/"))).toThrow();
     expect(() => getEventId(new NextRequest("http://www.test.com/events/a"))).toThrow();
+    expect(() =>
+      getEventId(new NextRequest("https://www.test.com/en/not-events/events/event-id"))
+    ).toThrow();
   });
 
   it("Should correctly return the eventId", () => {

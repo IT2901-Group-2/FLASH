@@ -20,6 +20,9 @@ describe("isJoinRoute", () => {
     );
     expect(isJoinRoute(new NextRequest("http://www.test.com/en/join/"))).toBe(false);
     expect(isJoinRoute(new NextRequest("http://www.test.com/join/a"))).toBe(false);
+    expect(
+      isJoinRoute(new NextRequest("https://www.test.com/en/not-join/join/code"))
+    ).toBe(false);
     expect(isJoinRoute(new NextRequest("http://www.test.com/en/join/a"))).toBe(true);
     expect(isJoinRoute(new NextRequest("http://www.test.com/no/join/code/abcd"))).toBe(
       true
@@ -34,6 +37,9 @@ describe("getJoinCode", () => {
     ).toThrow();
     expect(() => getJoinCode(new NextRequest("http://www.test.com/en/join/"))).toThrow();
     expect(() => getJoinCode(new NextRequest("http://www.test.com/join/a"))).toThrow();
+    expect(() =>
+      getJoinCode(new NextRequest("https://www.test.com/en/not-join/join/code"))
+    ).toThrow();
   });
 
   it("Should correctly return the join code", () => {

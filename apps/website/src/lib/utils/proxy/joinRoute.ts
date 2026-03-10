@@ -9,7 +9,7 @@ import { getEventCodeSchema } from "@/db";
  * @returns A boolean indicating whether the request is sent to a join route or not.
  */
 export function isJoinRoute(request: NextRequest): boolean {
-  return /^\/.*\/join\/.+/.test(request.nextUrl.pathname);
+  return /^\/[^\/]*\/join\/.+/.test(request.nextUrl.pathname);
 }
 
 /**
@@ -20,7 +20,7 @@ export function isJoinRoute(request: NextRequest): boolean {
  * @returns The join code of the event the request is joining.
  */
 export function getJoinCode(request: NextRequest): string {
-  const code = /^\/.*\/join\/([^\/]*)/.exec(request.nextUrl.pathname)?.[1];
+  const code = /^\/[^\/]*\/join\/([^\/]*)/.exec(request.nextUrl.pathname)?.[1];
   if (code === undefined || code === "") {
     throw new Error("getJoinCode must only be invoked within a join route");
   }
