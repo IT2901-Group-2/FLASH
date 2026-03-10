@@ -11,7 +11,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     .map(data => userService.joinEvent(data))
     .fold(
       eventId =>
-        NextResponse.redirect(new URL(`/${eventId}`, req.url), {
+        NextResponse.redirect(new URL(`/events/${eventId}`, req.url), {
           status: 303,
         }),
       errorResponse

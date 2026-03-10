@@ -13,7 +13,7 @@ const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
   const t = useTranslations("guest.login");
   const navigation = useRouter();
   return (
-    <Card onClick={() => navigation.push(`/${id}`)} className={styles.linkcard}>
+    <Card onClick={() => navigation.push(`/events/${id}`)} className={styles.linkcard}>
       <div>
         <Title size="small">{name}</Title>
         <span>
