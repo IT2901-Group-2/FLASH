@@ -23,7 +23,7 @@ const JoinEventCard = () => {
 
       await makeRequest(getEventCodeSchema, `/api/events/by-code/${code}`)
         .then(() => router.push(`/join/${code}`))
-        .catch(console.error);
+        .catch(setError);
     },
     [router]
   );
