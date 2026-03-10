@@ -69,16 +69,24 @@ export type ShadowToken = "dialog";
 
 /* --- Figma surface tokens --- */
 export type FigmaSurfaceColor =
-  | "background" | "primary" | "secondary"
-  | "accent" | "brand" | "text" | "border"
-  | "destructive" | "success" | "warning";
+  | "background"
+  | "primary"
+  | "secondary"
+  | "accent"
+  | "brand"
+  | "text"
+  | "border"
+  | "destructive"
+  | "success"
+  | "warning";
 
 export type FigmaSurfaceVariant = "base" | "dark" | "light";
 
 export type FigmaTextVariant = FigmaSurfaceVariant | "secondary" | "tertiary";
 
-type NonTextSurfaceToken = `color-${Exclude<FigmaSurfaceColor, "text">}-${FigmaSurfaceVariant}`;
-type TextSurfaceToken    = `color-text-${FigmaTextVariant}`;
+type NonTextSurfaceToken =
+  `color-${Exclude<FigmaSurfaceColor, "text">}-${FigmaSurfaceVariant}`;
+type TextSurfaceToken = `color-text-${FigmaTextVariant}`;
 export type FigmaSurfaceToken = NonTextSurfaceToken | TextSurfaceToken | "color-backdrop";
 
 /* --- Border Radius tokens ------------- */
