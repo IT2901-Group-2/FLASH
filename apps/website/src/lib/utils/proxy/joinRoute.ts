@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { makeRequest } from "../api";
+import { makeRequest } from "@/lib/utils/api";
 import { getEventCodeSchema } from "@/db";
 
 /**
