@@ -30,11 +30,11 @@
   cursor: pointer;
 
   &:hover {
-    background-color: var(--color-neutral-100);
+    background-color: var(--color-primary-light);
   }
 
   &:active {
-    background-color: var(--color-neutral-200);
+    background-color: var(--color-primary-dark);
   }
 }
 

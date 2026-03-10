@@ -5,7 +5,7 @@
   aspect-ratio: 1/1;
   align-items: center;
   border-radius: var(--radius-8);
-  background: var(--text-tertiary);
+  background: var(--color-text-tertiary);
   box-shadow: var(--shadow-dialog);
 }
 
@@ -13,5 +13,5 @@
   width: 1.5rem;
   height: 1.5rem;
   margin: auto;
-  color: var(--background-primary);
+  color: var(--color-primary-base);
 }
