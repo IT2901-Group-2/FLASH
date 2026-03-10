@@ -21,7 +21,7 @@ export function isJoinRoute(request: NextRequest): boolean {
  */
 export function getJoinCode(request: NextRequest): string {
   const code = /^\/.*\/join\/([^\/]*)/.exec(request.nextUrl.pathname)?.[1];
-  if (code === undefined) {
+  if (code === undefined || code === "") {
     throw new Error("getJoinCode must only be invoked within a join route");
   }
   return code;

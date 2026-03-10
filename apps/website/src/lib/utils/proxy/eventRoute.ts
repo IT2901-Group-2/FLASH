@@ -1,6 +1,6 @@
 import { JWT_SECRET } from "@/config";
 import { NextRequest } from "next/server";
-import { getEventCookie } from "../eventCookie";
+import { getEventCookie } from "@/lib/utils/eventCookie";
 import { cookies } from "next/headers";
 
 /**
@@ -22,7 +22,7 @@ export function isEventRoute(request: NextRequest): boolean {
  */
 export function getEventId(request: NextRequest): string {
   const eventId = /^\/.*\/events\/([^\/]*)/.exec(request.nextUrl.pathname)?.[1];
-  if (eventId === undefined) {
+  if (eventId === undefined || eventId === "") {
     throw new Error("getEventId must only be invoked within an event route");
   }
   return eventId;
