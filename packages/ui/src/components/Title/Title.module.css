@@ -7,12 +7,12 @@
   display: flex;
   align-items: center;
   margin: 0;
-  color: var(--text-default);
+  color: var(--color-text-base);
   line-height: 1.2;
   font-family: inherit;
 
   &[data-color] {
-    color: var(--text-subtle);
+    color: var(--color-text-secondary);
   }
 
   /* ----- Font Size ----- */
@@ -73,7 +73,7 @@
 .description {
   display: flex;
   align-items: center;
-  color: var(--text-decoration);
+  color: var(--color-text-tertiary);
   &[data-size="xlarge"] {
     font-size: 1.5rem;
   }

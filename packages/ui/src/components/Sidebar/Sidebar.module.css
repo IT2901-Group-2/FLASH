@@ -1,8 +1,8 @@
 .sidebar {
-  --color-bg: var(--bg-raised);
-  --color-bg-hover: var(--bg-input);
-  --color-group-title: var(--text-default);
-  --border: 0.1rem solid var(--border-neutral);
+  --color-bg: var(--color-primary-base);
+  --color-bg-hover: var(--color-primary-light);
+  --color-group-title: var(--color-text-base);
+  --border: 0.1rem solid var(--color-border-base);
   --transition: 0.25s ease-in-out;
 
   width: 15rem;
@@ -17,7 +17,7 @@
   flex-direction: column;
   align-items: stretch;
 
-  color: var(--text-default);
+  color: var(--color-text-base);
   background-color: var(--color-bg);
   border-right: var(--border);
 
@@ -196,6 +196,6 @@
   }
 
   &:hover {
-    background-color: var(--bg-input);
+    background-color: var(--color-primary-light);
   }
 }

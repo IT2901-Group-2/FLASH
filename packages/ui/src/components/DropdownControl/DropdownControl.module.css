@@ -5,7 +5,7 @@
 }
 
 .dropdownBorder {
-  border: 0.1rem solid var(--border-focus);
+  border: 0.1rem solid var(--color-border-base);
   border-top: none;
 }
 
@@ -31,7 +31,7 @@
 }
 
 .dropdownBorder {
-  border: 0.1rem solid var(--border-focus);
+  border: 0.1rem solid var(--color-border-base);
   border-top: none;
 
   & .panel[data-open="true"] {
@@ -40,7 +40,7 @@
 }
 
 .panelInner {
-  color: var(--text-default);
+  color: var(--color-text-base);
 
   opacity: 0;
   pointer-events: none;

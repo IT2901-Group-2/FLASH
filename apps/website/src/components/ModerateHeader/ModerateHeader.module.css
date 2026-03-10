@@ -1,6 +1,6 @@
 /* ── Shared header shell ── */
 .header {
-  background: var(--bg-default);
+  background: var(--color-primary-base);
   width: 100%;
   box-sizing: border-box;
   position: sticky;
@@ -11,7 +11,7 @@
 }
 
 .scrolled {
-  border-bottom-color: var(--border-default);
+  border-bottom-color: var(--color-border-base);
 }
 
 /* ── MOBILE layout (default, < 768px) ── */
@@ -36,7 +36,7 @@
 .mobileBackButton {
   position: absolute;
   left: 16px;
-  color: var(--color-neutral-1000);
+  color: var(--color-text-base);
   padding: 0;
   min-width: unset;
 }

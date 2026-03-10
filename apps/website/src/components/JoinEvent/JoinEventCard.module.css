@@ -10,6 +10,14 @@
   gap: 1.5rem;
 }
 
+.content {
+  --input-bg: var(--color-background-base);
+}
+
+:global([data-theme="dark"]) .content {
+  --input-bg: var(--color-secondary-base);
+}
+
 .qrContainer {
   display: flex;
   justify-content: center;
@@ -21,13 +29,13 @@
 }
 
 .qrContainer svg {
-  color: var(--color-neutral-400);
+  color: var(--color-text-secondary);
 }
 
 .qrText {
   text-align: center;
   font-size: var(--font-size-small);
-  color: var(--color-neutral-600);
+  color: var(--color-text-tertiary);
   margin: 0;
   font-weight: var(--font-weight-bold);
 }

@@ -1,10 +1,10 @@
 .container {
-  --color-bg: var(--bg-raised);
-  --color-boder: var(--border-focus);
-  --color-bg-active: var(--bg-moderate-pressed);
-  --color-bg-hover: var(--bg-moderate-hover);
+  --color-bg: var(--color-primary-base);
+  --color-boder: var(--color-border-base);
+  --color-bg-active: var(--color-accent-base);
+  --color-bg-hover: var(--color-accent-light);
 
-  --color-text: var(--text-default);
+  --color-text: var(--color-text-base);
 
   /* Base layout values */
   --inset-distance: 0.25rem;

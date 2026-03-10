@@ -1,9 +1,9 @@
 .phoneheader {
-  --phoneheader-bg: var(--bg-raised);
-  --phoneheader-text: var(--text-default);
-  --phoneheader-border: var(--border-focus);
-  --phoneheader-subtitle: var(--text-subtle);
-  --phoneheader-focus: var(--bg-soft);
+  --phoneheader-bg: var(--color-primary-base);
+  --phoneheader-text: var(--color-text-base);
+  --phoneheader-border: var(--color-border-base);
+  --phoneheader-subtitle: var(--color-text-secondary);
+  --phoneheader-focus: var(--color-primary-light);
 }
 
 .container {

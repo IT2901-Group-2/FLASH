@@ -29,33 +29,33 @@
   }
 
   &[data-variant="primary"] {
-    background-color: var(--bg-strong);
+    background-color: var(--color-brand-base);
     color: white;
 
     &:hover {
-      background-color: var(--bg-strong-hover);
+      background-color: var(--color-brand-light);
     }
 
     &:active {
-      background-color: var(--bg-strong-pressed);
+      background-color: var(--color-brand-dark);
     }
 
     &:is(:disabled, .disabled) {
-      background-color: var(--bg-strong);
+      background-color: var(--color-brand-base);
     }
   }
 
   &[data-variant="secondary"] {
     background-color: transparent;
-    color: var(--text-default);
-    border: 0.125rem solid var(--border-strong);
+    color: var(--color-text-base);
+    border: 0.125rem solid var(--color-brand-base);
 
     &:hover {
-      background-color: var(--bg-moderate-hoverT);
+      background-color: var(--color-primary-light);
     }
 
     &:active {
-      background-color: var(--bg-moderate-pressedT);
+      background-color: var(--color-primary-dark);
     }
 
     &:is(:disabled, .disabled) {
@@ -65,14 +65,14 @@
 
   &[data-variant="tertiary"] {
     background-color: transparent;
-    color: var(--text-default);
+    color: var(--color-text-base);
 
     &:hover {
-      background-color: var(--bg-moderate-hoverT);
+      background-color: var(--color-primary-light);
     }
 
     &:active {
-      background-color: var(--bg-moderate-pressedT);
+      background-color: var(--color-primary-dark);
     }
 
     &:is(:disabled, .disabled) {
