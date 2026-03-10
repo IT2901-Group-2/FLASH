@@ -3,6 +3,7 @@
   justify-content: start;
   flex-direction: column;
   gap: 0.5rem;
+  height: 100%;
 }
 
 .label {
