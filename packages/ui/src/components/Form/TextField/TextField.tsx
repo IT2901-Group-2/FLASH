@@ -67,7 +67,7 @@ export const TextField = ({
   return (
     <div
       data-size={size}
-      className={cl(styles.inputWrapper, disabled && formStyles.disabled, className)}
+      className={cl(formStyles.field, disabled && formStyles.disabled, className)}
       data-color={color}
       data-testid="textfield"
     >
