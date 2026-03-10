@@ -1,9 +1,9 @@
-import React, { InputHTMLAttributes, useEffect, useId, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./Textarea.module.css";
 import formStyles from "../Form.module.css";
 import { cl, composeEventHandlers, omit } from "@/util/helpers";
 import { FormFieldProps, useFormField } from "../useFormField";
-import { debounce } from "@/util/helpers/debounce";
+import { useAutoResize } from "@/util/hooks/useAutoResize";
 
 export interface TextareaProps
   extends FormFieldProps, React.TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -41,11 +41,16 @@ export interface TextareaProps
    * Enables resizing of field.
    */
   resize?: boolean | "vertical" | "horizontal";
+  /**
+   * If the textarea should scroll instead of expand when overflowing. Requires
+   * parent element to have max-height.
+   */
+  scroll?: boolean;
 }
 /**
  * An Textarea allows the user to enter and edit text or data in a more than one line.
  *
- * > _Last updated: `2026-01-29`_
+ * > _Last updated: `2026-03-10`_
  */
 export const Textarea = ({
   label,
@@ -56,22 +61,31 @@ export const Textarea = ({
   resize,
   value,
   disabled,
+  scroll,
   readOnly,
   ...rest
 }: TextareaProps) => {
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const { inputProps, errorId, showErrorMsg, size, inputDescriptionId } = useFormField(
     rest,
     "textarea"
   );
 
   const hasMaxLength = maxLength !== undefined && maxLength > 0;
+  const minRows = rest.minRows ?? (size === "small" ? 2 : 3);
+
+  const resizeArea = useAutoResize(inputRef, minRows, rest.maxRows);
 
   const [uncontrolledValue, setUncontrolledValue] = useState<string>(
     rest.defaultValue ?? ""
   );
 
+  // Resize on mount because it is slightly different than default
+  useEffect(resizeArea, []);
+
   return (
     <div
+      data-error={!!rest.error}
       data-size={size}
       className={cl(className, formStyles.field, !!disabled && formStyles.disabled)}
     >
@@ -90,18 +104,20 @@ export const Textarea = ({
       <textarea
         {...omit(rest, ["error", "errorId", "size"])}
         {...inputProps}
-        onChange={composeEventHandlers(
-          rest.onChange,
-          value === undefined ? e => setUncontrolledValue(e.target.value) : undefined
-        )}
-        rows={rest.minRows || (size === "small" ? 2 : 3)}
+        ref={inputRef}
+        data-scroll={scroll}
+        data-resize={resize}
+        onChange={() => {
+          resizeArea();
+          composeEventHandlers(
+            rest.onChange,
+            value === undefined ? e => setUncontrolledValue(e.target.value) : undefined
+          );
+        }}
+        rows={rest.minRows || minRows}
         readOnly={readOnly}
         disabled={disabled}
-        className={cl(
-          "aksel-textarea__input",
-          "aksel-body-short",
-          `aksel-body-short--${size ?? "medium"}`
-        )}
+        className={styles.input}
       />
       {hasMaxLength && !readOnly && !inputProps.disabled && (
         <span>

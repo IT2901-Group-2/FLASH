@@ -1,17 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Textarea } from "./Textarea";
-import { Text } from "lucide-react";
-import { expect, userEvent, within } from "storybook/test";
 
 const meta: Meta<typeof Textarea> = {
   title: "Building Blocks/Components/Textarea",
   component: Textarea,
   tags: ["autodocs"],
-  argTypes: {
-    args: {
-      label: "Description",
-    },
-  },
+  argTypes: {},
   args: {
     disabled: false,
     required: false,
@@ -68,6 +62,14 @@ export const Resizable: Story = {
     label: "Description",
     resize: "vertical",
   },
+};
+
+export const AutoScrollbar: Story = {
+  render: () => (
+    <div style={{ height: "200px" }}>
+      <Textarea label="Description" scroll />
+    </div>
+  ),
 };
 
 export const Disabled: Story = {
