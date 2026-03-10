@@ -1,3 +1,10 @@
+.field {
+  display: flex;
+  justify-content: start;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .label {
   font-size: var(--font-size-xlarge);
   font-weight: var(--font-weight-bold);
