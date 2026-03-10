@@ -1,13 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
-import { ArrowLeft, Camera, Upload } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { Camera, QrCode, Upload } from "lucide-react";
 import styles from "./UploadImage.module.css";
-import { ActionCard, PhoneHeader } from "ui";
+import { ActionCard, Button, Dialog, QRDisplay } from "ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useEventsQuery } from "@/hooks/useEvents";
 import { useEventAuth } from "@/providers/EventAuthContext";
+import PhoneHeader from "@/components/PhoneHeader/PhoneHeader";
 
 export default function Page() {
   const router = useRouter();
@@ -23,10 +24,11 @@ export default function Page() {
   const uploadsRemaining =
     typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
 
-  const uploadsDescription =
-    typeof uploadsRemaining === "number"
-      ? `You have ${uploadsRemaining} uploads remaining`
-      : "You have an unlimited number of uploads";
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const uploadDescription = t("uploadDescription", {
+    uploadsRemaining:
+      typeof uploadsRemaining === "number" ? uploadsRemaining : "unlimited",
+  });
 
   const { openFilePicker, FileInput } = useFileUpload({
     onFilesSelected: files => {
@@ -34,7 +36,6 @@ export default function Page() {
       // TODO: Handle file upload logic here
     },
   });
-  const [isQrOpen, setIsQrOpen] = useState(false);
 
   useEffect(() => {
     if (eventAuth !== undefined && !eventAuth.isAuthenticated) {
@@ -43,42 +44,76 @@ export default function Page() {
   }, [eventAuth, router]);
 
   return (
-    <div className={styles.pageWrapper}>
+    <>
       <FileInput />
-      <PhoneHeader
-        title={eventName}
-        subtitle={eventAuth?.nickname ?? ""}
-        rightLabel="Live"
-        rightVariant="primary"
-        rightAriaLabel="live-button"
-        leftIcon={<ArrowLeft />}
-        leftAriaLabel="back-button"
-        uploadsRemaining={uploadsRemaining}
-        onPrimaryClick={openFilePicker}
-        primaryText={t("actions.uploadImage")}
-        secondaryText={t("actions.takePhoto")}
-        onQrOpenChange={setIsQrOpen}
-      ></PhoneHeader>
-      {!isLoading && (isError || !eventData) ? (
-        <p className={styles.errorText}>Could not load event details for this link.</p>
-      ) : null}
-      <ActionCard
-        className={`${styles.mobileOnly} ${isQrOpen ? styles.dimmed : ""}`}
-        description={uploadsDescription}
-        primaryButton={{
-          "data-color": "brand-purple",
-          icon: <Upload size={18} />,
-          iconPosition: "right",
-          text: t("actions.uploadImage"),
-          onClick: openFilePicker,
-        }}
-        secondaryButton={{
-          "data-color": "brand-purple",
-          icon: <Camera size={18} />,
-          iconPosition: "right",
-          text: t("actions.takePhoto"),
-        }}
-      />
-    </div>
+      <Dialog ref={dialogRef} className={styles.qrCodeContainer}>
+        <div className={styles.qrCodeContainer}>
+          <QRDisplay value="www.example.com" size="large" />
+          <Button
+            variant="secondary"
+            data-color="neutral"
+            onClick={() => dialogRef.current?.close()}
+            fill
+          >
+            Close
+          </Button>
+        </div>
+      </Dialog>
+
+      <div className={styles.pageWrapper}>
+        <PhoneHeader
+          title={eventName}
+          username={eventAuth?.nickname ?? ""}
+          description={uploadDescription}
+        >
+          <Button
+            icon={<QrCode />}
+            iconPosition="right"
+            data-color="brand-purple"
+            variant="secondary"
+            onClick={() => dialogRef.current?.showModal()}
+          />
+          <Button
+            icon={<Camera />}
+            iconPosition="right"
+            data-color="brand-purple"
+            variant="secondary"
+            className={styles.desktopOnly}
+          >
+            {t("actions.takePhoto")}
+          </Button>
+          <Button
+            icon={<Upload />}
+            iconPosition="right"
+            data-color="brand-purple"
+            variant="primary"
+            onClick={openFilePicker}
+            className={styles.desktopOnly}
+          >
+            {t("actions.uploadImage")}
+          </Button>
+        </PhoneHeader>
+        {!isLoading && (isError || !eventData) ? (
+          <p className={styles.errorText}>Could not load event details for this link.</p>
+        ) : null}
+        <ActionCard
+          className={`${styles.mobileOnly}`}
+          description={uploadDescription}
+          primaryButton={{
+            "data-color": "brand-purple",
+            icon: <Upload size={18} />,
+            iconPosition: "right",
+            text: t("actions.uploadImage"),
+            onClick: openFilePicker,
+          }}
+          secondaryButton={{
+            "data-color": "brand-purple",
+            icon: <Camera size={18} />,
+            iconPosition: "right",
+            text: t("actions.takePhoto"),
+          }}
+        />
+      </div>
+    </>
   );
 }

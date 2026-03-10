@@ -1,5 +1,5 @@
 .goToEventButton {
-  position: absolute;
+  position: unset;
   bottom: 2rem;
   right: 2rem;
 }
@@ -40,4 +40,40 @@
 
 .dialogCloseButton {
   margin-left: auto;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: calc(100% - 100vh + 2rem);
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: 80%;
+
+  > button {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .card {
+    flex-direction: row;
+    position: unset;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    width: auto;
+    margin: 0;
+    padding: 0;
+
+    > button {
+      width: auto;
+    }
+  }
+
+  .goToEventButton {
+    position: absolute;
+  }
 }

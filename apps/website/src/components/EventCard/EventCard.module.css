@@ -29,6 +29,9 @@
   border: 0.1rem solid var(--color-border-base);
   cursor: pointer;
 
+  background-color: transparent;
+  color: var(--text-decoration);
+
   &[data-color] {
     border: 0.1rem solid var(--color-border-base);
     color: var(--color-destructive-base);
