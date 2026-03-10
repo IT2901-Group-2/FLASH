@@ -6,6 +6,7 @@ import { Event } from "@/db";
 import { useDeleteEventMutation } from "@/hooks/useEvents";
 import { MouseEvent, useRef } from "react";
 import EditEventCard from "../EventDialogs/EditEventDialog";
+import { useTranslations } from "next-intl";
 
 export interface EventCardProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
@@ -15,6 +16,7 @@ export interface EventCardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const EventCard = ({ data, ...rest }: EventCardProps) => {
+  const t = useTranslations("features.admin.dashboard.event.details");
   const { mutate } = useDeleteEventMutation();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { name, startDate, uploadLimit, id } = data;
@@ -51,23 +53,25 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
         </div>
         <div className={styles.info}>
           <div className={cl(styles.column, styles.soft)}>
-            Total Photos
+            {t("summary.totalPhotos")}
             <span className={styles.row}>
               <ImageIcon size={16} /> 0
             </span>
           </div>
           <div className={cl(styles.column, styles.soft)}>
-            Approved <span>0</span>
+            {t("summary.approved")} <span>0</span>
           </div>
           <div className={cl(styles.column, styles.soft)}>
-            Pending <span>0</span>
+            {t("summary.pending")} <span>0</span>
           </div>
         </div>
         <div className={cl(styles.row, styles.footer)}>
           <div className={styles.row}>
             <Users size={16} />
             <span>
-              {uploadLimit ? `${uploadLimit} photos per person` : "No photo limit"}
+              {uploadLimit
+                ? t("uploadLimit.perPerson", { count: uploadLimit })
+                : t("uploadLimit.none")}
             </span>
           </div>
           <div className={styles.row}>

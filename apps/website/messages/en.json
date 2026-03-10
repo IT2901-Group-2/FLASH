@@ -110,7 +110,17 @@
               "description": "Share the QR code or event link so others can join and upload photos."
             }
           },
-          "details": {}
+          "details": {
+            "summary": {
+              "totalPhotos": "Total Photos",
+              "approved": "Approved",
+              "pending": "Pending"
+            },
+            "uploadLimit": {
+              "perPerson": "{count, plural, one {# photo per person} other {# photos per person}}",
+              "none": "No photo limit"
+            }
+          }
         }
       },
       "login": {

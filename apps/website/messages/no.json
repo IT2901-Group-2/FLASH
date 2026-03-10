@@ -121,7 +121,17 @@
               "description": "Del QR-koden eller arrangementlenken slik at andre kan bli med og laste opp bilder."
             }
           },
-          "details": {}
+          "details": {
+            "summary": {
+              "totalPhotos": "Totalt antall bilder",
+              "approved": "Godkjent",
+              "pending": "Venter"
+            },
+            "uploadLimit": {
+              "perPerson": "{count, plural, one {# bilde per person} other {# bilder per person}}",
+              "none": "Ingen bildegrense"
+            }
+          }
         }
       },
       "login": {
