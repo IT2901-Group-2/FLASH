@@ -1,0 +1,20 @@
+.filedset {
+  border: 0;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.legend {
+  padding: 0;
+}
+
+.description {
+  color: var(--text-neutral-subtle);
+  &:not(:empty) {
+    margin-top: 0.125rem;
+  }
+}
+
+.error {
+}

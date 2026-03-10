@@ -3,6 +3,7 @@ import { cl, omit } from "@/util/helpers";
 import { FormFieldProps } from "../useFormField";
 import { FieldsetContext } from "./Fieldset.context";
 import { useFieldset } from "./useFieldset";
+import styles from "./Fieldset.module.css";
 
 export interface FieldsetProps
   extends FormFieldProps, FieldsetHTMLAttributes<HTMLFieldSetElement> {
@@ -65,37 +66,22 @@ export const Fieldset = ({
       <fieldset
         {...omit(rest, ["errorId", "size", "readOnly"])}
         {...inputProps}
+        data-size={size}
+        data-error={hasError}
+        data-readonly={readOnly}
         // ref={ref}
-        className={cl(className, "aksel-fieldset", `aksel-fieldset--${size}`, {
-          "aksel-fieldset--error": hasError,
-          "aksel-fieldset--readonly": readOnly,
-        })}
+        className={cl(className, styles.filedset)}
       >
-        <label
-          id={legendId}
-          className={cl("aksel-fieldset__legend", {
-            "aksel-sr-only": !!hideLegend,
-          })}
-        >
+        <legend id={legendId} hidden={hideLegend} className={styles.legend}>
           {legend}
-        </label>
+        </legend>
         {!!description && (
-          <div
-            className={cl("aksel-fieldset__description", {
-              "aksel-sr-only": !!hideLegend,
-            })}
-            id={inputDescriptionId}
-          >
+          <div hidden={hideLegend} className={styles.description} id={inputDescriptionId}>
             {description}
           </div>
         )}
         {children}
-        <div
-          id={errorId}
-          aria-relevant="additions removals"
-          aria-live="polite"
-          className="aksel-fieldset__error"
-        >
+        <div id={errorId} className={styles.error}>
           {showErrorMsg && <p>{error}</p>}
         </div>
       </fieldset>
