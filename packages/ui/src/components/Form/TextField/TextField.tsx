@@ -69,6 +69,7 @@ export const TextField = ({
       data-size={size}
       className={cl(formStyles.field, disabled && formStyles.disabled, className)}
       data-color={color}
+      data-error={!!rest.error}
       data-testid="textfield"
     >
       <label hidden={hideLabel} htmlFor={inputProps.id} className={cl(formStyles.label)}>

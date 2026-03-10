@@ -7,17 +7,21 @@
   border: 1px solid var(--border-focus);
   background-color: var(--bg-input);
 
+  &:focus-within {
+    border-color: var(--border-subtle);
+  }
+
   [data-color] & {
     border-color: var(--border-default);
+  }
+
+  [data-error="true"] & {
+    border: 2px solid var(--border-danger);
   }
 
   > svg {
     margin-inline: 0.5rem;
     color: var(--text-decoration);
-  }
-
-  &:focus-within {
-    border-color: var(--border-subtle);
   }
 
   [data-size="small"] & {
