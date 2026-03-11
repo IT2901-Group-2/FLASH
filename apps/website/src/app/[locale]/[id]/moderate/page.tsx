@@ -6,20 +6,15 @@ import { ActionCard, ImageCard, SegmentedControl } from "ui";
 import { ModerateHeader } from "@/components/ModerateHeader";
 import { useImagesQuery } from "@/hooks/useImages";
 import { useImageSelection } from "./useImageSelection";
+import { useTranslations } from "next-intl";
 import styles from "./Moderate.module.css";
 
 type Tab = "pending" | "approved" | "rejected";
 
-//TODO: Replace hardcoded strings with translations
-const TAB_HEADINGS: Record<Tab, string> = {
-  pending: "Photos to approve",
-  approved: "Approved photos",
-  rejected: "Rejected photos",
-};
-
 export default function ModeratePage() {
   const router = useRouter();
   const { id: eventId, locale } = useParams<{ id: string; locale: string }>();
+  const t = useTranslations("guest.event.moderate");
 
   const [activeTab, setActiveTab] = useState<Tab>("pending");
 
@@ -51,13 +46,13 @@ export default function ModeratePage() {
   const primaryButton = (() => {
     if (activeTab === "pending" || activeTab === "rejected") {
       return {
-        text: "Approve selected photos",
+        text: t("actions.approveSelected"),
         "data-color": BUTTON_COLOR,
         onClick: handleBulkApprove,
       };
     }
     return {
-      text: "Reject selected photos",
+      text: t("actions.rejectSelected"),
       "data-color": BUTTON_COLOR,
       onClick: handleBulkReject,
     };
@@ -66,13 +61,13 @@ export default function ModeratePage() {
   const secondaryButton =
     activeTab === "pending"
       ? {
-          text: "Reject selected photos",
+          text: t("actions.rejectSelected"),
           "data-color": BUTTON_COLOR,
           onClick: handleBulkReject,
         }
       : undefined;
 
-  const selectionDescription = `${selectedIds.size} photo${selectedIds.size > 1 ? "s" : ""} selected`;
+  const selectionDescription = t("selectionDescription", { count: selectedIds.size });
 
   return (
     <div className={styles.pageWrapper}>
@@ -83,8 +78,8 @@ export default function ModeratePage() {
         allSelected={allSelected}
         onSelectAll={handleSelectAllToggle}
         breadcrumbItems={[
-          { label: "Event", href: `/${locale}/${eventId}` },
-          { label: "Moderate" },
+          { label: t("breadcrumb.event"), href: `/${locale}/${eventId}` },
+          { label: t("breadcrumb.moderate") },
         ]}
       />
 
@@ -99,27 +94,27 @@ export default function ModeratePage() {
             >
               <SegmentedControl.Item
                 value="pending"
-                label="Pending"
+                label={t("tabs.pending")}
                 disabled={selectMode}
               />
               <SegmentedControl.Item
                 value="approved"
-                label="Approved"
+                label={t("tabs.approved")}
                 disabled={selectMode}
               />
               <SegmentedControl.Item
                 value="rejected"
-                label="Rejected"
+                label={t("tabs.rejected")}
                 disabled={selectMode}
               />
             </SegmentedControl>
           </div>
-          <h2 className={styles.sectionHeading}>{TAB_HEADINGS[activeTab]}</h2>
+          <h2 className={styles.sectionHeading}>{t(`headings.${activeTab}`)}</h2>
         </div>
 
         {!isLoading && images.length === 0 ? (
           <div role="status" className={styles.emptyState}>
-            No {activeTab} photos found
+            {t(`emptyState.${activeTab}`)}
           </div>
         ) : (
           <div className={styles.grid}>
@@ -128,8 +123,8 @@ export default function ModeratePage() {
                 key={image.id}
                 variant="preview2"
                 src={`/api/events/${eventId}/images/${image.id}`}
-                alt={`Photo ${index + 1} of ${images.length}`}
-                title={`Photo ${index + 1}`}
+                alt={t("imageAlt", { index: index + 1, total: images.length })}
+                title={t("imageTitle", { index: index + 1 })}
                 state={selectMode && selectedIds.has(image.id) ? "selected" : "default"}
                 onClick={() => handleImageClick(image.id)}
                 data-image-id={image.id}

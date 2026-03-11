@@ -25,8 +25,8 @@
     "admin": "Administrator"
   },
   "navigation": {
-    "main": "Hovedmeny",
-    "config": "Konfigurasjon",
+    "main": "Meny",
+    "config": "Konfig",
     "desktop": "Dashboard",
     "events": "Arrangementer",
     "settings": "Innstillinger",
@@ -52,6 +52,7 @@
   },
   "messages": {
     "copySuccess": "Kopiert!",
-    "copyFailed": "Klarte ikke å kopiere lenken til utklippstavlen"
+    "copyFailed": "Klarte ikke å kopiere lenken til utklippstavlen",
+    "scanToUploadPhotos": "Skann for å laste opp bilder"
   }
 }

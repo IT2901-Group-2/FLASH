@@ -10,6 +10,7 @@ import { useEventCodeQuery } from "@/hooks/useEvents";
 const ReviewStep = ({ status, result }: ReviewStepProps) => {
   const tReview = useTranslations("admin.dashboard.event.create.review");
   const tShare = useTranslations("guest.event.share.links");
+  const tShareAria = useTranslations("guest.event.share.aria");
   const tCommon = useTranslations("common");
   const [shareRole, setShareRole] = useState<string>("guest");
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
@@ -49,7 +50,11 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
           content={
             <div className={styles.infoContainer}>
               <div className={styles.QRCodeContainer} ref={qrContainerRef}>
-                <QRDisplay value={displayLink} code={displayCode} />
+                <QRDisplay
+                  value={displayLink}
+                  code={displayCode}
+                  helperText={tCommon("messages.scanToUploadPhotos")}
+                />
                 <Button
                   variant="secondary"
                   icon={<Download />}
@@ -63,7 +68,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   {tShare("guest.title")}
                 </Title>
                 <Input
-                  aria-label="link"
+                  aria-label={tShareAria("guestLinkInput")}
                   readOnly
                   value={displayLink}
                   icon={<Copy />}
@@ -80,7 +85,11 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
           content={
             <div className={styles.infoContainer}>
               <div className={styles.QRCodeContainer} ref={qrContainerRef}>
-                <QRDisplay value={displayLink} code={displayCode} />
+                <QRDisplay
+                  value={displayLink}
+                  code={displayCode}
+                  helperText={tCommon("messages.scanToUploadPhotos")}
+                />
                 <Button
                   variant="secondary"
                   icon={<Download />}
@@ -94,7 +103,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   {tShare("moderator.title")}
                 </Title>
                 <Input
-                  aria-label="link"
+                  aria-label={tShareAria("moderatorLinkInput")}
                   readOnly
                   value={displayLink}
                   icon={<Copy />}

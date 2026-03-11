@@ -6,7 +6,6 @@ import SidebarFooter from "./SidebarFooter";
 import { useTranslations } from "next-intl";
 import { HTMLAttributes } from "react";
 import { useTheme } from "@/hooks/useTheme";
-import { capitalize } from "@/utils/string-utils";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { useRouter } from "next/navigation";
 import Logo from "../Logo/Logo";
@@ -24,7 +23,7 @@ export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivEleme
   return (
     <Sidebar className={className} {...rest}>
       <Sidebar.Header logo={<Logo />} />
-      <Sidebar.Group title="MAIN">
+      <Sidebar.Group title={t("main")}>
         <Sidebar.Item
           icon={<House />}
           onClick={() => navigation.push("/admin/dashboard")}
@@ -38,7 +37,7 @@ export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivEleme
           {t("events")}
         </Sidebar.Item>
       </Sidebar.Group>
-      <Sidebar.Group title="Config" position="bottom">
+      <Sidebar.Group title={t("config")} position="bottom">
         <Sidebar.Item icon={<Settings />}>{t("settings")}</Sidebar.Item>
         <Sidebar.Item icon={<HardDrive />}>{t("storage")}</Sidebar.Item>
         {mounted && (
@@ -46,7 +45,7 @@ export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivEleme
             icon={resolvedTheme === "dark" ? <Sun /> : <Moon />}
             onClick={toggleTheme}
           >
-            {capitalize(resolvedTheme)} mode
+            {resolvedTheme === "dark" ? t("darkMode") : t("lightMode")}
           </Sidebar.Item>
         )}
       </Sidebar.Group>

@@ -9,8 +9,8 @@
           "description": "Sett opp et nytt fotoarrangement for gjestene dine. En QR-kode vil bli generert automatisk."
         },
         "options": {
-          "title": "Hendelsesinnstillinger",
-          "description": "Konfigurer innstillinger for arrangementet.",
+          "title": "Arrangement-innstillinger",
+          "description": "Konfigurer innstillingene for arrangementet.",
           "fields": {
             "uploadLimit": {
               "label": "Maks antall opplastinger",
@@ -42,9 +42,9 @@
   "login": {
     "card": {
       "heading": "Logg inn",
-      "description": "Skriv inn legitimasjonen din for å få tilgang til administrasjonspanelet",
+      "description": "Skriv inn påloggingsinformasjonen din for å få tilgang til administrasjonspanelet",
       "links": {
-        "guestAccessPrefix": "Ikke administrator? Bli med på et arrangement som en"
+        "guestAccessPrefix": "Ikke en administrator? Bli med på et arrangement som en"
       }
     }
   }

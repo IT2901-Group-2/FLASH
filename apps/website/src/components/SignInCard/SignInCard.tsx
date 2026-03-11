@@ -21,7 +21,7 @@ export default function SignInCard() {
       </Title>
       <Input
         className={styles.inputComponent}
-        aria-label="password"
+        aria-label={c("fields.password")}
         label={c("fields.password")}
         required
         type="password"
