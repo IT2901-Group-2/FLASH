@@ -3,10 +3,18 @@ import styles from "./SignInCard.module.css";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
 
 export default function SignInCard() {
   const navigate = useRouter();
   const t = useTranslations();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   return (
     <Card className={styles.card}>
       <Title
@@ -25,7 +33,11 @@ export default function SignInCard() {
         required
         type="password"
         id="passwordField"
+        data-color="brand-purple"
         placeholder={t("common.fields.passwordPlaceholder")}
+        {...register("eventCode", {
+          required: t("admin.login.card.errors.missingPassword"),
+        })}
       />
       <Button
         className={styles.buttonComponent}

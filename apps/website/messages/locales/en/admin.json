@@ -45,6 +45,10 @@
       "description": "Enter your credentials to access the admin panel",
       "links": {
         "guestAccessPrefix": "Not an admin? Join an event as a"
+      },
+      "errors": {
+        "missingPassword": "Please enter a password.",
+        "invalidPassword": "Invalid password. Please try again."
       }
     }
   }
