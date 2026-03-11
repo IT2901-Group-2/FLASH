@@ -70,8 +70,8 @@ const DateRangeProvider = ({ onChange, children }: DateRangeProviderProps) => {
     (time: string) => {
       setValue(v => {
         onChange?.({
-          start: v.range?.start, // ✅ always fresh
-          end: v.range?.end,
+          start: v.range?.start ?? new Date(),
+          end: v.range?.end ?? new Date(),
           startTime: time,
           endTime: v.endTime,
         });
@@ -85,8 +85,8 @@ const DateRangeProvider = ({ onChange, children }: DateRangeProviderProps) => {
     (time: string) => {
       setValue(v => {
         onChange?.({
-          start: v.range?.start, // ✅ always fresh
-          end: v.range?.end,
+          start: v.range?.start ?? new Date(),
+          end: v.range?.end ?? new Date(),
           startTime: v.startTime,
           endTime: time,
         });
