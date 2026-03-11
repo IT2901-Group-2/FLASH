@@ -12,8 +12,8 @@ vi.mock("next-intl", () => ({
     return (key: string) => {
       translationKeys.push(key);
       const translations: Record<string, string> = {
-        appTitle: "PhotoEvent",
-        appDescription: "Join and share photos from events",
+        name: "PhotoEvent",
+        description: "Join and share photos from events",
       };
       return translations[key] || key;
     };
@@ -64,8 +64,8 @@ describe("Page", () => {
     render(<Page />, { wrapper: createQueryClientWrapper() });
 
     // Verify that the component requests the correct translation keys
-    expect(translationKeys).toContain("appTitle");
-    expect(translationKeys).toContain("appDescription");
+    expect(translationKeys).toContain("name");
+    expect(translationKeys).toContain("description");
   });
 
   test("displays translated content", () => {

@@ -1,0 +1,19 @@
+{
+  "home": {
+    "title": "Hallo verden!",
+    "about": "Om oss"
+  },
+  "adminLogin": {
+    "title": "FLASH Admin",
+    "description": "Administrer fotoarrangementene dine enkelt",
+    "subtitle": "Selvhostet system for administrasjon av fotoarrangementer"
+  },
+  "joinEvent": {
+    "title": "Bli med på et arrangement",
+    "description": "Skriv inn arrangementskoden eller skann QR-koden for å bli med"
+  },
+  "adminEvents": {
+    "title": "Arrangementer",
+    "description": "Administrer arrangementene dine"
+  }
+}

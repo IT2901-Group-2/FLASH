@@ -13,7 +13,8 @@ import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 
 export default function Page() {
   const router = useRouter();
-  const t = useTranslations("EventPage");
+  const tCommon = useTranslations("common");
+  const tUpload = useTranslations("guest.event.upload");
   const { id } = useParams<{ id: string }>();
   const eventId = typeof id === "string" ? id : "";
   const eventAuth = useEventAuth();
@@ -27,7 +28,9 @@ export default function Page() {
   const { mutateAsync: uploadImage } = useUploadImageMutation();
 
   const eventData = data?.[0];
-  const eventName = eventData?.name ?? (isLoading ? "Loading event..." : "Event");
+  const eventName =
+    eventData?.name ??
+    (isLoading ? tUpload("loadingEvent") : tUpload("eventFallbackName"));
   const uploadsRemaining =
     typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
 
@@ -43,15 +46,15 @@ export default function Page() {
   }, [setJoinLink, joinCode]);
 
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const uploadDescription = t("uploadDescription", {
+  const uploadDescription = tUpload("description", {
     uploadsRemaining:
-      typeof uploadsRemaining === "number" ? uploadsRemaining : "unlimited",
+      typeof uploadsRemaining === "number" ? uploadsRemaining : tUpload("unlimited"),
   });
 
   const { openFilePicker, FileInput } = useFileUpload({
     onFilesSelected: async files => {
       if (!eventId) {
-        setUploadError("Unable to upload images for this event.");
+        setUploadError(tUpload("errors.uploadUnavailable"));
         return;
       }
 
@@ -62,7 +65,7 @@ export default function Page() {
       );
 
       if (results.some(result => result.status === "rejected")) {
-        setUploadError("One or more images failed to upload. Please try again.");
+        setUploadError(tUpload("errors.uploadPartialFailure"));
       }
     },
   });
@@ -78,14 +81,20 @@ export default function Page() {
       <FileInput />
       <Dialog ref={dialogRef} className={styles.qrCodeContainer}>
         <div className={styles.qrCodeContainer}>
-          {joinLink !== null && <QRDisplay value={joinLink} size="large" />}
+          {joinLink !== null && (
+            <QRDisplay
+              value={joinLink}
+              size="large"
+              helperText={tCommon("messages.scanToUploadPhotos")}
+            />
+          )}
           <Button
             variant="secondary"
             data-color="neutral"
             onClick={() => dialogRef.current?.close()}
             fill
           >
-            Close
+            {tCommon("actions.close")}
           </Button>
         </div>
       </Dialog>
@@ -110,7 +119,7 @@ export default function Page() {
             variant="secondary"
             className={styles.desktopOnly}
           >
-            {t("actions.takePhoto")}
+            {tCommon("actions.takePhoto")}
           </Button>
           <Button
             icon={<Upload />}
@@ -120,11 +129,11 @@ export default function Page() {
             onClick={openFilePicker}
             className={styles.desktopOnly}
           >
-            {t("actions.uploadImage")}
+            {tCommon("actions.uploadImage")}
           </Button>
         </PhoneHeader>
         {!isLoading && (isError || !eventData) ? (
-          <p className={styles.errorText}>Could not load event details for this link.</p>
+          <p className={styles.errorText}>{tUpload("eventLoadFailed")}</p>
         ) : null}
         {uploadError ? <p className={styles.errorText}>{uploadError}</p> : null}
         <ActionCard
@@ -134,21 +143,21 @@ export default function Page() {
             "data-color": "brand-purple",
             icon: <Upload size={18} />,
             iconPosition: "right",
-            text: t("actions.uploadImage"),
+            text: tCommon("actions.uploadImage"),
             onClick: openFilePicker,
           }}
           secondaryButton={{
             "data-color": "brand-purple",
             icon: <Camera size={18} />,
             iconPosition: "right",
-            text: t("actions.takePhoto"),
+            text: tCommon("actions.takePhoto"),
           }}
         />
       </div>
 
       {!isLoading && images.length === 0 ? (
         <div role="status" className={styles.emptyState}>
-          No photos found
+          {tUpload("emptyState")}
         </div>
       ) : (
         <div className={styles.grid}>
@@ -157,8 +166,8 @@ export default function Page() {
               key={image.id}
               variant="preview2"
               src={`/api/events/${eventId}/images/${image.id}`}
-              alt={`Photo ${index + 1} of ${images.length}`}
-              title={`Photo ${index + 1}`}
+              alt={tUpload("imageAlt", { index: index + 1, total: images.length })}
+              title={tUpload("imageTitle", { index: index + 1 })}
               data-image-id={image.id}
             />
           ))}

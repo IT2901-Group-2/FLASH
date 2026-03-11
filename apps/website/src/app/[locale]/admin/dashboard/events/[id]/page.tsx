@@ -8,12 +8,14 @@ import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
 import { ReviewStep } from "@/components/EventDialogs/Steps";
 import { useRef } from "react";
+import { useTranslations } from "next-intl";
 
 const Page = () => {
   const qrCodeRef = useRef<HTMLDialogElement>(null);
   const navigation = useRouter();
+  const c = useTranslations("common.actions");
 
-  const { id } = useParams<{ id: string }>();
+  const { id, locale } = useParams<{ id: string; locale: string }>();
   const { data: joinCode } = useEventCodeQuery(id, "moderator");
   const { data, status } = useEventsQuery({ id: [id?.toString() || ""] });
   if (data === undefined) return;
@@ -29,7 +31,7 @@ const Page = () => {
           className={styles.dialogCloseButton}
           onClick={() => qrCodeRef.current?.close()}
         >
-          Close
+          {c("close")}
         </Button>
       </Dialog>
 
@@ -45,19 +47,19 @@ const Page = () => {
             variant="secondary"
             onClick={() => qrCodeRef.current?.showModal()}
           >
-            QR Code
+            {c("downloadQrCode")}
           </Button>
           <Button data-color="brand-purple" icon={<Play />}>
-            Slideshow
+            {c("slideshow")}
           </Button>
           <Button
             data-color="brand-purple"
             className={styles.goToEventButton}
             icon={<ArrowRight />}
             iconPosition="right"
-            onClick={() => navigation.push(`/join/${joinCode}`)}
+            onClick={() => navigation.push(`/${locale}/join/${joinCode}`)}
           >
-            Open Event
+            {c("join")}
           </Button>
         </Card>
       </div>

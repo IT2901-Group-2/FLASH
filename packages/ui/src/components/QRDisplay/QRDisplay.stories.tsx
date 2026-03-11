@@ -9,6 +9,7 @@ const meta: Meta<typeof QRDisplay> = {
   argTypes: {
     value: { control: { type: "text" } },
     code: { control: { type: "text" } },
+    helperText: { control: { type: "text" } },
     size: {
       control: { type: "select" },
       options: ["small", "medium", "large"],
@@ -24,6 +25,7 @@ export const Default: Story = {
   args: {
     value: "https://example.com/upload/abc123",
     code: "ABC123",
+    helperText: "Scan to upload photos",
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -43,6 +45,7 @@ export const Default: Story = {
 export const WithoutCode: Story = {
   args: {
     value: "https://example.com/upload",
+    helperText: "Scan to upload photos",
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -60,15 +63,31 @@ export const LongURL: Story = {
   args: {
     value: "https://example.com/upload/session/a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0",
     code: "SESSION-2024",
+    helperText: "Scan to upload photos",
   },
 };
 
 export const Sizes: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "1.5rem", alignItems: "flex-start" }}>
-      <QRDisplay value={"https://example.com/s1"} code="SM" size="small" />
-      <QRDisplay value={"https://example.com/m1"} code="MD" size="medium" />
-      <QRDisplay value={"https://example.com/l1"} code="LG" size="large" />
+      <QRDisplay
+        value={"https://example.com/s1"}
+        code="SM"
+        helperText="Scan to upload photos"
+        size="small"
+      />
+      <QRDisplay
+        value={"https://example.com/m1"}
+        code="MD"
+        helperText="Scan to upload photos"
+        size="medium"
+      />
+      <QRDisplay
+        value={"https://example.com/l1"}
+        code="LG"
+        helperText="Scan to upload photos"
+        size="large"
+      />
     </div>
   ),
   play: async ({ canvasElement }) => {

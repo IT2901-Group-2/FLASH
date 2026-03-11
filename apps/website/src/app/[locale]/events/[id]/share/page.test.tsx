@@ -19,18 +19,18 @@ describe("Share Event Page", () => {
   it("displays translated content", () => {
     render(<Page />);
 
-    expect(screen.getByText("create.firstTitle")).toBeTruthy();
-    expect(screen.getByText("create.firstDescription")).toBeTruthy();
+    expect(screen.getByText("variants.eventCreated.title")).toBeTruthy();
+    expect(screen.getByText("variants.eventCreated.description")).toBeTruthy();
   });
 
   it("renders all required components", () => {
     render(<Page />);
 
-    expect(screen.getByRole("radio", { name: "controls.guest" })).toBeTruthy();
-    expect(screen.getByRole("radio", { name: "controls.moderator" })).toBeTruthy();
+    expect(screen.getByRole("radio", { name: "roles.guest" })).toBeTruthy();
+    expect(screen.getByRole("radio", { name: "roles.moderator" })).toBeTruthy();
     expect(screen.getByText("links.guest.title")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "actions.downloadQr" })).toBeTruthy();
-    expect(screen.getByRole("button", { name: "create.doneText" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "actions.downloadQrCode" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "actions.done" })).toBeTruthy();
   });
 
   it("copies link and briefly shows copied state", async () => {
@@ -44,7 +44,7 @@ describe("Share Event Page", () => {
 
       const { container } = render(<Page />);
 
-      const copyIcon = container.querySelector('svg[aria-label="aria.copyLink"]');
+      const copyIcon = container.querySelector('svg[aria-label="aria.copyLinkButton"]');
       expect(copyIcon).toBeTruthy();
 
       fireEvent.click(copyIcon!);
@@ -57,13 +57,17 @@ describe("Share Event Page", () => {
       expect(writeText).toHaveBeenCalledWith(
         `${window.location.origin}/event/abc123/guest`
       );
-      expect(container.querySelector('svg[aria-label="aria.copied"]')).toBeTruthy();
+      expect(
+        container.querySelector('svg[aria-label="aria.copyLinkButton"]')
+      ).toBeFalsy();
 
       await act(async () => {
         await vi.advanceTimersByTimeAsync(1200);
       });
 
-      expect(container.querySelector('svg[aria-label="aria.copyLink"]')).toBeTruthy();
+      expect(
+        container.querySelector('svg[aria-label="aria.copyLinkButton"]')
+      ).toBeTruthy();
     } finally {
       vi.useRealTimers();
     }
@@ -76,7 +80,7 @@ describe("Share Event Page", () => {
 
     render(<Page />);
 
-    fireEvent.click(screen.getByRole("button", { name: "actions.downloadQr" }));
+    fireEvent.click(screen.getByRole("button", { name: "actions.downloadQrCode" }));
 
     expect(downloadSpy).toHaveBeenCalledWith(expect.any(SVGElement), "qr-abc123-g.svg");
 

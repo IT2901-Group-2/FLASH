@@ -8,7 +8,10 @@ import { ReviewStepProps } from "./types";
 import { useEventCodeQuery } from "@/hooks/useEvents";
 
 const ReviewStep = ({ status, result }: ReviewStepProps) => {
-  const t = useTranslations("admin.dashboard.event.create.review");
+  const tReview = useTranslations("admin.dashboard.event.create.review");
+  const tShare = useTranslations("guest.event.share.links");
+  const tShareAria = useTranslations("guest.event.share.aria");
+  const tCommon = useTranslations("common");
   const [shareRole, setShareRole] = useState<string>("guest");
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
   const { data: displayCode } = useEventCodeQuery(
@@ -33,8 +36,8 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
 
   return (
     <>
-      <Title size="medium" description={t("description")}>
-        {t("title")}
+      <Title size="medium" description={tReview("description")}>
+        {tReview("title")}
       </Title>
       <DropdownControl
         onChange={setShareRole}
@@ -42,26 +45,30 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
         className={styles.scroll}
       >
         <DropdownControl.Item
-          label={t("guest.name")}
+          label={tCommon("roles.guest")}
           value="guest"
           content={
             <div className={styles.infoContainer}>
               <div className={styles.QRCodeContainer} ref={qrContainerRef}>
-                <QRDisplay value={displayLink} code={displayCode} />
+                <QRDisplay
+                  value={displayLink}
+                  code={displayCode}
+                  helperText={tCommon("messages.scanToUploadPhotos")}
+                />
                 <Button
                   variant="secondary"
                   icon={<Download />}
                   onClick={handleDownloadQR}
                 >
-                  {t("download")}
+                  {tCommon("actions.download")}
                 </Button>
               </div>
               <div className={styles.linkContainer} data-color="neutral">
-                <Title size="medium" description={t("guest.linkDescription")}>
-                  {t("guest.linkTitle")}
+                <Title size="medium" description={tShare("guest.description")}>
+                  {tShare("guest.title")}
                 </Title>
                 <Input
-                  aria-label="link"
+                  aria-label={tShareAria("guestLinkInput")}
                   readOnly
                   value={displayLink}
                   icon={<Copy />}
@@ -73,26 +80,30 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
           }
         />
         <DropdownControl.Item
-          label={t("moderator.name")}
+          label={tCommon("roles.moderator")}
           value="moderator"
           content={
             <div className={styles.infoContainer}>
               <div className={styles.QRCodeContainer} ref={qrContainerRef}>
-                <QRDisplay value={displayLink} code={displayCode} />
+                <QRDisplay
+                  value={displayLink}
+                  code={displayCode}
+                  helperText={tCommon("messages.scanToUploadPhotos")}
+                />
                 <Button
                   variant="secondary"
                   icon={<Download />}
                   onClick={handleDownloadQR}
                 >
-                  {t("download")}
+                  {tCommon("actions.download")}
                 </Button>
               </div>
               <div className={styles.linkContainer} data-color="neutral">
-                <Title size="medium" description={t("moderator.linkDescription")}>
-                  {t("moderator.linkTitle")}
+                <Title size="medium" description={tShare("moderator.description")}>
+                  {tShare("moderator.title")}
                 </Title>
                 <Input
-                  aria-label="link"
+                  aria-label={tShareAria("moderatorLinkInput")}
                   readOnly
                   value={displayLink}
                   icon={<Copy />}

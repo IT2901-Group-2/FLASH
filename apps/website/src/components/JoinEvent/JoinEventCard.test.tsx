@@ -18,16 +18,16 @@ describe("JoinEventCard", () => {
   });
 
   test("both tab options", () => {
-    expect(screen.getByText("eventCodeLabel")).toBeDefined();
-    expect(screen.getByText("scanQrTab")).toBeDefined();
+    expect(screen.getByText("tabs.enterCode")).toBeDefined();
+    expect(screen.getByText("tabs.scanQr")).toBeDefined();
   });
 
   test("renders input field with correct label", () => {
-    expect(screen.getByText("enterCodeTab")).toBeDefined();
+    expect(screen.getByText("fields.eventCode")).toBeDefined();
   });
 
   test("renders Join button", () => {
-    expect(screen.getByText("joinButton")).toBeDefined();
+    expect(screen.getByText("actions.join")).toBeDefined();
   });
 
   it("navigates to the admin login page on click", async () => {
