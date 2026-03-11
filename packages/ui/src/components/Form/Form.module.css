@@ -14,6 +14,8 @@
   line-height: var(--font-line-height-large);
   color: var(--text-neutral);
 
+  position: relative;
+
   [data-size="small"] & {
     font-size: var(--font-size-medium);
   }
@@ -47,4 +49,13 @@
 .disabled * {
   opacity: calc(1 - var(--opacity-disabled));
   cursor: not-allowed;
+}
+
+.requiredStar {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-left: 0.5rem;
+  color: var(--text-decoration);
+  font-size: var(--font-size-large);
 }

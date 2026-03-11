@@ -57,6 +57,7 @@ export interface TextareaProps
  * > _Last updated: `2026-03-10`_
  */
 export const Textarea = ({
+  "data-color": color,
   label,
   className,
   description,
@@ -93,10 +94,12 @@ export const Textarea = ({
     <div
       data-error={!!rest.error}
       data-size={size}
+      data-color={color}
       className={cl(className, formStyles.field, !!disabled && formStyles.disabled)}
     >
       <label hidden={hideLabel} htmlFor={inputProps.id} className={cl(formStyles.label)}>
         {label}
+        {rest.required && <span className={formStyles.requiredStar}>*</span>}
       </label>
       {!!description && (
         <div
@@ -108,7 +111,7 @@ export const Textarea = ({
         </div>
       )}
       <textarea
-        {...omit(rest, ["error", "errorId", "size"])}
+        {...omit(rest, ["error", "errorId", "size", "required"])}
         {...inputProps}
         ref={mergedRefs}
         data-scroll={scroll}

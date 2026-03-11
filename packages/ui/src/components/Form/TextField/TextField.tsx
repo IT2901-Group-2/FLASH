@@ -74,6 +74,7 @@ export const TextField = ({
     >
       <label hidden={hideLabel} htmlFor={inputProps.id} className={cl(formStyles.label)}>
         {label}
+        {rest.required && <span className={formStyles.requiredStar}>*</span>}
       </label>
       {!!description && (
         <div
@@ -87,7 +88,7 @@ export const TextField = ({
       <div className={styles.inputContainer}>
         {iconPosition === "left" && icon}
         <input
-          {...omit(rest, ["error", "errorId", "size"])}
+          {...omit(rest, ["error", "errorId", "size", "required"])}
           {...inputProps}
           type={type}
           readOnly={readOnly}
