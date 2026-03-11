@@ -4,6 +4,7 @@ import formStyles from "../Form.module.css";
 import { cl, composeEventHandlers, omit } from "@/util/helpers";
 import { FormFieldProps, useFormField } from "../useFormField";
 import { useAutoResize } from "@/util/hooks/useAutoResize";
+import { useMergeRefs } from "@/util/hooks";
 
 export interface TextareaProps
   extends FormFieldProps, React.TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -45,6 +46,10 @@ export interface TextareaProps
    * parent element to have max-height.
    */
   scroll?: boolean;
+  /**
+   * The refrence to the textarea element
+   */
+  ref?: React.Ref<HTMLTextAreaElement>;
 }
 /**
  * An Textarea allows the user to enter and edit text or data in a more than one line.
@@ -62,9 +67,11 @@ export const Textarea = ({
   disabled,
   scroll,
   readOnly,
+  ref,
   ...rest
 }: TextareaProps) => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const mergedRefs = useMergeRefs(inputRef, ref);
   const { inputProps, errorId, showErrorMsg, size, inputDescriptionId } = useFormField(
     rest,
     "textarea"
@@ -103,7 +110,7 @@ export const Textarea = ({
       <textarea
         {...omit(rest, ["error", "errorId", "size"])}
         {...inputProps}
-        ref={inputRef}
+        ref={mergedRefs}
         data-scroll={scroll}
         data-resize={resize}
         onChange={composeEventHandlers(
