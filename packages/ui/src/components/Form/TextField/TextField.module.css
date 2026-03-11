@@ -1,0 +1,40 @@
+.inputContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 3rem;
+  border-radius: var(--radius-16);
+  border: 0.1rem solid var(--border-focus);
+  background-color: var(--bg-input);
+
+  [data-color] & {
+    border-color: var(--border-default);
+  }
+  &:focus-within {
+    border-color: var(--border-subtle);
+  }
+
+  [data-error="true"] & {
+    border: 0.1rem solid var(--border-danger);
+  }
+
+  > svg {
+    margin-inline: 0.5rem;
+    color: var(--text-decoration);
+  }
+
+  [data-size="small"] & {
+    height: 2rem;
+  }
+}
+
+.input {
+  border-radius: inherit;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  height: 100%;
+  width: 100%;
+  padding: 0 0.5rem;
+  color: var(--text-neutral);
+}
