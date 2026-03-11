@@ -17,7 +17,11 @@ export default function middleware(req: NextRequest) {
     try {
       verifyAccessToken(req);
     } catch {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      const locale =
+        req.nextUrl.pathname.match(/^\/([a-z]{2}(-[A-Z]{2})?)/)?.[1] ??
+        routing.defaultLocale;
+      const loginUrl = new URL(`/${locale}/admin`, req.url);
+      return NextResponse.redirect(loginUrl);
     }
 
     return NextResponse.next();
