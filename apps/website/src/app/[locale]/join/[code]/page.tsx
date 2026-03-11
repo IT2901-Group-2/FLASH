@@ -1,5 +1,5 @@
 "use client";
-import { Button, Card, Input, Title } from "ui";
+import { Button, Card, TextField, Title } from "ui";
 import styles from "./nickname.module.css";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -31,7 +31,7 @@ export default function Page() {
           >
             {t("title")}
           </Title>
-          <Input
+          <TextField
             aria-label="nickname-input"
             label={t("input.title")}
             placeholder={t("input.placeholder")}

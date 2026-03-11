@@ -1,4 +1,4 @@
-import { Button, Card, Input, Title } from "ui";
+import { Button, Card, TextField, Title } from "ui";
 import styles from "./SignInCard.module.css";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -18,14 +18,13 @@ export default function SignInCard() {
       >
         {t("title")}
       </Title>
-      <Input
+      <TextField
         className={styles.inputComponent}
         aria-label="password"
         label={t("inputLabel")}
         required
         type="password"
         id="passwordField"
-        visualSize="medium"
         placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
       />
       <Button

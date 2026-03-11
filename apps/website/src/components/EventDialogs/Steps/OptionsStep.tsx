@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { StepProps } from "./types";
-import { Title, DropdownControl, Input, Switch } from "ui";
+import { Title, DropdownControl, TextField, Switch } from "ui";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 
@@ -25,9 +25,11 @@ export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
           content={
             <div className={styles.maxImageContainer}>
               <span>{t("input.uploads.title")}</span>
-              <Input
+              <TextField
                 aria-label="maxImages"
                 type="number"
+                label="Upload Limit"
+                hideLabel
                 min={1}
                 value={formData.uploadLimit}
                 onChange={e =>

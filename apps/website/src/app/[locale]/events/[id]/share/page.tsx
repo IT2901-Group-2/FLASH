@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Copy, Check, CircleAlert, QrCode, Download } from "lucide-react";
-import { Title, SegmentedControl, QRDisplay, Input, ActionCard } from "ui";
+import { Title, SegmentedControl, QRDisplay, TextField, ActionCard } from "ui";
 import styles from "./ShareEvent.module.css";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { downloadQrSvg } from "@/utils/downloadqrcode";
@@ -134,7 +134,7 @@ export default function Page() {
       </Title>
 
       <div style={{ alignSelf: "center", width: "100%", maxWidth: "21.375rem" }}>
-        <Input
+        <TextField
           aria-label={
             shareRole === "guest"
               ? t("aria.guestLinkInput")

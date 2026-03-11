@@ -1,4 +1,4 @@
-import { Title, QRDisplay, Button, Input, Loader, DropdownControl } from "ui";
+import { Title, QRDisplay, Button, TextField, Loader, DropdownControl } from "ui";
 import { useRef, useState } from "react";
 import { Copy, Download } from "lucide-react";
 import styles from "./Steps.module.css";
@@ -60,13 +60,13 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                 <Title size="medium" description={t("guest.linkDescription")}>
                   {t("guest.linkTitle")}
                 </Title>
-                <Input
+                <TextField
+                  label
                   aria-label="link"
                   readOnly
                   value={displayLink}
                   icon={<Copy />}
                   iconPosition="right"
-                  fill
                 />
               </div>
             </div>
@@ -91,13 +91,14 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                 <Title size="medium" description={t("moderator.linkDescription")}>
                   {t("moderator.linkTitle")}
                 </Title>
-                <Input
+                <TextField
+                  label
                   aria-label="link"
                   readOnly
                   value={displayLink}
                   icon={<Copy />}
                   iconPosition="right"
-                  fill
+                  // fill
                 />
               </div>
             </div>

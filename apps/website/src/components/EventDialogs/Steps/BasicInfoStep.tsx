@@ -1,5 +1,5 @@
 import { Calendar } from "lucide-react";
-import { Title, Input } from "ui";
+import { Title, TextField } from "ui";
 import { useTranslations } from "next-intl";
 import { StepProps } from "./types";
 import styles from "./Steps.module.css";
@@ -17,7 +17,7 @@ export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
   return (
     <>
       <Title description={t("description")}>{t("title")}</Title>
-      <Input
+      <TextField
         value={formData.name}
         onChange={e => updateFormData("name", e.target.value)}
         label={t("input.name")}
@@ -26,7 +26,7 @@ export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
         required
         data-testid="name"
       />
-      <Input
+      <TextField
         value={formData.description}
         onChange={e => updateFormData("description", e.target.value)}
         label={t("input.description")}
@@ -34,18 +34,18 @@ export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
         data-testid="description"
       />
       <div className={styles.timeContainer}>
-        <Input
+        <TextField
           value={formatDateForInput(formData.startDate)}
           onChange={makeDateTimeHandler("startDate", "date", formData, updateFormData)}
           label={t("input.startDate")}
           aria-label="eventStartDate"
-          type="date"
+          // type="date"
           icon={<Calendar />}
           required
           data-testid="startDate"
-          fill
+          // fill
         />
-        <Input
+        <TextField
           value={formatTimeForInput(formData.startDate)}
           onChange={makeDateTimeHandler("startDate", "time", formData, updateFormData)}
           label={t("input.startTime")}
@@ -54,19 +54,19 @@ export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
           icon={<Calendar />}
           required
         />
-        <Input
+        <TextField
           value={formatDateForInput(formData.endDate)}
           onChange={makeDateTimeHandler("endDate", "date", formData, updateFormData)}
           label={t("input.endDate")}
           aria-label="eventEndDate"
           min={startDateValue}
-          type="date"
+          // type="date"
           icon={<Calendar />}
           required
           data-testid="endDate"
-          fill
+          // fill
         />
-        <Input
+        <TextField
           value={formatTimeForInput(formData.endDate)}
           onChange={makeDateTimeHandler("endDate", "time", formData, updateFormData)}
           label={t("input.endTime")}
