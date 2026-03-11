@@ -10,7 +10,7 @@ export default function SignInCard() {
   const navigate = useRouter();
   const t = useTranslations("admin.login.signIn");
   const [password, setPassword] = useState("");
-  const { mutate: login, isPending, isError } = useLoginMutation();
+  const { mutate: login, isPending } = useLoginMutation();
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -47,7 +47,9 @@ export default function SignInCard() {
           fill
           disabled={isPending}
           type="submit"
-        ></Button>
+        >
+          {t("buttonTitle")}
+        </Button>
       </form>
       <span>
         {t("linkToGuest")}{" "}

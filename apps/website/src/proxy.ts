@@ -54,8 +54,6 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
       const loginUrl = new URL(`/${locale}/admin`, request.url);
       return NextResponse.redirect(loginUrl);
     }
-
-    return NextResponse.next();
   }
 
   return handleI18nRouting(request);
