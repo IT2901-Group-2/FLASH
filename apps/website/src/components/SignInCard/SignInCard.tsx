@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function SignInCard() {
   const navigate = useRouter();
-  const t = useTranslations("features.admin.login.card");
+  const t = useTranslations("admin.login.card");
   const c = useTranslations("common");
   return (
     <Card className={styles.card}>
@@ -47,3 +47,5 @@ export default function SignInCard() {
     </Card>
   );
 }
+
+

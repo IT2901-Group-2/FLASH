@@ -10,7 +10,7 @@ import {
 } from "@/utils/date-utils";
 
 export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
-  const tStep = useTranslations("features.admin.dashboard.event.create.basics");
+  const tStep = useTranslations("admin.dashboard.event.create.basics");
   const tFields = useTranslations("common.fields");
 
   const startDateValue = formData.startDate.toISOString().split("T")[0];
@@ -81,3 +81,5 @@ export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
   );
 };
 export default BasicInfoStep;
+
+

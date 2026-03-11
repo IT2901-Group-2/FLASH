@@ -5,7 +5,7 @@ import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 
 export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
-  const tStep = useTranslations("features.admin.dashboard.event.create.options");
+  const tStep = useTranslations("admin.dashboard.event.create.options");
 
   const [limitMode, setLimitMode] = useState<string>(
     formData.uploadLimit === undefined ? "unlimited" : "limited"
@@ -63,3 +63,4 @@ export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
 };
 
 export default OptionsStep;
+

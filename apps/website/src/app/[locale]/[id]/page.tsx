@@ -13,7 +13,7 @@ import PhoneHeader from "@/components/PhoneHeader/PhoneHeader";
 export default function Page() {
   const router = useRouter();
   const tCommon = useTranslations("common");
-  const tUpload = useTranslations("features.guest.event.upload");
+  const tUpload = useTranslations("guest.event.upload");
   const { id } = useParams<{ id: string }>();
   const eventId = typeof id === "string" ? id : "";
   const eventAuth = useEventAuth();

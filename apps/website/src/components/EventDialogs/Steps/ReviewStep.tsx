@@ -8,8 +8,8 @@ import { ReviewStepProps } from "./types";
 import { useEventCodeQuery } from "@/hooks/useEvents";
 
 const ReviewStep = ({ status, result }: ReviewStepProps) => {
-  const tReview = useTranslations("features.admin.dashboard.event.create.review");
-  const tShare = useTranslations("features.guest.event.share.links");
+  const tReview = useTranslations("admin.dashboard.event.create.review");
+  const tShare = useTranslations("guest.event.share.links");
   const tCommon = useTranslations("common");
   const [shareRole, setShareRole] = useState<string>("guest");
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
@@ -111,3 +111,5 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
 };
 
 export default ReviewStep;
+
+

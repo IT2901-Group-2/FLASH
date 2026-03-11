@@ -42,7 +42,7 @@ export const ModerateHeader = ({
   allSelected = false,
   breadcrumbItems,
 }: ModerateHeaderProps) => {
-  const t = useTranslations("features.guest.event.moderate");
+  const t = useTranslations("guest.event.moderate");
   const [scrolled, setScrolled] = useState(false);
   const selectAllLabel = allSelected ? t("actions.deselectAll") : t("actions.selectAll");
 
@@ -161,3 +161,4 @@ export const ModerateHeader = ({
 };
 
 export default ModerateHeader;
+

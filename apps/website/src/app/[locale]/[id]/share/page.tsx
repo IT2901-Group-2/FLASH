@@ -11,7 +11,7 @@ import { downloadQrSvg } from "@/utils/downloadqrcode";
 type ShareOrigin = "create" | "share";
 
 export default function Page() {
-  const tShare = useTranslations("features.guest.event.share");
+  const tShare = useTranslations("guest.event.share");
   const tCommon = useTranslations("common");
 
   const [shareRole, setShareRole] = useState<string>("guest");

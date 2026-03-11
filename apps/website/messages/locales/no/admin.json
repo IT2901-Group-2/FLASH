@@ -1,0 +1,51 @@
+{
+  "dashboard": {
+    "sidebar": {},
+    "main": {},
+    "event": {
+      "create": {
+        "basics": {
+          "title": "Opprett arrangement",
+          "description": "Sett opp et nytt fotoarrangement for gjestene dine. En QR-kode vil bli generert automatisk."
+        },
+        "options": {
+          "title": "Hendelsesinnstillinger",
+          "description": "Konfigurer innstillinger for arrangementet.",
+          "fields": {
+            "uploadLimit": {
+              "label": "Maks antall opplastinger",
+              "limited": "Begrenset",
+              "unlimited": "Ubegrenset"
+            },
+            "autoApprovePhotos": "Godkjenn bilder automatisk",
+            "guestCanViewAll": "La gjester se alle opplastede bilder"
+          }
+        },
+        "review": {
+          "title": "Del arrangementet",
+          "description": "Del QR-koden eller arrangementlenken slik at andre kan bli med og laste opp bilder."
+        }
+      },
+      "details": {
+        "summary": {
+          "totalPhotos": "Totalt antall bilder",
+          "approved": "Godkjent",
+          "pending": "Venter"
+        },
+        "uploadLimit": {
+          "perPerson": "{count, plural, one {# bilde per person} other {# bilder per person}}",
+          "none": "Ingen bildegrense"
+        }
+      }
+    }
+  },
+  "login": {
+    "card": {
+      "heading": "Logg inn",
+      "description": "Skriv inn legitimasjonen din for å få tilgang til administrasjonspanelet",
+      "links": {
+        "guestAccessPrefix": "Ikke administrator? Bli med på et arrangement som en"
+      }
+    }
+  }
+}

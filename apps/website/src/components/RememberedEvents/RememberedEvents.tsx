@@ -26,7 +26,7 @@ const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
 };
 
 const RememberedEvents = () => {
-  const t = useTranslations("features.guest.event");
+  const t = useTranslations("guest.event");
   const eventIDs = useJoinedEvents();
   const events = useEventsQuery(
     {
@@ -52,3 +52,5 @@ const RememberedEvents = () => {
 };
 
 export default RememberedEvents;
+
+

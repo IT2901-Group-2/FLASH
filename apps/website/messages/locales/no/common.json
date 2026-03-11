@@ -1,0 +1,57 @@
+{
+  "actions": {
+    "back": "Tilbake",
+    "close": "Lukk",
+    "cancel": "Avbryt",
+    "previous": "Forrige",
+    "next": "Neste",
+    "create": "Opprett",
+    "save": "Lagre",
+    "finish": "Fullfør",
+    "done": "Ferdig",
+    "download": "Last ned",
+    "signIn": "Logg inn",
+    "join": "Bli med",
+    "openCamera": "Åpne kamera",
+    "uploadImage": "Last opp bilde",
+    "takePhoto": "Ta bilde",
+    "createNewEvent": "Lag nytt arrangement",
+    "downloadQrCode": "Last ned QR-kode",
+    "copyLink": "Kopier lenke"
+  },
+  "roles": {
+    "guest": "Gjest",
+    "moderator": "Moderator",
+    "admin": "Administrator"
+  },
+  "navigation": {
+    "main": "Hovedmeny",
+    "config": "Konfigurasjon",
+    "desktop": "Dashboard",
+    "events": "Arrangementer",
+    "settings": "Innstillinger",
+    "storage": "Lagring",
+    "darkMode": "Mørk modus",
+    "lightMode": "Lys modus"
+  },
+  "fields": {
+    "password": "Passord",
+    "nickname": "Kallenavn",
+    "eventCode": "Arrangementskode",
+    "eventName": "Navn på arrangement",
+    "eventDescription": "Beskrivelse",
+    "startDate": "Startdato",
+    "endDate": "Sluttdato",
+    "startTime": "Starttid",
+    "endTime": "Slutttid"
+  },
+  "values": {
+    "limited": "Begrenset",
+    "unlimited": "Ubegrenset",
+    "photos": "Bilder"
+  },
+  "messages": {
+    "copySuccess": "Kopiert!",
+    "copyFailed": "Klarte ikke å kopiere lenken til utklippstavlen"
+  }
+}

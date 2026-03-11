@@ -7,7 +7,7 @@ import { QrCode } from "lucide-react";
 import Link from "next/link";
 
 const JoinEventCard = () => {
-  const t = useTranslations("features.guest.login.card");
+  const t = useTranslations("guest.login.card");
   const c = useTranslations("common");
   const tPage = useTranslations("pages.joinEvent");
 
@@ -83,3 +83,5 @@ const JoinEventCard = () => {
 };
 
 export default JoinEventCard;
+
+
