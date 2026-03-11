@@ -81,7 +81,13 @@ export default function Page() {
       <FileInput />
       <Dialog ref={dialogRef} className={styles.qrCodeContainer}>
         <div className={styles.qrCodeContainer}>
-          {joinLink !== null && <QRDisplay value={joinLink} size="large" />}
+          {joinLink !== null && (
+            <QRDisplay
+              value={joinLink}
+              size="large"
+              helperText={tCommon("messages.scanToUploadPhotos")}
+            />
+          )}
           <Button
             variant="secondary"
             data-color="neutral"
