@@ -33,9 +33,28 @@
   text-align: center;
 }
 
+.emptyState {
+  margin: 1rem 0 0;
+  color: var(--color-neutral-600);
+  font-weight: 500;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 176px;
+  gap: 3px;
+  padding: 1em 0.3em 0.3em;
+}
+
 @media (min-width: 768px) {
   .pageWrapper .mobileOnly {
     display: none;
+  }
+
+  .grid {
+    grid-template-columns: repeat(6, 1fr);
+    padding: 1em 1em 0.3em;
   }
 }
 
