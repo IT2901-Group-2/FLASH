@@ -5,7 +5,6 @@ import "./globals.css";
 import ThemeProvider from "@/providers/ThemeProvider";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { JoinedEventsProvider } from "@/providers/JoinedEventsProvider";
-import AuthProvider from "@/providers/AuthProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,11 +31,9 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <NextIntlClientProvider>
           <ReactQueryProvider>
-            <AuthProvider>
-              <JoinedEventsProvider>
-                <ThemeProvider defaultTheme="system">{children}</ThemeProvider>
-              </JoinedEventsProvider>
-            </AuthProvider>
+            <JoinedEventsProvider>
+              <ThemeProvider defaultTheme="system">{children}</ThemeProvider>
+            </JoinedEventsProvider>
           </ReactQueryProvider>
         </NextIntlClientProvider>
       </body>

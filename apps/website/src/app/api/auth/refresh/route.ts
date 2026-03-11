@@ -8,6 +8,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid refresh token" }, { status: 401 });
   }
 
-  const { accessToken, expiresIn } = signAccessToken();
-  return NextResponse.json({ accessToken, expiresIn });
+  const res = NextResponse.json({ ok: true });
+  signAccessToken(res);
+  return res;
 }

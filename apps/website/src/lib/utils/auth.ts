@@ -24,15 +24,19 @@ export async function verifyLogin(password: string): Promise<boolean> {
 }
 
 // Token signing
-export function signAccessToken(): {
-  accessToken: string;
+export function signAccessToken(res: NextResponse): {
   expiresIn: number;
 } {
   const accessToken = jwt.sign({ admin: true }, getEnv("ACCESS_TOKEN_SECRET"), {
     expiresIn: ACCESS_TOKEN_EXPIRY,
   });
+  res.cookies.set("accessToken", accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: ACCESS_TOKEN_EXPIRY,
+  });
   return {
-    accessToken,
     expiresIn: ACCESS_TOKEN_EXPIRY * 1000,
   };
 }
@@ -60,25 +64,11 @@ function isTokenPayload(value: unknown): value is TokenPayload {
 }
 
 export function verifyAccessToken(req: NextRequest): TokenPayload {
-  const header = req.headers.get("authorization");
-
-  if (!header?.startsWith("Bearer ")) {
-    throw new Error("Missing access token");
-  }
-
-  const token = header.slice(7);
-
-  if (!token) {
-    throw new Error("Missing access token");
-  }
-
+  const token = req.cookies.get("accessToken")?.value;
+  if (!token) throw new Error("Missing access token");
   try {
     const decoded = jwt.verify(token, getEnv("ACCESS_TOKEN_SECRET"));
-
-    if (!isTokenPayload(decoded)) {
-      throw new Error("Invalid token payload");
-    }
-
+    if (!isTokenPayload(decoded)) throw new Error("Invalid token payload");
     return decoded;
   } catch {
     throw new Error("Invalid or expired access token");
@@ -110,5 +100,14 @@ export function clearRefreshToken(res: NextResponse): void {
     sameSite: "strict",
     maxAge: 0,
     path: "/api/auth/refresh",
+  });
+}
+
+export function clearAccessToken(res: NextResponse): void {
+  res.cookies.set("accessToken", "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 0,
   });
 }

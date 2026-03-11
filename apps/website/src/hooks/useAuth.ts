@@ -1,15 +1,9 @@
 "use client";
 import { makeRequest } from "@/lib/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRef } from "react";
 import { z } from "zod";
 
-const authTokenSchema = z.object({
-  accessToken: z.string(),
-  expiresIn: z.number(),
-});
-
-type AuthToken = z.infer<typeof authTokenSchema> | null;
+const okSchema = z.object({ ok: z.literal(true) });
 
 /**
  * Returns the current auth token state.
@@ -17,10 +11,10 @@ type AuthToken = z.infer<typeof authTokenSchema> | null;
  * staleTime: Infinity prevents background refetches on this client-only state.
  */
 export function useAuth() {
-  return useQuery<AuthToken>({
+  return useQuery({
     queryKey: ["auth"],
     queryFn: async () => {
-      const res = await makeRequest(authTokenSchema, "/api/auth/refresh", "POST");
+      const res = await makeRequest(okSchema, "/api/auth/refresh", "POST");
       return res ?? null;
     },
     staleTime: Infinity,
@@ -36,9 +30,9 @@ export function useLoginMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ password }: { password: string }) =>
-      makeRequest(authTokenSchema, "/api/auth/login", "POST", { password }),
+      makeRequest(okSchema, "/api/auth/login", "POST", { password }),
     onSuccess: data => {
-      queryClient.setQueryData<AuthToken>(["auth"], data);
+      queryClient.setQueryData(["auth"], data);
     },
   });
 }
@@ -50,10 +44,9 @@ export function useLoginMutation() {
 export function useLogoutMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () =>
-      makeRequest(z.object({ ok: z.literal(true) }), "/api/auth/logout", "POST"),
+    mutationFn: () => makeRequest(okSchema, "/api/auth/logout", "POST"),
     onSuccess: async () => {
-      queryClient.setQueryData<AuthToken>(["auth"], null);
+      queryClient.setQueryData(["auth"], null);
     },
   });
 }
@@ -65,26 +58,15 @@ export function useLogoutMutation() {
  */
 export function useRefreshMutation() {
   const queryClient = useQueryClient();
-  const refreshInFlight = useRef<Promise<AuthToken> | null>(null);
 
   const mutation = useMutation({
-    mutationFn: () => makeRequest(authTokenSchema, "/api/auth/refresh", "POST"),
+    mutationFn: () => makeRequest(okSchema, "/api/auth/refresh", "POST"),
     onSuccess: data => {
-      queryClient.setQueryData<AuthToken>(["auth"], data);
+      queryClient.setQueryData(["auth"], data);
     },
     onError: () => {
-      queryClient.setQueryData<AuthToken>(["auth"], null);
+      queryClient.setQueryData(["auth"], null);
     },
   });
-
-  function refresh() {
-    if (!refreshInFlight.current) {
-      refreshInFlight.current = mutation.mutateAsync().finally(() => {
-        refreshInFlight.current = null;
-      });
-    }
-    return refreshInFlight.current!;
-  }
-
-  return { ...mutation, refresh };
+  return { ...mutation, refresh: mutation.mutateAsync };
 }

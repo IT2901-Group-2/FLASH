@@ -13,8 +13,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid password" }, { status: 401 });
   }
 
-  const { accessToken, expiresIn } = signAccessToken();
-  const res = NextResponse.json({ accessToken, expiresIn });
+  const res = NextResponse.json({ ok: true });
+  signAccessToken(res);
   signRefreshToken(res);
   return res;
 }
