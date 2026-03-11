@@ -50,7 +50,7 @@ const DEFAULT_VALUES: DateRangeContextState = {
 const DateRangeProvider = ({ onChange, children }: DateRangeProviderProps) => {
   const [value, setValue] = useState<DateRangeContextState>(DEFAULT_VALUES);
 
-  function selectDate(date: Date) {
+  const selectDate = (date: Date) => {
     if (value.selecting === "start") {
       setValue(v => {
         return { ...v, range: { start: date, end: null }, selecting: "end" };
@@ -64,32 +64,36 @@ const DateRangeProvider = ({ onChange, children }: DateRangeProviderProps) => {
       });
       onChange?.({ ...next, startTime: value.startTime, endTime: value.endTime });
     }
-  }
+  };
 
   const setStartTime = useCallback(
     (time: string) => {
-      setValue(v => ({ ...v, startTime: time }));
-      onChange?.({
-        start: value.range?.start ?? new Date(),
-        end: value.range?.end ?? new Date(),
-        startTime: time,
-        endTime: value.endTime,
+      setValue(v => {
+        onChange?.({
+          start: v.range?.start, // ✅ always fresh
+          end: v.range?.end,
+          startTime: time,
+          endTime: v.endTime,
+        });
+        return { ...v, startTime: time };
       });
     },
-    [setValue]
+    [onChange]
   );
 
   const setEndTime = useCallback(
     (time: string) => {
-      setValue(v => ({ ...v, endTime: time }));
-      onChange?.({
-        start: value.range?.start ?? new Date(),
-        end: value.range?.end ?? new Date(),
-        startTime: value.startTime,
-        endTime: time,
+      setValue(v => {
+        onChange?.({
+          start: v.range?.start, // ✅ always fresh
+          end: v.range?.end,
+          startTime: v.startTime,
+          endTime: time,
+        });
+        return { ...v, endTime: time };
       });
     },
-    [setValue]
+    [onChange]
   );
 
   const adjustViewMonth = (delta: number) => {
