@@ -62,6 +62,7 @@ const JoinEventCard = () => {
                 className={styles.fullWidthButton}
                 variant="secondary"
                 data-color="brand-purple"
+                fill
               >
                 {t("openCameraButton")}
               </Button>
