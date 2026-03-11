@@ -53,7 +53,10 @@ export default function Page() {
       <FileInput />
       <Dialog ref={dialogRef} className={styles.qrCodeContainer}>
         <div className={styles.qrCodeContainer}>
-          <QRDisplay value={new URL(`/join/${joinCode}`, window.origin).href} size="large" />
+          <QRDisplay
+            value={new URL(`/join/${joinCode}`, window.origin).href}
+            size="large"
+          />
           <Button
             variant="secondary"
             data-color="neutral"
