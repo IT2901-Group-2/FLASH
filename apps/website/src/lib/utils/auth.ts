@@ -1,19 +1,13 @@
 import jwt from "jsonwebtoken";
 import type { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-
-/**
- * Retrieves a required environment variable, throws error if it's missing.
- */
-function getEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) throw new Error(`${name} not defined`);
-  return value;
-}
-
-// Config:
-const ACCESS_TOKEN_EXPIRY = 15 * 60; // 15 minutes (seconds)
-const REFRESH_TOKEN_EXPIRY = 7 * 24 * 60 * 60; // 7 days (seconds)
+import {
+  ACCESS_TOKEN_EXPIRY,
+  REFRESH_TOKEN_EXPIRY,
+  ACCESS_TOKEN_SECRET,
+  REFRESH_TOKEN_SECRET,
+  ADMIN_PASSWORD,
+} from "@/config/admin";
 
 // Types
 // Shape of the JWT payload - currently just marks the bearer as admin
@@ -25,7 +19,7 @@ export type TokenPayload = {
  * Validates the provided paassword against the stored ADMIN_PASWORD env variable.
  */
 export async function verifyLogin(password: string): Promise<boolean> {
-  return bcrypt.compare(password, getEnv("ADMIN_PASSWORD"));
+  return bcrypt.compare(password, ADMIN_PASSWORD);
 }
 
 /** Token signing
@@ -35,7 +29,7 @@ export async function verifyLogin(password: string): Promise<boolean> {
 export function signAccessToken(res: NextResponse): {
   expiresIn: number;
 } {
-  const accessToken = jwt.sign({ admin: true }, getEnv("ACCESS_TOKEN_SECRET"), {
+  const accessToken = jwt.sign({ admin: true }, ACCESS_TOKEN_SECRET, {
     expiresIn: ACCESS_TOKEN_EXPIRY,
   });
   res.cookies.set("accessToken", accessToken, {
@@ -54,7 +48,7 @@ export function signAccessToken(res: NextResponse): {
  * Scoped to /api/auth/refresh so it isn't sent on every request.
  */
 export function signRefreshToken(res: NextResponse): void {
-  const refreshToken = jwt.sign({ admin: true }, getEnv("REFRESH_TOKEN_SECRET"), {
+  const refreshToken = jwt.sign({ admin: true }, REFRESH_TOKEN_SECRET, {
     expiresIn: REFRESH_TOKEN_EXPIRY,
   });
   res.cookies.set("refreshToken", refreshToken, {
@@ -86,7 +80,7 @@ export function verifyAccessToken(req: NextRequest): TokenPayload {
   const token = req.cookies.get("accessToken")?.value;
   if (!token) throw new Error("Missing access token");
   try {
-    const decoded = jwt.verify(token, getEnv("ACCESS_TOKEN_SECRET"));
+    const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
     if (!isTokenPayload(decoded)) throw new Error("Invalid token payload");
     return decoded;
   } catch {
@@ -106,7 +100,7 @@ export function verifyRefreshToken(req: NextRequest): TokenPayload | null {
   }
 
   try {
-    const decoded = jwt.verify(refreshToken, getEnv("REFRESH_TOKEN_SECRET"));
+    const decoded = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET);
     if (!isTokenPayload(decoded)) {
       throw new Error("Invalid token payload");
     }

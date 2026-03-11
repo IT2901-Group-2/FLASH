@@ -22,8 +22,4 @@ jobs:
       - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm build
-        env:
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
-          REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
       - run: pnpm test
