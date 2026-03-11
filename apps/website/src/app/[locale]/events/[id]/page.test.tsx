@@ -41,6 +41,12 @@ vi.mock("@/hooks/useEvents", () => ({
     isLoading: false,
     isError: false,
   })),
+
+  useEventCodeQuery: vi.fn(() => ({
+    data: "ABC123",
+    isLoading: false,
+    isError: false,
+  })),
 }));
 
 const mockUploadImage = vi.fn();
