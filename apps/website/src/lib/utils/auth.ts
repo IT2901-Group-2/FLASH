@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import type { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
+import bcrypt from "bcryptjs";
 
 /**
  * Retrieves a required environment variable, throws error if it's missing.
@@ -23,11 +23,9 @@ export type TokenPayload = {
 
 /** Password verfication
  * Validates the provided paassword against the stored ADMIN_PASWORD env variable.
- * Uses SHA-256 hashing + timingsafe comparison to prevent timing attacks.
  */
 export async function verifyLogin(password: string): Promise<boolean> {
-  const hash = (s: string) => crypto.createHash("sha256").update(s).digest();
-  return crypto.timingSafeEqual(hash(getEnv("ADMIN_PASSWORD")), hash(password));
+  return bcrypt.compare(password, getEnv("ADMIN_PASSWORD"));
 }
 
 /** Token signing
