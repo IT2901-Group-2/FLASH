@@ -1,6 +1,7 @@
 "use client";
 import { makeRequest } from "@/lib/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useRef } from "react";
 import { z } from "zod";
 
 const authTokenSchema = z.object({
@@ -64,10 +65,26 @@ export function useLogoutMutation() {
  */
 export function useRefreshMutation() {
   const queryClient = useQueryClient();
-  return useMutation({
+  const refreshInFlight = useRef<Promise<AuthToken> | null>(null);
+
+  const mutation = useMutation({
     mutationFn: () => makeRequest(authTokenSchema, "/api/auth/refresh", "POST"),
     onSuccess: data => {
       queryClient.setQueryData<AuthToken>(["auth"], data);
     },
+    onError: () => {
+      queryClient.setQueryData<AuthToken>(["auth"], null);
+    },
   });
+
+  const refresh = useCallback(() => {
+    if (!refreshInFlight.current) {
+      refreshInFlight.current = mutation.mutateAsync().finally(() => {
+        refreshInFlight.current = null;
+      });
+    }
+    return refreshInFlight.current;
+  }, []);
+
+  return { ...mutation, refresh };
 }

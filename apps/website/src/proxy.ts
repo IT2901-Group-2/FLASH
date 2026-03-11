@@ -5,10 +5,11 @@ import { verifyAccessToken } from "@/lib/utils/auth";
 
 const intlMiddleware = createMiddleware(routing);
 
-const PROTECTED_ROUTES = ["/app/[locale]/admin/dashboard/:path*"];
+const PROTECTED_ROUTES = ["/admin/dashboard"];
 
 function isProtected(req: NextRequest): boolean {
-  return PROTECTED_ROUTES.some(route => req.nextUrl.pathname.startsWith(route));
+  const withoutLocale = req.nextUrl.pathname.replace(/^\/[a-z]{2}(-[A-Z]{2})?/, "");
+  return PROTECTED_ROUTES.some(route => withoutLocale.startsWith(route));
 }
 
 export default function middleware(req: NextRequest) {
@@ -26,5 +27,5 @@ export default function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: "/((?!_next|_vercel|.*\\..*).*)",
+  matcher: "/((?!api|trpc|_next|_vercel|.*\\..*).*)",
 };

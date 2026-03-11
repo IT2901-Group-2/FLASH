@@ -1,3 +1,4 @@
+import { getRefresh } from "./authstore";
 import { JSONObject, parseAsJSON } from "./json";
 import z from "zod";
 
@@ -54,11 +55,22 @@ export async function makeRequest<T>(
   const contentType =
     data === undefined ? null : data instanceof Blob ? data.type : "application/json";
 
-  const response = await fetch(endpoint, {
-    method,
-    body,
-    headers: contentType !== null ? { "Content-Type": contentType } : {},
-  });
+  const doFetch = () =>
+    fetch(endpoint, {
+      method,
+      body,
+      headers: contentType !== null ? { "Content-Type": contentType } : {},
+    });
+
+  let response = await doFetch();
+
+  if (response.status === 401) {
+    const refresh = getRefresh();
+    if (refresh) {
+      await refresh();
+      response = await doFetch();
+    }
+  }
 
   if (!response.ok) {
     throw new Error(await readResponseError(response));
