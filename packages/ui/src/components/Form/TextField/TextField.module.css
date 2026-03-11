@@ -4,7 +4,7 @@
   align-items: center;
   height: 3rem;
   border-radius: var(--radius-16);
-  border: 1px solid var(--border-focus);
+  border: 0.1rem solid var(--border-focus);
   background-color: var(--bg-input);
 
   [data-color] & {
@@ -15,7 +15,7 @@
   }
 
   [data-error="true"] & {
-    border: 2px solid var(--border-danger);
+    border: 0.1rem solid var(--border-danger);
   }
 
   > svg {
