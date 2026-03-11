@@ -6,7 +6,7 @@ import { ActionCard, Button, Dialog, QRDisplay } from "ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
-import { useEventsQuery } from "@/hooks/useEvents";
+import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import PhoneHeader from "@/components/PhoneHeader/PhoneHeader";
 
@@ -23,6 +23,11 @@ export default function Page() {
   const eventName = eventData?.name ?? (isLoading ? "Loading event..." : "Event");
   const uploadsRemaining =
     typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
+
+  const { data: joinCode } = useEventCodeQuery(
+    eventId,
+    eventAuth.isModerator ? "moderator" : "guest"
+  );
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const uploadDescription = t("uploadDescription", {
@@ -48,7 +53,7 @@ export default function Page() {
       <FileInput />
       <Dialog ref={dialogRef} className={styles.qrCodeContainer}>
         <div className={styles.qrCodeContainer}>
-          <QRDisplay value="www.example.com" size="large" />
+          <QRDisplay value={new URL(`/join/${joinCode}`, window.origin).href} size="large" />
           <Button
             variant="secondary"
             data-color="neutral"
