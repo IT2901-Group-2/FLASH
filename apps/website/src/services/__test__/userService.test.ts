@@ -9,6 +9,7 @@ import { DatabaseService } from "../databaseService";
 import { eventCodeTable, eventTable, userTable } from "@/db";
 import { Result } from "typescript-result";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
+import { EventService } from "../eventService";
 
 vi.mock("@/lib/utils/eventCookie");
 const mockedGetEventCookie = vi.mocked(getEventCookie);
@@ -41,7 +42,7 @@ beforeEach(async () => {
   const storage = new FSStorage(tmpDir);
   const dbService = new DatabaseService(storage);
   await dbService.initialize().getOrThrow();
-  userService = new UserService(dbService);
+  userService = new UserService(dbService, new EventService(dbService));
 
   await dbService.db.insert(eventTable).values(mockEvent);
   await dbService.db.insert(eventCodeTable).values([mockGuestCode, mockModeratorCode]);

@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from "vitest";
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import Page from "./page";
 import * as useFileUploadModule from "@/hooks/useFileUpload";
@@ -95,7 +95,12 @@ describe("Guest Upload Page", () => {
     } as ReturnType<typeof useEventsModule.useEventsQuery>);
 
     render(<Page />);
-    expect(screen.getByText("Could not load event details for this link.")).toBeDefined();
+
+    waitFor(() =>
+      expect(
+        screen.getByText("Could not load event details for this link.")
+      ).toBeDefined()
+    );
   });
 
   it("renders basic page parts", () => {

@@ -83,6 +83,12 @@ export const getEventCodeParamsSchema = z.object({
     .prefault(["guest"]),
 });
 
+export const getEventCodeSchema = z.object({
+  eventId: z.string(),
+  code: z.string(),
+  isModerator: z.boolean(),
+});
+
 export const getEventSchema = z.object({
   id: z.string(),
   name: z.string(),
