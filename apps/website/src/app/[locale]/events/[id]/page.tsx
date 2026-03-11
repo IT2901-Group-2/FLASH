@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Camera, QrCode, Upload } from "lucide-react";
 import styles from "./UploadImage.module.css";
 import { ActionCard, Button, Dialog, QRDisplay } from "ui";
@@ -29,6 +29,12 @@ export default function Page() {
     eventAuth.isModerator ? "moderator" : "guest"
   );
 
+  const [joinLink, setJoinLink] = useState<string | null>(null);
+  useEffect(() => {
+    (async () =>
+      setJoinLink(new URL(`/join/${joinCode}`, window.location.origin).href))();
+  }, [setJoinLink, joinCode]);
+
   const dialogRef = useRef<HTMLDialogElement>(null);
   const uploadDescription = t("uploadDescription", {
     uploadsRemaining:
@@ -53,10 +59,7 @@ export default function Page() {
       <FileInput />
       <Dialog ref={dialogRef} className={styles.qrCodeContainer}>
         <div className={styles.qrCodeContainer}>
-          <QRDisplay
-            value={new URL(`/join/${joinCode}`, window.origin).href}
-            size="large"
-          />
+          {joinLink !== null && <QRDisplay value={joinLink} size="large" />}
           <Button
             variant="secondary"
             data-color="neutral"
