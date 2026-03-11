@@ -9,6 +9,7 @@ import {
   getJoinCode,
   getEventByCode,
 } from "@/lib/utils/proxy";
+import { redirect } from "next/navigation";
 
 const handleI18nRouting = createMiddleware(routing);
 
@@ -16,7 +17,7 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
   if (isEventRoute(request)) {
     const isAuthenticated = await checkEventCookie(getEventId(request));
     if (!isAuthenticated) {
-      return NextResponse.redirect(new URL("/", request.url));
+      redirect("/");
     }
   }
 
@@ -32,7 +33,7 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
 
     const isAuthenticated = await checkEventCookie(eventId);
     if (isAuthenticated) {
-      return NextResponse.redirect(new URL(`/events/${eventId}`, request.url));
+      redirect(`/events/${eventId}`);
     }
   }
 
