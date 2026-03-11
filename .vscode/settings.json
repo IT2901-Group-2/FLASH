@@ -1,8 +1,8 @@
 {
-  "i18n-ally.localesPaths": [
-    "apps/website/messages/locales",
-    "apps/website/src/i18n"
-  ],
+  "i18n-ally.localesPaths": ["apps/website/messages/locales"],
+  "i18n-ally.enabledFrameworks": ["next-intl"],
+  "i18n-ally.namespace": true,
+  "i18n-ally.pathMatcher": "{locale}/{namespace}.json",
   "i18n-ally.keystyle": "nested",
-  "i18n-ally.enabledFrameworks": ["next-intl"]
+  "i18n-ally.sourceLanguage": "en"
 }
