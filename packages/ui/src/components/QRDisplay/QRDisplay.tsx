@@ -17,6 +17,10 @@ export interface QRDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
    * When omitted the component defaults to 'medium'. Sizes are defined in CSS.
    */
   size?: "small" | "medium" | "large";
+  /**
+   * Optional helper text shown under the QR code.
+   */
+  helperText?: string;
 }
 
 /**
@@ -29,6 +33,7 @@ export interface QRDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
 const QRDisplay = ({
   value,
   code,
+  helperText,
   size = "medium",
   className,
   ...rest
@@ -44,7 +49,7 @@ const QRDisplay = ({
       />
       <div className={styles.text}>
         {code && <span className={styles.code}>{code}</span>}
-        <span className={styles.helperText}>Scan to upload photos</span>
+        {helperText && <span className={styles.helperText}>{helperText}</span>}
       </div>
     </div>
   );
