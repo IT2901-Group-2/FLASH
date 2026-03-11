@@ -2,8 +2,16 @@ import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAccessToken } from "@/lib/utils/auth";
+import {
+  isEventRoute,
+  getEventId,
+  checkEventCookie,
+  isJoinRoute,
+  getJoinCode,
+  getEventByCode,
+} from "@/lib/utils/proxy";
 
-const intlMiddleware = createMiddleware(routing);
+const handleI18nRouting = createMiddleware(routing);
 
 const PROTECTED_ROUTES = ["/admin/dashboard"];
 
@@ -12,22 +20,45 @@ function isProtected(req: NextRequest): boolean {
   return PROTECTED_ROUTES.some(route => withoutLocale.startsWith(route));
 }
 
-export default function middleware(req: NextRequest) {
-  if (isProtected(req)) {
+export default async function proxy(request: NextRequest): Promise<NextResponse> {
+  if (isEventRoute(request)) {
+    const isAuthenticated = await checkEventCookie(getEventId(request));
+    if (!isAuthenticated) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+  }
+
+  if (isJoinRoute(request)) {
+    const code = getJoinCode(request);
+    const eventId = await getEventByCode(request, code);
+
+    if (eventId === null) {
+      return new NextResponse(`Event with join code ${code} does not exist.`, {
+        status: 404,
+      });
+    }
+
+    const isAuthenticated = await checkEventCookie(eventId);
+    if (isAuthenticated) {
+      return NextResponse.redirect(new URL(`/events/${eventId}`, request.url));
+    }
+  }
+
+  if (isProtected(request)) {
     try {
-      verifyAccessToken(req);
+      verifyAccessToken(request);
     } catch {
       const locale =
-        req.nextUrl.pathname.match(/^\/([a-z]{2}(-[A-Z]{2})?)/)?.[1] ??
+        request.nextUrl.pathname.match(/^\/([a-z]{2}(-[A-Z]{2})?)/)?.[1] ??
         routing.defaultLocale;
-      const loginUrl = new URL(`/${locale}/admin`, req.url);
+      const loginUrl = new URL(`/${locale}/admin`, request.url);
       return NextResponse.redirect(loginUrl);
     }
 
     return NextResponse.next();
   }
 
-  return intlMiddleware(req);
+  return handleI18nRouting(request);
 }
 
 export const config = {

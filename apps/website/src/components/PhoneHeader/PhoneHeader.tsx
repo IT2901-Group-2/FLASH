@@ -43,7 +43,7 @@ export const PhoneHeader = ({
   return (
     <header className={cl(styles.container, className)} {...rest}>
       <div className={styles.infoSection}>
-        <ArrowLeft className={styles.backButton} onClick={navigation.back} />
+        <ArrowLeft className={styles.backButton} onClick={() => navigation.push("/")} />
         <div className={styles.titleBlock}>
           <Title size="small" as="h1">
             {title}
