@@ -54,7 +54,7 @@ export default function Page() {
   const { openFilePicker, FileInput } = useFileUpload({
     onFilesSelected: async files => {
       if (!eventId) {
-        setUploadError("Unable to upload images for this event.");
+        setUploadError(tUpload("errors.uploadUnavailable"));
         return;
       }
 
@@ -65,7 +65,7 @@ export default function Page() {
       );
 
       if (results.some(result => result.status === "rejected")) {
-        setUploadError("One or more images failed to upload. Please try again.");
+        setUploadError(tUpload("errors.uploadPartialFailure"));
       }
     },
   });
@@ -151,7 +151,7 @@ export default function Page() {
 
       {!isLoading && images.length === 0 ? (
         <div role="status" className={styles.emptyState}>
-          No photos found
+          {tUpload("emptyState")}
         </div>
       ) : (
         <div className={styles.grid}>
@@ -160,8 +160,8 @@ export default function Page() {
               key={image.id}
               variant="preview2"
               src={`/api/events/${eventId}/images/${image.id}`}
-              alt={`Photo ${index + 1} of ${images.length}`}
-              title={`Photo ${index + 1}`}
+              alt={tUpload("imageAlt", { index: index + 1, total: images.length })}
+              title={tUpload("imageTitle", { index: index + 1 })}
               data-image-id={image.id}
             />
           ))}

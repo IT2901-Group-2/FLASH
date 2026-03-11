@@ -93,8 +93,8 @@ afterEach(() => {
 });
 
 describe("Guest Upload Page", () => {
-  it("renders fallback error message when event fails to load", () => {
-    vi.mocked(useEventsModule.useEventsQuery).mockReturnValueOnce({
+  it("renders fallback error message when event fails to load", async () => {
+    vi.mocked(useEventsModule.useEventsQuery).mockReturnValue({
       data: undefined,
       isLoading: false,
       isError: true,
@@ -102,11 +102,7 @@ describe("Guest Upload Page", () => {
 
     render(<Page />);
 
-    waitFor(() =>
-      expect(
-        screen.getByText("eventLoadFailed")
-      ).toBeDefined()
-    );
+    await waitFor(() => expect(screen.getByText("eventLoadFailed")).toBeDefined());
   });
 
   it("renders basic page parts", () => {
@@ -128,7 +124,7 @@ describe("Guest Upload Page", () => {
   it("renders uploaded images", () => {
     render(<Page />);
     expect(screen.getByTestId("image-card")).toBeDefined();
-    expect(screen.getByText("Photo 1")).toBeDefined();
+    expect(screen.getByText("imageTitle")).toBeDefined();
   });
 
   it("uses image query hook", () => {
@@ -157,9 +153,7 @@ describe("Guest Upload Page", () => {
       await onFilesSelected(mockFileList);
     }
 
-    expect(
-      await screen.findByText("Unable to upload images for this event.")
-    ).toBeDefined();
+    expect(await screen.findByText("errors.uploadUnavailable")).toBeDefined();
     expect(mockUploadImage).not.toHaveBeenCalled();
   });
 });

@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 
 export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
   const tStep = useTranslations("admin.dashboard.event.create.options");
+  const tFields = useTranslations("common.fields");
 
   const [limitMode, setLimitMode] = useState<string>(
     formData.uploadLimit === undefined ? "unlimited" : "limited"
@@ -26,7 +27,7 @@ export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
             <div className={styles.maxImageContainer}>
               <span>{tStep("fields.uploadLimit.label")}</span>
               <Input
-                aria-label="maxImages"
+                aria-label={tFields("maxImages")}
                 type="number"
                 min={1}
                 value={formData.uploadLimit}
@@ -63,4 +64,3 @@ export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
 };
 
 export default OptionsStep;
-

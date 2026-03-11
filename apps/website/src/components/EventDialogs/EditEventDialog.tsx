@@ -108,5 +108,3 @@ export const EditEventDialog = ({
 };
 
 export default EditEventDialog;
-
-

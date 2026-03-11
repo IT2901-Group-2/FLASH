@@ -85,7 +85,14 @@
       "eventFallbackName": "Arrangement",
       "eventLoadFailed": "Kunne ikke laste arrangementsdetaljer for denne lenken.",
       "unlimited": "ubegrenset",
-      "description": "Du kan laste opp {uploadsRemaining} bilder"
+      "description": "Du kan laste opp {uploadsRemaining} bilder",
+      "emptyState": "Ingen bilder funnet",
+      "imageAlt": "Bilde {index} av {total}",
+      "imageTitle": "Bilde {index}",
+      "errors": {
+        "uploadUnavailable": "Kan ikke laste opp bilder for dette arrangementet.",
+        "uploadPartialFailure": "Ett eller flere bilder kunne ikke lastes opp. Prøv igjen."
+      }
     },
     "share": {
       "aria": {

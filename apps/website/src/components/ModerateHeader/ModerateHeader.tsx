@@ -161,4 +161,3 @@ export const ModerateHeader = ({
 };
 
 export default ModerateHeader;
-

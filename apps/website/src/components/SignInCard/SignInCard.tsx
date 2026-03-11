@@ -27,7 +27,7 @@ export default function SignInCard() {
         type="password"
         id="passwordField"
         visualSize="medium"
-        placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
+        placeholder={c("fields.passwordPlaceholder")}
       />
       <Button
         className={styles.buttonComponent}
@@ -47,5 +47,3 @@ export default function SignInCard() {
     </Card>
   );
 }
-
-

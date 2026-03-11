@@ -8,7 +8,9 @@ import { useState } from "react";
 
 export default function Page() {
   const navigation = useRouter();
-  const t = useTranslations("guest.nickname");
+  const tNickname = useTranslations("guest.login.card.nickname");
+  const cActions = useTranslations("common.actions");
+  const cFields = useTranslations("common.fields");
   const { code } = useParams<{ code: string }>();
 
   const [nickname, setNickname] = useState<string>("");
@@ -17,7 +19,7 @@ export default function Page() {
     <div className={styles.container}>
       <div className={styles.navigation} onClick={navigation.back}>
         <ArrowLeft />
-        {t("back")}
+        {cActions("back")}
       </div>
       <Card className={styles.card}>
         <form className={styles.form} action="/api/join" method="POST">
@@ -27,14 +29,14 @@ export default function Page() {
             size="large"
             as="h1"
             data-color="brand-purple"
-            description={t("description")}
+            description={tNickname("description")}
           >
-            {t("title")}
+            {tNickname("title")}
           </Title>
           <Input
-            aria-label="nickname-input"
-            label={t("input.title")}
-            placeholder={t("input.placeholder")}
+            aria-label={cFields("nickname")}
+            label={cFields("nickname")}
+            placeholder={tNickname("placeholder")}
             name="name"
             value={nickname}
             onChange={e => setNickname(e.target.value)}
@@ -49,7 +51,7 @@ export default function Page() {
             type="submit"
             fill
           >
-            Go to event
+            {cActions("join")}
           </Button>
         </form>
       </Card>

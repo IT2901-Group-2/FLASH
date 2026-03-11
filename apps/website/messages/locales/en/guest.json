@@ -85,7 +85,14 @@
       "eventFallbackName": "Event",
       "eventLoadFailed": "Could not load event details for this link.",
       "unlimited": "unlimited",
-      "description": "You can upload {uploadsRemaining} photos"
+      "description": "You can upload {uploadsRemaining} photos",
+      "emptyState": "No photos found",
+      "imageAlt": "Photo {index} of {total}",
+      "imageTitle": "Photo {index}",
+      "errors": {
+        "uploadUnavailable": "Unable to upload images for this event.",
+        "uploadPartialFailure": "One or more images failed to upload. Please try again."
+      }
     },
     "share": {
       "aria": {

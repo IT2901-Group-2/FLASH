@@ -57,5 +57,3 @@ export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivEleme
 };
 
 export default AdminSidebar;
-
-

@@ -96,5 +96,3 @@ const JoinEventCard = () => {
 };
 
 export default JoinEventCard;
-
-

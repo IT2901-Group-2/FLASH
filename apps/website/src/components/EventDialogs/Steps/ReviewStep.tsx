@@ -120,5 +120,3 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
 };
 
 export default ReviewStep;
-
-

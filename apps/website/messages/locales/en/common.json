@@ -15,6 +15,7 @@
     "openCamera": "Open Camera",
     "uploadImage": "Upload Image",
     "takePhoto": "Take Photo",
+    "slideshow": "Slideshow",
     "createNewEvent": "Create New Event",
     "downloadQrCode": "Download QR Code",
     "copyLink": "Copy Link"
@@ -36,6 +37,7 @@
   },
   "fields": {
     "password": "Password",
+    "passwordPlaceholder": "•••••",
     "nickname": "Nickname",
     "eventCode": "Event Code",
     "eventName": "Event Name",
@@ -43,7 +45,8 @@
     "startDate": "Start Date",
     "endDate": "End Date",
     "startTime": "Start Time",
-    "endTime": "End Time"
+    "endTime": "End Time",
+    "maxImages": "Max images"
   },
   "values": {
     "limited": "Limited",
