@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
+import { useEventByCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 
 export default function Page() {
   const navigation = useRouter();
@@ -12,6 +13,14 @@ export default function Page() {
   const cActions = useTranslations("common.actions");
   const cFields = useTranslations("common.fields");
   const { code } = useParams<{ code: string }>();
+  const joinCode = typeof code === "string" ? code : "";
+
+  const { data: eventCodeData } = useEventByCodeQuery(joinCode);
+  const { data: eventData } = useEventsQuery(
+    eventCodeData?.eventId ? { id: [eventCodeData.eventId] } : undefined,
+    !!eventCodeData?.eventId
+  );
+  const eventName = eventData?.[0]?.name;
 
   const [nickname, setNickname] = useState<string>("");
 
@@ -31,7 +40,7 @@ export default function Page() {
             data-color="brand-purple"
             description={tNickname("description")}
           >
-            {tNickname("title")}
+            {eventName ? `${tNickname("title")} ${eventName}` : tNickname("title")}
           </Title>
           <Input
             aria-label={cFields("nickname")}
@@ -42,7 +51,7 @@ export default function Page() {
             onChange={e => setNickname(e.target.value)}
             required
           />
-          <input hidden defaultValue={code} name="eventCode" />
+          <input hidden defaultValue={joinCode} name="eventCode" />
           <Button
             variant="primary"
             icon={<ArrowRight />}
