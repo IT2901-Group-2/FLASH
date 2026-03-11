@@ -19,7 +19,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
     shareRole as "guest" | "moderator"
   );
 
-  const displayLink = displayCode ? `${window.location.origin}/event/${displayCode}` : "";
+  const displayLink = displayCode ? `${window.location.origin}/join/${displayCode}` : "";
 
   /**
    * Function to handle downloading the QR code as an SVG file.

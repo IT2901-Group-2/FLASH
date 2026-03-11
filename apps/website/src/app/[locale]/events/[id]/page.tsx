@@ -1,14 +1,15 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Camera, QrCode, Upload } from "lucide-react";
 import styles from "./UploadImage.module.css";
-import { ActionCard, Button, Dialog, QRDisplay } from "ui";
+import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
-import { useEventsQuery } from "@/hooks/useEvents";
+import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
-import PhoneHeader from "@/components/PhoneHeader/PhoneHeader";
+import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 
 export default function Page() {
   const router = useRouter();
@@ -20,12 +21,29 @@ export default function Page() {
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );
+  const { data: imagesData } = useImagesQuery(eventId);
+  const images = imagesData ?? [];
+
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const { mutateAsync: uploadImage } = useUploadImageMutation();
+
   const eventData = data?.[0];
   const eventName =
     eventData?.name ??
     (isLoading ? tUpload("loadingEvent") : tUpload("eventFallbackName"));
   const uploadsRemaining =
     typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
+
+  const { data: joinCode } = useEventCodeQuery(
+    eventId,
+    eventAuth.isModerator ? "moderator" : "guest"
+  );
+
+  const [joinLink, setJoinLink] = useState<string | null>(null);
+  useEffect(() => {
+    (async () =>
+      setJoinLink(new URL(`/join/${joinCode}`, window.location.origin).href))();
+  }, [setJoinLink, joinCode]);
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const uploadDescription = tUpload("description", {
@@ -34,9 +52,21 @@ export default function Page() {
   });
 
   const { openFilePicker, FileInput } = useFileUpload({
-    onFilesSelected: files => {
-      console.log("Selected files:", files);
-      // TODO: Handle file upload logic here
+    onFilesSelected: async files => {
+      if (!eventId) {
+        setUploadError("Unable to upload images for this event.");
+        return;
+      }
+
+      setUploadError(null);
+
+      const results = await Promise.allSettled(
+        Array.from(files).map(file => uploadImage({ eventId, file }))
+      );
+
+      if (results.some(result => result.status === "rejected")) {
+        setUploadError("One or more images failed to upload. Please try again.");
+      }
     },
   });
 
@@ -51,11 +81,7 @@ export default function Page() {
       <FileInput />
       <Dialog ref={dialogRef} className={styles.qrCodeContainer}>
         <div className={styles.qrCodeContainer}>
-          <QRDisplay
-            value="www.example.com"
-            size="large"
-            helperText={tCommon("messages.scanToUploadPhotos")}
-          />
+          {joinLink !== null && <QRDisplay value={joinLink} size="large" />}
           <Button
             variant="secondary"
             data-color="neutral"
@@ -103,6 +129,7 @@ export default function Page() {
         {!isLoading && (isError || !eventData) ? (
           <p className={styles.errorText}>{tUpload("eventLoadFailed")}</p>
         ) : null}
+        {uploadError ? <p className={styles.errorText}>{uploadError}</p> : null}
         <ActionCard
           className={`${styles.mobileOnly}`}
           description={uploadDescription}
@@ -121,6 +148,25 @@ export default function Page() {
           }}
         />
       </div>
+
+      {!isLoading && images.length === 0 ? (
+        <div role="status" className={styles.emptyState}>
+          No photos found
+        </div>
+      ) : (
+        <div className={styles.grid}>
+          {images.map((image, index) => (
+            <ImageCard
+              key={image.id}
+              variant="preview2"
+              src={`/api/events/${eventId}/images/${image.id}`}
+              alt={`Photo ${index + 1} of ${images.length}`}
+              title={`Photo ${index + 1}`}
+              data-image-id={image.id}
+            />
+          ))}
+        </div>
+      )}
     </>
   );
 }

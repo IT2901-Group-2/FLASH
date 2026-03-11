@@ -1,34 +1,19 @@
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { DatabaseService, dbService } from "./databaseService";
-import { CreateUser, EventCode, eventCodeTable, User, userTable } from "@/db";
+import { CreateUser, EventCode, User, userTable } from "@/db";
 import { setEventCookie, getEventCookie } from "@/lib/utils/eventCookie";
 import { AsyncResult, Result } from "typescript-result";
-import { eq } from "drizzle-orm";
 import { getFirstRow } from "@/lib/utils/sql";
 import { JWT_SECRET } from "@/config";
+import { EventService, eventService } from "./eventService";
 
 export class UserService {
   private readonly dbService: DatabaseService;
+  private readonly eventService: EventService;
 
-  constructor(dbService: DatabaseService) {
+  constructor(dbService: DatabaseService, eventService: EventService) {
     this.dbService = dbService;
-  }
-
-  /**
-   * Fetches an `EventCode` object from an event code.
-   * The `EventCode` contains all necessary information for joining an event.
-   *
-   * @param code The code to fetch the `EventCode` object for.
-   * @returns A result with an `EventCode` object or an error.
-   */
-  private getEventByCode(code: string): AsyncResult<EventCode, Error> {
-    return Result.try(() =>
-      this.dbService.db
-        .select()
-        .from(eventCodeTable)
-        .where(eq(eventCodeTable.code, code))
-        .limit(1)
-    ).map(rows => getFirstRow(rows, `Unable to find event with code: ${code}`));
+    this.eventService = eventService;
   }
 
   /**
@@ -60,7 +45,7 @@ export class UserService {
    */
   joinEvent(userData: CreateUser): AsyncResult<string, Error> {
     return Result.gen(this, async function* () {
-      const eventCode = yield* this.getEventByCode(userData.eventCode);
+      const eventCode = yield* this.eventService.getEventByCode(userData.eventCode);
 
       const cookieResult = await getEventCookie(eventCode.eventId, JWT_SECRET);
       if (cookieResult.ok) {
@@ -75,4 +60,7 @@ export class UserService {
   }
 }
 
-export const userService = makeGlobal("userService", () => new UserService(dbService));
+export const userService = makeGlobal(
+  "userService",
+  () => new UserService(dbService, eventService)
+);

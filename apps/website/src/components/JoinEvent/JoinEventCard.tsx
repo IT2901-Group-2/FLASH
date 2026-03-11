@@ -5,11 +5,30 @@ import { useTranslations } from "next-intl";
 import styles from "./JoinEventCard.module.css";
 import { QrCode } from "lucide-react";
 import Link from "next/link";
+import { useCallback, SubmitEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { makeRequest } from "@/lib/utils/api";
+import { getEventCodeSchema } from "@/db";
 
 const JoinEventCard = () => {
+  const router = useRouter();
   const t = useTranslations("guest.login.card");
   const c = useTranslations("common");
   const tPage = useTranslations("pages.joinEvent");
+  const [error, setError] = useState<string>("");
+
+  const handleSubmit = useCallback(
+    async (e: SubmitEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const code = new FormData(e.currentTarget).get("eventCode");
+      if (typeof code !== "string") return;
+
+      await makeRequest(getEventCodeSchema, `/api/events/by-code/${code}`)
+        .then(() => router.push(`/join/${code}`))
+        .catch(setError);
+    },
+    [router]
+  );
 
   return (
     <Card>
@@ -21,16 +40,7 @@ const JoinEventCard = () => {
           value="enter-code"
           label={t("tabs.enterCode")}
           content={
-            <form className={styles.content} action="/api/join" method="POST">
-              <Input
-                label={c("fields.nickname")}
-                placeholder={t("fields.nickname.placeholder")}
-                icon={<TextAlignStart />}
-                aria-label={c("fields.nickname")}
-                name="name"
-                type="text"
-                required
-              />
+            <form className={styles.content} onSubmit={handleSubmit}>
               <Input
                 label={c("fields.eventCode")}
                 placeholder={t("fields.eventCode.placeholder")}
@@ -38,6 +48,8 @@ const JoinEventCard = () => {
                 aria-label={c("fields.eventCode")}
                 name="eventCode"
                 type="text"
+                onKeyDown={() => setError("")}
+                error={error}
                 required
               />
               <Button
@@ -64,6 +76,7 @@ const JoinEventCard = () => {
                 className={styles.fullWidthButton}
                 variant="secondary"
                 data-color="brand-purple"
+                fill
               >
                 {c("actions.openCamera")}
               </Button>
