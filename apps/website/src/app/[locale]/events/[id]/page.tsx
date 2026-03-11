@@ -136,23 +136,24 @@ export default function Page() {
           <p className={styles.errorText}>{tUpload("eventLoadFailed")}</p>
         ) : null}
         {uploadError ? <p className={styles.errorText}>{uploadError}</p> : null}
-        <ActionCard
-          className={`${styles.mobileOnly}`}
-          description={uploadDescription}
-          primaryButton={{
-            "data-color": "brand-purple",
-            icon: <Upload size={18} />,
-            iconPosition: "right",
-            text: tCommon("actions.uploadImage"),
-            onClick: openFilePicker,
-          }}
-          secondaryButton={{
-            "data-color": "brand-purple",
-            icon: <Camera size={18} />,
-            iconPosition: "right",
-            text: tCommon("actions.takePhoto"),
-          }}
-        />
+        <div className={styles.mobileOnly}>
+          <ActionCard
+            description={uploadDescription}
+            primaryButton={{
+              "data-color": "brand-purple",
+              icon: <Upload size={18} />,
+              iconPosition: "right",
+              text: tCommon("actions.uploadImage"),
+              onClick: openFilePicker,
+            }}
+            secondaryButton={{
+              "data-color": "brand-purple",
+              icon: <Camera size={18} />,
+              iconPosition: "right",
+              text: tCommon("actions.takePhoto"),
+            }}
+          />
+        </div>
       </div>
 
       {!isLoading && images.length === 0 ? (
