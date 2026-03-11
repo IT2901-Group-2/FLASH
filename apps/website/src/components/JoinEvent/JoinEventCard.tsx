@@ -47,7 +47,7 @@ const JoinEventCard = () => {
       <DropdownControl className={styles.dropdownControls} defaultValue="enter-code">
         <DropdownControl.Item
           value="enter-code"
-          label={t("tabs.enterCode")}
+          label={t("guest.login.card.tabs.enterCode")}
           content={
             <form className={styles.content} onSubmit={handleSubmit(handleJoin)}>
               <TextField
