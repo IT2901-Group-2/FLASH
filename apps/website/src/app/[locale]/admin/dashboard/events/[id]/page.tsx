@@ -1,6 +1,6 @@
 "use client";
 
-import { useEventsQuery } from "@/hooks/useEvents";
+import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { ArrowLeft, ArrowRight, Download, Play } from "lucide-react";
 import { useParams } from "next/navigation";
 import { Button, Card, Dialog, Title } from "ui";
@@ -13,7 +13,8 @@ const Page = () => {
   const qrCodeRef = useRef<HTMLDialogElement>(null);
   const navigation = useRouter();
 
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
+  const { data: joinCode } = useEventCodeQuery(id, "moderator");
   const { data, status } = useEventsQuery({ id: [id?.toString() || ""] });
   if (data === undefined) return;
   const eventData = data[0];
@@ -54,7 +55,7 @@ const Page = () => {
             className={styles.goToEventButton}
             icon={<ArrowRight />}
             iconPosition="right"
-            onClick={() => navigation.push(`/${id}`)}
+            onClick={() => navigation.push(`/join/${joinCode}`)}
           >
             Open Event
           </Button>
