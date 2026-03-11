@@ -18,8 +18,9 @@ describe("AdminLogin Page", () => {
   it("displays translated content", () => {
     render(<Page />);
 
-    expect(screen.getByText("pageTitle")).toBeTruthy();
-    expect(screen.getByText("description")).toBeTruthy();
+    expect(screen.getByText("title")).toBeTruthy();
+    expect(screen.getAllByText("description").length).toBeGreaterThan(0);
+    expect(screen.getByText("subtitle")).toBeTruthy();
   });
 
   it("renders all required components", () => {

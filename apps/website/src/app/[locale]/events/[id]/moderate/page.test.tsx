@@ -11,6 +11,23 @@ vi.mock("next/navigation", () => ({
   useRouter: vi.fn(() => ({ back: mockBack })),
 }));
 
+vi.mock("next-intl", () => ({
+  useTranslations: vi.fn(() => {
+    return (key: string, values?: Record<string, string | number>) => {
+      if (key === "selectionDescription") {
+        const count = Number(values?.count ?? 0);
+        return `${count} photo${count === 1 ? "" : "s"} selected`;
+      }
+
+      if (!values) return key;
+
+      return key.replace(/\{(\w+)\}/g, (_, token: string) =>
+        String(values[token] ?? `{${token}}`)
+      );
+    };
+  }),
+}));
+
 const mockUpdateImage = vi.fn(() => Promise.resolve({}));
 const mockBatchUpdateImage = vi.fn(() => Promise.resolve({}));
 const mockInvalidateQueries = vi.fn(() => Promise.resolve());
@@ -118,6 +135,7 @@ vi.mock("ui", () => ({
       ),
     }
   ),
+
   ImageCard: ({
     state,
     onClick,
@@ -134,6 +152,7 @@ vi.mock("ui", () => ({
       onClick={onClick}
     />
   ),
+
   ActionCard: ({
     description,
     primaryButton,
@@ -221,8 +240,7 @@ describe("ModeratePage", () => {
   it('clicking "Select" enters select mode: button label changes to "Cancel", tabs become disabled', () => {
     render(<ModeratePage />);
 
-    const selectButton = screen.getByText("Select");
-    fireEvent.click(selectButton);
+    fireEvent.click(screen.getByText("Select"));
 
     // Button should now say "Cancel"
     expect(screen.getByText("Cancel")).toBeDefined();
@@ -346,7 +364,7 @@ describe("ModeratePage", () => {
 
     render(<ModeratePage />);
 
-    expect(screen.getByText("No pending photos found")).toBeDefined();
+    expect(screen.getByText("emptyState.pending")).toBeDefined();
   });
 
   it("bulk approve calls updateImage with isApproved=true for each selected image and exits select mode", async () => {

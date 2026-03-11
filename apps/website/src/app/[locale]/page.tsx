@@ -7,13 +7,13 @@ import { Title } from "ui";
 import RememberedEvents from "@/components/RememberedEvents/RememberedEvents";
 
 const Page = () => {
-  const t = useTranslations("JoinEventPage");
+  const t = useTranslations("app");
 
   return (
     <div className={styles.pageWrapper}>
       <Logo />
-      <Title align="center" size="large" as="h1" description={t("appDescription")}>
-        {t("appTitle")}
+      <Title align="center" size="large" as="h1" description={t("description")}>
+        {t("name")}
       </Title>
       <JoinEventCard />
       <RememberedEvents />
