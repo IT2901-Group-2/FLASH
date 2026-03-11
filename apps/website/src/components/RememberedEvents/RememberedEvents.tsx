@@ -52,5 +52,3 @@ const RememberedEvents = () => {
 };
 
 export default RememberedEvents;
-
-
