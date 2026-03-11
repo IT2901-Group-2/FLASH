@@ -5,6 +5,7 @@ export * from "./Dialog";
 export * from "./ProgressBar";
 export * from "./ProgressDots";
 export * from "./Input";
+export * from "./Form";
 export * from "./ImageCard";
 export * from "./Sidebar";
 export * from "./Switch";
