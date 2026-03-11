@@ -6,9 +6,9 @@ import { z } from "zod";
 const okSchema = z.object({ ok: z.literal(true) });
 
 /**
- * Returns the current auth token state.
- * Seeded as null — only updated via setQueryData from mutations.
- * staleTime: Infinity prevents background refetches on this client-only state.
+ * Attempts a token refresh on mount to restore session state.
+ * staleTime: infinity prevents background refetches - auth state is
+ * managed manually via setQueryData from mutations.
  */
 export function useAuth() {
   return useQuery({
@@ -23,7 +23,7 @@ export function useAuth() {
 
 /**
  * Logs in with a password via POST /api/auth/login.
- * On success, returns an access token + expiry.
+ * On success, marks auth state as ok.
  * A refresh token is set automatically via HttpOnly cookie by the server.
  */
 export function useLoginMutation() {
@@ -54,7 +54,7 @@ export function useLogoutMutation() {
 /**
  * Refreshes the access token via POST /api/auth/refresh.
  * Relies on the HttpOnly refresh token cookie being present.
- * Returns a new access token + expiry.
+ * Clears auth state on failure.
  */
 export function useRefreshMutation() {
   const queryClient = useQueryClient();
