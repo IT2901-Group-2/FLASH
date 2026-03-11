@@ -13,9 +13,7 @@ import { FieldValues, useForm } from "react-hook-form";
 
 const JoinEventCard = () => {
   const router = useRouter();
-  const t = useTranslations("guest.login.card");
-  const c = useTranslations("common");
-  const tPage = useTranslations("pages.joinEvent");
+  const t = useTranslations("");
   const [error, setError] = useState<string>("");
 
   const {
@@ -38,8 +36,13 @@ const JoinEventCard = () => {
 
   return (
     <Card>
-      <Title size="medium" align="center" description={tPage("description")} as="h2">
-        {tPage("title")}
+      <Title
+        size="medium"
+        align="center"
+        description={t("pages.joinEvent.description")}
+        as="h2"
+      >
+        {t("pages.joinEvent.title")}
       </Title>
       <DropdownControl className={styles.dropdownControls} defaultValue="enter-code">
         <DropdownControl.Item
@@ -48,10 +51,10 @@ const JoinEventCard = () => {
           content={
             <form className={styles.content} onSubmit={handleSubmit(handleJoin)}>
               <TextField
-                label={c("fields.eventCode")}
-                placeholder={t("fields.eventCode.placeholder")}
+                label={t("common.fields.eventCode")}
+                placeholder={t("guest.login.card.fields.eventCode.placeholder")}
                 icon={<TextAlignStart />}
-                aria-label={c("fields.eventCode")}
+                aria-label={t("common.fields.eventCode")}
                 type="text"
                 data-color="brand-purple"
                 onKeyDown={() => setError("")}
@@ -67,36 +70,36 @@ const JoinEventCard = () => {
                 type="submit"
                 fill
               >
-                {c("actions.join")}
+                {t("common.actions.join")}
               </Button>
             </form>
           }
         />
         <DropdownControl.Item
           value="scan-qr"
-          label={t("tabs.scanQr")}
+          label={t("guest.login.card.tabs.scanQr")}
           content={
             <div className={styles.content}>
               <div className={styles.qrContainer}>
                 <QrCode size={64} />
               </div>
-              <p className={styles.qrText}>{t("scanQr.description")}</p>
+              <p className={styles.qrText}>{t("guest.login.card.scanQr.description")}</p>
               <Button
                 className={styles.fullWidthButton}
                 variant="secondary"
                 data-color="brand-purple"
                 fill
               >
-                {c("actions.openCamera")}
+                {t("common.actions.openCamera")}
               </Button>
             </div>
           }
         />
       </DropdownControl>
       <span>
-        {t("links.adminAccessPrefix")}{" "}
+        {t("guest.login.card.links.adminAccessPrefix")}{" "}
         <Link role="link" href={"/admin"}>
-          {c("roles.admin")}
+          {t("common.roles.admin")}
         </Link>
         .
       </span>
