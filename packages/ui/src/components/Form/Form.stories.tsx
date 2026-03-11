@@ -4,6 +4,7 @@ import { Button } from "../Button";
 import { Textarea } from "./Textarea";
 import { useForm } from "react-hook-form";
 import { expect, userEvent, within } from "storybook/test";
+import { DatePicker } from "./DatePicker";
 
 const meta: Meta<typeof HTMLFormElement> = {
   title: "Patterns and Templates/Form",
@@ -26,7 +27,11 @@ export const Demo: Story = {
 
     return (
       <form
-        style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "1rem",
+        }}
         onSubmit={handleSubmit(data => console.log(data))}
         onReset={reset}
       >
@@ -48,6 +53,14 @@ export const Demo: Story = {
             min: { value: 1, message: "The minimum allowed number of photos is 1" },
           })}
           error={errors.uploadLimit?.message?.toString()}
+          required
+        />
+        <DatePicker
+          label="Date"
+          {...register("time", {
+            required: "Start and end date is required",
+          })}
+          error={errors.time?.message?.toString()}
           required
         />
         <div style={{ display: "flex", gap: ".5rem" }}>
