@@ -29,9 +29,9 @@ const JoinEventCard = () => {
 
       await makeRequest(getEventCodeSchema, `/api/events/by-code/${code}`)
         .then(() => router.push(`/join/${code}`))
-        .catch(() => setError("Invalid code"));
+        .catch(() => setError(t("guest.login.card.errors.invalidEventCode")));
     },
-    [router]
+    [router, t]
   );
 
   return (
@@ -60,7 +60,7 @@ const JoinEventCard = () => {
                 onKeyDown={() => setError("")}
                 error={errors.eventCode?.message?.toString() || error}
                 {...register("eventCode", {
-                  required: "Plese fill in a code",
+                  required: t("guest.login.card.errors.missingEventCode"),
                 })}
                 required
               />

@@ -21,8 +21,7 @@
       },
       "errors": {
         "missingEventCode": "Please enter an event code.",
-        "invalidEventCode": "Invalid event code. Please try again.",
-        "missingNickname": "Please enter a nickname."
+        "invalidEventCode": "Invalid event code. Please try again."
       },
       "nickname": {
         "title": "Welcome to",

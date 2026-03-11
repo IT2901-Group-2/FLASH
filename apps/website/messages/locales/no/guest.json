@@ -21,8 +21,7 @@
       },
       "errors": {
         "missingEventCode": "Vennligst skriv inn en arrangementskode.",
-        "invalidEventCode": "Ugyldig arrangementskode. Vennligst prøv igjen.",
-        "missingNickname": "Vennligst skriv inn et kallenavn."
+        "invalidEventCode": "Ugyldig arrangementskode. Vennligst prøv igjen."
       },
       "nickname": {
         "title": "Velkommen til",
