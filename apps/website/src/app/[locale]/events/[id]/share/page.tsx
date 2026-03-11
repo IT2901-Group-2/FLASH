@@ -11,7 +11,8 @@ import { downloadQrSvg } from "@/utils/downloadqrcode";
 type ShareOrigin = "create" | "share";
 
 export default function Page() {
-  const t = useTranslations("ShareEventPage");
+  const tShare = useTranslations("guest.event.share");
+  const tCommon = useTranslations("common");
 
   const [shareRole, setShareRole] = useState<string>("guest");
 
@@ -30,28 +31,17 @@ export default function Page() {
   const timeoutRef = useRef<number | null>(null);
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const originDependentContent =
-    origin === "create"
-      ? {
-          firstTitle: t("create.firstTitle"),
-          firstDescription: t("create.firstDescription"),
-          doneText: t("create.doneText"),
-        }
-      : {
-          firstTitle: t("share.firstTitle"),
-          firstDescription: t("share.firstDescription"),
-          doneText: t("share.doneText"),
-        };
+  const variantKey = origin === "create" ? "eventCreated" : "share";
 
   const linkContent =
     shareRole === "guest"
       ? {
-          title: t("links.guest.title"),
-          description: t("links.guest.description"),
+          title: tShare("links.guest.title"),
+          description: tShare("links.guest.description"),
         }
       : {
-          title: t("links.moderator.title"),
-          description: t("links.moderator.description"),
+          title: tShare("links.moderator.title"),
+          description: tShare("links.moderator.description"),
         };
 
   const handleCopy = async () => {
@@ -65,7 +55,7 @@ export default function Page() {
       timeoutRef.current = window.setTimeout(() => setCopied(false), 1200);
     } catch {
       setCopied(false);
-      setCopyError(t("errors.copyFailed"));
+      setCopyError(tCommon("messages.copyFailed"));
     }
   };
 
@@ -90,9 +80,9 @@ export default function Page() {
         size="medium"
         as="h2"
         data-color="brand-purple"
-        description={originDependentContent.firstDescription}
+        description={tShare(`variants.${variantKey}.description`)}
       >
-        {originDependentContent.firstTitle}
+        {tShare(`variants.${variantKey}.title`)}
       </Title>
 
       <div style={{ alignSelf: "center" }}>
@@ -102,8 +92,8 @@ export default function Page() {
           onChange={setShareRole}
           data-color="accent"
         >
-          <SegmentedControl.Item value="guest" label={t("controls.guest")} />
-          <SegmentedControl.Item value="moderator" label={t("controls.moderator")} />
+          <SegmentedControl.Item value="guest" label={tCommon("roles.guest")} />
+          <SegmentedControl.Item value="moderator" label={tCommon("roles.moderator")} />
         </SegmentedControl>
       </div>
 
@@ -111,7 +101,11 @@ export default function Page() {
         ref={qrContainerRef}
         style={{ alignSelf: "center", margin: "0.5rem 0 0.25rem" }}
       >
-        <QRDisplay value={shareUrl} code={displayCode} />
+        <QRDisplay
+          value={shareUrl}
+          code={displayCode}
+          helperText={tCommon("messages.scanToUploadPhotos")}
+        />
       </div>
 
       <Title
@@ -126,7 +120,7 @@ export default function Page() {
           {shareRole === "moderator" && (
             <CircleAlert
               size={18}
-              aria-label={t("aria.moderatorAlert")}
+              aria-label={tShare("aria.moderatorAlert")}
               style={{ color: "var(--color-warning-600)" }}
             />
           )}
@@ -137,8 +131,8 @@ export default function Page() {
         <TextField
           aria-label={
             shareRole === "guest"
-              ? t("aria.guestLinkInput")
-              : t("aria.moderatorLinkInput")
+              ? tShare("aria.guestLinkInput")
+              : tShare("aria.moderatorLinkInput")
           }
           value={shareUrl}
           readOnly
@@ -146,15 +140,11 @@ export default function Page() {
           data-color="accent"
           icon={
             copied ? (
-              <Check
-                size={18}
-                aria-label={t("aria.copied")}
-                style={{ cursor: "pointer" }}
-              />
+              <Check size={18} style={{ cursor: "pointer" }} />
             ) : (
               <Copy
                 size={18}
-                aria-label={t("aria.copyLink")}
+                aria-label={tShare("aria.copyLinkButton")}
                 style={{ cursor: "pointer" }}
                 onClick={handleCopy}
               />
@@ -178,7 +168,7 @@ export default function Page() {
                     gap: "0.375rem",
                   }}
                 >
-                  {t("actions.downloadQr")}
+                  {tCommon("actions.downloadQrCode")}
                   <Download size={18} />
                 </span>
               ),
@@ -189,7 +179,7 @@ export default function Page() {
               "data-color": "brand-purple",
             }}
             primaryButton={{
-              text: originDependentContent.doneText,
+              text: tCommon("actions.done"),
               size: "small",
               onClick: handleDone,
               "data-color": "brand-purple",

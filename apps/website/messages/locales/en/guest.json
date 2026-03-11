@@ -1,0 +1,126 @@
+{
+  "login": {
+    "card": {
+      "tabs": {
+        "enterCode": "Enter Code",
+        "scanQr": "Scan QR Code"
+      },
+      "fields": {
+        "nickname": {
+          "placeholder": "Enter your nickname (e.g. Alex)"
+        },
+        "eventCode": {
+          "placeholder": "Enter event code (e.g. 245033)"
+        }
+      },
+      "scanQr": {
+        "description": "Use your camera to scan the event QR code"
+      },
+      "links": {
+        "adminAccessPrefix": "Not a guest? Administer events as an"
+      },
+      "errors": {
+        "missingEventCode": "Please enter an event code.",
+        "invalidEventCode": "Invalid event code. Please try again.",
+        "missingNickname": "Please enter a nickname."
+      },
+      "nickname": {
+        "title": "Welcome to",
+        "description": "Enter a nickname so the host knows who uploaded the photos",
+        "placeholder": "John Doe"
+      }
+    }
+  },
+  "event": {
+    "list": {
+      "title": "Your Events"
+    },
+    "moderate": {
+      "title": "Moderate",
+      "selectionDescription": "{count, plural, one {# photo selected} other {# photos selected}}",
+      "emptyState": {
+        "pending": "No pending photos found",
+        "approved": "No approved photos found",
+        "rejected": "No rejected photos found"
+      },
+      "imageAlt": "Photo {index} of {total}",
+      "imageTitle": "Photo {index}",
+      "tabs": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "headings": {
+        "pending": "Photos to approve",
+        "approved": "Approved photos",
+        "rejected": "Rejected photos"
+      },
+      "breadcrumb": {
+        "event": "Event",
+        "moderate": "Moderate"
+      },
+      "actions": {
+        "approveSelected": "Approve selected photos",
+        "rejectSelected": "Reject selected photos",
+        "select": "Select",
+        "cancel": "Cancel",
+        "selectAll": "Select all",
+        "deselectAll": "Deselect all"
+      },
+      "aria": {
+        "goBack": "Go back",
+        "home": "Home",
+        "goTo": "Go to"
+      },
+      "imageStates": {
+        "pending": "Pending...",
+        "loading": "Loading...",
+        "rejected": "Rejected",
+        "selected": "Selected",
+        "approved": "Approved"
+      }
+    },
+    "upload": {
+      "loadingEvent": "Loading event...",
+      "eventFallbackName": "Event",
+      "eventLoadFailed": "Could not load event details for this link.",
+      "unlimited": "unlimited",
+      "description": "You can upload {uploadsRemaining} photos",
+      "emptyState": "No photos found",
+      "imageAlt": "Photo {index} of {total}",
+      "imageTitle": "Photo {index}",
+      "errors": {
+        "uploadUnavailable": "Unable to upload images for this event.",
+        "uploadPartialFailure": "One or more images failed to upload. Please try again."
+      }
+    },
+    "share": {
+      "aria": {
+        "moderatorAlert": "Moderator link alert",
+        "guestLinkInput": "Guest link input",
+        "moderatorLinkInput": "Moderator link input",
+        "copyLinkButton": "Copy link"
+      },
+      "variants": {
+        "eventCreated": {
+          "title": "Your Event Has Been Created!",
+          "description": "Share the QR code or link so others can join the event and upload photos."
+        },
+        "share": {
+          "title": "Share Your Event",
+          "description": "Share the QR code or link so others can join the event and upload photos."
+        }
+      },
+      "links": {
+        "guest": {
+          "title": "Guest Link",
+          "description": "Anyone with this link can upload photos to the event."
+        },
+        "moderator": {
+          "title": "Moderator Link",
+          "description": "Anyone with this link can review and moderate uploaded photos."
+        }
+      }
+    }
+  }
+}
