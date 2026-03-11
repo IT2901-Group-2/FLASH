@@ -6,8 +6,7 @@ import Link from "next/link";
 
 export default function SignInCard() {
   const navigate = useRouter();
-  const t = useTranslations("admin.login.card");
-  const c = useTranslations("common");
+  const t = useTranslations();
   return (
     <Card className={styles.card}>
       <Title
@@ -15,18 +14,18 @@ export default function SignInCard() {
         size="medium"
         weight="bold"
         as="h2"
-        description={t("description")}
+        description={t("admin.login.card.description")}
       >
-        {t("heading")}
+        {t("admin.login.card.heading")}
       </Title>
       <TextField
         className={styles.inputComponent}
-        aria-label={c("fields.password")}
-        label={c("fields.password")}
+        aria-label={t("common.fields.password")}
+        label={t("common.fields.password")}
         required
         type="password"
         id="passwordField"
-        placeholder={c("fields.passwordPlaceholder")}
+        placeholder={t("common.fields.passwordPlaceholder")}
       />
       <Button
         className={styles.buttonComponent}
@@ -34,12 +33,12 @@ export default function SignInCard() {
         fill
         onClick={() => navigate.push("/admin/dashboard")}
       >
-        {c("actions.signIn")}
+        {t("common.actions.signIn")}
       </Button>
       <span>
-        {t("links.guestAccessPrefix")}{" "}
+        {t("admin.login.card.links.guestAccessPrefix")}{" "}
         <Link role="link" href={"/"}>
-          {c("roles.guest")}
+          {t("common.roles.guest")}
         </Link>
         .
       </span>

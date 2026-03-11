@@ -13,7 +13,7 @@ import { FieldValues, useForm } from "react-hook-form";
 
 const JoinEventCard = () => {
   const router = useRouter();
-  const t = useTranslations("");
+  const t = useTranslations();
   const [error, setError] = useState<string>("");
 
   const {
