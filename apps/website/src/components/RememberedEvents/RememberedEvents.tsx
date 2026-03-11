@@ -10,14 +10,14 @@ import { useTranslations } from "next-intl";
 import { useJoinedEvents } from "@/providers/JoinedEventsContext";
 
 const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
-  const t = useTranslations("guest.login");
+  const c = useTranslations("common");
   const navigation = useRouter();
   return (
     <Card onClick={() => navigation.push(`/events/${id}`)} className={styles.linkcard}>
       <div>
         <Title size="small">{name}</Title>
         <span>
-          {uploadLimit ?? t("unlimited")} {t("photos")}
+          {uploadLimit ?? c("values.unlimited")} {c("values.photos")}
         </span>
       </div>
       <ChevronRight />
@@ -26,7 +26,7 @@ const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
 };
 
 const RememberedEvents = () => {
-  const t = useTranslations("guest.login");
+  const t = useTranslations("guest.event");
   const eventIDs = useJoinedEvents();
   const events = useEventsQuery(
     {
@@ -42,7 +42,7 @@ const RememberedEvents = () => {
     <Card className={styles.card}>
       <div className={styles.title}>
         <Calendar />
-        <Title size="medium">{t("joinedEventsTitle")}</Title>
+        <Title size="medium">{t("list.title")}</Title>
       </div>
       {events.map(event => (
         <RememberedEvent {...event} key={event.id} />

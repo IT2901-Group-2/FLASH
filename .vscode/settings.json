@@ -1,6 +1,6 @@
 {
   "i18n-ally.localesPaths": [
-    "apps/website/messages",
+    "apps/website/messages/locales",
     "apps/website/src/i18n"
   ],
   "i18n-ally.keystyle": "nested",

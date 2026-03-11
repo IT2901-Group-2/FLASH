@@ -34,7 +34,7 @@ interface CreateEventDialogProps extends RefAttributes<HTMLDialogElement> {
 }
 
 export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogProps) => {
-  const t = useTranslations("admin.dashboard.event.create");
+  const t = useTranslations("common.actions");
   const { mutateAsync, status } = useCreateEventMutation();
 
   const formRef = useRef<HTMLFormElement>(null);

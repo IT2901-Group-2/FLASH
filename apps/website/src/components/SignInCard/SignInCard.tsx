@@ -8,7 +8,8 @@ import { useState } from "react";
 
 export default function SignInCard() {
   const navigate = useRouter();
-  const t = useTranslations("admin.login.signIn");
+  const t = useTranslations("admin.login.card");
+  const c = useTranslations("common");
   const [password, setPassword] = useState("");
   const { mutate: login, isPending } = useLoginMutation();
 
@@ -24,20 +25,20 @@ export default function SignInCard() {
         size="medium"
         weight="bold"
         as="h2"
-        description={t("titleDescription")}
+        description={t("description")}
       >
-        {t("title")}
+        {t("heading")}
       </Title>
       <form onSubmit={handleSubmit}>
         <Input
           className={styles.inputComponent}
-          aria-label="password"
-          label={t("inputLabel")}
+          aria-label={c("fields.password")}
+          label={c("fields.password")}
           required
           type="password"
           id="passwordField"
           visualSize="medium"
-          placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
+          placeholder={c("fields.passwordPlaceholder")}
           value={password}
           onChange={e => setPassword(e.target.value)}
         />
@@ -48,13 +49,13 @@ export default function SignInCard() {
           disabled={isPending}
           type="submit"
         >
-          {t("buttonTitle")}
+          {c("actions.signIn")}
         </Button>
       </form>
       <span>
-        {t("linkToGuest")}{" "}
+        {t("links.guestAccessPrefix")}{" "}
         <Link role="link" href={"/"}>
-          {t("guest")}
+          {c("roles.guest")}
         </Link>
         .
       </span>

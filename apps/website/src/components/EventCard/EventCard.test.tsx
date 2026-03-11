@@ -55,7 +55,7 @@ describe("EventCard", () => {
 
     render(<EventCard data={data} />, { wrapper: createQueryClientWrapper() });
 
-    expect(screen.getByText("12 photos per person")).toBeDefined();
+    expect(screen.getByText("uploadLimit.perPerson")).toBeDefined();
   });
 
   test("shows no photo limit when upload limit is missing", () => {
@@ -67,7 +67,7 @@ describe("EventCard", () => {
 
     render(<EventCard data={data} />, { wrapper: createQueryClientWrapper() });
 
-    expect(screen.getByText("No photo limit")).toBeDefined();
+    expect(screen.getByText("uploadLimit.none")).toBeDefined();
   });
 
   test("renders summary labels", () => {
@@ -78,8 +78,8 @@ describe("EventCard", () => {
 
     render(<EventCard data={data} />, { wrapper: createQueryClientWrapper() });
 
-    expect(screen.getByText("Total Photos")).toBeDefined();
-    expect(screen.getByText("Approved")).toBeDefined();
-    expect(screen.getByText("Pending")).toBeDefined();
+    expect(screen.getByText("summary.totalPhotos")).toBeDefined();
+    expect(screen.getByText("summary.approved")).toBeDefined();
+    expect(screen.getByText("summary.pending")).toBeDefined();
   });
 });
