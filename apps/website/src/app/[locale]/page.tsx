@@ -3,7 +3,7 @@ import JoinEventCard from "@/components/JoinEvent/JoinEventCard";
 import Logo from "@/components/Logo/Logo";
 import { useTranslations } from "next-intl";
 import styles from "./JoinEvent.module.css";
-import { Title } from "ui";
+import { Title } from "@flash/ui";
 import RememberedEvents from "@/components/RememberedEvents/RememberedEvents";
 
 const Page = () => {

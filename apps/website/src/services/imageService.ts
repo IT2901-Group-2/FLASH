@@ -1,4 +1,4 @@
-import { FileStorage } from "file-storage";
+import { FileStorage } from "@flash/file-storage";
 import { DatabaseService, dbService } from "./databaseService";
 import { AsyncResult, Result } from "typescript-result";
 import { GetImagesParams, Image, imageTable, UpdateImage } from "@/db";

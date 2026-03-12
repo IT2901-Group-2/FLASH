@@ -1,4 +1,4 @@
-import { Button, Card, Input, Title } from "ui";
+import { Button, Card, Input, Title } from "@flash/ui";
 import styles from "./SignInCard.module.css";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowLeft, ChevronLeft } from "lucide-react";
-import { Breadcrumb, Button, Title } from "ui";
+import { Breadcrumb, Button, Title } from "@flash/ui";
 import { useTranslations } from "next-intl";
 import styles from "./ModerateHeader.module.css";
 

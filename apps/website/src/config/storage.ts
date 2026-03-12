@@ -1,4 +1,4 @@
-import { FileStorage, FSStorage, GcloudStorage } from "file-storage";
+import { FileStorage, FSStorage, GcloudStorage } from "@flash/file-storage";
 import { Storage, StorageOptions } from "@google-cloud/storage";
 import { tmpdir } from "os";
 import upath from "upath";
@@ -15,7 +15,7 @@ export function getStorageConfig(): StorageConfig {
     case "fs":
       return {
         backend,
-        dir: process.env.STORAGE_DIR ?? upath.join(tmpdir(), "foto-app"),
+        dir: process.env.STORAGE_DIR ?? upath.join(tmpdir(), "flash"),
       };
 
     case "gcloud":

@@ -4,7 +4,7 @@ import { getEventCookie, setEventCookie } from "@/lib/utils/eventCookie";
 import fs from "fs/promises";
 import upath from "upath";
 import { tmpdir } from "os";
-import { FSStorage } from "file-storage";
+import { FSStorage } from "@flash/file-storage";
 import { DatabaseService } from "../databaseService";
 import { eventCodeTable, eventTable, userTable } from "@/db";
 import { Result } from "typescript-result";
