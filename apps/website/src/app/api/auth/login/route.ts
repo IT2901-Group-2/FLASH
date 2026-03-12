@@ -14,7 +14,7 @@ export async function POST(req: Request) {
   }
 
   const res = NextResponse.json({ ok: true });
-  signAccessToken(res);
-  signRefreshToken(res);
+  signAccessToken();
+  signRefreshToken();
   return res;
 }
