@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import type { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import {
   ACCESS_TOKEN_EXPIRY,
