@@ -4,9 +4,9 @@ import { NextResponse } from "next/server";
 export async function POST() {
   try {
     const res = NextResponse.json({ ok: true });
-    verifyRefreshToken();
-    signAccessToken();
-    signRefreshToken();
+    await verifyRefreshToken();
+    await signAccessToken();
+    await signRefreshToken();
     return res;
   } catch {
     const errRes = NextResponse.json({ error: "Invalid refresh token" }, { status: 401 });

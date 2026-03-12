@@ -61,7 +61,7 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
 
   if (isAdminLogin(request)) {
     try {
-      verifyAccessToken();
+      await verifyAccessToken();
       const locale =
         request.nextUrl.pathname.match(/^\/([a-z]{2}(-[A-Z]{2})?)/)?.[1] ?? "en";
       return NextResponse.redirect(new URL(`/${locale}/admin/dashboard`, request.url));

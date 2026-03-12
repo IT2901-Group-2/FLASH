@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function POST() {
   const res = NextResponse.json({ ok: true });
-  clearRefreshToken();
-  clearAccessToken();
+  await clearRefreshToken();
+  await clearAccessToken();
   return res;
 }
