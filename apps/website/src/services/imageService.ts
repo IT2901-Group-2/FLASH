@@ -1,4 +1,4 @@
-import { FileStorage } from "file-storage";
+import { FileStorage } from "@flash/file-storage";
 import { DatabaseService, dbService } from "./databaseService";
 import { AsyncResult, Result } from "typescript-result";
 import { GetImagesParams, Image, imageTable, UpdateImage } from "@/db";
@@ -116,7 +116,7 @@ export class ImageService {
       .map(({ userId }) =>
         Result.try(() => sharp(image))
           .map(sharpImage => this.validateImage(sharpImage))
-          .mapCatching(sharpImage => sharpImage.clone().webp().toBuffer())
+          .mapCatching(sharpImage => sharpImage.clone().rotate().webp().toBuffer())
           .map(buff => this.storage.write(`${imageId}.webp`, buff))
           .map(() =>
             Result.try(() =>

@@ -1,7 +1,7 @@
 import type { HTMLAttributes } from "react";
 import styles from "./PhoneHeader.module.css";
 import { cl } from "@/utils/className";
-import { Title } from "ui";
+import { Title } from "@flash/ui";
 import { ArrowLeft, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 

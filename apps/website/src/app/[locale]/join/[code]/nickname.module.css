@@ -1,11 +1,12 @@
 .container {
-  margin: 2rem auto;
+  margin: auto;
   gap: 1rem;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: max-content;
+  width: fit-content;
   max-width: calc(100% - 2rem);
 }
 

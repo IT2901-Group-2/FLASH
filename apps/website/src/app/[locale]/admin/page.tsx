@@ -1,6 +1,6 @@
 "use client";
 import SignInCard from "@/components/SignInCard/SignInCard";
-import { Title } from "ui";
+import { Title } from "@flash/ui";
 import styles from "./AdminLogin.module.css";
 import CameraIcon from "@/components/Logo/Logo";
 import { useTranslations } from "next-intl";
