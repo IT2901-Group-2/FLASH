@@ -20,6 +20,12 @@ const Page = () => {
 
   const { data: joinCode } = useEventCodeQuery(id, "guest");
 
+  const [joinLink, setJoinLink] = useState<string | null>(null);
+  useEffect(() => {
+    (async () =>
+      setJoinLink(new URL(`/join/${joinCode}`, window.location.origin).href))();
+  }, [setJoinLink, joinCode]);
+
   useEffect(() => {
     const resetTimer = () => {
       setIsIdle(false);
@@ -38,7 +44,7 @@ const Page = () => {
   }, []);
 
   return (
-    <div className={styles.page}>
+    <div className={cl(styles.page, isIdle && styles.hideCursor)}>
       <div className={cl(styles.header, isIdle && styles.hidden)}>
         <X className={styles.back} onClick={() => navigation.back()} />
         <Title size="xsmall" description={"1 of 4"}>
@@ -57,12 +63,8 @@ const Page = () => {
       <button className={cl(styles.button, styles.next, isIdle && styles.hidden)}>
         <ChevronRight />
       </button>
-      {showQRCode && (
-        <QRDisplay
-          value={`${window.location.origin}/join/${joinCode}`}
-          code={joinCode}
-          className={styles.qrCode}
-        />
+      {showQRCode && joinLink && (
+        <QRDisplay value={joinLink} code={joinCode} className={styles.qrCode} />
       )}
     </div>
   );

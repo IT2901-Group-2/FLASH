@@ -3,6 +3,10 @@
   height: 100vh;
 }
 
+.hideCursor {
+  cursor: none;
+}
+
 .header {
   position: absolute;
   left: 2rem;
