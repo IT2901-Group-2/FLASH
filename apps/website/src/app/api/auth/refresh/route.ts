@@ -1,9 +1,4 @@
-import {
-  verifyRefreshToken,
-  signAccessToken,
-  signRefreshToken,
-  clearRefreshToken,
-} from "@/lib/utils/auth";
+import { verifyRefreshToken, signAccessToken, signRefreshToken } from "@/lib/utils/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
