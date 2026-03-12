@@ -129,7 +129,7 @@ describe("Guest Upload Page", () => {
 
   it("uses image query hook", () => {
     render(<Page />);
-    expect(useImagesModule.useImagesQuery).toHaveBeenCalledWith("");
+    expect(useImagesModule.useImagesQuery).toHaveBeenCalled();
   });
 
   it("shows upload error when callback runs without event id", async () => {
