@@ -1,6 +1,6 @@
 "use client";
 import { TextAlignStart } from "lucide-react";
-import { Card, Input, Button, Title, DropdownControl } from "ui";
+import { Card, Input, Button, Title, DropdownControl } from "@flash/ui";
 import { useTranslations } from "next-intl";
 import styles from "./JoinEventCard.module.css";
 import { QrCode } from "lucide-react";

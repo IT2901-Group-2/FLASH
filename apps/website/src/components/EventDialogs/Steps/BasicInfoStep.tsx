@@ -1,5 +1,5 @@
 import { Calendar } from "lucide-react";
-import { Title, Input } from "ui";
+import { Title, Input } from "@flash/ui";
 import { useTranslations } from "next-intl";
 import { StepProps } from "./types";
 import styles from "./Steps.module.css";

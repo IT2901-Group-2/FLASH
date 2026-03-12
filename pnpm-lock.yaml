@@ -10,9 +10,15 @@ importers:
 
   apps/website:
     dependencies:
+      '@flash/file-storage':
+        specifier: workspace:*
+        version: link:../../packages/file-storage
       '@flash/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
+      '@flash/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@google-cloud/storage':
         specifier: ^7.18.0
         version: 7.19.0
@@ -28,9 +34,6 @@ importers:
       drizzle-orm:
         specifier: ^0.45.1
         version: 0.45.1(@types/better-sqlite3@7.6.13)(better-sqlite3@12.6.2)
-      file-storage:
-        specifier: workspace:*
-        version: link:../../packages/file-storage
       jsonwebtoken:
         specifier: ^9.0.3
         version: 9.0.3
@@ -58,9 +61,6 @@ importers:
       typescript-result:
         specifier: ^3.5.2
         version: 3.5.2
-      ui:
-        specifier: workspace:*
-        version: link:../../packages/ui
       upath:
         specifier: ^2.0.1
         version: 2.0.1
@@ -8087,7 +8087,7 @@ snapshots:
       magicast: 0.5.2
       obug: 2.1.1
       tinyrainbow: 3.0.3
-      vitest: 4.0.18(@types/node@20.19.33)(@vitest/browser-playwright@4.0.18)(jsdom@28.1.0)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2)
+      vitest: 4.0.18(@types/node@25.3.0)(@vitest/browser-playwright@4.0.18)(jsdom@28.1.0)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
 

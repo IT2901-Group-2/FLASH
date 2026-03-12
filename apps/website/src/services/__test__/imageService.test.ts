@@ -4,7 +4,7 @@ import upath from "upath";
 import { tmpdir } from "os";
 import fs from "fs/promises";
 import { ImageService } from "../imageService";
-import { FSStorage } from "file-storage";
+import { FSStorage } from "@flash/file-storage";
 import { DatabaseService } from "../databaseService";
 import { EventCookie, eventTable, imageTable, userTable } from "@/db";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";

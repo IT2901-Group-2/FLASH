@@ -1,6 +1,6 @@
 "use client";
 import { Plus } from "lucide-react";
-import { Button, Loader, Title } from "ui";
+import { Button, Loader, Title } from "@flash/ui";
 import styles from "./page.module.css";
 import CreateEventCard from "@/components/EventDialogs/CreateEventDialog";
 import { useRef } from "react";

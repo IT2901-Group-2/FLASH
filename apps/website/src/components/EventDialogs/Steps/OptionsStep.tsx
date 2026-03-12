@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { StepProps } from "./types";
-import { Title, DropdownControl, Input, Switch } from "ui";
+import { Title, DropdownControl, Input, Switch } from "@flash/ui";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 

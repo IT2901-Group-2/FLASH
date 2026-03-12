@@ -3,7 +3,7 @@
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { ArrowLeft, ArrowRight, Download, Play } from "lucide-react";
 import { useParams } from "next/navigation";
-import { Button, Card, Dialog, Title } from "ui";
+import { Button, Card, Dialog, Title } from "@flash/ui";
 import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
 import { ReviewStep } from "@/components/EventDialogs/Steps";
