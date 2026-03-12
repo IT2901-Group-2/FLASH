@@ -7,6 +7,42 @@ import { downloadQrSvg } from "@/utils/downloadqrcode";
 import { ReviewStepProps } from "./types";
 import { useEventCodeQuery } from "@/hooks/useEvents";
 
+/*
+ * CopyButtonProps defines the properties for the CopyButton component, which includes:
+ * isCopied: A boolean indicating whether the link has been successfully copied.
+ * onCopy: A function to be called when the copy button is clicked.
+ * ariaLabel: A string for accessibility, providing a label for screen readers.
+ */
+type CopyButtonProps = {
+  isCopied: boolean;
+  onCopy: () => void;
+  ariaLabel: string;
+};
+
+/*
+ * CopyButton component renders a button that allows users to copy a link to the clipboard.
+ * It provides visual feedback on whether the link has been successfully copied or if there was an error during the copy process.
+ * The button is disabled when the link has already been copied to prevent multiple copy attempts.
+ */
+const CopyButton = ({ isCopied, onCopy, ariaLabel }: CopyButtonProps) => (
+  <button
+    type="button"
+    onClick={isCopied ? undefined : onCopy}
+    disabled={isCopied}
+    aria-label={ariaLabel}
+    style={{
+      cursor: isCopied ? "default" : "pointer",
+      background: "none",
+      border: "none",
+      padding: 0,
+      display: "flex",
+      alignItems: "center",
+    }}
+  >
+    {isCopied ? <Check size={18} /> : <Copy size={18} />}
+  </button>
+);
+
 const ReviewStep = ({ status, result }: ReviewStepProps) => {
   const tReview = useTranslations("admin.dashboard.event.create.review");
   const tShare = useTranslations("guest.event.share.links");
@@ -71,28 +107,6 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
     }
   };
 
-  /**
-   * Render the copy/check button for a given role
-   */
-  const CopyButton = () => (
-    <button
-      type="button"
-      onClick={isCopied ? undefined : handleCopy}
-      disabled={isCopied}
-      aria-label="Copy share link"
-      style={{
-        cursor: isCopied ? "default" : "pointer",
-        background: "none",
-        border: "none",
-        padding: 0,
-        display: "flex",
-        alignItems: "center",
-      }}
-    >
-      {isCopied ? <Check size={18} /> : <Copy size={18} />}
-    </button>
-  );
-
   if (status === "pending") return <Loader />;
 
   return (
@@ -100,6 +114,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
       <Title size="medium" description={tReview("description")}>
         {tReview("title")}
       </Title>
+
       <DropdownControl
         onChange={role => setShareRole(role as "guest" | "moderator")}
         value={shareRole}
@@ -124,6 +139,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   {tCommon("actions.download")}
                 </Button>
               </div>
+
               <div className={styles.linkContainer} data-color="neutral">
                 <Title size="medium" description={tShare("guest.description")}>
                   {tShare("guest.title")}
@@ -132,7 +148,13 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   aria-label={tShareAria("guestLinkInput")}
                   readOnly
                   value={displayLink}
-                  icon={<CopyButton />}
+                  icon={
+                    <CopyButton
+                      isCopied={isCopied}
+                      onCopy={handleCopy}
+                      ariaLabel={tShareAria("guestLinkInput")}
+                    />
+                  }
                   iconPosition="right"
                   fill
                 />
@@ -143,6 +165,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
             </div>
           }
         />
+
         <DropdownControl.Item
           label={tCommon("roles.moderator")}
           value="moderator"
@@ -162,6 +185,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   {tCommon("actions.download")}
                 </Button>
               </div>
+
               <div className={styles.linkContainer} data-color="neutral">
                 <Title size="medium" description={tShare("moderator.description")}>
                   {tShare("moderator.title")}
@@ -170,7 +194,13 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   aria-label={tShareAria("moderatorLinkInput")}
                   readOnly
                   value={displayLink}
-                  icon={<CopyButton />}
+                  icon={
+                    <CopyButton
+                      isCopied={isCopied}
+                      onCopy={handleCopy}
+                      ariaLabel={tShareAria("moderatorLinkInput")}
+                    />
+                  }
                   iconPosition="right"
                   fill
                 />
