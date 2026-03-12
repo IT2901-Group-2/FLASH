@@ -12,8 +12,8 @@ const DatePickerDayButton = ({ date }: { date: Date }) => {
   const inRange =
     !!start &&
     !!end &&
-    ts > Math.min(start.getTime(), end.getTime()) &&
-    ts < Math.max(start.getTime(), end.getTime());
+    ts >= Math.min(start.getTime(), end.getTime()) &&
+    ts <= Math.max(start.getTime(), end.getTime());
   const isToday = date.toDateString() === today.toDateString();
 
   return (

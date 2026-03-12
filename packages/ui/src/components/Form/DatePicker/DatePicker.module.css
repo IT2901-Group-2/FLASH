@@ -54,8 +54,9 @@
 .dateGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0.125rem;
   margin-bottom: 0.25rem;
+  text-align: center;
+  color: var(--text-neutral-decoration);
 }
 
 .dateButton {
@@ -72,7 +73,7 @@
     border-radius: var(--radius-full);
     width: 100%;
     height: 100%;
-    background-color: var(--bg-strong-hover);
+    background-color: var(--bg-strong);
     position: absolute;
     z-index: -1;
     top: 0;
@@ -81,26 +82,35 @@
     left: 0;
   }
 
-  &[data-start="true"] {
+  &[data-start="true"]::before {
     border-top-left-radius: var(--radius-full);
     border-bottom-left-radius: var(--radius-full);
   }
-  &[data-end="true"] {
+
+  &[data-end="true"]::before {
     border-top-right-radius: var(--radius-full);
     border-bottom-right-radius: var(--radius-full);
   }
 
   &[data-start="true"],
   &[data-end="true"] {
-    background-color: var(--bg-strong-pressed);
+    border-radius: var(--radius-full);
+    background-color: var(--bg-moderate-pressed);
     color: var(--text-neutral-contrast);
   }
 
   &[data-range="true"] {
-    background-color: var(--bg-strong);
     color: var(--text-neutral-contrast);
+    &::before {
+      content: "";
+      background-color: var(--bg-moderate-hover);
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      inset: 0;
+    }
   }
-
   &:hover {
     background-color: var(--bg-moderate-pressed);
   }

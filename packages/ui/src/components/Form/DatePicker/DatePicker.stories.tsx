@@ -16,6 +16,6 @@ type Story = StoryObj<typeof DatePicker>;
 export const Medium: Story = {
   args: {
     label: "Date",
-    "data-color": "brand-purple",
+    "data-color": "accent",
   },
 };
