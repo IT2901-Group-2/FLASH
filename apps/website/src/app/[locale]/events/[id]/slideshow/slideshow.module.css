@@ -1,0 +1,84 @@
+.page {
+  background-color: var(--bg-default);
+  height: 100vh;
+}
+
+.header {
+  position: absolute;
+  left: 2rem;
+  top: 2rem;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+
+  .back {
+    width: 2rem;
+    height: 2rem;
+    aspect-ratio: 1/1;
+    padding: 0.25rem;
+    border-radius: var(--radius-8);
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--bg-raised);
+    }
+    &:active {
+      background-color: var(--bg-sunken);
+    }
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.button {
+  position: absolute;
+  background-color: var(--bg-default);
+  outline: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-8);
+  cursor: pointer;
+  box-shadow: var(--shadow-dialog);
+
+  &:hover {
+    background-color: var(--bg-raised);
+  }
+  &:active {
+    background-color: var(--bg-sunken);
+  }
+}
+
+.prev {
+  top: 40%;
+  left: 2rem;
+}
+
+.next {
+  top: 40%;
+  right: 2rem;
+}
+
+.qrCodeSwitch {
+  top: 2rem;
+  right: 2rem;
+}
+
+.qrCode {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
