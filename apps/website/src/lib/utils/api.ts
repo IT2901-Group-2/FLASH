@@ -58,7 +58,6 @@ export async function makeRequest<T>(
     method,
     body,
     headers: contentType !== null ? { "Content-Type": contentType } : {},
-    credentials: "same-origin",
   });
 
   if (!response.ok) {

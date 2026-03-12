@@ -45,14 +45,11 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
   }
 
   if (isProtected(request)) {
+    const redirectRes = NextResponse.redirect(new URL("/admin", request.url));
     try {
-      verifyAccessToken(request);
+      verifyAccessToken(request, redirectRes);
     } catch {
-      const locale =
-        request.nextUrl.pathname.match(/^\/([a-z]{2}(-[A-Z]{2})?)/)?.[1] ??
-        routing.defaultLocale;
-      const loginUrl = new URL(`/${locale}/admin`, request.url);
-      return NextResponse.redirect(loginUrl);
+      return redirectRes;
     }
   }
 

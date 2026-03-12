@@ -68,7 +68,8 @@ function isTokenPayload(value: unknown): value is TokenPayload {
   return (
     typeof value === "object" &&
     value !== null &&
-    (value as Record<string, unknown>).admin === true
+    "admin" in value &&
+    value.admin === true
   );
 }
 
@@ -76,7 +77,7 @@ function isTokenPayload(value: unknown): value is TokenPayload {
  * Extracts and verifies the access token from the incoming request's cookies.
  * Throws error if the token is missing, expired, or has an invalid payload.
  */
-export function verifyAccessToken(req: NextRequest): TokenPayload {
+export function verifyAccessToken(req: NextRequest, res: NextResponse): TokenPayload {
   const token = req.cookies.get("accessToken")?.value;
   if (!token) throw new Error("Missing access token");
   try {
@@ -84,6 +85,7 @@ export function verifyAccessToken(req: NextRequest): TokenPayload {
     if (!isTokenPayload(decoded)) throw new Error("Invalid token payload");
     return decoded;
   } catch {
+    clearAccessToken(res);
     throw new Error("Invalid or expired access token");
   }
 }
@@ -93,7 +95,10 @@ export function verifyAccessToken(req: NextRequest): TokenPayload {
  * Throws error if the token is missing, expired, or has an invalid payload.
  * Called by the /api/auth/refresh endpoint to issue a new access token.
  */
-export function verifyRefreshToken(req: NextRequest): TokenPayload | null {
+export function verifyRefreshToken(
+  req: NextRequest,
+  res: NextResponse
+): TokenPayload | null {
   const refreshToken = req.cookies.get("refreshToken")?.value;
   if (!refreshToken) {
     throw new Error("No refresh token");
@@ -106,6 +111,7 @@ export function verifyRefreshToken(req: NextRequest): TokenPayload | null {
     }
     return decoded;
   } catch {
+    clearAccessToken(res);
     throw new Error("Invalid or expired refresh token");
   }
 }
