@@ -19,6 +19,7 @@ interface DateRangeContextValue extends DateRangeContextState {
   nextMonth: () => void;
   onChange?: (range: DateRange) => void;
   resetSelection: () => void;
+  local: string;
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -32,6 +33,7 @@ export const useDateRange = () => {
 // ─── Provider ─────────────────────────────────────────────────────────────────
 interface DateRangeProviderProps {
   onChange?: (range: DateRange) => void;
+  local: string;
   children: React.ReactNode;
 }
 
@@ -47,7 +49,7 @@ const DEFAULT_VALUES: DateRangeContextState = {
   today: new Date(),
 };
 
-const DateRangeProvider = ({ onChange, children }: DateRangeProviderProps) => {
+const DateRangeProvider = ({ onChange, local, children }: DateRangeProviderProps) => {
   const [value, setValue] = useState<DateRangeContextState>(DEFAULT_VALUES);
 
   const selectDate = (date: Date) => {
@@ -119,6 +121,7 @@ const DateRangeProvider = ({ onChange, children }: DateRangeProviderProps) => {
         nextMonth,
         onChange,
         resetSelection,
+        local,
       }}
     >
       {children}

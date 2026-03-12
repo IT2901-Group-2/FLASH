@@ -1,11 +1,11 @@
 import { ReactNode } from "react";
 import { useDateRange } from "../DatePicker.context";
-import { DAY_LABELS } from "../DatePicker.types";
 import DatePickerDayButton from "./DayButton";
 import styles from "../DatePicker.module.css";
+import { getWeekDays } from "@/util/helpers/getWeekDays";
 
 const DatePickerCalendarGrid = () => {
-  const { viewMonth, viewYear } = useDateRange();
+  const { viewMonth, viewYear, local } = useDateRange();
 
   const firstDay = new Date(viewYear, viewMonth, 0).getDay();
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
@@ -18,8 +18,8 @@ const DatePickerCalendarGrid = () => {
   return (
     <div>
       <div className={styles.dateGrid}>
-        {DAY_LABELS.map((d, key) => (
-          <div key={key}>{d}</div>
+        {getWeekDays(local).map((d, key) => (
+          <div key={key}>{d.slice(0, 2)}</div>
         ))}
       </div>
       <div className={styles.dateGrid}>{cells}</div>

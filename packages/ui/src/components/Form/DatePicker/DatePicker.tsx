@@ -10,9 +10,18 @@ export interface DatePickerProps
   extends FormFieldProps, Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
   label: string;
   description?: string;
+  /**
+   * Changes the names of the weekdays
+   * @default "en-US"
+   */
+  local?: string;
 }
 
-const DatePicker = ({ "data-color": color, ...rest }: DatePickerProps) => {
+const DatePicker = ({
+  "data-color": color,
+  local = "en-US",
+  ...rest
+}: DatePickerProps) => {
   const [value, setValue] = useState<string>("");
   const buttonRef = useRef<HTMLButtonElement>(null);
   const popoverId = `calendar-${useId()}`;
@@ -57,7 +66,7 @@ const DatePicker = ({ "data-color": color, ...rest }: DatePickerProps) => {
         type="button"
       />
       <div data-color={color} popover="auto" id={popoverId} className={styles.calendar}>
-        <DateRangePicker onChange={handleChange} />
+        <DateRangePicker onChange={handleChange} local={local} />
       </div>
     </>
   );

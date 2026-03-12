@@ -6,11 +6,16 @@ import DatePickerTimeInputs from "./TimeInputs";
 
 export interface DateRangePickerProps {
   onChange?: (range: DateRange) => void;
+  /**
+   * Changes the names of the weekdays
+   * @default "en-US"
+   */
+  local: string;
 }
 
-const DateRangePicker = ({ onChange }: DateRangePickerProps) => {
+const DateRangePicker = ({ onChange, local }: DateRangePickerProps) => {
   return (
-    <DateRangeProvider onChange={onChange}>
+    <DateRangeProvider onChange={onChange} local={local}>
       <DatePickerCalendarNav />
       <DatePickerCalendarGrid />
       <DatePickerTimeInputs />
