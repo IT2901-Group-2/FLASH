@@ -72,11 +72,11 @@ const Page = () => {
           <ChevronLeft />
         </button>
         <button onClick={toggle}>{paused ? <Play /> : <Pause />}</button>
-        <button onClick={() => setShowQRCode(v => !v)}>
-          <QrCode />
-        </button>
         <button onClick={nextImage}>
           <ChevronRight />
+        </button>
+        <button onClick={() => setShowQRCode(v => !v)}>
+          <QrCode />
         </button>
       </div>
       {showQRCode && joinLink && (

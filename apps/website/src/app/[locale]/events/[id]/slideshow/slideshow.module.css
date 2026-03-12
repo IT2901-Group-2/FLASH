@@ -51,8 +51,13 @@
   position: absolute;
   top: 2rem;
   right: 2rem;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
+
+  > :last-child {
+    grid-column: 3;
+  }
 
   > button {
     outline: none;
