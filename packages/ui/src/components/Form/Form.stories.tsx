@@ -2,9 +2,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TextField } from "./TextField";
 import { Button } from "../Button";
 import { Textarea } from "./Textarea";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { expect, userEvent, within } from "storybook/test";
-import { DatePicker } from "./DatePicker";
+import DatePickerField from "./DatePicker/DatePickerField";
 
 const meta: Meta<typeof HTMLFormElement> = {
   title: "Patterns and Templates/Form",
@@ -18,60 +18,63 @@ type Story = StoryObj<typeof HTMLFormElement>;
 
 export const Demo: Story = {
   render: () => {
+    const methods = useForm();
     const {
       register,
-      reset,
       handleSubmit,
       formState: { errors },
-    } = useForm();
+    } = methods;
 
     return (
-      <form
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "1rem",
-        }}
-        onSubmit={handleSubmit(data => console.log(data))}
-        onReset={reset}
-      >
-        <TextField
-          label="Name"
-          {...register("name", {
-            required: "Name is required",
-            minLength: { value: 3, message: "Must be at least 3 characters" },
-          })}
-          error={errors.name?.message?.toString()}
-          required
-        />
-        <Textarea label="Description" error={errors.description?.message?.toString()} />
-        <TextField
-          label="Upload Limit"
-          type="number"
-          {...register("uploadLimit", {
-            required: "A upload limit is required",
-            min: { value: 1, message: "The minimum allowed number of photos is 1" },
-          })}
-          error={errors.uploadLimit?.message?.toString()}
-          required
-        />
-        <DatePicker
-          label="Date"
-          {...register("time", {
-            required: "Start and end date is required",
-          })}
-          error={errors.time?.message?.toString()}
-          required
-        />
-        <div style={{ display: "flex", gap: ".5rem" }}>
-          <Button type="reset" variant="secondary" fill>
-            Reset
-          </Button>
-          <Button type="submit" fill>
-            Submit
-          </Button>
-        </div>
-      </form>
+      <FormProvider {...methods}>
+        <form
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+          }}
+          onSubmit={handleSubmit(data => console.log(data))}
+        >
+          <TextField
+            label="Name"
+            {...register("name", {
+              required: "Name is required",
+              minLength: { value: 3, message: "Must be at least 3 characters" },
+            })}
+            error={errors.name?.message?.toString()}
+            required
+          />
+          <Textarea
+            label="Description"
+            {...register("description")}
+            error={errors.description?.message?.toString()}
+          />
+          <TextField
+            label="Upload Limit"
+            type="number"
+            {...register("uploadLimit", {
+              required: "A upload limit is required",
+              min: { value: 1, message: "The minimum allowed number of photos is 1" },
+            })}
+            error={errors.uploadLimit?.message?.toString()}
+            required
+          />
+          <DatePickerField
+            label="Date"
+            startName="startDate"
+            endName="endDate"
+            required
+          />
+          <div style={{ display: "flex", gap: ".5rem" }}>
+            <Button type="reset" variant="secondary" fill>
+              Reset
+            </Button>
+            <Button type="submit" fill>
+              Submit
+            </Button>
+          </div>
+        </form>
+      </FormProvider>
     );
   },
   play: async ({ canvasElement, step }) => {

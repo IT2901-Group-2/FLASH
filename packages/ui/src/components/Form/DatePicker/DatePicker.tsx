@@ -15,7 +15,7 @@ export interface DatePickerProps
    * @default "en-US"
    */
   local?: string;
-  onRangeChange?: (values: { startDate: string; endDate: string }) => void;
+  onRangeChange?: (values: { startDate: Date; endDate: Date }) => void;
 }
 
 const DatePicker = ({
@@ -44,7 +44,17 @@ const DatePicker = ({
     const formatted = `${startDate} - ${endDate}`.replace("T", " ");
 
     setValue(formatted);
-    onRangeChange?.({ startDate, endDate });
+
+    const [startHours, startMinutes] = range.startTime.split(":").map(Number);
+    const [endHours, endMinutes] = range.endTime.split(":").map(Number);
+
+    const startDateTime = new Date(range.start!);
+    startDateTime.setHours(startHours, startMinutes);
+
+    const endDateTime = new Date(range.end!);
+    endDateTime.setHours(endHours, endMinutes);
+
+    onRangeChange?.({ startDate: startDateTime, endDate: endDateTime });
 
     rest.onChange?.({
       target: { value: formatted, name: rest.name },
