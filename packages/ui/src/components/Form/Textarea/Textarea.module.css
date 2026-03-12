@@ -8,7 +8,7 @@
   outline: none;
 
   border-radius: var(--radius-16);
-  border: 1px solid var(--border-focus);
+  border: 0.1rem solid var(--border-focus);
   background-color: var(--bg-input);
   color: var(--text-neutral);
 
