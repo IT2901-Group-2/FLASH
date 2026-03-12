@@ -45,8 +45,6 @@ const CopyButton = ({ isCopied, onCopy, ariaLabel }: CopyButtonProps) => (
 
 const ReviewStep = ({ status, result }: ReviewStepProps) => {
   const tReview = useTranslations("admin.dashboard.event.create.review");
-  const tShare = useTranslations("guest.event.share.links");
-  const tShareAria = useTranslations("guest.event.share.aria");
   const tCommon = useTranslations("common");
   const [shareRole, setShareRole] = useState<"guest" | "moderator">("guest");
   const [copyState, setCopyState] = useState<{
@@ -141,11 +139,11 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
               </div>
 
               <div className={styles.linkContainer} data-color="neutral">
-                <Title size="medium" description={tShare("guest.description")}>
-                  {tShare("guest.title")}
+                <Title size="medium" description={tReview("links.guest.description")}>
+                  {tReview("links.guest.title")}
                 </Title>
                 <Input
-                  aria-label={tShareAria("guestLinkInput")}
+                  aria-label="Guest Link"
                   readOnly
                   value={displayLink}
                   icon={
@@ -187,11 +185,11 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
               </div>
 
               <div className={styles.linkContainer} data-color="neutral">
-                <Title size="medium" description={tShare("moderator.description")}>
-                  {tShare("moderator.title")}
+                <Title size="medium" description={tReview("links.moderator.description")}>
+                  {tReview("links.moderator.title")}
                 </Title>
                 <Input
-                  aria-label={tShareAria("moderatorLinkInput")}
+                  aria-label="Moderator Link"
                   readOnly
                   value={displayLink}
                   icon={
