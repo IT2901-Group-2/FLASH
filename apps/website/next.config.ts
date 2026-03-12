@@ -4,7 +4,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
-  transpilePackages: ["ui", "file-storage"],
+  transpilePackages: ["@flash/ui", "@flash/file-storage"],
   serverExternalPackages: ["better-sqlite3", "typescript-result"],
   outputFileTracingIncludes: {
     "/": ["drizzle/**/*"],

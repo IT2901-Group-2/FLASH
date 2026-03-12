@@ -90,7 +90,7 @@ vi.mock("@/components/ModerateHeader", () => ({
 }));
 
 // Mock UI components to simplify testing
-vi.mock("ui", () => ({
+vi.mock("@flash/ui", () => ({
   SegmentedControl: Object.assign(
     ({
       children,

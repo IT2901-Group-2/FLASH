@@ -1,4 +1,4 @@
-import { Title, QRDisplay, Button, Input, Loader, DropdownControl } from "ui";
+import { Title, QRDisplay, Button, Input, Loader, DropdownControl } from "@flash/ui";
 import { useRef, useState } from "react";
 import { Copy, Download } from "lucide-react";
 import styles from "./Steps.module.css";

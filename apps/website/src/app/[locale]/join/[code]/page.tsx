@@ -1,5 +1,5 @@
 "use client";
-import { Button, Card, Input, Title } from "ui";
+import { Button, Card, Input, Title } from "@flash/ui";
 import styles from "./nickname.module.css";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, ArrowRight } from "lucide-react";

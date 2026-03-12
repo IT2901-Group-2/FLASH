@@ -2,7 +2,7 @@
 
 import styles from "./layout.module.css";
 import AdminSidebar from "@/components/Sidebar/AdminSidebar";
-import { Sidebar } from "ui";
+import { Sidebar } from "@flash/ui";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
