@@ -1,7 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react-vite";
 import ActionCard from "./ActionCard";
 import {
-  Camera,
   RotateCcw,
   Upload,
   X,
