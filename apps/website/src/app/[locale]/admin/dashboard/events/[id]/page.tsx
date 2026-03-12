@@ -49,7 +49,11 @@ const Page = () => {
           >
             {c("downloadQrCode")}
           </Button>
-          <Button data-color="brand-purple" icon={<Play />}>
+          <Button
+            data-color="brand-purple"
+            icon={<Play />}
+            onClick={() => navigation.push(`/events/${id}/slideshow`)}
+          >
             {c("slideshow")}
           </Button>
           <Button
