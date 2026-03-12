@@ -19,7 +19,9 @@ const DatePickerCalendarGrid = () => {
     <div>
       <div className={styles.dateGrid}>
         {getWeekDays(local).map((d, key) => (
-          <div key={key}>{d.slice(0, 2)}</div>
+          <div key={key} className={styles.dateName}>
+            {d.toUpperCase().slice(0, 3)}
+          </div>
         ))}
       </div>
       <div className={styles.dateGrid}>{cells}</div>

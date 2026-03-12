@@ -3,8 +3,8 @@ import { useDateRange } from "../DatePicker.context";
 import styles from "../DatePicker.module.css";
 
 const DatePickerCalendarNav = () => {
-  const { viewMonth, viewYear, prevMonth, nextMonth } = useDateRange();
-  const monthName = new Date(viewYear, viewMonth).toLocaleString("default", {
+  const { viewMonth, viewYear, prevMonth, nextMonth, local } = useDateRange();
+  const monthName = new Date(viewYear, viewMonth).toLocaleString(local, {
     month: "long",
   });
 

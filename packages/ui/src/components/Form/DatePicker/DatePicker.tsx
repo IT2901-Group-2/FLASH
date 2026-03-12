@@ -15,11 +15,13 @@ export interface DatePickerProps
    * @default "en-US"
    */
   local?: string;
+  onRangeChange?: (values: { startDate: string; endDate: string }) => void;
 }
 
 const DatePicker = ({
   "data-color": color,
   local = "en-US",
+  onRangeChange,
   ...rest
 }: DatePickerProps) => {
   const [value, setValue] = useState<string>("");
@@ -42,6 +44,7 @@ const DatePicker = ({
     const formatted = `${startDate} - ${endDate}`.replace("T", " ");
 
     setValue(formatted);
+    onRangeChange?.({ startDate, endDate });
 
     rest.onChange?.({
       target: { value: formatted, name: rest.name },
