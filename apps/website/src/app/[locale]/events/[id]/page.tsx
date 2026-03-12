@@ -113,15 +113,6 @@ export default function Page() {
             onClick={() => dialogRef.current?.showModal()}
           />
           <Button
-            icon={<Camera />}
-            iconPosition="right"
-            data-color="brand-purple"
-            variant="secondary"
-            className={styles.desktopOnly}
-          >
-            {tCommon("actions.takePhoto")}
-          </Button>
-          <Button
             icon={<Upload />}
             iconPosition="right"
             data-color="brand-purple"
@@ -145,12 +136,6 @@ export default function Page() {
               iconPosition: "right",
               text: tCommon("actions.uploadImage"),
               onClick: openFilePicker,
-            }}
-            secondaryButton={{
-              "data-color": "brand-purple",
-              icon: <Camera size={18} />,
-              iconPosition: "right",
-              text: tCommon("actions.takePhoto"),
             }}
           />
         </div>

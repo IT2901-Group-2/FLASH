@@ -42,31 +42,6 @@ export const UploadImage: Story = {
   },
 };
 
-/* TakePhoto variant with secondary and primary buttons */
-export const TakePhoto: Story = {
-  args: {
-    secondaryButton: {
-      text: "Take Photo",
-      icon: <Camera size={18} />,
-      iconPosition: "right",
-      "data-color": "brand-purple",
-    },
-    primaryButton: {
-      text: "Upload Image",
-      icon: <Upload size={18} />,
-      iconPosition: "right",
-      "data-color": "brand-purple",
-    },
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await expect(canvas.getByRole("button", { name: "Take Photo" })).toBeInTheDocument();
-    await expect(
-      canvas.getByRole("button", { name: "Upload Image" })
-    ).toBeInTheDocument();
-  },
-};
-
 /* Successful upload variant with description and both buttons */
 export const SuccessfulUpload: Story = {
   args: {
@@ -287,7 +262,6 @@ export const AllVariants: Story = {
       style={{ display: "flex", flexDirection: "column", gap: "2rem", flexWrap: "wrap" }}
     >
       <ActionCard {...UploadImage.args} />
-      <ActionCard {...TakePhoto.args} />
       <ActionCard {...SuccessfulUpload.args} />
       <ActionCard {...FailedUpload.args} />
       <ActionCard {...UploadToSelectedAlbum.args} />
