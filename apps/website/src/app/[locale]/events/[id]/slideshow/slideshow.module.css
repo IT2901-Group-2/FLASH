@@ -1,6 +1,10 @@
 .page {
-  background-color: var(--bg-default);
+  background-color: black;
   height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .hideCursor {
@@ -16,6 +20,11 @@
   gap: 1rem;
   justify-content: center;
   align-items: center;
+
+  background-color: var(--bg-input);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-8);
+  box-shadow: var(--shadow-dialog);
 
   .back {
     width: 2rem;
@@ -40,7 +49,6 @@
 
 .button {
   position: absolute;
-  background-color: var(--bg-default);
   outline: none;
   border: none;
   display: flex;
@@ -51,6 +59,8 @@
   border-radius: var(--radius-8);
   cursor: pointer;
   box-shadow: var(--shadow-dialog);
+  background-color: var(--bg-input);
+  color: inherit;
 
   &:hover {
     background-color: var(--bg-raised);
@@ -73,10 +83,13 @@
 .qrCodeSwitch {
   top: 2rem;
   right: 2rem;
+  background-color: var(--bg-input);
+  color: inherit;
 }
 
 .qrCode {
   position: absolute;
+
   bottom: 2rem;
   right: 2rem;
 }
@@ -85,4 +98,18 @@
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
+}
+
+.image {
+  object-fit: contain;
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
