@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Camera, QrCode, Upload } from "lucide-react";
+import { QrCode, Upload } from "lucide-react";
 import styles from "./UploadImage.module.css";
 import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
