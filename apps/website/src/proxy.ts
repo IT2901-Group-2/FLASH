@@ -14,6 +14,12 @@ import {
 const handleI18nRouting = createMiddleware(routing);
 
 const PROTECTED_ROUTES = ["/admin/dashboard"];
+const ADMIN_LOGIN_ROUTE = "/admin";
+
+function isAdminLogin(req: NextRequest): boolean {
+  const withoutLocale = req.nextUrl.pathname.replace(/^\/[a-z]{2}(-[A-Z]{2})?/, "");
+  return withoutLocale === ADMIN_LOGIN_ROUTE;
+}
 
 function isProtected(req: NextRequest): boolean {
   const withoutLocale = req.nextUrl.pathname.replace(/^\/[a-z]{2}(-[A-Z]{2})?/, "");
@@ -51,6 +57,15 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
     } catch {
       return redirectRes;
     }
+  }
+
+  if (isAdminLogin(request)) {
+    try {
+      verifyAccessToken(request, new NextResponse());
+      const locale =
+        request.nextUrl.pathname.match(/^\/([a-z]{2}(-[A-Z]{2})?)/)?.[1] ?? "en";
+      return NextResponse.redirect(new URL(`/${locale}/admin/dashboard`, request.url));
+    } catch {}
   }
 
   return handleI18nRouting(request);

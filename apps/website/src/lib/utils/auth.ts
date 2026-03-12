@@ -19,7 +19,8 @@ export type TokenPayload = {
  * Validates the provided paassword against the stored ADMIN_PASWORD env variable.
  */
 export async function verifyLogin(password: string): Promise<boolean> {
-  return bcrypt.compare(password, ADMIN_PASSWORD);
+  return password == ADMIN_PASSWORD;
+  // return bcrypt.compare(password, ADMIN_PASSWORD);
 }
 
 /** Token signing
