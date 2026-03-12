@@ -15,7 +15,7 @@ export function getStorageConfig(): StorageConfig {
     case "fs":
       return {
         backend,
-        dir: process.env.STORAGE_DIR ?? upath.join(tmpdir(), "foto-app"),
+        dir: process.env.STORAGE_DIR ?? upath.join(tmpdir(), "flash"),
       };
 
     case "gcloud":
