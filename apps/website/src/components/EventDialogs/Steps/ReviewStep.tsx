@@ -35,7 +35,6 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
     };
   }, []);
 
-
   /**
    * Function to handle downloading the QR code as an SVG file.
    * It queries the QR code SVG element from the DOM and uses a utility function to trigger the download with
@@ -137,7 +136,9 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   iconPosition="right"
                   fill
                 />
-                {hasCopyError ? <p className={styles.copyError}>{tCommon("messages.copyFailed")}</p> : null}
+                {hasCopyError ? (
+                  <p className={styles.copyError}>{tCommon("messages.copyFailed")}</p>
+                ) : null}
               </div>
             </div>
           }
@@ -173,7 +174,9 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   iconPosition="right"
                   fill
                 />
-                {hasCopyError ? <p className={styles.copyError}>{tCommon("messages.copyFailed")}</p> : null}
+                {hasCopyError ? (
+                  <p className={styles.copyError}>{tCommon("messages.copyFailed")}</p>
+                ) : null}
               </div>
             </div>
           }
