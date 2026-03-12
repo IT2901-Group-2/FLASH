@@ -1,14 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react-vite";
 import ActionCard from "./ActionCard";
-import {
-  RotateCcw,
-  Upload,
-  X,
-  Save,
-  ArrowRight,
-  QrCode,
-  Edit,
-} from "lucide-react";
+import { RotateCcw, Upload, X, Save, ArrowRight, QrCode, Edit } from "lucide-react";
 import { expect, within } from "storybook/test";
 
 const meta: Meta<typeof ActionCard> = {
