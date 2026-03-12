@@ -45,18 +45,23 @@ const Page = () => {
   const nextImage = () => setViewIndex(i => i + 1);
 
   return (
-    <div className={cl(styles.page, isIdle && styles.hideCursor)}>
+    <div className={cl(styles.page, isIdle && styles.hideCursor)} data-testid="page">
       {!image && <p>{t("noApproved")}</p>}
       {image && (
         <Image
           fill
           src={`/api/events/${id}/images/${image.id}`}
           alt=""
+          role="img"
           className={styles.image}
         />
       )}
       <div className={cl(styles.header, isIdle && styles.hidden)}>
-        <X className={styles.back} onClick={() => router.back()} />
+        <X
+          className={styles.back}
+          onClick={() => router.back()}
+          data-testid="back-button"
+        />
         <Title
           size="xsmall"
           description={t("viewProgress", {
@@ -67,15 +72,20 @@ const Page = () => {
           {eventData?.name}
         </Title>
       </div>
-      <div className={cl(styles.buttonArray, isIdle && styles.hidden)}>
+      <div
+        className={cl(styles.buttonArray, isIdle && styles.hidden)}
+        data-testid="controls"
+      >
         <button onClick={prevImage}>
           <ChevronLeft />
         </button>
-        <button onClick={toggle}>{paused ? <Play /> : <Pause />}</button>
+        <button onClick={toggle} data-testid="toggle-button">
+          {paused ? <Play data-testid="play" /> : <Pause data-testid="pause" />}
+        </button>
         <button onClick={nextImage}>
           <ChevronRight />
         </button>
-        <button onClick={() => setShowQRCode(v => !v)}>
+        <button onClick={() => setShowQRCode(v => !v)} data-testid="qr-button">
           <QrCode />
         </button>
       </div>
