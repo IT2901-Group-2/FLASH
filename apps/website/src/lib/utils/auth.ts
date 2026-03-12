@@ -7,6 +7,7 @@ import {
   REFRESH_TOKEN_SECRET,
   ADMIN_PASSWORD,
 } from "@/config/admin";
+import bcrypt from "bcryptjs";
 
 // Types
 // Shape of the JWT payload - currently just marks the bearer as admin
@@ -14,12 +15,13 @@ export type TokenPayload = {
   admin: true;
 };
 
+const ADMIN_PASSWORD_HASH = await bcrypt.hash(ADMIN_PASSWORD, 10);
+
 /** Password verfication
  * Validates the provided paassword against the stored ADMIN_PASWORD env variable.
  */
 export async function verifyLogin(password: string): Promise<boolean> {
-  return password == ADMIN_PASSWORD;
-  // return bcrypt.compare(password, ADMIN_PASSWORD);
+  return bcrypt.compare(password, ADMIN_PASSWORD_HASH);
 }
 
 /** Token signing
