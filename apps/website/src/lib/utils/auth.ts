@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import type { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import {
   ACCESS_TOKEN_EXPIRY,
   REFRESH_TOKEN_EXPIRY,
@@ -28,13 +29,13 @@ export async function verifyLogin(password: string): Promise<boolean> {
  * Signs a new access token and writes it as an httpOnly cookie on the response.
  * Returns the expiry in milliseconds
  */
-export function signAccessToken(res: NextResponse): {
-  expiresIn: number;
-} {
+export async function signAccessToken(): Promise<{ expiresIn: number }> {
+  const cookieStore = await cookies();
   const accessToken = jwt.sign({ admin: true }, JWT_SECRET, {
     expiresIn: ACCESS_TOKEN_EXPIRY,
   });
-  res.cookies.set("accessToken", accessToken, {
+
+  cookieStore.set("accessToken", accessToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
@@ -49,11 +50,12 @@ export function signAccessToken(res: NextResponse): {
  * Signs a new refresh token and writes it as an httpOnly cookie on the response.
  * Scoped to /api/auth/refresh so it isn't sent on every request.
  */
-export function signRefreshToken(res: NextResponse): void {
+export async function signRefreshToken(): Promise<void> {
+  const cookieStore = await cookies();
   const refreshToken = jwt.sign({ admin: true }, JWT_SECRET, {
     expiresIn: REFRESH_TOKEN_EXPIRY,
   });
-  res.cookies.set("refreshToken", refreshToken, {
+  cookieStore.set("refreshToken", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
@@ -79,15 +81,16 @@ function isTokenPayload(value: unknown): value is TokenPayload {
  * Extracts and verifies the access token from the incoming request's cookies.
  * Throws error if the token is missing, expired, or has an invalid payload.
  */
-export function verifyAccessToken(req: NextRequest, res: NextResponse): TokenPayload {
-  const token = req.cookies.get("accessToken")?.value;
+export async function verifyAccessToken(): Promise<TokenPayload> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("accessToken")?.value;
   if (!token) throw new Error("Missing access token");
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     if (!isTokenPayload(decoded)) throw new Error("Invalid token payload");
     return decoded;
   } catch {
-    clearAccessToken(res);
+    await clearAccessToken();
     throw new Error("Invalid or expired access token");
   }
 }
@@ -97,11 +100,9 @@ export function verifyAccessToken(req: NextRequest, res: NextResponse): TokenPay
  * Throws error if the token is missing, expired, or has an invalid payload.
  * Called by the /api/auth/refresh endpoint to issue a new access token.
  */
-export function verifyRefreshToken(
-  req: NextRequest,
-  res: NextResponse
-): TokenPayload | null {
-  const refreshToken = req.cookies.get("refreshToken")?.value;
+export async function verifyRefreshToken(): Promise<TokenPayload | null> {
+  const cookieStore = await cookies();
+  const refreshToken = cookieStore.get("refreshToken")?.value;
   if (!refreshToken) {
     throw new Error("No refresh token");
   }
@@ -113,8 +114,8 @@ export function verifyRefreshToken(
     }
     return decoded;
   } catch {
-    clearAccessToken(res);
-    clearRefreshToken(res);
+    await clearAccessToken();
+    await clearRefreshToken();
     throw new Error("Invalid or expired refresh token");
   }
 }
@@ -123,8 +124,9 @@ export function verifyRefreshToken(
  *  Clears the refresh token cookie by overwritting it with an empty, immediatly-expiring value.
  *  Mirrors the original cookie config to ensure the browser removes it.
  */
-export function clearRefreshToken(res: NextResponse): void {
-  res.cookies.set("refreshToken", "", {
+export async function clearRefreshToken(): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.set("refreshToken", "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
@@ -136,8 +138,9 @@ export function clearRefreshToken(res: NextResponse): void {
 /**
  * Clears the access token cookie.
  */
-export function clearAccessToken(res: NextResponse): void {
-  res.cookies.set("accessToken", "", {
+export async function clearAccessToken(): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.set("accessToken", "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",

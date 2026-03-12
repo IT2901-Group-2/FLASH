@@ -54,7 +54,7 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
   if (isProtected(request)) {
     const redirectRes = NextResponse.redirect(new URL("/admin", request.url));
     try {
-      verifyAccessToken(request, redirectRes);
+      await verifyAccessToken();
     } catch {
       return redirectRes;
     }
@@ -62,7 +62,7 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
 
   if (isAdminLogin(request)) {
     try {
-      verifyAccessToken(request, new NextResponse());
+      verifyAccessToken();
       const locale =
         request.nextUrl.pathname.match(/^\/([a-z]{2}(-[A-Z]{2})?)/)?.[1] ?? "en";
       return NextResponse.redirect(new URL(`/${locale}/admin/dashboard`, request.url));
