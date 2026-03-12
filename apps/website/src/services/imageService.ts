@@ -116,7 +116,7 @@ export class ImageService {
       .map(({ userId }) =>
         Result.try(() => sharp(image))
           .map(sharpImage => this.validateImage(sharpImage))
-          .mapCatching(sharpImage => sharpImage.clone().webp().toBuffer())
+          .mapCatching(sharpImage => sharpImage.clone().rotate().webp().toBuffer())
           .map(buff => this.storage.write(`${imageId}.webp`, buff))
           .map(() =>
             Result.try(() =>

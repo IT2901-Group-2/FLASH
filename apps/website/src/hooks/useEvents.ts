@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "@/lib/utils/api";
 import {
   CreateEvent,
+  getEventCodeSchema,
   GetEventCodeParams,
   GetEventsParams,
   getEventSchema,
@@ -50,6 +51,7 @@ export const eventsKeys = {
     [...eventsKeys.all, "list", toEventsSearchParams(params)] as const,
   code: (eventId?: string, role: GetEventCodeParams["role"] = "guest") =>
     [...eventsKeys.all, eventId, "code", role] as const,
+  byCode: (code?: string) => [...eventsKeys.all, "by-code", code] as const,
 };
 
 /**
@@ -75,6 +77,17 @@ export function useEventCodeQuery(
     queryKey: eventsKeys.code(eventId, role),
     queryFn: () => makeRequest(z.string(), `/api/events/${eventId}/code?role=${role}`),
     enabled: !!eventId,
+  });
+}
+
+/**
+ * Resolves join code metadata for the event joining flow.
+ */
+export function useEventByCodeQuery(code?: string) {
+  return useQuery({
+    queryKey: eventsKeys.byCode(code),
+    queryFn: () => makeRequest(getEventCodeSchema, `/api/events/by-code/${code}`),
+    enabled: !!code,
   });
 }
 
