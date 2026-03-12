@@ -3,7 +3,7 @@
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { QRDisplay, Title } from "ui";
+import { QRDisplay, Title } from "@flash/ui";
 import styles from "./slideshow.module.css";
 import { ChevronLeft, ChevronRight, Pause, Play, QrCode, X } from "lucide-react";
 import { cl } from "@/utils/className";

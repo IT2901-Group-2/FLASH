@@ -47,7 +47,7 @@ vi.mock("next/image", () => ({
   ),
 }));
 
-vi.mock("ui", () => ({
+vi.mock("@flash/ui", () => ({
   QRDisplay: ({ value, code }: { value: string; code: string }) => (
     <div data-testid="qr-display" data-value={value} data-code={code} />
   ),
