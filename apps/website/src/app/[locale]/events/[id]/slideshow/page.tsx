@@ -11,9 +11,12 @@ import { useImagesQuery } from "@/hooks/useImages";
 import Image from "next/image";
 import { useIdle } from "@/hooks/useIdle";
 import { useInterval } from "@/hooks/useInterval";
+import { useTranslations } from "next-intl";
 
 const Page = () => {
   const INTERVAL = 10 * 1000;
+
+  const t = useTranslations("common.slideshow");
 
   const router = useRouter();
   const [showQRCode, setShowQRCode] = useState<boolean>(true);
@@ -41,7 +44,7 @@ const Page = () => {
 
   return (
     <div className={cl(styles.page, isIdle && styles.hideCursor)}>
-      {!image && <p>No approved images.</p>}
+      {!image && <p>{t("noApproved")}</p>}
       {image && (
         <Image
           fill
@@ -54,7 +57,10 @@ const Page = () => {
         <X className={styles.back} onClick={() => router.back()} />
         <Title
           size="xsmall"
-          description={`${Math.min(viewIndex + 1, imageData?.length ?? 0)} of ${imageData?.length}`}
+          description={t("viewProgress", {
+            index: Math.min(viewIndex + 1, imageData?.length ?? 0),
+            total: imageData?.length ?? 0,
+          })}
         >
           {eventData?.name}
         </Title>
