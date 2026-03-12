@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, useEffect, useRef, useState } from "react";
+import { InputHTMLAttributes, useEffect, useId, useRef, useState } from "react";
 import { FormFieldProps } from "../useFormField";
 import styles from "./DatePicker.module.css";
 import { TextField } from "../TextField";
@@ -15,6 +15,7 @@ export interface DatePickerProps
 const DatePicker = ({ "data-color": color, ...rest }: DatePickerProps) => {
   const [value, setValue] = useState<string>("");
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const popoverId = `calendar-${useId()}`;
 
   // For making "reset" inside a form work
   useEffect(() => {
@@ -51,11 +52,11 @@ const DatePicker = ({ "data-color": color, ...rest }: DatePickerProps) => {
       />
       <button
         ref={buttonRef}
-        popoverTarget="calendar"
+        popoverTarget={popoverId}
         className={styles.openCalendar}
         type="button"
       />
-      <div data-color={color} popover="auto" id="calendar" className={styles.calendar}>
+      <div data-color={color} popover="auto" id={popoverId} className={styles.calendar}>
         <DateRangePicker onChange={handleChange} />
       </div>
     </>
