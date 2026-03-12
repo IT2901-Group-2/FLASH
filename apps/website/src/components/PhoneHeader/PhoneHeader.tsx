@@ -4,6 +4,7 @@ import { cl } from "@/utils/className";
 import { Title } from "ui";
 import { ArrowLeft, User } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { truncateText } from "@/utils/string-utils";
 
 interface PhoneHeaderProps extends HTMLAttributes<HTMLHeadingElement> {
   /**
@@ -46,11 +47,11 @@ export const PhoneHeader = ({
         <ArrowLeft className={styles.backButton} onClick={() => navigation.push("/")} />
         <div className={styles.titleBlock}>
           <Title size="small" as="h1">
-            {title}
+            {truncateText(title, 20)}
           </Title>
           <span>
             <User />
-            {username}
+            {truncateText(username, 20)}
           </span>
           <span>{description}</span>
         </div>
