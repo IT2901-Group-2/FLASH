@@ -47,44 +47,34 @@
   }
 }
 
-.button {
+.buttonArray {
   position: absolute;
-  outline: none;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: var(--radius-8);
-  cursor: pointer;
-  box-shadow: var(--shadow-dialog);
-  background-color: var(--bg-input);
-  color: inherit;
-
-  &:hover {
-    background-color: var(--bg-raised);
-  }
-  &:active {
-    background-color: var(--bg-sunken);
-  }
-}
-
-.prev {
-  top: 40%;
-  left: 2rem;
-}
-
-.next {
-  top: 40%;
-  right: 2rem;
-}
-
-.qrCodeSwitch {
   top: 2rem;
   right: 2rem;
-  background-color: var(--bg-input);
-  color: inherit;
+  display: flex;
+  gap: 0.5rem;
+
+  > button {
+    outline: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius-8);
+    cursor: pointer;
+    box-shadow: var(--shadow-dialog);
+    background-color: var(--bg-input);
+    color: inherit;
+
+    &:hover {
+      background-color: var(--bg-raised);
+    }
+    &:active {
+      background-color: var(--bg-sunken);
+    }
+  }
 }
 
 .qrCode {
