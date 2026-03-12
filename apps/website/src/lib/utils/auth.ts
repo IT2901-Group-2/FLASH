@@ -114,6 +114,7 @@ export function verifyRefreshToken(
     return decoded;
   } catch {
     clearAccessToken(res);
+    clearRefreshToken(res);
     throw new Error("Invalid or expired refresh token");
   }
 }

@@ -15,7 +15,6 @@ export async function POST(req: NextRequest) {
     return res;
   } catch {
     const errRes = NextResponse.json({ error: "Invalid refresh token" }, { status: 401 });
-    clearRefreshToken(errRes);
     return errRes;
   }
 }

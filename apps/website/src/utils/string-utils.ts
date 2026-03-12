@@ -27,3 +27,21 @@ export function generateRandomString(length: number): string {
       .map(b => alphabet[b % alphabet.length]!)
   );
 }
+
+/**
+ * Truncates a string to a given length, adding an ellipsis.
+ * @param text Text that is being truncated
+ * @param maxLength Length of text before being truncated
+ * @param ellipsis Ending ellipsis
+ * @returns Truncated text provided
+ */
+export const truncateText = (
+  text: string,
+  maxLength: number = 50,
+  ellipsis: string = "..."
+): string => {
+  if (text.length <= maxLength) {
+    return text;
+  }
+  return text.slice(0, maxLength - ellipsis.length) + ellipsis;
+};
