@@ -18,7 +18,8 @@ export type TokenPayload = {
 const ADMIN_PASSWORD_HASH = await bcrypt.hash(ADMIN_PASSWORD, 10);
 
 /** Password verfication
- * Validates the provided paassword against the stored ADMIN_PASWORD env variable.
+ * Compares the provided password against a bcrypt hash derived from ADMIN_PASSWORD.
+ * The hash is generated once at module load time to avoid rehashing on every request
  */
 export async function verifyLogin(password: string): Promise<boolean> {
   return bcrypt.compare(password, ADMIN_PASSWORD_HASH);
