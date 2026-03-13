@@ -17,13 +17,13 @@ export interface EventCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const EventCard = ({ data, ...rest }: EventCardProps) => {
   const t = useTranslations("admin.dashboard.event.details");
-  const { mutateAsync } = useDeleteEventMutation();
+  const { mutate } = useDeleteEventMutation();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { name, startDate, uploadLimit, id } = data;
 
   const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    mutateAsync({ eventId: id });
+    mutate({ eventId: id });
   };
 
   const handleEdit = (e: MouseEvent<HTMLButtonElement>) => {
