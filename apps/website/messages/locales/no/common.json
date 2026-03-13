@@ -57,5 +57,9 @@
     "copySuccess": "Kopiert!",
     "copyFailed": "Klarte ikke å kopiere lenken til utklippstavlen",
     "scanToUploadPhotos": "Skann for å laste opp bilder"
+  },
+  "slideshow": {
+    "viewProgress": "{index} av {total}",
+    "noApproved": "Ingen godkjente bilder"
   }
 }
