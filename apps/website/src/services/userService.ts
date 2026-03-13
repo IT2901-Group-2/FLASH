@@ -24,7 +24,7 @@ export class UserService {
    * @param data The data of the new user to be created.
    * @returns A result with the newly created user session or an error.
    */
-  createUser(
+  private createUser(
     { eventId, isModerator }: EventCode,
     { name }: CreateUser
   ): AsyncResult<User, Error> {
