@@ -1,18 +1,59 @@
 import { Title, QRDisplay, Button, Input, Loader, DropdownControl } from "@flash/ui";
-import { useRef, useState } from "react";
-import { Copy, Download } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Check, Copy, Download } from "lucide-react";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 import { downloadQrSvg } from "@/utils/downloadqrcode";
 import { ReviewStepProps } from "./types";
 import { useEventCodeQuery } from "@/hooks/useEvents";
 
+/*
+ * CopyButtonProps defines the properties for the CopyButton component, which includes:
+ * isCopied: A boolean indicating whether the link has been successfully copied.
+ * onCopy: A function to be called when the copy button is clicked.
+ * ariaLabel: A string for accessibility, providing a label for screen readers.
+ */
+type CopyButtonProps = {
+  isCopied: boolean;
+  onCopy: () => void;
+  ariaLabel: string;
+};
+
+/*
+ * CopyButton component renders a button that allows users to copy a link to the clipboard.
+ * It provides visual feedback on whether the link has been successfully copied or if there was an error during the copy process.
+ * The button is disabled when the link has already been copied to prevent multiple copy attempts.
+ */
+const CopyButton = ({ isCopied, onCopy, ariaLabel }: CopyButtonProps) => (
+  <button
+    type="button"
+    onClick={isCopied ? undefined : onCopy}
+    disabled={isCopied}
+    aria-label={ariaLabel}
+    style={{
+      cursor: isCopied ? "default" : "pointer",
+      background: "none",
+      border: "none",
+      padding: 0,
+      display: "flex",
+      alignItems: "center",
+    }}
+  >
+    {isCopied ? <Check size={18} /> : <Copy size={18} />}
+  </button>
+);
+
 const ReviewStep = ({ status, result }: ReviewStepProps) => {
   const tReview = useTranslations("admin.dashboard.event.create.review");
-  const tShare = useTranslations("guest.event.share.links");
-  const tShareAria = useTranslations("guest.event.share.aria");
   const tCommon = useTranslations("common");
-  const [shareRole, setShareRole] = useState<string>("guest");
+  const [shareRole, setShareRole] = useState<"guest" | "moderator">("guest");
+  const [copyState, setCopyState] = useState<{
+    role: "guest" | "moderator" | null;
+    status: "copied" | "error" | null;
+  }>({ role: null, status: null });
+  const isCopied = copyState.role === shareRole && copyState.status === "copied";
+  const hasCopyError = copyState.role === shareRole && copyState.status === "error";
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
   const { data: displayCode } = useEventCodeQuery(
     result?.id,
@@ -20,6 +61,13 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
   );
 
   const displayLink = displayCode ? `${window.location.origin}/join/${displayCode}` : "";
+
+  // Clear the timeout on unmount to avoid having state on an unmounted component
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   /**
    * Function to handle downloading the QR code as an SVG file.
@@ -32,6 +80,31 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
     if (svg && displayCode) downloadQrSvg(svg, `qr-${displayCode.toLowerCase()}.svg`);
   };
 
+  /**
+   * Function to handle copying the share link to the clipboard. It attempts to write the display link to the clipboard
+   * and provides user feedback on success or failure. If the copy action is successful, it sets a "copied" state to true
+   * for a brief period to indicate success. If it fails, it sets an error message in the state.
+   */
+  const handleCopy = async () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    if (!displayLink) {
+      setCopyState({ role: shareRole, status: "error" });
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(displayLink);
+      setCopyState({ role: shareRole, status: "copied" });
+      timeoutRef.current = setTimeout(
+        () => setCopyState({ role: null, status: null }),
+        1000
+      );
+    } catch {
+      setCopyState({ role: shareRole, status: "error" });
+    }
+  };
+
   if (status === "pending") return <Loader />;
 
   return (
@@ -39,8 +112,9 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
       <Title size="medium" description={tReview("description")}>
         {tReview("title")}
       </Title>
+
       <DropdownControl
-        onChange={setShareRole}
+        onChange={role => setShareRole(role as "guest" | "moderator")}
         value={shareRole}
         className={styles.scroll}
       >
@@ -63,22 +137,33 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   {tCommon("actions.download")}
                 </Button>
               </div>
+
               <div className={styles.linkContainer} data-color="neutral">
-                <Title size="medium" description={tShare("guest.description")}>
-                  {tShare("guest.title")}
+                <Title size="medium" description={tReview("links.guest.description")}>
+                  {tReview("links.guest.title")}
                 </Title>
                 <Input
-                  aria-label={tShareAria("guestLinkInput")}
+                  aria-label="Guest Link"
                   readOnly
                   value={displayLink}
-                  icon={<Copy />}
+                  icon={
+                    <CopyButton
+                      isCopied={isCopied}
+                      onCopy={handleCopy}
+                      ariaLabel={tShareAria("guestLinkInput")}
+                    />
+                  }
                   iconPosition="right"
                   fill
                 />
+                {hasCopyError ? (
+                  <p className={styles.copyError}>{tCommon("messages.copyFailed")}</p>
+                ) : null}
               </div>
             </div>
           }
         />
+
         <DropdownControl.Item
           label={tCommon("roles.moderator")}
           value="moderator"
@@ -98,18 +183,28 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   {tCommon("actions.download")}
                 </Button>
               </div>
+
               <div className={styles.linkContainer} data-color="neutral">
-                <Title size="medium" description={tShare("moderator.description")}>
-                  {tShare("moderator.title")}
+                <Title size="medium" description={tReview("links.moderator.description")}>
+                  {tReview("links.moderator.title")}
                 </Title>
                 <Input
-                  aria-label={tShareAria("moderatorLinkInput")}
+                  aria-label="Moderator Link"
                   readOnly
                   value={displayLink}
-                  icon={<Copy />}
+                  icon={
+                    <CopyButton
+                      isCopied={isCopied}
+                      onCopy={handleCopy}
+                      ariaLabel={tShareAria("moderatorLinkInput")}
+                    />
+                  }
                   iconPosition="right"
                   fill
                 />
+                {hasCopyError ? (
+                  <p className={styles.copyError}>{tCommon("messages.copyFailed")}</p>
+                ) : null}
               </div>
             </div>
           }

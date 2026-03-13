@@ -93,34 +93,6 @@
         "uploadUnavailable": "Kan ikke laste opp bilder for dette arrangementet.",
         "uploadPartialFailure": "Ett eller flere bilder kunne ikke lastes opp. Prøv igjen."
       }
-    },
-    "share": {
-      "aria": {
-        "moderatorAlert": "Moderatorlenke-varsel",
-        "guestLinkInput": "Gjestelenke",
-        "moderatorLinkInput": "Moderatorlenke",
-        "copyLinkButton": "Kopier lenke"
-      },
-      "variants": {
-        "eventCreated": {
-          "title": "Arrangementet ditt er opprettet!",
-          "description": "Del QR-koden eller lenken slik at andre kan bli med på arrangementet og laste opp bilder."
-        },
-        "share": {
-          "title": "Del arrangementet",
-          "description": "Del QR-koden eller lenken slik at andre kan bli med på arrangementet og laste opp bilder."
-        }
-      },
-      "links": {
-        "guest": {
-          "title": "Gjestelenke",
-          "description": "Alle med denne lenken kan laste opp bilder til arrangementet."
-        },
-        "moderator": {
-          "title": "Moderatorlenke",
-          "description": "Alle med denne lenken kan moderere opplastede bilder."
-        }
-      }
     }
   }
 }
