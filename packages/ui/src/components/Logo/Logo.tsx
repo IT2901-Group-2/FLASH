@@ -40,10 +40,10 @@ const Logo = ({
       {...rest}
     >
       <g className={styles.star}>
-        <path className={styles.secondary} d="M144 144L128 192V128H192L144 144Z" />
-        <path className={styles.primary} d="M192 128H128V64L144 112L192 128Z" />
-        <path className={styles.primary} d="M64 128H128V192L112 144L64 128Z" />
-        <path className={styles.secondary} d="M128 128H64L112 112L128 64V128Z" />
+        <path className={styles.primary} d="M144 144L128 192V128H192L144 144Z" />
+        <path className={styles.secondary} d="M192 128H128V64L144 112L192 128Z" />
+        <path className={styles.secondary} d="M64 128H128V192L112 144L64 128Z" />
+        <path className={styles.primary} d="M128 128H64L112 112L128 64V128Z" />
       </g>
       <g className={cl(starOnly && styles.hidden)}>
         <g className={styles.primaryGroup}>
