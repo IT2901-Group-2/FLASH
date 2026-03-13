@@ -57,5 +57,9 @@
     "copySuccess": "Copied successfully!",
     "copyFailed": "Failed to copy link to clipboard",
     "scanToUploadPhotos": "Scan to upload photos"
+  },
+  "slideshow": {
+    "viewProgress": "{index} of {total}",
+    "noApproved": "No approved images"
   }
 }
