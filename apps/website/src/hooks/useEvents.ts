@@ -139,11 +139,45 @@ export function useDeleteEventMutation() {
   });
 }
 
-export function useJoinAsAdminMutation() {
+type JoinErrorCode = "NICKNAME_TAKEN" | "JOIN_FAILED";
+
+/**
+ * Converts HTTP response status and payload into a join error code.
+ * @param status HTTP response status
+ * @param payload HTTP response payload
+ * @returns JoinErrorCode
+ */
+function toJoinErrorCode(status: number, payload: unknown): JoinErrorCode {
+  const code =
+    payload && typeof payload === "object" && "code" in payload
+      ? (payload as { code?: unknown }).code
+      : undefined;
+
+  if (status === 409 || code === "NICKNAME_TAKEN") {
+    return "NICKNAME_TAKEN";
+  }
+
+  return "JOIN_FAILED";
+}
+
+/**
+ * Submits the join form and returns redirect target on success.
+ * Throws error to allow UI-specific translation handling.
+ */
+export function useJoinMutation() {
   return useMutation({
-    mutationFn: (eventId: string) =>
-      makeRequest(z.object({ eventId: z.string() }), "/api/join/admin", "POST", {
-        eventId,
-      }),
+    mutationFn: async (formData: FormData) => {
+      const response = await fetch("/api/join", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        return { redirectUrl: response.url };
+      }
+
+      const payload = await response.json().catch(() => null);
+      throw new Error(toJoinErrorCode(response.status, payload));
+    },
   });
 }
