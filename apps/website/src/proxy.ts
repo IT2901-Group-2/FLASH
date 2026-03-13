@@ -41,6 +41,19 @@ function attachAdminEventCookie(response: NextResponse, eventId: string): void {
 
 export default async function proxy(request: NextRequest): Promise<NextResponse> {
   if (isEventRoute(request)) {
+    const eventId = getEventId(request);
+    const isAdmin = await verifyAccessToken()
+      .then(() => true)
+      .catch(() => false);
+
+    if (isAdmin) {
+      // Let the admin through and stamp the event-session cookie so
+      // subsequent requests (API calls, etc.) are also authenticated.
+      const response = handleI18nRouting(request);
+      attachAdminEventCookie(response, eventId);
+      return response;
+    }
+
     const isAuthenticated = await checkEventCookie(getEventId(request));
     if (!isAuthenticated) {
       return NextResponse.redirect(new URL(`/`, request.url));
@@ -50,14 +63,20 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
   if (isJoinRoute(request)) {
     const code = getJoinCode(request);
     const eventId = await getEventByCode(request, code);
-    const isAdmin = await verifyAccessToken()
-      .then(() => true)
-      .catch(() => false);
 
     if (eventId === null) {
       return new NextResponse(`Event with join code ${code} does not exist.`, {
         status: 404,
       });
+    }
+
+    const isAdmin = await verifyAccessToken()
+      .then(() => true)
+      .catch(() => false);
+    if (isAdmin) {
+      const response = NextResponse.redirect(new URL(`/events/${eventId}`, request.url));
+      attachAdminEventCookie(response, eventId);
+      return response;
     }
 
     const isAuthenticated = await checkEventCookie(eventId);
