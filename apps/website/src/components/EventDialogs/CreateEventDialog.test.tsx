@@ -13,6 +13,10 @@ vi.mock("@/hooks/useEvents", () => ({
     mutateAsync: mockMutateAsync,
     status: "idle",
   }),
+  useJoinAsAdminMutation: () => ({
+    mutateAsync: mockMutateAsync,
+    status: "idle",
+  }),
 }));
 
 const onClose = vi.fn();

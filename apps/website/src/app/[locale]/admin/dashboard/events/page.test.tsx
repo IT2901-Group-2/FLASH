@@ -16,6 +16,7 @@ vi.mock("@/hooks/useEvents", () => ({
   useCreateEventMutation: vi.fn(),
   useUpdateEventMutation: vi.fn(),
   useDeleteEventMutation: vi.fn(),
+  useJoinAsAdminMutation: vi.fn(),
 }));
 
 vi.mock("@/components/CreateEventCard/CreateEventCard", () => ({
