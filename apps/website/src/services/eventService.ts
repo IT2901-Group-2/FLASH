@@ -156,7 +156,7 @@ export class EventService {
       .onSuccess(async event => {
         this.dbService.db
           .insert(userTable)
-          .values({ id: ADMIN_ID, eventId: event.id, name: "Admin", isModerator: true })
+          .values({ eventId: event.id, name: "Admin", isModerator: true })
           .run();
         this.dbService.flush();
       });
