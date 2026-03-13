@@ -138,3 +138,12 @@ export function useDeleteEventMutation() {
     },
   });
 }
+
+export function useJoinAsAdminMutation() {
+  return useMutation({
+    mutationFn: (eventId: string) =>
+      makeRequest(z.object({ eventId: z.string() }), "/api/join/admin", "POST", {
+        eventId,
+      }),
+  });
+}

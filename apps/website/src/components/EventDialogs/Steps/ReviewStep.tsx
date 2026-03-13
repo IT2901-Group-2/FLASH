@@ -147,11 +147,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   readOnly
                   value={displayLink}
                   icon={
-                    <CopyButton
-                      isCopied={isCopied}
-                      onCopy={handleCopy}
-                      ariaLabel={tShareAria("guestLinkInput")}
-                    />
+                    <CopyButton isCopied={isCopied} onCopy={handleCopy} ariaLabel="" />
                   }
                   iconPosition="right"
                   fill
@@ -193,11 +189,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   readOnly
                   value={displayLink}
                   icon={
-                    <CopyButton
-                      isCopied={isCopied}
-                      onCopy={handleCopy}
-                      ariaLabel={tShareAria("moderatorLinkInput")}
-                    />
+                    <CopyButton isCopied={isCopied} onCopy={handleCopy} ariaLabel="" />
                   }
                   iconPosition="right"
                   fill
