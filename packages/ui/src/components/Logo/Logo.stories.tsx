@@ -22,3 +22,10 @@ export const Loader: Story = {
     isLoader: true,
   },
 };
+
+export const LoaderStar: Story = {
+  args: {
+    isLoader: true,
+    starOnly: true,
+  },
+};

@@ -1,18 +1,31 @@
 .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   &[data-loading="true"] {
     .primaryGroup,
     .secondaryGroup {
       transform-origin: calc(100% / 2) calc(100% / 2);
-      animation: spin-cw 5s infinite linear;
+      animation: spin-ccw 5s infinite linear;
     }
     .star {
       transform-origin: calc(100% / 2) calc(100% / 2);
-      animation: spin-ccw 3s linear infinite;
+      animation: spin-cw 3s linear infinite;
     }
   }
   &[data-hover="true"]:hover {
     animation: spin-cw 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) backwards;
   }
+}
+
+.hidden {
+  display: none;
+}
+
+.star {
+  width: 256px;
+  height: 256px;
 }
 
 .primary {
