@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { capitalize, generateRandomString } from "./string-utils";
+import { capitalize, generateRandomString, truncateText } from "./string-utils";
 
 describe("capitalize", () => {
   it("should capitalize the first letter of a lowercase string", () => {
@@ -65,5 +65,32 @@ describe("generateRandomString", () => {
   it("should handle negative length gracefully", () => {
     const result = generateRandomString(-5);
     expect(result).toBe("");
+  });
+});
+
+describe("truncateText", () => {
+  it("should return the text unchanged if it is shorter than maxLength", () => {
+    expect(truncateText("hello", 10)).toBe("hello");
+  });
+
+  it("should return the text unchanged if it equals maxLength", () => {
+    expect(truncateText("hello", 5)).toBe("hello");
+  });
+
+  it("should truncate and add ellipsis if text exceeds maxLength", () => {
+    expect(truncateText("hello world", 8)).toBe("hello...");
+  });
+
+  it("should use default maxLength of 50", () => {
+    const long = "a".repeat(51);
+    expect(truncateText(long)).toBe("a".repeat(47) + "...");
+  });
+
+  it("should support a custom ellipsis", () => {
+    expect(truncateText("hello world", 8, "…")).toBe("hello w…");
+  });
+
+  it("should handle empty string", () => {
+    expect(truncateText("", 10)).toBe("");
   });
 });
