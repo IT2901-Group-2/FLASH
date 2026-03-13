@@ -47,8 +47,6 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
       .catch(() => false);
 
     if (isAdmin) {
-      // Let the admin through and stamp the event-session cookie so
-      // subsequent requests (API calls, etc.) are also authenticated.
       const response = handleI18nRouting(request);
       attachAdminEventCookie(response, eventId);
       return response;
