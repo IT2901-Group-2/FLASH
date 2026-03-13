@@ -1,0 +1,65 @@
+{
+  "actions": {
+    "back": "Back",
+    "close": "Close",
+    "cancel": "Cancel",
+    "previous": "Previous",
+    "next": "Next",
+    "create": "Create",
+    "save": "Save",
+    "finish": "Finish",
+    "done": "Done",
+    "download": "Download",
+    "signIn": "Sign in",
+    "join": "Join Event",
+    "openCamera": "Open Camera",
+    "uploadImage": "Upload Image",
+    "takePhoto": "Take Photo",
+    "slideshow": "Slideshow",
+    "createNewEvent": "Create New Event",
+    "downloadQrCode": "Download QR Code",
+    "copyLink": "Copy Link"
+  },
+  "roles": {
+    "guest": "Guest",
+    "moderator": "Moderator",
+    "admin": "Admin"
+  },
+  "navigation": {
+    "main": "Main",
+    "config": "Config",
+    "desktop": "Desktop",
+    "events": "Events",
+    "settings": "Settings",
+    "storage": "Storage",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode"
+  },
+  "fields": {
+    "password": "Password",
+    "passwordPlaceholder": "•••••",
+    "nickname": "Nickname",
+    "eventCode": "Event Code",
+    "eventName": "Event Name",
+    "eventDescription": "Event Description",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "maxImages": "Max images"
+  },
+  "values": {
+    "limited": "Limited",
+    "unlimited": "Unlimited",
+    "photos": "Photos"
+  },
+  "messages": {
+    "copySuccess": "Copied successfully!",
+    "copyFailed": "Failed to copy link to clipboard",
+    "scanToUploadPhotos": "Scan to upload photos"
+  },
+  "slideshow": {
+    "viewProgress": "{index} of {total}",
+    "noApproved": "No approved images"
+  }
+}

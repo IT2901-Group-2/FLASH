@@ -3,6 +3,8 @@ import { makeRequest } from "@/lib/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import z from "zod";
 
+const imageArraySchema = z.array(getImageSchema);
+
 /**
  * Serializes `GetImages` filters into a URL query string.
  * Returns an empty string when no params are provided.
@@ -48,15 +50,20 @@ export const imagesKeys = {
 /**
  * Fetches a list of images for the given event, optionally filtered by the provided query params.
  */
-export function useImagesQuery(eventId?: string, params?: GetImagesParams) {
+export function useImagesQuery(
+  eventId?: string,
+  params?: GetImagesParams,
+  refetchInterval?: number
+) {
   return useQuery({
     queryKey: imagesKeys.list(eventId, params),
     queryFn: () =>
       makeRequest(
-        z.array(getImageSchema),
+        imageArraySchema,
         `/api/events/${eventId}/images${toImagesSearchParams(params)}`
       ),
     enabled: !!eventId,
+    refetchInterval,
   });
 }
 
@@ -102,6 +109,28 @@ export function useUpdateImageMutation() {
     onSuccess: async (_data, { eventId }) => {
       await queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) });
     },
+  });
+}
+
+/**
+ * Batch-updates multiple images via PATCH /api/events/:eventId/images.
+ * Accepts an array of image IDs and an isApproved flag.
+ */
+export function useBatchUpdateImageMutation() {
+  return useMutation({
+    mutationFn: ({
+      eventId,
+      ids,
+      isApproved,
+    }: {
+      eventId: string;
+      ids: string[];
+      isApproved: boolean;
+    }) =>
+      makeRequest(imageArraySchema, `/api/events/${eventId}/images`, "PATCH", {
+        ids,
+        isApproved,
+      }),
   });
 }
 

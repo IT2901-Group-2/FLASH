@@ -1,0 +1,98 @@
+{
+  "login": {
+    "card": {
+      "tabs": {
+        "enterCode": "Skriv inn kode",
+        "scanQr": "Skann QR-kode"
+      },
+      "fields": {
+        "nickname": {
+          "placeholder": "Skriv inn kallenavn (f.eks. Alex)"
+        },
+        "eventCode": {
+          "placeholder": "Skriv inn arrangementskode (f.eks. 245033)"
+        }
+      },
+      "scanQr": {
+        "description": "Bruk kameraet ditt til å skanne QR-koden for arrangementet"
+      },
+      "links": {
+        "adminAccessPrefix": "Ikke en gjest? Administrer arrangementer som en"
+      },
+      "errors": {
+        "missingEventCode": "Vennligst skriv inn en arrangementskode.",
+        "invalidEventCode": "Ugyldig arrangementskode. Vennligst prøv igjen.",
+        "missingNickname": "Vennligst skriv inn et kallenavn."
+      },
+      "nickname": {
+        "title": "Velkommen til",
+        "description": "Skriv inn et kallenavn slik at verten vet hvem som har lastet opp bildene",
+        "placeholder": "Ola Nordmann"
+      }
+    }
+  },
+  "event": {
+    "list": {
+      "title": "Dine arrangementer"
+    },
+    "moderate": {
+      "title": "Moderer",
+      "selectionDescription": "{count, plural, one {# bilde valgt} other {# bilder valgt}}",
+      "emptyState": {
+        "pending": "Ingen ventende bilder funnet",
+        "approved": "Ingen godkjente bilder funnet",
+        "rejected": "Ingen avviste bilder funnet"
+      },
+      "imageAlt": "Bilde {index} av {total}",
+      "imageTitle": "Bilde {index}",
+      "tabs": {
+        "pending": "Venter",
+        "approved": "Godkjent",
+        "rejected": "Avvist"
+      },
+      "headings": {
+        "pending": "Bilder til godkjenning",
+        "approved": "Godkjente bilder",
+        "rejected": "Avviste bilder"
+      },
+      "breadcrumb": {
+        "event": "Arrangement",
+        "moderate": "Moderer"
+      },
+      "actions": {
+        "approveSelected": "Godkjenn valgte bilder",
+        "rejectSelected": "Avvis valgte bilder",
+        "select": "Velg",
+        "cancel": "Avbryt",
+        "selectAll": "Velg alle",
+        "deselectAll": "Fjern alle valg"
+      },
+      "aria": {
+        "goBack": "Gå tilbake",
+        "home": "Hjem",
+        "goTo": "Gå til"
+      },
+      "imageStates": {
+        "pending": "Venter...",
+        "loading": "Laster...",
+        "rejected": "Avvist",
+        "selected": "Valgt",
+        "approved": "Godkjent"
+      }
+    },
+    "upload": {
+      "loadingEvent": "Laster arrangement...",
+      "eventFallbackName": "Arrangement",
+      "eventLoadFailed": "Kunne ikke laste arrangementsdetaljer for denne lenken.",
+      "unlimited": "ubegrenset",
+      "description": "Du kan laste opp {uploadsRemaining} bilder",
+      "emptyState": "Ingen bilder funnet",
+      "imageAlt": "Bilde {index} av {total}",
+      "imageTitle": "Bilde {index}",
+      "errors": {
+        "uploadUnavailable": "Kan ikke laste opp bilder for dette arrangementet.",
+        "uploadPartialFailure": "Ett eller flere bilder kunne ikke lastes opp. Prøv igjen."
+      }
+    }
+  }
+}

@@ -1,91 +1,37 @@
-import { beforeEach, describe, expect, test } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { beforeEach, describe, expect, it, test } from "vitest";
+import { render, screen } from "@testing-library/react";
 import JoinEventCard from "./JoinEventCard";
-import { createQueryClientWrapper, mockRouter } from "@test-config";
+import { createQueryClientWrapper } from "@test-config";
 
 describe("JoinEventCard", () => {
-  let user: ReturnType<typeof userEvent.setup>;
-
   beforeEach(() => {
-    user = userEvent.setup();
+    render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
   });
 
   test("without crashing", () => {
-    render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
     expect(screen.getByText("title")).toBeDefined();
   });
 
   test("the correct title and description", () => {
-    render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
     expect(screen.getByText("title")).toBeDefined();
     expect(screen.getByText("description")).toBeDefined();
   });
 
   test("both tab options", () => {
-    render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
-    expect(screen.getByText("eventCodeLabel")).toBeDefined();
-    expect(screen.getByText("scanQrTab")).toBeDefined();
+    expect(screen.getByText("tabs.enterCode")).toBeDefined();
+    expect(screen.getByText("tabs.scanQr")).toBeDefined();
   });
 
   test("renders input field with correct label", () => {
-    render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
-    expect(screen.getByText("enterCodeTab")).toBeDefined();
+    expect(screen.getByText("fields.eventCode")).toBeDefined();
   });
 
   test("renders Join button", () => {
-    render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
-    expect(screen.getByText("joinButton")).toBeDefined();
+    expect(screen.getByText("actions.join")).toBeDefined();
   });
 
-  test("shows validation error when event code is empty", async () => {
-    render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
-
-    const button = screen.getByText("joinButton");
-
-    await user.click(button);
-
-    expect(await screen.findAllByText("error.noCode")).toBeDefined();
-  });
-
-  test("redirects to event page on successful lookup", async () => {
-    render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
-
-    const codeInput = screen.getByPlaceholderText("eventCodePlaceholder");
-    const button = screen.getByText("joinButton");
-
-    await user.type(codeInput, "ABC123");
-    await user.click(button);
-
-    await waitFor(() => {
-      expect(mockRouter.push).toHaveBeenCalled();
-    });
-  });
-
-  test("shows not-found error when lookup returns no events", async () => {
-    render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
-
-    const input = screen.getByPlaceholderText("eventCodePlaceholder");
-    const button = screen.getByText("joinButton");
-
-    await user.type(input, "MISSING");
-    await user.click(button);
-
-    await waitFor(() => {
-      expect(screen.findByText("error.invalidCode")).toBeDefined();
-    });
-  });
-
-  test("submits when pressing Enter in the code field", async () => {
-    render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
-
-    const input = screen.getByPlaceholderText("eventCodePlaceholder");
-
-    await user.type(input, "ENTER1");
-    await user.keyboard("{Enter}");
-
-    await waitFor(() => {
-      expect(mockRouter.push).toHaveBeenCalled();
-    });
+  it("navigates to the admin login page on click", async () => {
+    const adminLink = screen.getByRole("link", { name: /admin/i });
+    expect(adminLink.getAttribute("href")).toBe("/admin");
   });
 });

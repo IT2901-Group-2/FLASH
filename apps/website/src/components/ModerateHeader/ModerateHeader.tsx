@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { ArrowLeft, ChevronLeft } from "lucide-react";
-import { Breadcrumb, Button, Title } from "ui";
+import { Breadcrumb, Button, Title } from "@flash/ui";
+import { useTranslations } from "next-intl";
 import styles from "./ModerateHeader.module.css";
 
 export interface ModerateHeaderProps {
@@ -20,7 +21,7 @@ export interface ModerateHeaderProps {
    * Breadcrumb items for the mobile bottom bar.
    * Defaults to a home link + "Moderate" current page label.
    */
-  breadcrumbItems?: { label: string; href?: string }[];
+  breadcrumbItems: { label: string; href?: string }[];
 }
 
 /**
@@ -39,10 +40,11 @@ export const ModerateHeader = ({
   onSelectToggle,
   onSelectAll,
   allSelected = false,
-  breadcrumbItems = [{ label: "Event" }, { label: "Moderate" }],
+  breadcrumbItems,
 }: ModerateHeaderProps) => {
+  const t = useTranslations("guest.event.moderate");
   const [scrolled, setScrolled] = useState(false);
-  const selectAllLabel = allSelected ? "Deselect All" : "Select All";
+  const selectAllLabel = allSelected ? t("actions.deselectAll") : t("actions.selectAll");
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 0);
@@ -59,7 +61,7 @@ export const ModerateHeader = ({
           variant="tertiary"
           icon={<ArrowLeft aria-hidden="true" />}
           onClick={onBack}
-          aria-label="Go back"
+          aria-label={t("aria.goBack")}
         />
 
         <div className={styles.desktopCenter}>
@@ -70,7 +72,7 @@ export const ModerateHeader = ({
             align="left"
             data-color="brand-purple"
           >
-            Moderate
+            {t("title")}
           </Title>
 
           <div className={styles.desktopActions}>
@@ -90,7 +92,7 @@ export const ModerateHeader = ({
               className={styles.desktopButton}
               onClick={onSelectToggle}
             >
-              {selectMode ? "Cancel" : "Select"}
+              {selectMode ? t("actions.cancel") : t("actions.select")}
             </Button>
           </div>
         </div>
@@ -103,7 +105,7 @@ export const ModerateHeader = ({
           variant="tertiary"
           icon={<ChevronLeft aria-hidden="true" />}
           onClick={onBack}
-          aria-label="Go back"
+          aria-label={t("aria.goBack")}
         />
         <Title
           as="h1"
@@ -112,7 +114,7 @@ export const ModerateHeader = ({
           align="center"
           data-color="brand-purple"
         >
-          Moderate
+          {t("title")}
         </Title>
       </div>
 
@@ -136,7 +138,7 @@ export const ModerateHeader = ({
               className={styles.mobileSelectButton}
               onClick={onSelectToggle}
             >
-              Cancel
+              {t("actions.cancel")}
             </Button>
           </div>
         ) : (
@@ -149,7 +151,7 @@ export const ModerateHeader = ({
               className={styles.mobileSelectButton}
               onClick={onSelectToggle}
             >
-              Select
+              {t("actions.select")}
             </Button>
           </>
         )}

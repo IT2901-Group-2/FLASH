@@ -3,21 +3,21 @@
 import { useEventsQuery } from "@/hooks/useEvents";
 import { Event } from "@/db";
 import { Calendar, ChevronRight } from "lucide-react";
-import { Card, Title } from "ui";
+import { Card, Title } from "@flash/ui";
 import styles from "./RememberedEvents.module.css";
 import { useRouter } from "next/navigation";
-import { getAllJoinedEvents } from "@/hooks/useRememberEvents";
 import { useTranslations } from "next-intl";
+import { useJoinedEvents } from "@/providers/JoinedEventsContext";
 
 const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
-  const t = useTranslations("guest.login");
+  const c = useTranslations("common");
   const navigation = useRouter();
   return (
-    <Card onClick={() => navigation.push(`/${id}`)} className={styles.linkcard}>
+    <Card onClick={() => navigation.push(`/events/${id}`)} className={styles.linkcard}>
       <div>
         <Title size="small">{name}</Title>
         <span>
-          {uploadLimit ?? t("unlimited")} {t("photos")}
+          {uploadLimit ?? c("values.unlimited")} {c("values.photos")}
         </span>
       </div>
       <ChevronRight />
@@ -26,8 +26,8 @@ const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
 };
 
 const RememberedEvents = () => {
-  const t = useTranslations("guest.login");
-  const eventIDs = getAllJoinedEvents();
+  const t = useTranslations("guest.event");
+  const eventIDs = useJoinedEvents();
   const events = useEventsQuery(
     {
       id: eventIDs,
@@ -42,7 +42,7 @@ const RememberedEvents = () => {
     <Card className={styles.card}>
       <div className={styles.title}>
         <Calendar />
-        <Title size="medium">{t("joinedEventsTitle")}</Title>
+        <Title size="medium">{t("list.title")}</Title>
       </div>
       {events.map(event => (
         <RememberedEvent {...event} key={event.id} />

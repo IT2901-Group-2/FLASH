@@ -83,6 +83,12 @@ export const getEventCodeParamsSchema = z.object({
     .prefault(["guest"]),
 });
 
+export const getEventCodeSchema = z.object({
+  eventId: z.string(),
+  code: z.string(),
+  isModerator: z.boolean(),
+});
+
 export const getEventSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -115,6 +121,7 @@ export const updateEventSchema = z.object({
 });
 
 export type Event = typeof eventTable.$inferSelect;
+export type EventCode = typeof eventCodeTable.$inferSelect;
 export type GetEventsParams = z.infer<typeof getEventsParamsSchema>;
 export type GetEventCodeParams = z.infer<typeof getEventCodeParamsSchema>;
 export type CreateEvent = z.infer<typeof createEventSchema>;

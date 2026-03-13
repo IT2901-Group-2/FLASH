@@ -1,0 +1,19 @@
+{
+  "adminLogin": {
+    "title": "FLASH Admin",
+    "description": "Manage your photo events with ease",
+    "subtitle": "Self-hosted Photo Event Management System"
+  },
+  "joinEvent": {
+    "title": "Join an Event",
+    "description": "Enter the event code or scan the QR code to join"
+  },
+  "adminEvents": {
+    "title": "Events",
+    "description": "Manage your events"
+  },
+  "home": {
+    "about": "About Us",
+    "title": "Hello world!"
+  }
+}

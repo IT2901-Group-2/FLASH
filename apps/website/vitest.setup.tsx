@@ -42,9 +42,25 @@ vi.mock("next/navigation", () => ({
   useRouter: () => mockRouter,
   usePathname: () => "/",
   useSearchParams: () => new URLSearchParams(),
-  useParams: () => ({}),
+  useParams: () => ({ id: "event-123" }),
   redirect: vi.fn(),
   notFound: vi.fn(),
+}));
+
+vi.mock("next/link", () => ({
+  default: ({
+    children,
+    href,
+    ...props
+  }: {
+    children: React.ReactNode;
+    href: string;
+    [key: string]: unknown;
+  }) => (
+    <a href={href} {...props}>
+      {children}
+    </a>
+  ),
 }));
 
 export const mockFetch = vi.fn();

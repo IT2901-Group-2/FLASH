@@ -1,8 +1,8 @@
 "use client";
 import { Plus } from "lucide-react";
-import { Button, Loader, Title } from "ui";
+import { Button, Loader, Title } from "@flash/ui";
 import styles from "./page.module.css";
-import CreateEventCard from "@/components/CreateEventCard/CreateEventCard";
+import CreateEventCard from "@/components/EventDialogs/CreateEventDialog";
 import { useRef } from "react";
 import { useTranslations } from "next-intl";
 import { useEventsQuery } from "@/hooks/useEvents";
@@ -10,7 +10,8 @@ import EventCard from "@/components/EventCard/EventCard";
 import { useRouter } from "next/navigation";
 
 const Page = () => {
-  const t = useTranslations("admin.dashboard.event.page");
+  const t = useTranslations("pages.adminEvents");
+  const c = useTranslations("common.actions");
   const navigation = useRouter();
 
   const { data, isLoading } = useEventsQuery();
@@ -27,11 +28,11 @@ const Page = () => {
           icon={<Plus />}
           data-color="brand-purple"
           onClick={() => dialogRef.current?.showModal()}
+          className={styles.createButton}
         >
-          {t("createNew")}
+          {c("createNewEvent")}
         </Button>
       </div>
-      <Title size="small">Events</Title>
       <div className={styles.eventsContainer}>
         {isLoading ? (
           <div className={styles.loadingContainer} data-testid="loading-spinner">

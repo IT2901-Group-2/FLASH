@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
     environment: "jsdom",
-    setupFiles: "./vitest.setup.tsx",
+    setupFiles: ["@testing-library/jest-dom/vitest", "./vitest.setup.tsx"],
     coverage: {
       provider: "istanbul",
     },
