@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { useEventByCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+import { useEventByCodeQuery, useEventsQuery, useJoinMutation } from "@/hooks/useEvents";
 
 export default function Page() {
   const navigation = useRouter();
@@ -25,46 +25,24 @@ export default function Page() {
 
   const [nickname, setNickname] = useState<string>("");
   const [nicknameError, setNicknameError] = useState<string>("");
+  const joinMutation = useJoinMutation();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const response = await fetch("/api/join", {
-      method: "POST",
-      body: new FormData(event.currentTarget),
-    });
+    try {
+      const { redirectUrl } = await joinMutation.mutateAsync(
+        new FormData(event.currentTarget)
+      );
+      window.location.assign(redirectUrl);
+    } catch (error) {
+      if (error instanceof Error && error.message === "NICKNAME_TAKEN") {
+        setNicknameError(tErrors("nicknameTaken"));
+        return;
+      }
 
-    if (response.ok) {
-      window.location.assign(response.url);
-      return;
+      setNicknameError(tErrors("joinFailed"));
     }
-
-    const payload = (await response.json().catch(() => null)) as
-      | { message?: string; code?: string }
-      | string
-      | null;
-    const payloadMessage =
-      typeof payload === "string"
-        ? payload
-        : typeof payload?.message === "string"
-          ? payload.message
-          : "";
-    const payloadCode =
-      typeof payload === "object" && payload !== null && typeof payload.code === "string"
-        ? payload.code
-        : "";
-
-    if (
-      response.status === 409 ||
-      payloadCode === "NICKNAME_TAKEN" ||
-      payloadMessage.includes("UNIQUE constraint failed") ||
-      payloadMessage.includes("SQLITE_CONSTRAINT")
-    ) {
-      setNicknameError(tErrors("nicknameTaken"));
-      return;
-    }
-
-    setNicknameError(tErrors("joinFailed"));
   }
 
   return (
@@ -105,6 +83,7 @@ export default function Page() {
             iconPosition="right"
             data-color="brand-purple"
             type="submit"
+            disabled={joinMutation.isPending}
             fill
           >
             {cActions("join")}
