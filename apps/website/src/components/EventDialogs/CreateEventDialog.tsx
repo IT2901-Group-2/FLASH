@@ -3,7 +3,7 @@ import { Button, Dialog, ProgressDots } from "@flash/ui";
 import styles from "./CreateEventDialog.module.css";
 import { BasicInfoStep, OptionsStep, ReviewStep } from "./Steps";
 import { useTranslations } from "next-intl";
-import { useCreateEventMutation, useJoinAsAdminMutation } from "@/hooks/useEvents";
+import { useCreateEventMutation } from "@/hooks/useEvents";
 import { FormStepConfig } from "./Steps/types";
 import { Event, CreateEvent } from "@/db";
 
@@ -36,7 +36,6 @@ interface CreateEventDialogProps extends RefAttributes<HTMLDialogElement> {
 export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogProps) => {
   const t = useTranslations("common.actions");
   const { mutateAsync, status } = useCreateEventMutation();
-  const joinAsAdmin = useJoinAsAdminMutation();
 
   const formRef = useRef<HTMLFormElement>(null);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
@@ -65,7 +64,6 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
     // Advance to review immediately so the loader is shown during the request.
     setCurrentStepIndex(i => i + 1);
     const result = await mutateAsync(formData);
-    await joinAsAdmin.mutateAsync(result.id);
     setEventResult(result);
   };
 
