@@ -22,7 +22,9 @@
       "errors": {
         "missingEventCode": "Vennligst skriv inn en arrangementskode.",
         "invalidEventCode": "Ugyldig arrangementskode. Vennligst prøv igjen.",
-        "missingNickname": "Vennligst skriv inn et kallenavn."
+        "missingNickname": "Vennligst skriv inn et kallenavn.",
+        "nicknameTaken": "Kallenavnet er allerede tatt.",
+        "joinFailed": "Kunne ikke bli med i arrangementet. Prøv igjen."
       },
       "nickname": {
         "title": "Velkommen til",

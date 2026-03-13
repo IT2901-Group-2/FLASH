@@ -10,6 +10,7 @@ import { eventCodeTable, eventTable, userTable } from "@/db";
 import { Result } from "typescript-result";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { EventService } from "../eventService";
+import { HTTPError } from "@/lib/utils/error";
 
 vi.mock("@/lib/utils/eventCookie");
 const mockedGetEventCookie = vi.mocked(getEventCookie);
@@ -38,6 +39,7 @@ let tmpDir: string;
 let userService: UserService;
 
 beforeEach(async () => {
+  vi.clearAllMocks();
   tmpDir = await fs.mkdtemp(upath.join(tmpdir(), "test-imageService-"));
   const storage = new FSStorage(tmpDir);
   const dbService = new DatabaseService(storage);
@@ -82,7 +84,35 @@ describe("userService joinEvent", () => {
       throw new Error();
     });
 
-    await userService.joinEvent({ name: "test", eventCode: "guest-code" });
+    Result.assertError(
+      await userService.joinEvent({ name: "test", eventCode: "guest-code" })
+    );
+  });
+
+  it("Should return 409 error when nickname is already taken", async () => {
+    vi.spyOn(DatabaseService.prototype, "flush").mockImplementation(vi.fn());
+    mockedGetEventCookie.mockImplementation(() =>
+      Result.fromAsyncCatching(async () => {
+        throw new Error();
+      })
+    );
+    mockedSetEventCookie.mockImplementation(() => Result.fromAsync(async () => {}));
+
+    await userService.joinEvent({ name: "test1", eventCode: "guest-code" }).getOrThrow();
+
+    const duplicateResult = await userService.joinEvent({
+      name: "test1",
+      eventCode: "guest-code",
+    });
+    Result.assertError(duplicateResult);
+    const duplicateError = duplicateResult.error as HTTPError;
+
+    expect(duplicateError).toBeInstanceOf(HTTPError);
+    expect(duplicateError.code).toBe(409);
+    expect(duplicateError.json).toEqual({
+      code: "NICKNAME_TAKEN",
+      message: "Nickname is already taken",
+    });
   });
 
   it("Should join event successfully", async () => {
