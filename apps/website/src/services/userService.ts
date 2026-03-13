@@ -77,25 +77,6 @@ export class UserService {
       return eventCode.eventId;
     });
   }
-
-  /**
-   * Joins the given event as an admin user (isModerator: true, name: "admin").
-   * Intended for use by authenticated admin routes — the caller is responsible
-   * for verifying the access token before calling this method.
-   *
-   * @param eventId The id of the event to join.
-   * @returns A result with the id of the joined event or an error.
-   */
-  joinEventAsAdmin(eventId: string): AsyncResult<string, Error> {
-    return Result.gen(this, async function* () {
-      const user = yield* this.createUser(
-        { eventId, isModerator: true, code: "" },
-        { name: "admin", eventCode: "" }
-      );
-      yield* setEventCookie(user, JWT_SECRET);
-      return eventId;
-    });
-  }
 }
 
 export const userService = makeGlobal(
