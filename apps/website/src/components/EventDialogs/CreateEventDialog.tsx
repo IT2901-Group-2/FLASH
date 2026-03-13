@@ -1,5 +1,5 @@
 import { RefAttributes, useRef, useState } from "react";
-import { Button, Dialog, ProgressDots } from "ui";
+import { Button, Dialog, ProgressDots } from "@flash/ui";
 import styles from "./CreateEventDialog.module.css";
 import { BasicInfoStep, OptionsStep, ReviewStep } from "./Steps";
 import { useTranslations } from "next-intl";

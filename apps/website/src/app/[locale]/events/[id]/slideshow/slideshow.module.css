@@ -1,0 +1,110 @@
+.page {
+  background-color: black;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hideCursor {
+  cursor: none;
+}
+
+.header {
+  position: absolute;
+  left: 2rem;
+  top: 2rem;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+
+  background-color: var(--bg-input);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-8);
+  box-shadow: var(--shadow-dialog);
+
+  .back {
+    width: 2rem;
+    height: 2rem;
+    aspect-ratio: 1/1;
+    padding: 0.25rem;
+    border-radius: var(--radius-8);
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--bg-raised);
+    }
+    &:active {
+      background-color: var(--bg-sunken);
+    }
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.buttonArray {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+
+  > :last-child {
+    grid-column: 3;
+  }
+
+  > button {
+    outline: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius-8);
+    cursor: pointer;
+    box-shadow: var(--shadow-dialog);
+    background-color: var(--bg-input);
+    color: inherit;
+
+    &:hover {
+      background-color: var(--bg-raised);
+    }
+    &:active {
+      background-color: var(--bg-sunken);
+    }
+  }
+}
+
+.qrCode {
+  position: absolute;
+
+  bottom: 2rem;
+  right: 2rem;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.image {
+  object-fit: contain;
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

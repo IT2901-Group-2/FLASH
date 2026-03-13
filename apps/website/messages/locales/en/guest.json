@@ -22,7 +22,9 @@
       "errors": {
         "missingEventCode": "Please enter an event code.",
         "invalidEventCode": "Invalid event code. Please try again.",
-        "missingNickname": "Please enter a nickname."
+        "missingNickname": "Please enter a nickname.",
+        "nicknameTaken": "Nickname is already taken.",
+        "joinFailed": "Unable to join event. Please try again."
       },
       "nickname": {
         "title": "Welcome to",
@@ -92,34 +94,6 @@
       "errors": {
         "uploadUnavailable": "Unable to upload images for this event.",
         "uploadPartialFailure": "One or more images failed to upload. Please try again."
-      }
-    },
-    "share": {
-      "aria": {
-        "moderatorAlert": "Moderator link alert",
-        "guestLinkInput": "Guest link input",
-        "moderatorLinkInput": "Moderator link input",
-        "copyLinkButton": "Copy link"
-      },
-      "variants": {
-        "eventCreated": {
-          "title": "Your Event Has Been Created!",
-          "description": "Share the QR code or link so others can join the event and upload photos."
-        },
-        "share": {
-          "title": "Share Your Event",
-          "description": "Share the QR code or link so others can join the event and upload photos."
-        }
-      },
-      "links": {
-        "guest": {
-          "title": "Guest Link",
-          "description": "Anyone with this link can upload photos to the event."
-        },
-        "moderator": {
-          "title": "Moderator Link",
-          "description": "Anyone with this link can review and moderate uploaded photos."
-        }
       }
     }
   }

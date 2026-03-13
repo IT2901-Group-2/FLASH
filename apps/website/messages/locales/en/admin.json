@@ -23,7 +23,17 @@
         },
         "review": {
           "title": "Share Your Event",
-          "description": "Share the QR code or event link so others can join and upload photos."
+          "description": "Share the QR code or event link so others can join and upload photos.",
+          "links": {
+            "guest": {
+              "title": "Guest Link",
+              "description": "Anyone with this link can upload photos to the event."
+            },
+            "moderator": {
+              "title": "Moderator Link",
+              "description": "Anyone with this link can review and moderate uploaded photos."
+            }
+          }
         }
       },
       "details": {

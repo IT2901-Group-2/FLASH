@@ -1,7 +1,7 @@
 "use client";
 
 import { Calendar, HardDrive, House, Moon, Settings, Sun } from "lucide-react";
-import { Sidebar } from "ui";
+import { Sidebar } from "@flash/ui";
 import SidebarFooter from "./SidebarFooter";
 import { useTranslations } from "next-intl";
 import { HTMLAttributes } from "react";
