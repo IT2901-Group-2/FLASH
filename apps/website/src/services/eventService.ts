@@ -15,6 +15,8 @@ import { and, eq, like, inArray, lt, lte, gte, gt, desc, asc } from "drizzle-orm
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { SQLiteColumn } from "drizzle-orm/sqlite-core";
 import { HTTPError } from "@/lib/utils/error";
+import { userService } from "./userService";
+import { ADMIN_ID } from "@/config";
 
 export class EventService {
   private readonly dbService: DatabaseService;
@@ -151,7 +153,14 @@ export class EventService {
             await this.dbService.db.delete(eventTable).where(eq(eventTable.id, event.id));
           })
       )
-      .onSuccess(() => this.dbService.flush());
+      .onSuccess(event => {
+        // `code` and `eventCode` is not used in `createUser`
+        userService.createUser(
+          { eventId: event.id, isModerator: true, code: "" },
+          { id: ADMIN_ID, name: "Admin", eventCode: "" }
+        );
+        this.dbService.flush();
+      });
   }
 
   /**

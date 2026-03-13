@@ -24,14 +24,14 @@ export class UserService {
    * @param data The data of the new user to be created.
    * @returns A result with the newly created user session or an error.
    */
-  private createUser(
+  createUser(
     { eventId, isModerator }: EventCode,
-    { name }: CreateUser
+    { name, id }: CreateUser & { id?: string }
   ): AsyncResult<User, Error> {
     return Result.try(() =>
       this.dbService.db
         .insert(userTable)
-        .values({ eventId, name, isModerator })
+        .values({ eventId, name, isModerator, ...(id !== undefined ? { id } : {}) })
         .returning()
     )
       .mapError(error => {
