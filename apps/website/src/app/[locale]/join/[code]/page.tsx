@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useEventByCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+import { truncateText } from "@/utils/string-utils";
 
 export default function Page() {
   const navigation = useRouter();
@@ -40,7 +41,9 @@ export default function Page() {
             data-color="brand-purple"
             description={tNickname("description")}
           >
-            {eventName ? `${tNickname("title")} ${eventName}` : tNickname("title")}
+            {eventName
+              ? `${tNickname("title")} ${truncateText(eventName, 30)}`
+              : tNickname("title")}
           </Title>
           <Input
             aria-label={cFields("nickname")}
