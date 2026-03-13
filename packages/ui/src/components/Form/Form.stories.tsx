@@ -63,6 +63,7 @@ export const Demo: Story = {
             label="Date"
             startName="startDate"
             endName="endDate"
+            data-color="accent"
             required
           />
           <div style={{ display: "flex", gap: ".5rem" }}>

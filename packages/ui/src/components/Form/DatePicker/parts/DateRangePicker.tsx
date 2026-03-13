@@ -18,7 +18,7 @@ const DateRangePicker = ({ onChange, local }: DateRangePickerProps) => {
     <DateRangeProvider onChange={onChange} local={local}>
       <DatePickerCalendarNav />
       <DatePickerCalendarGrid />
-      {/* <DatePickerTimeInputs /> */}
+      <DatePickerTimeInputs />
     </DateRangeProvider>
   );
 };

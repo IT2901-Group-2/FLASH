@@ -55,10 +55,6 @@ const DatePicker = ({
     endDateTime.setHours(endHours, endMinutes);
 
     onRangeChange?.({ startDate: startDateTime, endDate: endDateTime });
-
-    rest.onChange?.({
-      target: { value: formatted, name: rest.name },
-    } as React.ChangeEvent<HTMLInputElement>);
   };
 
   return (

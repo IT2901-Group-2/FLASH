@@ -4,7 +4,7 @@ import DatePicker, { DatePickerProps } from "./DatePicker";
 interface DatePickerFieldProps extends Omit<DatePickerProps, "onRangeChange"> {
   startName: string;
   endName: string;
-  validate?: (startDate: string, endDate: string) => string | undefined;
+  validate?: (startDate: Date, endDate: Date) => string | undefined;
 }
 
 const DatePickerField = ({
