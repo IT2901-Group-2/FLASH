@@ -8,6 +8,7 @@ import {
   GetEventCodeParams,
   GetEventsParams,
   UpdateEvent,
+  userTable,
 } from "@/db";
 import { AsyncResult, Result } from "typescript-result";
 import { getFirstRow } from "@/lib/utils/sql";
@@ -15,7 +16,6 @@ import { and, eq, like, inArray, lt, lte, gte, gt, desc, asc } from "drizzle-orm
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { SQLiteColumn } from "drizzle-orm/sqlite-core";
 import { HTTPError } from "@/lib/utils/error";
-import { userService } from "./userService";
 import { ADMIN_ID } from "@/config";
 
 export class EventService {
@@ -153,12 +153,11 @@ export class EventService {
             await this.dbService.db.delete(eventTable).where(eq(eventTable.id, event.id));
           })
       )
-      .onSuccess(event => {
-        // `code` and `eventCode` is not used in `createUser`
-        userService.createUser(
-          { eventId: event.id, isModerator: true, code: "" },
-          { id: ADMIN_ID, name: "Admin", eventCode: "" }
-        );
+      .onSuccess(async event => {
+        this.dbService.db
+          .insert(userTable)
+          .values({ id: ADMIN_ID, eventId: event.id, name: "Admin", isModerator: true })
+          .run();
         this.dbService.flush();
       });
   }

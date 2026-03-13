@@ -26,12 +26,12 @@ export class UserService {
    */
   createUser(
     { eventId, isModerator }: EventCode,
-    { name, id }: CreateUser & { id?: string }
+    { name }: CreateUser
   ): AsyncResult<User, Error> {
     return Result.try(() =>
       this.dbService.db
         .insert(userTable)
-        .values({ eventId, name, isModerator, ...(id !== undefined ? { id } : {}) })
+        .values({ eventId, name, isModerator })
         .returning()
     )
       .mapError(error => {
