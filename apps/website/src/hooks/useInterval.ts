@@ -42,7 +42,9 @@ export const useInterval = (length: number, interval = 5000) => {
     (updater: number | ((i: number) => number)) => {
       setIndex(i => {
         const next = typeof updater === "function" ? updater(i) : updater;
-        return ((next % length) + length) % length;
+        const index = ((next % length) + length) % length;
+        if (isNaN(index)) return 0;
+        return index;
       });
       startInterval();
     },
