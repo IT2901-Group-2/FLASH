@@ -2,18 +2,17 @@ import { useDateRange } from "../DatePicker.context";
 import styles from "../DatePicker.module.css";
 
 const DatePickerDayButton = ({ date }: { date: Date }) => {
-  const { range, selectDate, today } = useDateRange();
-  const { start, end } = range;
+  const { startDate, endDate, selectDate, today } = useDateRange();
 
   const ts = date.getTime();
-  const isStart = !!start && start.getTime() === ts;
-  const isEnd = !!end && end.getTime() === ts;
+  const isStart = !!startDate && startDate.getTime() === ts;
+  const isEnd = !!endDate && endDate.getTime() === ts;
 
   const inRange =
-    !!start &&
-    !!end &&
-    ts > Math.min(start.getTime(), end.getTime()) &&
-    ts < Math.max(start.getTime(), end.getTime());
+    !!startDate &&
+    !!endDate &&
+    ts > Math.min(startDate.getTime(), endDate.getTime()) &&
+    ts < Math.max(startDate.getTime(), endDate.getTime());
   const isToday = date.toDateString() === today.toDateString();
 
   return (

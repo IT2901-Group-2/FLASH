@@ -5,6 +5,7 @@ import { Textarea } from "./Textarea";
 import { FormProvider, useForm } from "react-hook-form";
 import { expect, userEvent, within } from "storybook/test";
 import DatePickerField from "./DatePicker/DatePickerField";
+import { DatePicker } from "./DatePicker";
 
 const meta: Meta<typeof HTMLFormElement> = {
   title: "Patterns and Templates/Form",
@@ -59,12 +60,7 @@ export const Demo: Story = {
             error={errors.uploadLimit?.message?.toString()}
             required
           />
-          <DatePickerField
-            label="Date"
-            startName="startDate"
-            endName="endDate"
-            required
-          />
+          <DatePicker label="Date" />
           <div style={{ display: "flex", gap: ".5rem" }}>
             <Button type="reset" variant="secondary" fill>
               Reset

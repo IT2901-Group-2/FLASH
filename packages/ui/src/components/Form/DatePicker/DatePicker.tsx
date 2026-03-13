@@ -1,10 +1,15 @@
-import { InputHTMLAttributes, useEffect, useId, useRef, useState } from "react";
+import {
+  InputHTMLAttributes,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  MouseEvent,
+} from "react";
 import { FormFieldProps } from "../useFormField";
 import styles from "./DatePicker.module.css";
-import { TextField } from "../TextField";
-import { omit } from "@/util/helpers";
 import DateRangePicker from "./parts/DateRangePicker";
-import { DateRange } from "./DatePicker.types";
+import { DateRange, DEFAULT_DATE_RANGE } from "./DatePicker.types";
 
 export interface DatePickerProps
   extends FormFieldProps, Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
@@ -24,7 +29,7 @@ const DatePicker = ({
   onRangeChange,
   ...rest
 }: DatePickerProps) => {
-  const [value, setValue] = useState<string>("");
+  const [value, setValue] = useState<DateRange>(DEFAULT_DATE_RANGE);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const popoverId = `calendar-${useId()}`;
 
@@ -33,45 +38,52 @@ const DatePicker = ({
     const form = buttonRef.current?.closest("form");
     if (!form) return;
 
-    const handleReset = () => setValue("");
+    const handleReset = () =>
+      setValue({
+        startDate: new Date(),
+        startTime: "00:00",
+        endDate: new Date(),
+        endTime: "00:00",
+      });
     form.addEventListener("reset", handleReset);
     return () => form.removeEventListener("reset", handleReset);
   }, []);
 
   const handleChange = (range: DateRange) => {
-    const startDate = `${range.start?.toLocaleDateString()} ${range.startTime}`;
-    const endDate = `${range.end?.toLocaleDateString()} ${range.endTime}`;
-    const formatted = `${startDate} - ${endDate}`.replace("T", " ");
-
-    setValue(formatted);
-
     const [startHours, startMinutes] = range.startTime.split(":").map(Number);
     const [endHours, endMinutes] = range.endTime.split(":").map(Number);
 
-    const startDateTime = new Date(range.start!);
+    const startDateTime = new Date(range.startDate!);
     startDateTime.setHours(startHours, startMinutes);
 
-    const endDateTime = new Date(range.end!);
+    const endDateTime = new Date(range.endDate!);
     endDateTime.setHours(endHours, endMinutes);
 
+    setValue(range);
     onRangeChange?.({ startDate: startDateTime, endDate: endDateTime });
+  };
 
-    rest.onChange?.({
-      target: { value: formatted, name: rest.name },
-    } as React.ChangeEvent<HTMLInputElement>);
+  const handleOpen = (e: MouseEvent<HTMLInputElement>) => {
+    e.currentTarget.blur();
+    buttonRef.current?.click();
   };
 
   return (
     <>
-      <TextField
-        {...omit({ ...rest }, ["defaultValue", "type"])}
-        value={value}
-        onClick={e => {
-          e.currentTarget.blur();
-          buttonRef.current?.click();
-        }}
-        onChange={() => {}} // To stop error in console
-      />
+      <div>
+        <input
+          onClick={e => handleOpen(e)}
+          value={`${value?.startDate?.toLocaleDateString()} ${value?.startTime}`}
+          type="text"
+          readOnly
+        />
+        <input
+          onClick={e => handleOpen(e)}
+          value={`${value?.endDate?.toLocaleDateString()} ${value?.endTime}`}
+          type="text"
+          readOnly
+        />
+      </div>
       <button
         ref={buttonRef}
         popoverTarget={popoverId}

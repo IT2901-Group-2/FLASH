@@ -1,11 +1,13 @@
 export interface DateRange {
-  start: Date | null;
-  end: Date | null;
+  startDate: Date | null;
   startTime: string;
+  endDate: Date | null;
   endTime: string;
 }
 
-export interface DateRangeValue {
-  start: Date;
-  end: Date;
-}
+export const DEFAULT_DATE_RANGE: DateRange = {
+  startDate: new Date(),
+  startTime: "00:00",
+  endDate: new Date(),
+  endTime: "23:59",
+};
