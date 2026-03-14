@@ -74,11 +74,7 @@ const DropdownControl = ({
   return (
     <div
       ref={ref}
-      className={cl(
-        styles.dropdownControls,
-        className,
-        dropdownBorder && styles.dropdownBorder
-      )}
+      className={cl(styles.dropdownControls, className)}
       data-color={color}
       {...rest}
     >
@@ -99,7 +95,10 @@ const DropdownControl = ({
           />
         ))}
       </SegmentedControl>
-      <div className={styles.panel} data-open={!!activeContent}>
+      <div
+        className={cl(dropdownBorder && styles.dropdownBorder, styles.panel)}
+        data-open={!!activeContent}
+      >
         <div className={styles.panelInner}>{activeContent}</div>
       </div>
     </div>
