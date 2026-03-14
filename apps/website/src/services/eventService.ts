@@ -16,6 +16,7 @@ import { and, eq, like, inArray, lt, lte, gte, gt, desc, asc } from "drizzle-orm
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { SQLiteColumn } from "drizzle-orm/sqlite-core";
 import { HTTPError } from "@/lib/utils/error";
+import { ADMIN_ID } from "@/config";
 
 export class EventService {
   private readonly dbService: DatabaseService;
@@ -156,7 +157,12 @@ export class EventService {
         Result.try(() =>
           this.dbService.db
             .insert(userTable)
-            .values({ eventId: event.id, name: "Admin", isModerator: true })
+            .values({
+              id: `${ADMIN_ID}-${event.id}`,
+              eventId: event.id,
+              name: "Admin",
+              isModerator: true,
+            })
             .returning()
         ).map(() => event)
       )

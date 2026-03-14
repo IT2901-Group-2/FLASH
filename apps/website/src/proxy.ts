@@ -37,7 +37,7 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
 
     if (isAdmin) {
       await setEventCookie(
-        { eventId, id: ADMIN_ID, name: "Admin", isModerator: true },
+        { eventId, id: `${ADMIN_ID}-${eventId}`, name: "Admin", isModerator: true },
         JWT_SECRET
       ).getOrThrow();
     }
@@ -63,7 +63,7 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
       .catch(() => false);
     if (isAdmin) {
       await setEventCookie(
-        { eventId, id: ADMIN_ID, name: "Admin", isModerator: true },
+        { eventId, id: `${ADMIN_ID}-${eventId}`, name: "Admin", isModerator: true },
         JWT_SECRET
       ).getOrThrow();
     }
