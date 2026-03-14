@@ -112,7 +112,7 @@ const SegmentedControl = ({
               {label}
             </div>
           )}
-          {!!description && <div>{description}</div>}
+          {!!description && <div className={styles.description}>{description}</div>}
           <div
             role="radiogroup"
             aria-labelledby={label ? labelId : undefined}
