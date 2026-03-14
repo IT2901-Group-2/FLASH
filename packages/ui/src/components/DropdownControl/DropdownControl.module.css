@@ -19,7 +19,8 @@
 
   &[data-open="true"] {
     max-height: 100vh;
-    padding: 1.5rem 0 0.5rem 0;
+    padding: 0.5rem;
+    padding-top: 1.5rem;
 
     .panelInner {
       opacity: 1;
