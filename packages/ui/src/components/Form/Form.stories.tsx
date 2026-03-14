@@ -6,6 +6,7 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { expect, userEvent, within } from "storybook/test";
 import { DatePicker } from "./DatePicker";
 import { DEFAULT_DATE_RANGE } from "./DatePicker/DatePicker.types";
+import { DropdownControl } from "../DropdownControl";
 
 const meta: Meta<typeof HTMLFormElement> = {
   title: "Patterns and Templates/Form",
@@ -75,6 +76,29 @@ export const Demo: Story = {
               />
             )}
           />
+          <DropdownControl defaultValue="full" dropdownBorder>
+            <DropdownControl.Item value="full" label="Full Day" />
+            <DropdownControl.Item
+              value="specific"
+              label="Specific Time"
+              content={
+                <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+                  <TextField
+                    style={{ width: "7.5rem" }}
+                    type="time"
+                    size="small"
+                    label="Start Time"
+                  />
+                  <TextField
+                    style={{ width: "7.5rem" }}
+                    type="time"
+                    size="small"
+                    label="End Time"
+                  />
+                </div>
+              }
+            />
+          </DropdownControl>
           <div style={{ display: "flex", gap: ".5rem" }}>
             <Button type="reset" variant="secondary" fill>
               Reset
