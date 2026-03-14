@@ -54,6 +54,10 @@ export type SegmentedControlProps = Omit<
    */
   label?: React.ReactNode;
   /**
+   * A description for the control
+   */
+  description?: React.ReactNode;
+  /**
    * Overrides inherited color
    */
   "data-color"?: ColorName;
@@ -76,6 +80,7 @@ const SegmentedControl = ({
   onChange,
   className,
   label,
+  description,
   fill = false,
   size = "medium",
   "data-color": color = "accent",
@@ -107,6 +112,7 @@ const SegmentedControl = ({
               {label}
             </div>
           )}
+          {!!description && <div className={styles.description}>{description}</div>}
           <div
             role="radiogroup"
             aria-labelledby={label ? labelId : undefined}

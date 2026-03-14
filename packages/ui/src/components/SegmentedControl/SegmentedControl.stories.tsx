@@ -85,7 +85,12 @@ export const ItemLabel: Story = {
 
 export const GroupLabel: Story = {
   render: () => (
-    <SegmentedControl defaultValue="center" onChange={console.log} label="Select">
+    <SegmentedControl
+      defaultValue="center"
+      onChange={console.log}
+      label="Select"
+      description="Example description"
+    >
       <SegmentedControl.Item value="left" label="Left" />
       <SegmentedControl.Item value="center" label="Center" />
       <SegmentedControl.Item value="right" label="Right" />
