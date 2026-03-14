@@ -32,8 +32,8 @@
 
   .label {
     color: inherit;
-    font-size: 1.125rem;
-    font-weight: bold;
+    font-size: var(--font-size-xlarge);
+    font-weight: var(--font-weight-bold);
     letter-spacing: 0;
     line-height: 1.5rem;
     margin: 0;
