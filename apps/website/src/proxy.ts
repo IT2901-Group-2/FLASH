@@ -10,7 +10,7 @@ import {
   getJoinCode,
   getEventByCode,
 } from "@/lib/utils/proxy";
-import { createEventCookieValue } from "./lib/utils/eventCookie";
+import { setEventCookie } from "./lib/utils/eventCookie";
 import { ADMIN_ID, JWT_SECRET } from "./config";
 
 const handleI18nRouting = createMiddleware(routing);
@@ -28,17 +28,6 @@ function isProtected(req: NextRequest): boolean {
   return PROTECTED_ROUTES.some(route => withoutLocale.startsWith(route));
 }
 
-function attachAdminEventCookie(response: NextResponse, eventId: string): void {
-  const cookieResult = createEventCookieValue(
-    { eventId, userId: ADMIN_ID, name: "Admin", isModerator: true },
-    JWT_SECRET
-  );
-  if (cookieResult.ok) {
-    const { name, value, options } = cookieResult.value;
-    response.cookies.set(name, value, options);
-  }
-}
-
 export default async function proxy(request: NextRequest): Promise<NextResponse> {
   if (isEventRoute(request)) {
     const eventId = getEventId(request);
@@ -47,9 +36,10 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
       .catch(() => false);
 
     if (isAdmin) {
-      const response = handleI18nRouting(request);
-      attachAdminEventCookie(response, eventId);
-      return response;
+      setEventCookie(
+        { eventId, id: ADMIN_ID, name: "Admin", isModerator: true },
+        JWT_SECRET
+      );
     }
 
     const isAuthenticated = await checkEventCookie(eventId);
@@ -72,9 +62,10 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
       .then(() => true)
       .catch(() => false);
     if (isAdmin) {
-      const response = NextResponse.redirect(new URL(`/events/${eventId}`, request.url));
-      attachAdminEventCookie(response, eventId);
-      return response;
+      setEventCookie(
+        { eventId, id: ADMIN_ID, name: "Admin", isModerator: true },
+        JWT_SECRET
+      );
     }
 
     const isAuthenticated = await checkEventCookie(eventId);

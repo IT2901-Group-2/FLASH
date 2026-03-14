@@ -46,33 +46,18 @@ export function getEventCookie(
 }
 
 /**
- * Signs a JWT and returns the cookie name + value + options.
- * Safe to call from middleware (no dependency on next/headers).
- */
-export function createEventCookieValue(
-  { eventId, userId, name, isModerator }: EventCookie,
-  secret: string
-): Result<{ name: string; value: string; options: typeof COOKIE_OPTIONS }, Error> {
-  return Result.try(() => jwt.sign({ eventId, userId, name, isModerator }, secret)).map(
-    value => ({ name: `event-${eventId}`, value, options: COOKIE_OPTIONS })
-  );
-}
-
-/**
  * Saves a user session as an `EventCookie`.
  *
  * @param user The user session to save as a cookie.
  * @returns An empty result or an error.
  */
 export function setEventCookie(
-  { eventId, id: userId, name, isModerator }: User,
+  { eventId, id: userId, name, isModerator }: Omit<User, "joinedAt" | "lastAccessedAt">,
   secret: string
 ): AsyncResult<void, Error> {
   return Result.try(cookies).map(cs =>
-    createEventCookieValue({ eventId, userId, name, isModerator }, secret).map(
-      ({ name, value, options }) => {
-        cs.set(name, value, options);
-      }
-    )
+    Result.try(() => jwt.sign({ eventId, userId, name, isModerator }, secret)).map(c => {
+      cs.set(`event-${eventId}`, c, { secure: true, maxAge: 10 * 24 * 60 * 60 });
+    })
   );
 }
