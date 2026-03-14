@@ -3,7 +3,6 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { EventCookie, eventCookieSchema, User } from "@/db";
 import z from "zod";
-import { COOKIE_OPTIONS } from "@/config";
 
 /**
  * Fetches a list of all available `EventCookies`, ignoring any invalid or malformed cookies.
