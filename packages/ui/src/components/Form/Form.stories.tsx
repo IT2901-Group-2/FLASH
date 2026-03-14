@@ -4,7 +4,6 @@ import { Button } from "../Button";
 import { Textarea } from "./Textarea";
 import { FormProvider, useForm } from "react-hook-form";
 import { expect, userEvent, within } from "storybook/test";
-import DatePickerField from "./DatePicker/DatePickerField";
 import { DatePicker } from "./DatePicker";
 
 const meta: Meta<typeof HTMLFormElement> = {
@@ -33,6 +32,7 @@ export const Demo: Story = {
             display: "flex",
             flexDirection: "column",
             gap: "1rem",
+            width: "30rem",
           }}
           onSubmit={handleSubmit(data => console.log(data))}
         >
@@ -60,7 +60,7 @@ export const Demo: Story = {
             error={errors.uploadLimit?.message?.toString()}
             required
           />
-          <DatePicker label="Date" />
+          <DatePicker data-color="accent" dateLabel="Date" timeLabel="Time" />
           <div style={{ display: "flex", gap: ".5rem" }}>
             <Button type="reset" variant="secondary" fill>
               Reset

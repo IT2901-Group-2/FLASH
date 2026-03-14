@@ -8,12 +8,18 @@ import {
 } from "react";
 import { FormFieldProps } from "../useFormField";
 import styles from "./DatePicker.module.css";
-import DateRangePicker from "./parts/DateRangePicker";
 import { DateRange, DEFAULT_DATE_RANGE } from "./DatePicker.types";
+import { TextField } from "../TextField";
+import { omit } from "@/util/helpers";
+import { DropdownControl } from "@/components/DropdownControl";
+import DateRangeProvider from "./DatePicker.context";
+import DatePickerCalendarNav from "./parts/Navigation";
+import DatePickerCalendarGrid from "./parts/CalendarGrid";
 
 export interface DatePickerProps
   extends FormFieldProps, Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
-  label: string;
+  dateLabel: string;
+  timeLabel: string;
   description?: string;
   /**
    * Changes the names of the weekdays
@@ -26,6 +32,7 @@ export interface DatePickerProps
 const DatePicker = ({
   "data-color": color,
   local = "en-US",
+  dateLabel,
   onRangeChange,
   ...rest
 }: DatePickerProps) => {
@@ -70,29 +77,47 @@ const DatePicker = ({
 
   return (
     <>
-      <div>
-        <input
-          onClick={e => handleOpen(e)}
-          value={`${value?.startDate?.toLocaleDateString()} ${value?.startTime}`}
-          type="text"
-          readOnly
-        />
-        <input
-          onClick={e => handleOpen(e)}
-          value={`${value?.endDate?.toLocaleDateString()} ${value?.endTime}`}
-          type="text"
-          readOnly
-        />
-      </div>
+      <TextField
+        {...omit({ ...rest }, ["defaultValue", "type"])}
+        label={dateLabel}
+        value={`${value.startDate?.toLocaleDateString()} - ${value.endDate?.toLocaleDateString()}`}
+        onClick={e => {
+          e.currentTarget.blur();
+          buttonRef.current?.click();
+        }}
+        onChange={() => {}} // To stop error in console
+      />
       <button
         ref={buttonRef}
         popoverTarget={popoverId}
         className={styles.openCalendar}
         type="button"
       />
-      <div data-color={color} popover="auto" id={popoverId} className={styles.calendar}>
-        <DateRangePicker onChange={handleChange} local={local} />
-      </div>
+      <DateRangeProvider onChange={handleChange} local={local}>
+        <div data-color={color} popover="auto" id={popoverId} className={styles.calendar}>
+          <DatePickerCalendarNav />
+          <DatePickerCalendarGrid />
+        </div>
+        <DropdownControl defaultValue="full" dropdownBorder label="TEST">
+          <DropdownControl.Item value="full" label="Full Day" />
+          <DropdownControl.Item
+            value="specific"
+            label="Specific Time"
+            content={
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-evenly",
+                }}
+              >
+                <TextField label="Start Time" type="time" size="small" />
+                <TextField label="End Time" type="time" size="small" />
+              </div>
+            }
+          />
+        </DropdownControl>
+      </DateRangeProvider>
     </>
   );
 };
