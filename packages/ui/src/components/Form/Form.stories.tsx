@@ -60,7 +60,7 @@ export const Demo: Story = {
             error={errors.uploadLimit?.message?.toString()}
             required
           />
-          <DatePicker data-color="accent" dateLabel="Date" timeLabel="Time" />
+          <DatePicker data-color="accent" label="Date" />
           <div style={{ display: "flex", gap: ".5rem" }}>
             <Button type="reset" variant="secondary" fill>
               Reset

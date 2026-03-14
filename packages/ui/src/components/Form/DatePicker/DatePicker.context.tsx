@@ -1,5 +1,5 @@
 import { DateRange, DEFAULT_DATE_RANGE } from "./DatePicker.types";
-import { createContext, useCallback, useContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 interface DateRangeContextState extends DateRange {
   viewMonth: number;
@@ -9,8 +9,6 @@ interface DateRangeContextState extends DateRange {
 }
 
 interface DateRangeContextValue extends DateRangeContextState {
-  setStartTime: (t: string) => void;
-  setEndTime: (t: string) => void;
   selectDate: (d: Date) => void;
   prevMonth: () => void;
   nextMonth: () => void;
@@ -67,32 +65,8 @@ const DateRangeProvider = ({ onChange, local, children }: DateRangeProviderProps
     onChange?.({
       startDate: start,
       endDate: end,
-      startTime: value.startTime,
-      endTime: value.endTime,
     });
   };
-
-  const setTime = useCallback(
-    (key: "startTime" | "endTime", time: string) => {
-      setValue(v => {
-        onChange?.({
-          startDate: v.startDate ?? new Date(),
-          endDate: v.endDate ?? new Date(),
-          startTime: v.startTime,
-          endTime: v.endTime,
-          [key]: time,
-        });
-        return { ...v, [key]: time };
-      });
-    },
-    [onChange]
-  );
-
-  const setStartTime = useCallback(
-    (time: string) => setTime("startTime", time),
-    [setTime]
-  );
-  const setEndTime = useCallback((time: string) => setTime("endTime", time), [setTime]);
 
   const adjustViewMonth = (delta: number) => {
     setValue(v => {
@@ -110,8 +84,6 @@ const DateRangeProvider = ({ onChange, local, children }: DateRangeProviderProps
     <DateRangeCtx.Provider
       value={{
         ...value,
-        setStartTime,
-        setEndTime,
         selectDate,
         prevMonth,
         nextMonth,
