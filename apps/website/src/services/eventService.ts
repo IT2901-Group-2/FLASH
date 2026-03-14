@@ -160,9 +160,7 @@ export class EventService {
             .returning()
         ).map(() => event)
       )
-      .onSuccess(() => {
-        this.dbService.flush();
-      });
+      .onSuccess(() => this.dbService.flush());
   }
 
   /**
