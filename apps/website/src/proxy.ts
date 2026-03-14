@@ -36,10 +36,10 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
       .catch(() => false);
 
     if (isAdmin) {
-      setEventCookie(
+      await setEventCookie(
         { eventId, id: ADMIN_ID, name: "Admin", isModerator: true },
         JWT_SECRET
-      );
+      ).getOrThrow();
     }
 
     const isAuthenticated = await checkEventCookie(eventId);
@@ -62,10 +62,10 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
       .then(() => true)
       .catch(() => false);
     if (isAdmin) {
-      setEventCookie(
+      await setEventCookie(
         { eventId, id: ADMIN_ID, name: "Admin", isModerator: true },
         JWT_SECRET
-      );
+      ).getOrThrow();
     }
 
     const isAuthenticated = await checkEventCookie(eventId);
