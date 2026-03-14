@@ -152,11 +152,15 @@ export class EventService {
             await this.dbService.db.delete(eventTable).where(eq(eventTable.id, event.id));
           })
       )
-      .onSuccess(async event => {
-        this.dbService.db
-          .insert(userTable)
-          .values({ eventId: event.id, name: "Admin", isModerator: true })
-          .run();
+      .map(event =>
+        Result.try(() =>
+          this.dbService.db
+            .insert(userTable)
+            .values({ eventId: event.id, name: "Admin", isModerator: true })
+            .returning()
+        ).map(() => event)
+      )
+      .onSuccess(() => {
         this.dbService.flush();
       });
   }
