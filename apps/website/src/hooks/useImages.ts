@@ -50,7 +50,11 @@ export const imagesKeys = {
 /**
  * Fetches a list of images for the given event, optionally filtered by the provided query params.
  */
-export function useImagesQuery(eventId?: string, params?: GetImagesParams) {
+export function useImagesQuery(
+  eventId?: string,
+  params?: GetImagesParams,
+  refetchInterval?: number
+) {
   return useQuery({
     queryKey: imagesKeys.list(eventId, params),
     queryFn: () =>
@@ -59,6 +63,7 @@ export function useImagesQuery(eventId?: string, params?: GetImagesParams) {
         `/api/events/${eventId}/images${toImagesSearchParams(params)}`
       ),
     enabled: !!eventId,
+    refetchInterval,
   });
 }
 

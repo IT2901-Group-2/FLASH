@@ -1,5 +1,5 @@
 import { Calendar, EditIcon, Image as ImageIcon, Trash, Users } from "lucide-react";
-import { Card } from "ui";
+import { Card } from "@flash/ui";
 import styles from "./EventCard.module.css";
 import { cl } from "@/utils/className";
 import { Event } from "@/db";

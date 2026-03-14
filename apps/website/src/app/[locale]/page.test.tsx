@@ -12,7 +12,7 @@ vi.mock("next-intl", () => ({
     return (key: string) => {
       translationKeys.push(key);
       const translations: Record<string, string> = {
-        name: "PhotoEvent",
+        name: "FLASH",
         description: "Join and share photos from events",
       };
       return translations[key] || key;
@@ -72,7 +72,7 @@ describe("Page", () => {
     render(<Page />, { wrapper: createQueryClientWrapper() });
 
     // Verify the translated text appears in the document
-    expect(screen.getByText("PhotoEvent")).toBeDefined();
+    expect(screen.getByText("FLASH")).toBeDefined();
     expect(screen.getByText("Join and share photos from events")).toBeDefined();
   });
 });

@@ -14,7 +14,6 @@
     "join": "Bli med",
     "openCamera": "Åpne kamera",
     "uploadImage": "Last opp bilde",
-    "takePhoto": "Ta bilde",
     "slideshow": "Lysbildefremvisning",
     "createNewEvent": "Lag nytt arrangement",
     "downloadQrCode": "Last ned QR-kode",
@@ -57,5 +56,9 @@
     "copySuccess": "Kopiert!",
     "copyFailed": "Klarte ikke å kopiere lenken til utklippstavlen",
     "scanToUploadPhotos": "Skann for å laste opp bilder"
+  },
+  "slideshow": {
+    "viewProgress": "{index} av {total}",
+    "noApproved": "Ingen godkjente bilder"
   }
 }
