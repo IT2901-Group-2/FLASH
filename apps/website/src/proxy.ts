@@ -52,7 +52,7 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
       return response;
     }
 
-    const isAuthenticated = await checkEventCookie(getEventId(request));
+    const isAuthenticated = await checkEventCookie(eventId);
     if (!isAuthenticated) {
       return NextResponse.redirect(new URL(`/`, request.url));
     }
