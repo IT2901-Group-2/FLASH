@@ -11,7 +11,6 @@ import DatePickerCalendarGrid from "./parts/CalendarGrid";
 export interface DatePickerProps
   extends FormFieldProps, Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
   label: string;
-  description?: string;
   /**
    * Changes the names of the weekdays
    * @default "en-US"

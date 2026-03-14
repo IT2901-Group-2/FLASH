@@ -2,9 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TextField } from "./TextField";
 import { Button } from "../Button";
 import { Textarea } from "./Textarea";
-import { FormProvider, useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import { expect, userEvent, within } from "storybook/test";
 import { DatePicker } from "./DatePicker";
+import { DEFAULT_DATE_RANGE } from "./DatePicker/DatePicker.types";
 
 const meta: Meta<typeof HTMLFormElement> = {
   title: "Patterns and Templates/Form",
@@ -22,6 +23,7 @@ export const Demo: Story = {
     const {
       register,
       handleSubmit,
+      control,
       formState: { errors },
     } = methods;
 
@@ -60,7 +62,19 @@ export const Demo: Story = {
             error={errors.uploadLimit?.message?.toString()}
             required
           />
-          <DatePicker data-color="accent" label="Date" />
+          <Controller
+            name="date"
+            control={control}
+            defaultValue={DEFAULT_DATE_RANGE}
+            rules={{ required: "Date is required" }}
+            render={({ fieldState }) => (
+              <DatePicker
+                data-color="accent"
+                label="Date"
+                error={fieldState.error?.message}
+              />
+            )}
+          />
           <div style={{ display: "flex", gap: ".5rem" }}>
             <Button type="reset" variant="secondary" fill>
               Reset
