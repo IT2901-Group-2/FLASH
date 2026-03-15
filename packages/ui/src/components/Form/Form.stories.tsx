@@ -5,8 +5,9 @@ import { Textarea } from "./Textarea";
 import { Controller, useForm } from "react-hook-form";
 import { expect, userEvent, within } from "storybook/test";
 import { DatePicker } from "./DatePicker";
-import { DateRange, DEFAULT_DATE_RANGE } from "./DatePicker/DatePicker.types";
-import { DropdownControl } from "./DropdownControl";
+import { DateRange } from "./DatePicker/DatePicker.types";
+import EventTimeField from "./.example/TimeField";
+import { TIME_PRESETS } from "./.example/helpers";
 
 type FormValues = {
   name: string;
@@ -50,18 +51,13 @@ export const Demo: Story = {
         description: "",
         numberOfPhotos: 1,
         dateRange: { startDate: null, endDate: null },
-        eventTime: { startTime: "00:00", endTime: "23:59" },
+        eventTime: TIME_PRESETS.full,
       },
     });
 
     return (
       <form
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "1rem",
-          width: "30rem",
-        }}
+        style={{ display: "flex", flexDirection: "column", gap: "1rem", width: "25rem" }}
         onSubmit={handleSubmit(data => console.log(data))}
         onReset={() => reset()}
       >
@@ -70,7 +66,6 @@ export const Demo: Story = {
           error={errors.name?.message}
           {...register("name", { required: "Name is required" })}
         />
-
         <Textarea
           label="Description"
           error={errors.description?.message}
@@ -83,7 +78,7 @@ export const Demo: Story = {
           {...register("numberOfPhotos", {
             required: "Required",
             min: { value: 1, message: "Must be 1 or more" },
-            valueAsNumber: true, // important — parses string → number
+            valueAsNumber: true,
           })}
         />
         <Controller
@@ -109,43 +104,14 @@ export const Demo: Story = {
               v.startTime < v.endTime || "Start time must be before end time",
           }}
           render={({ field, fieldState }) => (
-            <DropdownControl
-              label="Event Time"
+            <EventTimeField
+              value={field.value}
+              onChange={field.onChange}
               error={fieldState.error?.message}
-              dropdownBorder
-              defaultValue="full"
-              onChange={selected => {
-                if (selected === "full")
-                  field.onChange({ startTime: "00:00", endTime: "23:59" });
-                else field.onChange({ startTime: "08:00", endTime: "17:00" });
-              }}
-            >
-              <DropdownControl.Item value="full" label="Full Day" />
-              <DropdownControl.Item
-                value="specific"
-                label="Specific Time"
-                content={
-                  <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-                    {(["startTime", "endTime"] as const).map(key => (
-                      <TextField
-                        style={{ width: "5rem" }}
-                        key={key}
-                        type="time"
-                        size="small"
-                        label={key === "startTime" ? "Start Time" : "End Time"}
-                        value={field.value[key]}
-                        onChange={e =>
-                          field.onChange({ ...field.value, [key]: e.target.value })
-                        }
-                      />
-                    ))}
-                  </div>
-                }
-              />
-            </DropdownControl>
+            />
           )}
         />
-        <div style={{ display: "flex", gap: ".5rem" }}>
+        <div style={{ display: "flex", gap: "1rem" }}>
           <Button type="reset" variant="secondary" fill>
             Reset
           </Button>
