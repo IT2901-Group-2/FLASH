@@ -54,6 +54,7 @@
 .dateGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  row-gap: 0.125rem;
   margin-bottom: 0.25rem;
   text-align: center;
   color: var(--text-neutral-decoration);
