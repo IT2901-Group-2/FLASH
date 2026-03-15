@@ -31,12 +31,14 @@ cypress/videos/
 playwright-report/
 test-results/
 .vitest/
+.storybook/
 vitest.config.*
 jest.config.*
 cypress.config.*
 playwright.config.*
 *.test.*
 *.spec.*
+*.stories.*
 
 # Local development and editor files
 .git/
