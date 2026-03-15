@@ -91,6 +91,7 @@ export const TextField = ({
           {...omit(rest, ["error", "errorId", "size", "required"])}
           {...inputProps}
           type={type}
+          role="textbox"
           readOnly={readOnly}
           className={styles.input}
           size={htmlSize}
