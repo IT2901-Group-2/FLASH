@@ -14,11 +14,11 @@ export function semanticRootTokens(theme: ColorTheme) {
   return {
     text: {
       "logo-primary": {
-        value: theme == "light" ? "{warning.300.value}" : "{neutral.500.value}",
+        value: theme == "light" ? "#8B6823" : "#D6AD5B",
         type: "color",
       },
       "logo-secondary": {
-        value: theme == "light" ? "{warning.100.value}" : "{neutral.300.value}",
+        value: theme == "light" ? "#D7B95B" : "#F3EACE",
         type: "color",
       },
     },
