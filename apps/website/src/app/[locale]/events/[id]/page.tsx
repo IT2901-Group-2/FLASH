@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Camera, QrCode, Upload } from "lucide-react";
+import { QrCode, Upload } from "lucide-react";
 import styles from "./UploadImage.module.css";
 import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
@@ -117,15 +117,6 @@ export default function Page() {
             onClick={() => dialogRef.current?.showModal()}
           />
           <Button
-            icon={<Camera />}
-            iconPosition="right"
-            data-color="brand-purple"
-            variant="secondary"
-            className={styles.desktopOnly}
-          >
-            {tCommon("actions.takePhoto")}
-          </Button>
-          <Button
             icon={<Upload />}
             iconPosition="right"
             data-color="brand-purple"
@@ -149,12 +140,6 @@ export default function Page() {
               iconPosition: "right",
               text: tCommon("actions.uploadImage"),
               onClick: openFilePicker,
-            }}
-            secondaryButton={{
-              "data-color": "brand-purple",
-              icon: <Camera size={18} />,
-              iconPosition: "right",
-              text: tCommon("actions.takePhoto"),
             }}
           />
         </div>
