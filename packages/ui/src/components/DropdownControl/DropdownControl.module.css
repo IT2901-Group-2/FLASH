@@ -7,7 +7,6 @@
   overflow: hidden;
   position: relative;
   top: calc(-1 * var(--radius-16));
-  z-index: -1;
 
   border-bottom-left-radius: var(--radius-16);
   border-bottom-right-radius: var(--radius-16);

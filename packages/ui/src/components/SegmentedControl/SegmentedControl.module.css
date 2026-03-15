@@ -18,6 +18,9 @@
   --item-width: calc(100% / var(--item-count));
   --backdrop-pos: calc(var(--item-width) * var(--selected-index));
 
+  position: relative;
+  z-index: 1;
+
   display: flex;
   flex-direction: column;
   justify-items: start;
