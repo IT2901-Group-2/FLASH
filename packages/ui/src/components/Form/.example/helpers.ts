@@ -8,3 +8,8 @@ export type EventTime = (typeof TIME_PRESETS)[TimePreset];
 
 export const isFullDay = (v: EventTime) =>
   v.startTime === TIME_PRESETS.full.startTime && v.endTime === TIME_PRESETS.full.endTime;
+
+export const combineDateAndTime = (date: Date, timeString: string) => {
+  const [hours, minutes] = timeString.split(":").map(Number);
+  return new Date(date.setHours(hours, minutes, 0, 0));
+};

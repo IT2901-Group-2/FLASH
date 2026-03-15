@@ -1,13 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { TextField } from "./TextField";
-import { Button } from "../Button";
-import { Textarea } from "./Textarea";
 import { Controller, useForm } from "react-hook-form";
-import { DatePicker } from "./DatePicker";
-import { DateRange } from "./DatePicker/DatePicker.types";
-import EventTimeField from "./.example/TimeField";
-import { TIME_PRESETS } from "./.example/helpers";
 import { expect, userEvent, waitFor } from "storybook/test";
+
+import { Button } from "../Button";
+import { DatePicker } from "./DatePicker";
+import type { DateRange } from "./DatePicker/DatePicker.types";
+import { Textarea } from "./Textarea";
+import { TextField } from "./TextField";
+import EventTimeField from "./.example/TimeField";
+import { combineDateAndTime, TIME_PRESETS } from "./.example/helpers";
 
 type FormValues = {
   name: string;
@@ -23,14 +24,8 @@ type FormValues = {
 const meta: Meta = {
   title: "Patterns and Templates/Form",
   tags: ["autodocs"],
-  argTypes: {},
-  args: {},
   parameters: {
-    docs: {
-      source: {
-        type: "code",
-      },
-    },
+    docs: { source: { type: "code" } },
   },
 } satisfies Meta;
 
@@ -58,7 +53,16 @@ export const Demo: Story = {
     return (
       <form
         style={{ display: "flex", flexDirection: "column", gap: "1rem", width: "25rem" }}
-        onSubmit={handleSubmit(data => console.log(data))}
+        onSubmit={handleSubmit(
+          ({ name, description, numberOfPhotos, dateRange, eventTime }) =>
+            console.log({
+              name,
+              description,
+              uploadLimit: numberOfPhotos,
+              startTime: combineDateAndTime(dateRange.startDate!, eventTime.startTime),
+              endTime: combineDateAndTime(dateRange.endDate!, eventTime.endTime),
+            })
+        )}
         onReset={() => reset()}
       >
         <TextField
@@ -130,8 +134,7 @@ export const Demo: Story = {
       await userEvent.click(btn("Submit"));
       await waitFor(() => {
         expect(canvas.getByText("Name is required")).toBeVisible();
-        expect(canvas.getByText("Required")).toBeVisible(); // numberOfPhotos
-        // expect(canvas.getByText("Both dates are required")).toBeVisible();
+        expect(canvas.getByText("Required")).toBeVisible();
       });
     });
 
@@ -140,7 +143,6 @@ export const Demo: Story = {
       await userEvent.click(btn("Submit"));
       await waitFor(() => {
         expect(canvas.queryByText("Name is required")).toBeNull();
-        // expect(canvas.getByText("Both dates are required")).toBeVisible(); // others still showing
       });
     });
 
@@ -160,15 +162,10 @@ export const Demo: Story = {
       await waitFor(() => expect(canvas.queryByText("Must be 1 or more")).toBeNull());
     });
 
-    await step("Selecting a date range clears its error", async () => {
-      // Popover not supported in jsdom. Cannot test this.
-    });
+    await step("Date range validation (not testable in jsdom)", async () => {});
 
     await step("End time before start time shows time error", async () => {
-      // EventTimeField exposes two time inputs — adjust names to match your impl
-
-      const specificTimeTab = canvas.getByText(/specific time/i);
-      await userEvent.click(specificTimeTab);
+      await userEvent.click(canvas.getByText(/specific time/i));
 
       const startTime = canvas.getByLabelText(/start time/i);
       const endTime = canvas.getByLabelText(/end time/i);
@@ -184,10 +181,9 @@ export const Demo: Story = {
       );
     });
 
-    await step("Valid form submits without any errors", async () => {
-      const endTime = canvas.getByLabelText(/end time/i);
-      await userEvent.clear(endTime);
-      await userEvent.type(endTime, "20:00");
+    await step("Valid form submits without errors", async () => {
+      await userEvent.clear(canvas.getByLabelText(/end time/i));
+      await userEvent.type(canvas.getByLabelText(/end time/i), "20:00");
 
       await userEvent.click(btn("Submit"));
       await waitFor(() => {
@@ -198,7 +194,7 @@ export const Demo: Story = {
       });
     });
 
-    await step("Reset button clears all fields and errors", async () => {
+    await step("Reset clears all fields and errors", async () => {
       await userEvent.click(btn("Reset"));
       await waitFor(() => {
         expect(field("Name")).toHaveValue("");
