@@ -22,7 +22,7 @@ export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivEleme
 
   return (
     <Sidebar className={className} {...rest}>
-      <Sidebar.Header logo={<Logo />} />
+      <Sidebar.Header logo={<Logo redirectTo="/admin/dashboard" />} />
       <Sidebar.Group title={t("main")}>
         <Sidebar.Item
           icon={<House />}
