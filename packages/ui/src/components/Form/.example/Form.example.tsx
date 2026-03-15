@@ -1,6 +1,12 @@
 import { Button } from "../../Button";
 import { DatePicker } from "./../DatePicker";
-import { Control, Controller, FieldErrors, UseFormRegister } from "react-hook-form";
+import {
+  Control,
+  Controller,
+  FieldErrors,
+  UseFormRegister,
+  useWatch,
+} from "react-hook-form";
 import { Textarea } from "./../Textarea";
 import { TextField } from "./../TextField";
 import EventTimeField from "./../.example/TimeField";
@@ -13,6 +19,8 @@ type Props = {
 };
 
 const FormExample = ({ register, control, errors }: Props) => {
+  const dateRange = useWatch({ control, name: "dateRange" });
+
   return (
     <>
       <TextField
@@ -55,7 +63,13 @@ const FormExample = ({ register, control, errors }: Props) => {
         name="eventTime"
         control={control}
         rules={{
-          validate: v => v.startTime < v.endTime || "Start time must be before end time",
+          validate: v => {
+            const sameDay =
+              dateRange.startDate?.toDateString() === dateRange.endDate?.toDateString();
+            if (sameDay && v.startTime >= v.endTime)
+              return "Start time must be before end time";
+            return true;
+          },
         }}
         render={({ field, fieldState }) => (
           <EventTimeField
