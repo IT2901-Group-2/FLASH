@@ -9,8 +9,9 @@ import DatePickerCalendarNav from "./parts/Navigation";
 import DatePickerCalendarGrid from "./parts/CalendarGrid";
 
 export interface DatePickerProps
-  extends FormFieldProps, Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
+  extends FormFieldProps, Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "value"> {
   label: string;
+  value?: DateRange;
   /**
    * Changes the names of the weekdays
    * @default "en-US"
@@ -22,9 +23,10 @@ const DatePicker = ({
   "data-color": color,
   local = "en-US",
   label,
+  value: _value,
   ...rest
 }: DatePickerProps) => {
-  const [value, setValue] = useState<DateRange>(DEFAULT_DATE_RANGE);
+  const [value, setValue] = useState<DateRange>(_value ?? DEFAULT_DATE_RANGE);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const popoverId = `calendar-${useId()}`;
 

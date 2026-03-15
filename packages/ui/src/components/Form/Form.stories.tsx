@@ -5,8 +5,18 @@ import { Textarea } from "./Textarea";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { expect, userEvent, within } from "storybook/test";
 import { DatePicker } from "./DatePicker";
-import { DEFAULT_DATE_RANGE } from "./DatePicker/DatePicker.types";
+import { DateRange, DEFAULT_DATE_RANGE } from "./DatePicker/DatePicker.types";
 import { DropdownControl } from "../DropdownControl";
+import { useRef } from "react";
+
+type FormValues = {
+  name: string;
+  description: string;
+  uploadLimit: number;
+  date: DateRange;
+  startTime: string;
+  endTime: string;
+};
 
 const meta: Meta<typeof HTMLFormElement> = {
   title: "Patterns and Templates/Form",
@@ -20,13 +30,25 @@ type Story = StoryObj<typeof HTMLFormElement>;
 
 export const Demo: Story = {
   render: () => {
-    const methods = useForm();
+    const timeType = useRef<string>("full");
+
+    const methods = useForm<FormValues>({
+      defaultValues: {
+        startTime: "00:00",
+        endTime: "23:59",
+      },
+    });
+
     const {
       register,
       handleSubmit,
       control,
+      setValue,
       formState: { errors },
     } = methods;
+
+    const validateTime = (v: string) =>
+      timeType.current === "specific" && !v ? "Required" : true;
 
     return (
       <FormProvider {...methods}>
@@ -45,22 +67,22 @@ export const Demo: Story = {
               required: "Name is required",
               minLength: { value: 3, message: "Must be at least 3 characters" },
             })}
-            error={errors.name?.message?.toString()}
+            error={errors.name?.message}
             required
           />
           <Textarea
             label="Description"
             {...register("description")}
-            error={errors.description?.message?.toString()}
+            error={errors.description?.message}
           />
           <TextField
             label="Upload Limit"
             type="number"
             {...register("uploadLimit", {
-              required: "A upload limit is required",
+              required: "An upload limit is required",
               min: { value: 1, message: "The minimum allowed number of photos is 1" },
             })}
-            error={errors.uploadLimit?.message?.toString()}
+            error={errors.uploadLimit?.message}
             required
           />
           <Controller
@@ -68,15 +90,29 @@ export const Demo: Story = {
             control={control}
             defaultValue={DEFAULT_DATE_RANGE}
             rules={{ required: "Date is required" }}
-            render={({ fieldState }) => (
+            render={({ field, fieldState }) => (
               <DatePicker
                 data-color="accent"
-                label="Date"
+                label="Event Date"
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
                 error={fieldState.error?.message}
               />
             )}
           />
-          <DropdownControl defaultValue="full" dropdownBorder>
+          <DropdownControl
+            label="Event Time"
+            dropdownBorder
+            defaultValue="full"
+            onChange={val => {
+              timeType.current = val;
+              if (val === "full") {
+                setValue("startTime", "00:00");
+                setValue("endTime", "23:59");
+              }
+            }}
+          >
             <DropdownControl.Item value="full" label="Full Day" />
             <DropdownControl.Item
               value="specific"
@@ -88,12 +124,14 @@ export const Demo: Story = {
                     type="time"
                     size="small"
                     label="Start Time"
+                    {...register("startTime", { validate: validateTime })}
                   />
                   <TextField
                     style={{ width: "7.5rem" }}
                     type="time"
                     size="small"
                     label="End Time"
+                    {...register("endTime", { validate: validateTime })}
                   />
                 </div>
               }
