@@ -63,6 +63,7 @@ const DatePicker = ({
           e.currentTarget.blur();
           buttonRef.current?.click();
         }}
+        onFocus={e => e.currentTarget.click()}
         onChange={() => {}} // To stop error in console
       />
       <button
