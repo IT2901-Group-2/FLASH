@@ -14,7 +14,6 @@
     "join": "Join Event",
     "openCamera": "Open Camera",
     "uploadImage": "Upload Image",
-    "takePhoto": "Take Photo",
     "slideshow": "Slideshow",
     "createNewEvent": "Create New Event",
     "downloadQrCode": "Download QR Code",
@@ -57,5 +56,9 @@
     "copySuccess": "Copied successfully!",
     "copyFailed": "Failed to copy link to clipboard",
     "scanToUploadPhotos": "Scan to upload photos"
+  },
+  "slideshow": {
+    "viewProgress": "{index} of {total}",
+    "noApproved": "No approved images"
   }
 }

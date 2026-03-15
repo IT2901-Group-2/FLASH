@@ -1,6 +1,18 @@
 import { describe, it, expect, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import Page from "./page";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  const Wrapper = ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+  Wrapper.displayName = "TestQueryWrapper";
+  return Wrapper;
+};
 
 describe("AdminLogin Page", () => {
   afterEach(() => {
@@ -8,7 +20,7 @@ describe("AdminLogin Page", () => {
   });
 
   it("renders all components together", () => {
-    const { container } = render(<Page />);
+    const { container } = render(<Page />, { wrapper: createWrapper() });
     const pageWrapper = container.querySelector('[class*="pageWrapper"]');
 
     expect(pageWrapper).not.toBeNull();
@@ -16,7 +28,7 @@ describe("AdminLogin Page", () => {
   });
 
   it("displays translated content", () => {
-    render(<Page />);
+    render(<Page />, { wrapper: createWrapper() });
 
     expect(screen.getByText("title")).toBeTruthy();
     expect(screen.getAllByText("description").length).toBeGreaterThan(0);
@@ -24,7 +36,7 @@ describe("AdminLogin Page", () => {
   });
 
   it("renders all required components", () => {
-    const { container } = render(<Page />);
+    const { container } = render(<Page />, { wrapper: createWrapper() });
 
     const cameraIcon = container.querySelector('[class*="cameraWrapper"]');
     expect(cameraIcon).toBeTruthy();
@@ -34,7 +46,7 @@ describe("AdminLogin Page", () => {
   });
 
   it("passes correct props to Title component", () => {
-    render(<Page />);
+    render(<Page />, { wrapper: createWrapper() });
     const h1 = screen.getByTestId("title");
 
     expect(h1.getAttribute("data-color")).toBe("brand-purple");

@@ -3,7 +3,7 @@
 import { useEventsQuery } from "@/hooks/useEvents";
 import { Event } from "@/db";
 import { Calendar, ChevronRight } from "lucide-react";
-import { Card, Title } from "ui";
+import { Card, Title } from "@flash/ui";
 import styles from "./RememberedEvents.module.css";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";

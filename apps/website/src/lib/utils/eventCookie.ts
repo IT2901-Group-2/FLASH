@@ -51,7 +51,12 @@ export function getEventCookie(
  * @returns An empty result or an error.
  */
 export function setEventCookie(
-  { eventId, id: userId, name, isModerator }: User,
+  {
+    eventId,
+    id: userId,
+    name,
+    isModerator,
+  }: Pick<User, "eventId" | "id" | "name" | "isModerator">,
   secret: string
 ): AsyncResult<void, Error> {
   return Result.try(cookies).map(cs =>

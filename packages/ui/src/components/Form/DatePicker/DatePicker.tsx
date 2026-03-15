@@ -1,67 +1,64 @@
 import { InputHTMLAttributes, useEffect, useId, useRef, useState } from "react";
 import { FormFieldProps } from "../useFormField";
 import styles from "./DatePicker.module.css";
+import { DateRange, DEFAULT_DATE_RANGE } from "./DatePicker.types";
 import { TextField } from "../TextField";
 import { omit } from "@/util/helpers";
-import DateRangePicker from "./parts/DateRangePicker";
-import { DateRange } from "./DatePicker.types";
+import DateRangeProvider, { DateRangeProviderHandle } from "./DatePicker.context";
+import DatePickerCalendarNav from "./parts/Navigation";
+import DatePickerCalendarGrid from "./parts/CalendarGrid";
 
 export interface DatePickerProps
-  extends FormFieldProps, Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
+  extends
+    FormFieldProps,
+    Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "value" | "onChange"> {
   label: string;
-  description?: string;
+  value?: DateRange;
   /**
    * Changes the names of the weekdays
    * @default "en-US"
    */
   local?: string;
-  onRangeChange?: (values: { startDate: Date; endDate: Date }) => void;
+  onChange?: (value: DateRange) => void;
 }
 
 const DatePicker = ({
   "data-color": color,
   local = "en-US",
-  onRangeChange,
+  label,
+  value: _value,
+  onChange,
   ...rest
 }: DatePickerProps) => {
-  const [value, setValue] = useState<string>("");
+  const [value, setValue] = useState<DateRange>(_value ?? DEFAULT_DATE_RANGE);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const providerRef = useRef<DateRangeProviderHandle>(null);
   const popoverId = `calendar-${useId()}`;
 
   // For making "reset" inside a form work
   useEffect(() => {
-    const form = buttonRef.current?.closest("form");
-    if (!form) return;
+    const next = _value ?? DEFAULT_DATE_RANGE;
+    setValue(next);
+    // Only reset the calendar state if value is clearing back to default
+    if (!next.startDate && !next.endDate) providerRef.current?.resetSelection();
+  }, [_value]);
 
-    const handleReset = () => setValue("");
-    form.addEventListener("reset", handleReset);
-    return () => form.removeEventListener("reset", handleReset);
-  }, []);
-
-  const handleChange = (range: DateRange) => {
-    const startDate = `${range.start?.toLocaleDateString()} ${range.startTime}`;
-    const endDate = `${range.end?.toLocaleDateString()} ${range.endTime}`;
-    const formatted = `${startDate} - ${endDate}`.replace("T", " ");
-
-    setValue(formatted);
-
-    const [startHours, startMinutes] = range.startTime.split(":").map(Number);
-    const [endHours, endMinutes] = range.endTime.split(":").map(Number);
-
-    const startDateTime = new Date(range.start!);
-    startDateTime.setHours(startHours, startMinutes);
-
-    const endDateTime = new Date(range.end!);
-    endDateTime.setHours(endHours, endMinutes);
-
-    onRangeChange?.({ startDate: startDateTime, endDate: endDateTime });
+  const handleChange = (newValue: DateRange) => {
+    setValue(newValue);
+    onChange?.(newValue); // forward to RHF
   };
 
   return (
     <>
       <TextField
         {...omit({ ...rest }, ["defaultValue", "type"])}
-        value={value}
+        label={label}
+        value={[
+          value.startDate?.toLocaleDateString(local),
+          value.endDate?.toLocaleDateString(local),
+        ]
+          .filter(Boolean)
+          .join(" - ")}
         onClick={e => {
           e.currentTarget.blur();
           buttonRef.current?.click();
@@ -74,9 +71,12 @@ const DatePicker = ({
         className={styles.openCalendar}
         type="button"
       />
-      <div data-color={color} popover="auto" id={popoverId} className={styles.calendar}>
-        <DateRangePicker onChange={handleChange} local={local} />
-      </div>
+      <DateRangeProvider ref={providerRef} onChange={handleChange} local={local}>
+        <div data-color={color} popover="auto" id={popoverId} className={styles.calendar}>
+          <DatePickerCalendarNav />
+          <DatePickerCalendarGrid />
+        </div>
+      </DateRangeProvider>
     </>
   );
 };

@@ -4,6 +4,6 @@ export default create({
   base: "dark",
   brandImage: "/logo.svg",
   // brandUrl: "https://www.photoapp.com",
-  brandTitle: "PhotoApp",
+  brandTitle: "Flash",
   brandTarget: "_self",
 });

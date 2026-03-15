@@ -1,6 +1,6 @@
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import { AsyncResult, Result } from "typescript-result";
-import { FileStorage } from "file-storage";
+import { FileStorage } from "@flash/file-storage";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import Sqlite from "better-sqlite3";
 import { storage } from "@/config";

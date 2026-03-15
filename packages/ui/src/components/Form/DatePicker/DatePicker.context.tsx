@@ -1,24 +1,22 @@
-import { DateRange } from "./DatePicker.types";
-import { createContext, useCallback, useContext, useState } from "react";
+import { DateRange, DEFAULT_DATE_RANGE } from "./DatePicker.types";
+import { createContext, useContext, useImperativeHandle, useState } from "react";
 
-interface DateRangeContextState {
+interface DateRangeContextState extends DateRange {
   viewMonth: number;
   viewYear: number;
   selecting: "start" | "end";
-  range: Pick<DateRange, "start" | "end">;
-  startTime: string;
-  endTime: string;
   today: Date;
 }
 
-interface DateRangeContextValue extends DateRangeContextState {
-  setStartTime: (t: string) => void;
-  setEndTime: (t: string) => void;
+export interface DateRangeProviderHandle {
+  resetSelection: () => void;
+}
+
+interface DateRangeContextValue extends DateRangeContextState, DateRangeProviderHandle {
   selectDate: (d: Date) => void;
   prevMonth: () => void;
   nextMonth: () => void;
   onChange?: (range: DateRange) => void;
-  resetSelection: () => void;
   local: string;
 }
 
@@ -35,68 +33,49 @@ interface DateRangeProviderProps {
   onChange?: (range: DateRange) => void;
   local: string;
   children: React.ReactNode;
+  ref: React.Ref<DateRangeProviderHandle>;
 }
 
 const today = new Date();
 
 const DEFAULT_VALUES: DateRangeContextState = {
+  ...DEFAULT_DATE_RANGE,
   viewMonth: today.getMonth(),
   viewYear: today.getFullYear(),
   selecting: "start",
-  range: { start: null, end: null },
-  startTime: "00:00",
-  endTime: "23:59",
   today: new Date(),
 };
 
-const DateRangeProvider = ({ onChange, local, children }: DateRangeProviderProps) => {
+const DateRangeProvider = ({
+  onChange,
+  local,
+  children,
+  ref,
+}: DateRangeProviderProps) => {
   const [value, setValue] = useState<DateRangeContextState>(DEFAULT_VALUES);
 
   const selectDate = (date: Date) => {
-    if (value.selecting === "start") {
-      setValue(v => {
-        return { ...v, range: { start: date, end: null }, selecting: "end" };
-      });
-    } else {
-      const [start, end] =
-        date < value.range.start! ? [date, value.range.start] : [value.range.start, date];
-      const next = { start: start, end: end };
-      setValue(v => {
-        return { ...v, range: next, selecting: "start" };
-      });
-      onChange?.({ ...next, startTime: value.startTime, endTime: value.endTime });
-    }
+    if (value.selecting === "start")
+      return setValue(v => ({
+        ...v,
+        startDate: date,
+        endDate: null,
+        selecting: "end",
+      }));
+
+    const [start, end] =
+      date < value.startDate! ? [date, value.startDate] : [value.startDate, date];
+    setValue(v => ({
+      ...v,
+      startDate: start,
+      endDate: end,
+      selecting: "start",
+    }));
+    onChange?.({
+      startDate: start,
+      endDate: end,
+    });
   };
-
-  const setStartTime = useCallback(
-    (time: string) => {
-      setValue(v => {
-        onChange?.({
-          start: v.range?.start ?? new Date(),
-          end: v.range?.end ?? new Date(),
-          startTime: time,
-          endTime: v.endTime,
-        });
-        return { ...v, startTime: time };
-      });
-    },
-    [onChange]
-  );
-
-  const setEndTime = useCallback(
-    (time: string) => {
-      setValue(v => {
-        onChange?.({
-          start: v.range?.start ?? new Date(),
-          end: v.range?.end ?? new Date(),
-          startTime: v.startTime,
-          endTime: time,
-        });
-        return { ...v, endTime: time };
-      });
-    },
-    [onChange]
-  );
 
   const adjustViewMonth = (delta: number) => {
     setValue(v => {
@@ -110,12 +89,12 @@ const DateRangeProvider = ({ onChange, local, children }: DateRangeProviderProps
 
   const resetSelection = () => setValue(DEFAULT_VALUES);
 
+  useImperativeHandle(ref, () => ({ resetSelection }));
+
   return (
     <DateRangeCtx.Provider
       value={{
         ...value,
-        setStartTime,
-        setEndTime,
         selectDate,
         prevMonth,
         nextMonth,

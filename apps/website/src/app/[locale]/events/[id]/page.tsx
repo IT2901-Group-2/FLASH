@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Camera, QrCode, Upload } from "lucide-react";
+import { QrCode, Upload } from "lucide-react";
 import styles from "./UploadImage.module.css";
-import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "ui";
+import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
@@ -15,37 +15,40 @@ export default function Page() {
   const router = useRouter();
   const tCommon = useTranslations("common");
   const tUpload = useTranslations("guest.event.upload");
-  const { id } = useParams<{ id: string }>();
-  const eventId = typeof id === "string" ? id : "";
   const eventAuth = useEventAuth();
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  // Event Data
+  const eventId = useParams<{ id: string }>().id;
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );
+  const eventData = data?.[0];
+
+  // Image Data
   const { data: imagesData } = useImagesQuery(eventId);
   const images = imagesData ?? [];
 
   const [uploadError, setUploadError] = useState<string | null>(null);
   const { mutateAsync: uploadImage } = useUploadImageMutation();
 
-  const eventData = data?.[0];
-  const eventName =
-    eventData?.name ??
-    (isLoading ? tUpload("loadingEvent") : tUpload("eventFallbackName"));
-  const uploadsRemaining =
-    typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
-
+  // Join Code
   const { data: joinCode } = useEventCodeQuery(
     eventId,
     eventAuth.isModerator ? "moderator" : "guest"
   );
-
   const [joinLink, setJoinLink] = useState<string | null>(null);
   useEffect(() => {
     (async () =>
       setJoinLink(new URL(`/join/${joinCode}`, window.location.origin).href))();
   }, [setJoinLink, joinCode]);
 
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  // Translation strings
+  const eventName =
+    eventData?.name ??
+    (isLoading ? tUpload("loadingEvent") : tUpload("eventFallbackName"));
+  const uploadsRemaining =
+    typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
   const uploadDescription = tUpload("description", {
     uploadsRemaining:
       typeof uploadsRemaining === "number" ? uploadsRemaining : tUpload("unlimited"),
@@ -86,6 +89,7 @@ export default function Page() {
               value={joinLink}
               size="large"
               helperText={tCommon("messages.scanToUploadPhotos")}
+              code={joinCode}
             />
           )}
           <Button
@@ -113,15 +117,6 @@ export default function Page() {
             onClick={() => dialogRef.current?.showModal()}
           />
           <Button
-            icon={<Camera />}
-            iconPosition="right"
-            data-color="brand-purple"
-            variant="secondary"
-            className={styles.desktopOnly}
-          >
-            {tCommon("actions.takePhoto")}
-          </Button>
-          <Button
             icon={<Upload />}
             iconPosition="right"
             data-color="brand-purple"
@@ -136,23 +131,18 @@ export default function Page() {
           <p className={styles.errorText}>{tUpload("eventLoadFailed")}</p>
         ) : null}
         {uploadError ? <p className={styles.errorText}>{uploadError}</p> : null}
-        <ActionCard
-          className={`${styles.mobileOnly}`}
-          description={uploadDescription}
-          primaryButton={{
-            "data-color": "brand-purple",
-            icon: <Upload size={18} />,
-            iconPosition: "right",
-            text: tCommon("actions.uploadImage"),
-            onClick: openFilePicker,
-          }}
-          secondaryButton={{
-            "data-color": "brand-purple",
-            icon: <Camera size={18} />,
-            iconPosition: "right",
-            text: tCommon("actions.takePhoto"),
-          }}
-        />
+        <div className={styles.mobileOnly}>
+          <ActionCard
+            description={uploadDescription}
+            primaryButton={{
+              "data-color": "brand-purple",
+              icon: <Upload size={18} />,
+              iconPosition: "right",
+              text: tCommon("actions.uploadImage"),
+              onClick: openFilePicker,
+            }}
+          />
+        </div>
       </div>
 
       {!isLoading && images.length === 0 ? (
