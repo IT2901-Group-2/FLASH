@@ -9,6 +9,8 @@ import { useCallback, SubmitEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { makeRequest } from "@/lib/utils/api";
 import { getEventCodeSchema } from "@/db";
+import { IDetectedBarcode } from "@yudiel/react-qr-scanner";
+import QrScanner from "../QRScanner/QRScanner";
 
 const JoinEventCard = () => {
   const router = useRouter();
@@ -16,6 +18,7 @@ const JoinEventCard = () => {
   const c = useTranslations("common");
   const tPage = useTranslations("pages.joinEvent");
   const [error, setError] = useState<string>("");
+  const [scanning, setScanning] = useState<boolean>(false);
 
   const handleSubmit = useCallback(
     async (e: SubmitEvent<HTMLFormElement>) => {
@@ -30,12 +33,29 @@ const JoinEventCard = () => {
     [router]
   );
 
+  const handleScan = (values: IDetectedBarcode[]) => {
+    values
+      .filter(v => v.format === "qr_code")
+      .map(v => {
+        console.log(v);
+        return v.rawValue;
+      })
+      .forEach(url => {
+        if (!url.startsWith(window.location.origin)) setError(t("error.invalidQr"));
+        else router.push(url.replace(window.location.origin, ""));
+      });
+  };
+
   return (
     <Card>
       <Title size="medium" align="center" description={tPage("description")} as="h2">
         {tPage("title")}
       </Title>
-      <DropdownControl className={styles.dropdownControls} defaultValue="enter-code">
+      <DropdownControl
+        className={styles.dropdownControls}
+        defaultValue="enter-code"
+        onChange={() => setScanning(false)}
+      >
         <DropdownControl.Item
           value="enter-code"
           label={t("tabs.enterCode")}
@@ -68,15 +88,20 @@ const JoinEventCard = () => {
           label={t("tabs.scanQr")}
           content={
             <div className={styles.content}>
-              <div className={styles.qrContainer}>
-                <QrCode size={64} />
-              </div>
+              {scanning ? (
+                <QrScanner onScan={handleScan} />
+              ) : (
+                <div className={styles.qrContainer}>
+                  <QrCode size={64} />
+                </div>
+              )}
               <p className={styles.qrText}>{t("scanQr.description")}</p>
               <Button
                 className={styles.fullWidthButton}
                 variant="secondary"
                 data-color="brand-purple"
                 fill
+                onClick={() => setScanning(v => !v)}
               >
                 {c("actions.openCamera")}
               </Button>

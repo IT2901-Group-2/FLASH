@@ -14,7 +14,7 @@
         }
       },
       "scanQr": {
-        "description": "Bruk kameraet ditt til å skanne QR-koden for arrangementet"
+        "description": "Åpne kameraet ditt til å skanne QR-koden til arrangementet"
       },
       "links": {
         "adminAccessPrefix": "Ikke en gjest? Administrer arrangementer som en"

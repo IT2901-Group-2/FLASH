@@ -1,0 +1,8 @@
+.video {
+  border-radius: var(--radius-16);
+  transform: scaleX(-1);
+  width: 20rem !important;
+}
+
+.tracker {
+}
