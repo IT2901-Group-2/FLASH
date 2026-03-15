@@ -49,7 +49,7 @@ const DatePicker = ({
   };
 
   return (
-    <>
+    <div>
       <TextField
         {...omit({ ...rest }, ["defaultValue", "type"])}
         label={label}
@@ -78,7 +78,7 @@ const DatePicker = ({
           <DatePickerCalendarGrid />
         </div>
       </DateRangeProvider>
-    </>
+    </div>
   );
 };
 export default DatePicker;
