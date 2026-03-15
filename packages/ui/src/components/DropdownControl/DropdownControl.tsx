@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./DropdownControl.module.css";
 import { cl } from "@/util/helpers";
-import { SegmentedControl, SegmentedControlProps } from "../SegmentedControl";
+import { SegmentedControl, SegmentedControlProps } from "../Form/SegmentedControl";
 import DropdownControlItem, { DropdownControlItemProps } from "./DropdownControl.Item";
 
 export type DropdownOption = SegmentedControlProps & {
