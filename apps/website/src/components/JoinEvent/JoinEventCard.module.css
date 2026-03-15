@@ -31,3 +31,8 @@
   margin: 0;
   font-weight: var(--font-weight-bold);
 }
+
+.error {
+  color: var(--bg-danger-strong);
+  margin: 0;
+}

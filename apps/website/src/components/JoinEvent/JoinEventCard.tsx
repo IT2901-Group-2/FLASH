@@ -41,7 +41,7 @@ const JoinEventCard = () => {
         return v.rawValue;
       })
       .forEach(url => {
-        if (!url.startsWith(window.location.origin)) setError(t("error.invalidQr"));
+        if (!url.startsWith(window.location.origin)) setError(t("errors.invalidQr"));
         else router.push(url.replace(window.location.origin, ""));
       });
   };
@@ -54,7 +54,10 @@ const JoinEventCard = () => {
       <DropdownControl
         className={styles.dropdownControls}
         defaultValue="enter-code"
-        onChange={() => setScanning(false)}
+        onChange={() => {
+          setError("");
+          setScanning(false);
+        }}
       >
         <DropdownControl.Item
           value="enter-code"
@@ -91,6 +94,7 @@ const JoinEventCard = () => {
               {scanning ? (
                 <>
                   <QrScanner onScan={handleScan} />
+                  <p className={styles.error}>{error}</p>
                 </>
               ) : (
                 <>
