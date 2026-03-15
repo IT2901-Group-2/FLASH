@@ -1,3 +1,16 @@
+import { DateRange } from "../DatePicker/DatePicker.types";
+
+export type FormValues = {
+  name: string;
+  description: string;
+  numberOfPhotos: number;
+  dateRange: DateRange;
+  eventTime: {
+    startTime: string;
+    endTime: string;
+  };
+};
+
 export const TIME_PRESETS = {
   full: { startTime: "00:00", endTime: "23:59" },
   specific: { startTime: "08:00", endTime: "17:00" },
