@@ -89,13 +89,17 @@ const JoinEventCard = () => {
           content={
             <div className={styles.content}>
               {scanning ? (
-                <QrScanner onScan={handleScan} />
+                <>
+                  <QrScanner onScan={handleScan} />
+                </>
               ) : (
-                <div className={styles.qrContainer}>
-                  <QrCode size={64} />
-                </div>
+                <>
+                  <div className={styles.qrContainer}>
+                    <QrCode size={64} />
+                  </div>
+                  <p className={styles.qrText}>{t("scanQr.description")}</p>
+                </>
               )}
-              <p className={styles.qrText}>{t("scanQr.description")}</p>
               <Button
                 className={styles.fullWidthButton}
                 variant="secondary"
@@ -103,7 +107,7 @@ const JoinEventCard = () => {
                 fill
                 onClick={() => setScanning(v => !v)}
               >
-                {c("actions.openCamera")}
+                {c("actions.toggleCamera", { open: String(scanning) })}
               </Button>
             </div>
           }
