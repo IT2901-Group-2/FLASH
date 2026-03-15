@@ -108,9 +108,10 @@ export const Demo: Story = {
             validate: v =>
               v.startTime < v.endTime || "Start time must be before end time",
           }}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <DropdownControl
               label="Event Time"
+              error={fieldState.error?.message}
               dropdownBorder
               defaultValue="full"
               onChange={selected => {
