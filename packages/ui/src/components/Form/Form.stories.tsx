@@ -6,12 +6,17 @@ import { Controller, useForm } from "react-hook-form";
 import { expect, userEvent, within } from "storybook/test";
 import { DatePicker } from "./DatePicker";
 import { DateRange, DEFAULT_DATE_RANGE } from "./DatePicker/DatePicker.types";
+import { DropdownControl } from "../DropdownControl";
 
 type FormValues = {
   name: string;
   description: string;
   numberOfPhotos: number;
   dateRange: DateRange;
+  eventTime: {
+    startTime: string;
+    endTime: string;
+  };
 };
 
 const meta: Meta<typeof HTMLFormElement> = {
@@ -19,6 +24,13 @@ const meta: Meta<typeof HTMLFormElement> = {
   tags: ["autodocs"],
   argTypes: {},
   args: {},
+  parameters: {
+    docs: {
+      source: {
+        type: "code",
+      },
+    },
+  },
 } satisfies Meta<typeof HTMLFormElement>;
 
 export default meta;
@@ -38,6 +50,7 @@ export const Demo: Story = {
         description: "",
         numberOfPhotos: 1,
         dateRange: { startDate: null, endDate: null },
+        eventTime: { startTime: "00:00", endTime: "23:59" },
       },
     });
 
@@ -61,7 +74,7 @@ export const Demo: Story = {
         <Textarea
           label="Description"
           error={errors.description?.message}
-          {...register("description", { required: "Description is required" })}
+          {...register("description")}
         />
         <TextField
           label="Number of photos"
@@ -83,47 +96,54 @@ export const Demo: Story = {
             <DatePicker
               label="Date range"
               value={field.value}
-              onChange={field.onChange} // works after the modification above
+              onChange={field.onChange}
               error={errors.dateRange?.message}
             />
           )}
         />
-        {/* <DropdownControl
-          label="Event Time"
-          dropdownBorder
-          defaultValue="full"
-          onChange={val => {
-            timeType.current = val;
-            if (val === "full") {
-              setValue("startTime", "00:00");
-              setValue("endTime", "23:59");
-            }
+        <Controller
+          name="eventTime"
+          control={control}
+          rules={{
+            validate: v =>
+              v.startTime < v.endTime || "Start time must be before end time",
           }}
-        >
-          <DropdownControl.Item value="full" label="Full Day" />
-          <DropdownControl.Item
-            value="specific"
-            label="Specific Time"
-            content={
-              <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-                <TextField
-                  style={{ width: "7.5rem" }}
-                  type="time"
-                  size="small"
-                  label="Start Time"
-                  {...register("startTime", { validate: validateTime })}
-                />
-                <TextField
-                  style={{ width: "7.5rem" }}
-                  type="time"
-                  size="small"
-                  label="End Time"
-                  {...register("endTime", { validate: validateTime })}
-                />
-              </div>
-            }
-          />
-        </DropdownControl> */}
+          render={({ field }) => (
+            <DropdownControl
+              label="Event Time"
+              dropdownBorder
+              defaultValue="full"
+              onChange={selected => {
+                if (selected === "full")
+                  field.onChange({ startTime: "00:00", endTime: "23:59" });
+                else field.onChange({ startTime: "08:00", endTime: "17:00" });
+              }}
+            >
+              <DropdownControl.Item value="full" label="Full Day" />
+              <DropdownControl.Item
+                value="specific"
+                label="Specific Time"
+                content={
+                  <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+                    {(["startTime", "endTime"] as const).map(key => (
+                      <TextField
+                        style={{ width: "5rem" }}
+                        key={key}
+                        type="time"
+                        size="small"
+                        label={key === "startTime" ? "Start Time" : "End Time"}
+                        value={field.value[key]}
+                        onChange={e =>
+                          field.onChange({ ...field.value, [key]: e.target.value })
+                        }
+                      />
+                    ))}
+                  </div>
+                }
+              />
+            </DropdownControl>
+          )}
+        />
         <div style={{ display: "flex", gap: ".5rem" }}>
           <Button type="reset" variant="secondary" fill>
             Reset
