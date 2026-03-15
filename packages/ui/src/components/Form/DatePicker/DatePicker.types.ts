@@ -4,6 +4,6 @@ export interface DateRange {
 }
 
 export const DEFAULT_DATE_RANGE: DateRange = {
-  startDate: new Date(),
-  endDate: new Date(),
+  startDate: null,
+  endDate: null,
 };

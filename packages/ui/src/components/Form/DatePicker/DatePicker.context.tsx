@@ -1,5 +1,5 @@
 import { DateRange, DEFAULT_DATE_RANGE } from "./DatePicker.types";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useImperativeHandle, useState } from "react";
 
 interface DateRangeContextState extends DateRange {
   viewMonth: number;
@@ -8,12 +8,15 @@ interface DateRangeContextState extends DateRange {
   today: Date;
 }
 
-interface DateRangeContextValue extends DateRangeContextState {
+export interface DateRangeProviderHandle {
+  resetSelection: () => void;
+}
+
+interface DateRangeContextValue extends DateRangeContextState, DateRangeProviderHandle {
   selectDate: (d: Date) => void;
   prevMonth: () => void;
   nextMonth: () => void;
   onChange?: (range: DateRange) => void;
-  resetSelection: () => void;
   local: string;
 }
 
@@ -30,6 +33,7 @@ interface DateRangeProviderProps {
   onChange?: (range: DateRange) => void;
   local: string;
   children: React.ReactNode;
+  ref: React.Ref<DateRangeProviderHandle>;
 }
 
 const today = new Date();
@@ -42,7 +46,12 @@ const DEFAULT_VALUES: DateRangeContextState = {
   today: new Date(),
 };
 
-const DateRangeProvider = ({ onChange, local, children }: DateRangeProviderProps) => {
+const DateRangeProvider = ({
+  onChange,
+  local,
+  children,
+  ref,
+}: DateRangeProviderProps) => {
   const [value, setValue] = useState<DateRangeContextState>(DEFAULT_VALUES);
 
   const selectDate = (date: Date) => {
@@ -79,6 +88,8 @@ const DateRangeProvider = ({ onChange, local, children }: DateRangeProviderProps
   const nextMonth = () => adjustViewMonth(1);
 
   const resetSelection = () => setValue(DEFAULT_VALUES);
+
+  useImperativeHandle(ref, () => ({ resetSelection }));
 
   return (
     <DateRangeCtx.Provider
