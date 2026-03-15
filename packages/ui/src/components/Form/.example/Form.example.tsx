@@ -44,6 +44,7 @@ const FormExample = ({ register, control, errors }: Props) => {
         render={({ field }) => (
           <DatePicker
             label="Date range"
+            data-color="accent"
             value={field.value}
             onChange={field.onChange}
             error={errors.dateRange?.message}
