@@ -6,16 +6,27 @@ const meta: Meta<typeof DatePicker> = {
   component: DatePicker,
   tags: ["autodocs"],
   argTypes: {},
-  args: {},
+  args: {
+    label: "Select dates",
+    local: "en-US",
+  },
 } satisfies Meta<typeof DatePicker>;
 
 export default meta;
 type Story = StoryObj<typeof DatePicker>;
 
 // Variants Story
-export const Medium: Story = {
+export const Default: Story = {
   args: {
     label: "Date",
     "data-color": "accent",
+  },
+};
+
+export const Locale: Story = {
+  args: {
+    label: "Date",
+    "data-color": "accent",
+    local: "no",
   },
 };
