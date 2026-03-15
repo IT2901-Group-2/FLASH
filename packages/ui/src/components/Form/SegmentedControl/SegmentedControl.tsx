@@ -1,5 +1,4 @@
 import React, { HTMLAttributes, useId } from "react";
-import { ColorName } from "../types";
 import ControlItem from "./parts/ControlItem";
 import { cl } from "@/util/helpers";
 import styles from "./SegmentedControl.module.css";
@@ -9,6 +8,7 @@ import {
   useSegmentedControlDescendants,
 } from "./SegmentedControl.context";
 import { useSegmentedControl } from "./useSegmentedControl";
+import { ColorName } from "@/components/types";
 
 type ControlledProps = {
   /**
