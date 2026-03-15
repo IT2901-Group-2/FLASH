@@ -6,7 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { expect, userEvent, within } from "storybook/test";
 import { DatePicker } from "./DatePicker";
 import { DateRange, DEFAULT_DATE_RANGE } from "./DatePicker/DatePicker.types";
-import { DropdownControl } from "../DropdownControl";
+import { DropdownControl } from "./DropdownControl";
 
 type FormValues = {
   name: string;

@@ -10,7 +10,6 @@ export * from "./ImageCard";
 export * from "./Sidebar";
 export * from "./Switch";
 export * from "./Title";
-export * from "./DropdownControl";
 export * from "./Breadcrumb";
 export * from "./QRDisplay";
 export * from "./ActionCard";
