@@ -1,5 +1,5 @@
 import React from "react";
-import { type SegmentedControlItemProps } from "../Form/SegmentedControl/parts/ControlItem";
+import { type SegmentedControlItemProps } from "../SegmentedControl/parts/ControlItem";
 
 export type DropdownControlItemProps = Omit<SegmentedControlItemProps, "content"> & {
   /**
