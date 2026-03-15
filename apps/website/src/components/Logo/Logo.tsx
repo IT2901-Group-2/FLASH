@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import styles from "./Logo.module.css";
-import { Logo as ApplicationLogo } from "ui";
+import { Logo as ApplicationLogo } from "@flash/ui";
 import { HTMLAttributes } from "react";
 
 interface LogoProps extends HTMLAttributes<HTMLDivElement> {
