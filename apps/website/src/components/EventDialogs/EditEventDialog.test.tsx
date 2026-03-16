@@ -86,6 +86,24 @@ describe("EditEventDialog — navigation", () => {
 });
 
 describe("EditEventDialog — saving", () => {
+  it("sends null uploadLimit when switching from limited to unlimited", async () => {
+    mockReportValidity(true);
+    renderCard();
+
+    await userEvent.click(screen.getByText("next"));
+    await userEvent.click(screen.getByText("unlimited"));
+    await userEvent.click(screen.getByText("save"));
+
+    await vi.waitFor(() =>
+      expect(mockMutateAsync).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventId: "event-1",
+          data: expect.objectContaining({ uploadLimit: null }),
+        })
+      )
+    );
+  });
+
   it("calls onClose after saving", async () => {
     mockReportValidity(true);
     renderCard();
