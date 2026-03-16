@@ -24,7 +24,8 @@
         "invalidEventCode": "Ugyldig arrangementskode. Vennligst prøv igjen.",
         "missingNickname": "Vennligst skriv inn et kallenavn.",
         "nicknameTaken": "Kallenavnet er allerede tatt.",
-        "joinFailed": "Kunne ikke bli med i arrangementet. Prøv igjen."
+        "joinFailed": "Kunne ikke bli med i arrangementet. Prøv igjen.",
+        "invalidQr": "Ikke en gyldig Qr kode. Prøv igjen."
       },
       "nickname": {
         "title": "Velkommen til",
