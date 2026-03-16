@@ -12,7 +12,7 @@
     "download": "Last ned",
     "signIn": "Logg inn",
     "join": "Bli med",
-    "toggleCamera": "{open, select, true {Åpne kamera} other {Lukk kamera}}",
+    "toggleCamera": "{open, select, true {Lukk kamera} other {Åpne kamera}}",
     "uploadImage": "Last opp bilde",
     "slideshow": "Lysbildefremvisning",
     "createNewEvent": "Lag nytt arrangement",
