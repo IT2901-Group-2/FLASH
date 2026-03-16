@@ -50,6 +50,13 @@ const DatePicker = ({
 
   return (
     <div>
+      <button
+        ref={buttonRef}
+        popoverTarget={popoverId}
+        className={styles.openCalendar}
+        type="button"
+        tabIndex={-1}
+      />
       <TextField
         {...omit({ ...rest }, ["defaultValue", "type"])}
         label={label}
@@ -65,12 +72,6 @@ const DatePicker = ({
         }}
         onFocus={e => e.currentTarget.click()}
         onChange={() => {}} // To stop error in console
-      />
-      <button
-        ref={buttonRef}
-        popoverTarget={popoverId}
-        className={styles.openCalendar}
-        type="button"
       />
       <DateRangeProvider ref={providerRef} onChange={handleChange} local={local}>
         <div data-color={color} popover="auto" id={popoverId} className={styles.calendar}>

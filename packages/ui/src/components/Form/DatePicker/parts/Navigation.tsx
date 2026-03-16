@@ -10,13 +10,13 @@ const DatePickerCalendarNav = () => {
 
   return (
     <div className={styles.monthNav}>
-      <button className={styles.navButton} onClick={prevMonth} type="button">
+      <button className={styles.navButton} onClick={prevMonth} type="button" tabIndex={1}>
         <ChevronLeft />
       </button>
       <span className={styles.monthTitle}>
         {monthName} {viewYear}
       </span>
-      <button className={styles.navButton} onClick={nextMonth} type="button">
+      <button className={styles.navButton} onClick={nextMonth} type="button" tabIndex={1}>
         <ChevronRight />
       </button>
     </div>

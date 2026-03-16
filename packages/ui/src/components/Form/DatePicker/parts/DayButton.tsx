@@ -17,6 +17,7 @@ const DatePickerDayButton = ({ date }: { date: Date }) => {
 
   return (
     <button
+      tabIndex={1}
       data-today={isToday}
       data-start={isStart}
       data-end={isEnd}

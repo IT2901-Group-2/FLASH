@@ -17,7 +17,7 @@ const DatePickerCalendarGrid = () => {
 
   return (
     <div>
-      <div className={styles.dateGrid}>
+      <div className={styles.dateGrid} autoFocus>
         {getWeekDays(local).map((d, key) => (
           <div key={key} className={styles.dateName}>
             {d.toUpperCase().slice(0, 3)}

@@ -77,7 +77,8 @@
   &[data-start="true"]::before,
   &[data-end="true"]::before,
   &[data-range="true"]::before,
-  &:hover::before {
+  &:hover::before,
+  &:focus::before {
     content: "";
     aspect-ratio: 1/1;
     width: 100%;
@@ -112,7 +113,8 @@
     color: inherit;
   }
 
-  &:hover {
+  &:hover,
+  &:focus {
     color: var(--text-neutral-contrast);
     &::before {
       background-color: var(--bg-strong);
