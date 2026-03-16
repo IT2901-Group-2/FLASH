@@ -36,14 +36,17 @@ interface DateRangeProviderProps {
   ref: React.Ref<DateRangeProviderHandle>;
 }
 
-const today = new Date();
-
-const DEFAULT_VALUES: DateRangeContextState = {
-  ...DEFAULT_DATE_RANGE,
-  viewMonth: today.getMonth(),
-  viewYear: today.getFullYear(),
-  selecting: "start",
-  today: new Date(),
+const DEFAULT_VALUES = {
+  get state(): DateRangeContextState {
+    const today = new Date();
+    return {
+      ...DEFAULT_DATE_RANGE,
+      viewMonth: today.getMonth(),
+      viewYear: today.getFullYear(),
+      selecting: "start",
+      today,
+    };
+  },
 };
 
 const DateRangeProvider = ({
@@ -52,7 +55,7 @@ const DateRangeProvider = ({
   children,
   ref,
 }: DateRangeProviderProps) => {
-  const [value, setValue] = useState<DateRangeContextState>(DEFAULT_VALUES);
+  const [value, setValue] = useState<DateRangeContextState>(DEFAULT_VALUES.state);
 
   const selectDate = (date: Date) => {
     if (value.selecting === "start")
@@ -87,7 +90,7 @@ const DateRangeProvider = ({
   const prevMonth = () => adjustViewMonth(-1);
   const nextMonth = () => adjustViewMonth(1);
 
-  const resetSelection = () => setValue(DEFAULT_VALUES);
+  const resetSelection = () => setValue(DEFAULT_VALUES.state);
 
   useImperativeHandle(ref, () => ({ resetSelection }));
 
