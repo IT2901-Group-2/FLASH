@@ -5,7 +5,7 @@
 .video {
   transform: scaleX(-1);
   width: 20rem !important;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .finder {
