@@ -6,6 +6,7 @@ import { AsyncResult, Result } from "typescript-result";
 import { getFirstRow } from "@/lib/utils/sql";
 import { JWT_SECRET } from "@/config";
 import { EventService, eventService } from "./eventService";
+import { HTTPError } from "@/lib/utils/error";
 
 export class UserService {
   private readonly dbService: DatabaseService;
@@ -33,6 +34,24 @@ export class UserService {
         .values({ eventId, name, isModerator })
         .returning()
     )
+      .mapError(error => {
+        const message = String((error as { message?: unknown })?.message ?? "");
+
+        if (
+          message.includes("UNIQUE constraint failed") ||
+          message.includes("SQLITE_CONSTRAINT")
+        ) {
+          return new HTTPError(
+            {
+              code: "NICKNAME_TAKEN",
+              message: "Nickname is already taken",
+            },
+            409
+          );
+        }
+
+        return error;
+      })
       .map(rows => getFirstRow(rows, "Unable to create user"))
       .onSuccess(() => this.dbService.flush());
   }
