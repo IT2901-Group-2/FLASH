@@ -94,6 +94,10 @@
       "errors": {
         "uploadUnavailable": "Kan ikke laste opp bilder for dette arrangementet.",
         "uploadPartialFailure": "Ett eller flere bilder kunne ikke lastes opp. Prøv igjen."
+      },
+      "survey": {
+        "title": "Takk for at du lastet opp bilder!",
+        "description": "Vil du gi oss en kort tilbakemelding?"
       }
     }
   }

@@ -11,6 +11,9 @@ import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 
+const SURVEY_LINK = "https://nettskjema.no/a/610540";
+const SURVEY_UPLOAD_THRESHOLD = 3;
+
 export default function Page() {
   const router = useRouter();
   const tCommon = useTranslations("common");
@@ -49,6 +52,37 @@ export default function Page() {
     (isLoading ? tUpload("loadingEvent") : tUpload("eventFallbackName"));
   const uploadsRemaining =
     typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
+
+  // TODO: For pilot release. Should be removed after pilot is finished
+  const surveyDialogRef = useRef<HTMLDialogElement>(null);
+
+  const uploadCountStorageKey = `uploaded-photo-count:${eventId}`;
+  const surveyShownStorageKey = `uploaded-photo-survey-shown:${eventId}`;
+
+  // Helpers for survey popup logic
+  const getStoredUploadCount = () => {
+    const raw = window.localStorage.getItem(uploadCountStorageKey);
+    const value = raw ? Number.parseInt(raw, 10) : 0;
+    return Number.isFinite(value) && value >= 0 ? value : 0;
+  };
+
+  const hasShownSurveyPopup = () =>
+    window.localStorage.getItem(surveyShownStorageKey) === "true";
+
+  const maybeShowSurveyPopup = (uploadedPhotoCount: number) => {
+    if (uploadedPhotoCount < SURVEY_UPLOAD_THRESHOLD || hasShownSurveyPopup()) {
+      return;
+    }
+
+    window.localStorage.setItem(surveyShownStorageKey, "true");
+    surveyDialogRef.current?.showModal();
+  };
+
+  useEffect(() => {
+    if (!eventId) return;
+    maybeShowSurveyPopup(getStoredUploadCount());
+  }, [eventId]);
+
   const uploadDescription = tUpload("description", {
     uploadsRemaining:
       typeof uploadsRemaining === "number" ? uploadsRemaining : tUpload("unlimited"),
@@ -66,6 +100,15 @@ export default function Page() {
       const results = await Promise.allSettled(
         Array.from(files).map(file => uploadImage({ eventId, file }))
       );
+
+      const successfulUploads = results.filter(
+        result => result.status === "fulfilled"
+      ).length;
+      if (successfulUploads > 0) {
+        const nextUploadCount = getStoredUploadCount() + successfulUploads;
+        window.localStorage.setItem(uploadCountStorageKey, String(nextUploadCount));
+        maybeShowSurveyPopup(nextUploadCount);
+      }
 
       if (results.some(result => result.status === "rejected")) {
         setUploadError(tUpload("errors.uploadPartialFailure"));
@@ -96,6 +139,29 @@ export default function Page() {
             variant="secondary"
             data-color="neutral"
             onClick={() => dialogRef.current?.close()}
+            fill
+          >
+            {tCommon("actions.close")}
+          </Button>
+        </div>
+      </Dialog>
+
+      <Dialog ref={surveyDialogRef} className={styles.surveyDialog}>
+        <div className={styles.surveyDialog}>
+          <h2 className={styles.surveyTitle}>{tUpload("survey.title")}</h2>
+          <p className={styles.surveyText}>{tUpload("survey.description")}</p>
+          <a
+            href={SURVEY_LINK}
+            target="_blank"
+            rel="noreferrer"
+            className={styles.surveyLink}
+          >
+            {SURVEY_LINK}
+          </a>
+          <Button
+            variant="secondary"
+            data-color="neutral"
+            onClick={() => surveyDialogRef.current?.close()}
             fill
           >
             {tCommon("actions.close")}

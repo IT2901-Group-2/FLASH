@@ -94,6 +94,10 @@
       "errors": {
         "uploadUnavailable": "Unable to upload images for this event.",
         "uploadPartialFailure": "One or more images failed to upload. Please try again."
+      },
+      "survey": {
+        "title": "Thanks for uploading photos!",
+        "description": "Would you share your feedback with us?"
       }
     }
   }

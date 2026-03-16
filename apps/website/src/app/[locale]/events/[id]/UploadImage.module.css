@@ -15,6 +15,31 @@
   gap: 2rem;
 }
 
+.surveyDialog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  max-width: 32rem;
+}
+
+.surveyTitle {
+  margin: 0;
+}
+
+.surveyText {
+  margin: 0;
+  color: var(--color-neutral-700);
+}
+
+.surveyLink {
+  color: var(--color-brand-purple-600);
+  font-weight: 600;
+  text-decoration: underline;
+  word-break: break-all;
+}
+
 .mobileOnly {
   display: flex;
   width: 80vw;
