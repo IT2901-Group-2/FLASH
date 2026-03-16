@@ -1,10 +1,10 @@
 .pageWrapper {
   margin: auto;
   gap: 2rem;
-  padding: 2rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: clamp(20rem, 33%, 100vw);
+  width: min-content;
 }
