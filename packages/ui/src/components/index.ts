@@ -14,3 +14,4 @@ export * from "./DropdownControl";
 export * from "./Breadcrumb";
 export * from "./QRDisplay";
 export * from "./ActionCard";
+export * from "./Logo";
