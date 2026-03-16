@@ -1,10 +1,10 @@
 .pageWrapper {
-  margin: 2rem auto;
-  gap: 1rem;
+  margin: auto;
+  gap: 2rem;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: max-content;
-  max-width: calc(100% - 2rem);
+  width: clamp(20rem, 33%, 100vw);
 }

@@ -1,11 +1,12 @@
 .wrapper {
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .video {
-  transform: scaleX(-1);
-  width: 20rem !important;
-  object-fit: contain !important;
+  object-fit: cover;
 }
 
 .finder {
