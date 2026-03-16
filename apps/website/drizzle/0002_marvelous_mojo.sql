@@ -1,4 +1,4 @@
-PRAGMA foreign_keys=OFF;--> statement-breakpoint
+PRAGMA defer_foreign_keys=ON;--> statement-breakpoint
 CREATE TABLE `__new_users` (
 	`id` text PRIMARY KEY NOT NULL,
 	`eventId` text NOT NULL,
@@ -12,5 +12,5 @@ CREATE TABLE `__new_users` (
 INSERT INTO `__new_users`("id", "eventId", "name", "isModerator", "joinedAt", "lastAccessedAt") SELECT "id", "eventId", "name", "isModerator", "joinedAt", "lastAccessedAt" FROM `users`;--> statement-breakpoint
 DROP TABLE `users`;--> statement-breakpoint
 ALTER TABLE `__new_users` RENAME TO `users`;--> statement-breakpoint
-PRAGMA foreign_keys=ON;--> statement-breakpoint
+PRAGMA defer_foreign_keys=OFF;--> statement-breakpoint
 CREATE UNIQUE INDEX `name` ON `users` (`eventId`,`name`);
