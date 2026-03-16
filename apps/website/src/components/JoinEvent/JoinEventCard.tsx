@@ -94,7 +94,7 @@ const JoinEventCard = () => {
             <div className={styles.content}>
               {scanning ? (
                 <>
-                  <QrScanner onScan={handleScan} />
+                  <QrScanner onScan={handleScan} onError={() => setScanning(false)} />
                   <p className={styles.error}>{error}</p>
                 </>
               ) : (
