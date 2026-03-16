@@ -1,4 +1,12 @@
-import { InputHTMLAttributes, useEffect, useId, useRef, useState } from "react";
+import {
+  InputHTMLAttributes,
+  ToggleEvent,
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
 import { FormFieldProps } from "../useFormField";
 import styles from "./DatePicker.module.css";
 import { DateRange, DEFAULT_DATE_RANGE } from "./DatePicker.types";
@@ -33,6 +41,7 @@ const DatePicker = ({
   const [value, setValue] = useState<DateRange>(_value ?? DEFAULT_DATE_RANGE);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const providerRef = useRef<DateRangeProviderHandle>(null);
+  const calendarRef = useRef<HTMLDivElement>(null);
   const popoverId = `calendar-${useId()}`;
 
   // For making "reset" inside a form work
@@ -48,15 +57,13 @@ const DatePicker = ({
     onChange?.(newValue); // forward to RHF
   };
 
+  const handleCalendarToggle = useCallback((e: ToggleEvent<HTMLDivElement>) => {
+    if (e.newState === "open")
+      calendarRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
+  }, []);
+
   return (
     <div>
-      <button
-        ref={buttonRef}
-        popoverTarget={popoverId}
-        className={styles.openCalendar}
-        type="button"
-        tabIndex={-1}
-      />
       <TextField
         {...omit({ ...rest }, ["defaultValue", "type"])}
         label={label}
@@ -73,8 +80,22 @@ const DatePicker = ({
         onFocus={e => e.currentTarget.click()}
         onChange={() => {}} // To stop error in console
       />
+      <button
+        ref={buttonRef}
+        popoverTarget={popoverId}
+        className={styles.openCalendar}
+        type="button"
+        tabIndex={-1}
+      />
       <DateRangeProvider ref={providerRef} onChange={handleChange} local={local}>
-        <div data-color={color} popover="auto" id={popoverId} className={styles.calendar}>
+        <div
+          ref={calendarRef}
+          data-color={color}
+          popover="auto"
+          id={popoverId}
+          className={styles.calendar}
+          onToggle={handleCalendarToggle}
+        >
           <DatePickerCalendarNav />
           <DatePickerCalendarGrid />
         </div>
