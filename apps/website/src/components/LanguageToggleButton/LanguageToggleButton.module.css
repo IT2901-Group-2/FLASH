@@ -1,4 +1,7 @@
 .button {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
