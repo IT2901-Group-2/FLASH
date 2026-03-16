@@ -1,7 +1,9 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Languages } from "lucide-react";
+import { useLocale } from "next-intl";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import styles from "./LanguageToggleButton.module.css";
 
@@ -9,23 +11,31 @@ type Locale = (typeof routing.locales)[number];
 
 /**
  * Renders a button allowing users to switch between available locales.
- * Employs `useParams` to determine current locale from the URL and find the next locale to switch to.
- * When the button is clicked, it redirects the user to the new locale.
+ * Uses the active i18n locale to determine the next locale to switch to.
+ * When the button is clicked, it redirects the user to the translated version of the current page.
  *
  * Suitable for our current setup with only two locales, but will need to be tweaked if more locales are added in the future.
- * Will also need some handling of paths if implemented outside the "Login" pages
+ *
+ * > _Last updated: `2026-03-16`_
  */
 const LanguageToggleButton = () => {
-  const params = useParams<{ locale?: string }>();
+  const locale = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const currentLocale = routing.locales.includes(params.locale as Locale)
-    ? (params.locale as Locale)
+  const currentLocale = routing.locales.includes(locale as Locale)
+    ? (locale as Locale)
     : routing.defaultLocale;
 
   const nextLocale = routing.locales.find(l => l !== currentLocale) as Locale;
 
   const handleSwitch = () => {
-    window.location.assign(`/${nextLocale}`);
+    const query = searchParams.toString();
+    const href = query ? `${pathname}?${query}` : pathname;
+
+    router.replace(href, { locale: nextLocale });
+    router.refresh();
   };
 
   return (

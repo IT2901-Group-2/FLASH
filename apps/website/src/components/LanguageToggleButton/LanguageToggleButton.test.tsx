@@ -1,101 +1,123 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import LanguageToggleButton from "./LanguageToggleButton";
 
-const { mockedUseParams } = vi.hoisted(() => ({
-  mockedUseParams: vi.fn(),
-}));
+const { mockedUseLocale, mockedUseSearchParams, mockedUsePathname, mockedUseRouter } =
+  vi.hoisted(() => ({
+    mockedUseLocale: vi.fn(),
+    mockedUseSearchParams: vi.fn(),
+    mockedUsePathname: vi.fn(),
+    mockedUseRouter: vi.fn(),
+  }));
 
 vi.mock("next/navigation", () => ({
-  useParams: mockedUseParams,
+  useSearchParams: mockedUseSearchParams,
+}));
+
+vi.mock("next-intl", () => ({
+  useLocale: mockedUseLocale,
+}));
+
+vi.mock("@/i18n/navigation", () => ({
+  usePathname: mockedUsePathname,
+  useRouter: mockedUseRouter,
 }));
 
 describe("LanguageToggleButton", () => {
-  afterEach(() => {
+  let replaceMock: ReturnType<typeof vi.fn>;
+  let refreshMock: ReturnType<typeof vi.fn>;
+
+  const setupMocks = ({
+    locale = "en",
+    pathname = "/admin/dashboard/events/123",
+    query = "tab=details",
+  }: {
+    locale?: string | undefined;
+    pathname?: string;
+    query?: string;
+  } = {}) => {
+    replaceMock = vi.fn();
+    refreshMock = vi.fn();
+
+    mockedUseLocale.mockReturnValue(locale);
+    mockedUsePathname.mockReturnValue(pathname);
+    mockedUseSearchParams.mockReturnValue({
+      toString: () => query,
+    });
+    mockedUseRouter.mockReturnValue({
+      replace: replaceMock,
+      refresh: refreshMock,
+    });
+  };
+
+  beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("renders an accessible button", () => {
-    mockedUseParams.mockReturnValue({ locale: "en" });
+  it("renders the next locale when current locale is en", () => {
+    setupMocks({ locale: "en" });
 
     render(<LanguageToggleButton />);
 
     expect(
       screen.getByRole("button", { name: "Switch language to NO" })
     ).toBeInTheDocument();
-    expect(screen.getByText("NO")).toBeInTheDocument();
   });
 
-  it("shows NO when current locale is EN", () => {
-    mockedUseParams.mockReturnValue({ locale: "en" });
-
-    render(<LanguageToggleButton />);
-
-    expect(
-      screen.getByRole("button", { name: "Switch language to NO" })
-    ).toBeInTheDocument();
-    expect(screen.getByText("NO")).toBeInTheDocument();
-  });
-
-  it("shows EN when current locale is NO", () => {
-    mockedUseParams.mockReturnValue({ locale: "no" });
+  it("renders the next locale when current locale is no", () => {
+    setupMocks({ locale: "no" });
 
     render(<LanguageToggleButton />);
 
     expect(
       screen.getByRole("button", { name: "Switch language to EN" })
     ).toBeInTheDocument();
-    expect(screen.getByText("EN")).toBeInTheDocument();
   });
 
-  it("falls back to default locale when route locale is missing", () => {
-    mockedUseParams.mockReturnValue({});
+  it("falls back to default locale when locale is missing", () => {
+    setupMocks({ locale: undefined });
 
     render(<LanguageToggleButton />);
 
     expect(
       screen.getByRole("button", { name: "Switch language to NO" })
     ).toBeInTheDocument();
-    expect(screen.getByText("NO")).toBeInTheDocument();
   });
 
-  it("falls back to default locale when route locale is invalid", () => {
-    mockedUseParams.mockReturnValue({ locale: "fr" });
+  it("falls back to default locale when locale is invalid", () => {
+    setupMocks({ locale: "fr" });
 
     render(<LanguageToggleButton />);
 
     expect(
       screen.getByRole("button", { name: "Switch language to NO" })
     ).toBeInTheDocument();
-    expect(screen.getByText("NO")).toBeInTheDocument();
   });
 
-  it("navigates to the next locale when clicked", async () => {
-    mockedUseParams.mockReturnValue({ locale: "en" });
-
+  it("navigates to the next locale and preserves query params", async () => {
+    setupMocks({ locale: "en", query: "tab=details" });
     const user = userEvent.setup();
-    const assignMock = vi.fn();
-
-    const originalLocation = window.location;
-
-    Object.defineProperty(window, "location", {
-      configurable: true,
-      value: {
-        ...originalLocation,
-        assign: assignMock,
-      },
-    });
 
     render(<LanguageToggleButton />);
 
     await user.click(screen.getByRole("button", { name: "Switch language to NO" }));
 
-    expect(assignMock).toHaveBeenCalledWith("/no");
+    expect(replaceMock).toHaveBeenCalledWith("/admin/dashboard/events/123?tab=details", {
+      locale: "no",
+    });
+  });
 
-    Object.defineProperty(window, "location", {
-      configurable: true,
-      value: originalLocation,
+  it("navigates without a query string when there are no search params", async () => {
+    setupMocks({ locale: "en", query: "" });
+    const user = userEvent.setup();
+
+    render(<LanguageToggleButton />);
+
+    await user.click(screen.getByRole("button", { name: "Switch language to NO" }));
+
+    expect(replaceMock).toHaveBeenCalledWith("/admin/dashboard/events/123", {
+      locale: "no",
     });
   });
 });
