@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { QrCode, Upload } from "lucide-react";
 import styles from "./UploadImage.module.css";
 import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
@@ -60,28 +60,33 @@ export default function Page() {
   const surveyShownStorageKey = `uploaded-photo-survey-shown:${eventId}`;
 
   // Helpers for survey popup logic
-  const getStoredUploadCount = () => {
+  const getStoredUploadCount = useCallback(() => {
     const raw = window.localStorage.getItem(uploadCountStorageKey);
     const value = raw ? Number.parseInt(raw, 10) : 0;
     return Number.isFinite(value) && value >= 0 ? value : 0;
-  };
+  }, [uploadCountStorageKey]);
 
-  const hasShownSurveyPopup = () =>
-    window.localStorage.getItem(surveyShownStorageKey) === "true";
+  const hasShownSurveyPopup = useCallback(
+    () => window.localStorage.getItem(surveyShownStorageKey) === "true",
+    [surveyShownStorageKey]
+  );
 
-  const maybeShowSurveyPopup = (uploadedPhotoCount: number) => {
-    if (uploadedPhotoCount < SURVEY_UPLOAD_THRESHOLD || hasShownSurveyPopup()) {
-      return;
-    }
+  const maybeShowSurveyPopup = useCallback(
+    (uploadedPhotoCount: number) => {
+      if (uploadedPhotoCount < SURVEY_UPLOAD_THRESHOLD || hasShownSurveyPopup()) {
+        return;
+      }
 
-    window.localStorage.setItem(surveyShownStorageKey, "true");
-    surveyDialogRef.current?.showModal();
-  };
+      window.localStorage.setItem(surveyShownStorageKey, "true");
+      surveyDialogRef.current?.showModal();
+    },
+    [hasShownSurveyPopup, surveyShownStorageKey]
+  );
 
   useEffect(() => {
     if (!eventId) return;
     maybeShowSurveyPopup(getStoredUploadCount());
-  }, [eventId]);
+  }, [eventId, getStoredUploadCount, maybeShowSurveyPopup]);
 
   const uploadDescription = tUpload("description", {
     uploadsRemaining:
