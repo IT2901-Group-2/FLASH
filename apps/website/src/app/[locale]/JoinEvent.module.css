@@ -8,3 +8,9 @@
   width: max-content;
   max-width: calc(100% - 2rem);
 }
+
+.languageSwitcher {
+  align-self: stretch;
+  display: flex;
+  justify-content: flex-end;
+}
