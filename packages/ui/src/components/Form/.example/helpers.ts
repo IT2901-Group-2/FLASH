@@ -24,5 +24,5 @@ export const isFullDay = (v: EventTime) =>
 
 export const combineDateAndTime = (date: Date, timeString: string) => {
   const [hours, minutes] = timeString.split(":").map(Number);
-  return new Date(date.setHours(hours, minutes, 0, 0));
+  return new Date(new Date(date.setHours(hours, minutes, 0, 0)));
 };
