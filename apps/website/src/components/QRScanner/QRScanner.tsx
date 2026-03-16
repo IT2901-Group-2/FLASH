@@ -13,16 +13,22 @@ const QrScanner = ({ ...props }: IScannerProps) => {
   }, []);
 
   return (
-    <Scanner
-      classNames={{ video: styles.video }}
-      {...props}
-      constraints={{
-        facingMode: "enviorment",
-        aspectRatio: 1,
-        width: 640,
-        height: 640,
-      }}
-    />
+    <div className={styles.wrapper}>
+      <Scanner
+        classNames={{ video: styles.video }}
+        {...props}
+        constraints={{
+          facingMode: "enviorment",
+          aspectRatio: 1,
+          width: 640,
+          height: 640,
+        }}
+        components={{
+          finder: false,
+        }}
+      />
+      <div className={styles.finder} />
+    </div>
   );
 };
 
