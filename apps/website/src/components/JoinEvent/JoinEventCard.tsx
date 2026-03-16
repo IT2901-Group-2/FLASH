@@ -36,10 +36,7 @@ const JoinEventCard = () => {
   const handleScan = (values: IDetectedBarcode[]) => {
     values
       .filter(v => v.format === "qr_code")
-      .map(v => {
-        console.log(v);
-        return v.rawValue;
-      })
+      .map(v => v.rawValue)
       .forEach(url => {
         if (!url.startsWith(window.location.origin)) setError(t("errors.invalidQr"));
         else router.push(url.replace(window.location.origin, ""));
