@@ -1,6 +1,8 @@
 FROM node:lts-alpine
 WORKDIR /opt/flash
 
+RUN apk add fontconfig font-dejavu ttf-freefont
+
 ENV CI=true
 RUN corepack enable pnpm
 
