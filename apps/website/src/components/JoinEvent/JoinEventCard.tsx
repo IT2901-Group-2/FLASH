@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useCallback, SubmitEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { makeRequest } from "@/lib/utils/api";
-import { getEventCodeSchema, getEventSchema } from "@/db";
+import { getEventCodeSchema } from "@/db";
 import { IDetectedBarcode } from "@yudiel/react-qr-scanner";
 import QrScanner from "../QRScanner/QRScanner";
 
@@ -33,18 +33,18 @@ const JoinEventCard = () => {
     [router, t]
   );
 
-  const handleScan = (values: IDetectedBarcode[]) => {
-    values
-      .filter(v => v.format === "qr_code")
-      .map(v => v.rawValue)
-      .forEach(url => {
-        const code = url.split("/").at(-1);
-        if (!url.startsWith(window.location.origin)) setError(t("errors.invalidQr"));
-        else
-          makeRequest(getEventSchema, `/api/events/by-code/${code}`)
-            .then(() => router.push(`/join/${code}`))
-            .catch(() => setError(t("errors.invalidEventCode")));
-      });
+  const handleScan = async (values: IDetectedBarcode[]) => {
+    const url =
+      values
+        .filter(v => v.format === "qr_code")
+        .map(v => v.rawValue)
+        .at(0) || "";
+    const code = url.split("/").at(-1);
+    if (!url.startsWith(window.location.origin)) setError(t("errors.invalidQr"));
+    else
+      await makeRequest(getEventCodeSchema, `/api/events/by-code/${code}`)
+        .then(() => router.push(`/join/${code}`))
+        .catch(() => setError(t("errors.invalidEventCode")));
   };
 
   return (
