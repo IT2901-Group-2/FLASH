@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import DropdownControl from "./DropdownControl";
 import { useState } from "react";
-import { Input } from "../Input";
+import { Input } from "../../Input";
 import { expect, userEvent, within } from "storybook/test";
-import { Button } from "../Button";
+import { Button } from "../../Button";
 
 const meta: Meta<typeof DropdownControl> = {
   title: "Building Blocks/Components/DropdownControl",

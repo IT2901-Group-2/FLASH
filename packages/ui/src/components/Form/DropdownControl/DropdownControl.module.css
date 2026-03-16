@@ -1,6 +1,10 @@
 .dropdownControls {
   width: 100%;
   overflow: hidden;
+
+  &[data-error="true"] {
+    border-color: var(--border-danger);
+  }
 }
 
 .panel {

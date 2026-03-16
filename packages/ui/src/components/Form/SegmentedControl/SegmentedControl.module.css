@@ -29,6 +29,10 @@
   width: max-content;
   color: var(--color-text);
 
+  &[data-error="true"] {
+    border-color: var(--border-danger);
+  }
+
   &[data-fill="true"] {
     min-width: 100%;
   }
