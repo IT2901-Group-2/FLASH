@@ -55,7 +55,7 @@ describe("EditEventDialog — pre-population", () => {
     expect(screen.getByLabelText("eventDescription")).toHaveValue("Existing description");
   });
 
-    it("pre-populates the upload limit on the options step", async () => {
+  it("pre-populates the upload limit on the options step", async () => {
     mockReportValidity(true);
     renderCard();
 
