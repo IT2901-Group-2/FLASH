@@ -9,10 +9,10 @@ type Locale = (typeof routing.locales)[number];
 
 /**
  * Renders a button allowing users to switch between available locales.
- * Uses the `useParams` hook to determine current locale from the URL and calculates the next locale to switch to.
- * When the button is clicked, it redirects the user to the same path with the new locale.
- * 
- * Suitable for our current setup with only two locales, but might need to be tweaked if more locales are added in the future.
+ * Employs `useParams` to determine current locale from the URL and find the next locale to switch to.
+ * When the button is clicked, it redirects the user to the new locale.
+ *
+ * Suitable for our current setup with only two locales, but will need to be tweaked if more locales are added in the future.
  * Will also need some handling of paths if implemented outside the "Login" pages
  */
 const LanguageToggleButton = () => {

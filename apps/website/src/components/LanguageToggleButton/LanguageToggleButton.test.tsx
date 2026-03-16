@@ -89,9 +89,7 @@ describe("LanguageToggleButton", () => {
 
     render(<LanguageToggleButton />);
 
-    await user.click(
-      screen.getByRole("button", { name: "Switch language to NO" })
-    );
+    await user.click(screen.getByRole("button", { name: "Switch language to NO" }));
 
     expect(assignMock).toHaveBeenCalledWith("/no");
 
