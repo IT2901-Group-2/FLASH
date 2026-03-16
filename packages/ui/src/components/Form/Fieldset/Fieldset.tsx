@@ -70,7 +70,7 @@ export const Fieldset = ({
         data-error={hasError}
         data-readonly={readOnly}
         // ref={ref}
-        className={cl(className, styles.filedset)}
+        className={cl(className, styles.fieldset)}
       >
         <legend id={legendId} hidden={hideLegend} className={styles.legend}>
           {legend}
