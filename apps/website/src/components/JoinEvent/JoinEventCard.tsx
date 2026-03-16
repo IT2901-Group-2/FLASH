@@ -28,9 +28,9 @@ const JoinEventCard = () => {
 
       await makeRequest(getEventCodeSchema, `/api/events/by-code/${code}`)
         .then(() => router.push(`/join/${code}`))
-        .catch(setError);
+        .catch(() => setError(t("errors.invalidEventCode")));
     },
-    [router]
+    [router, t]
   );
 
   const handleScan = (values: IDetectedBarcode[]) => {
