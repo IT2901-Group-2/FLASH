@@ -4,14 +4,14 @@
   align-items: center;
   height: 3rem;
   border-radius: var(--radius-16);
-  border: 0.1rem solid var(--border-focus);
+  border: 0.1rem solid var(--border-subtle);
   background-color: var(--bg-input);
 
   [data-color] & {
     border-color: var(--border-default);
   }
   &:focus-within {
-    border-color: var(--border-subtle);
+    border-color: var(--border-focus);
   }
 
   [data-error="true"] & {
