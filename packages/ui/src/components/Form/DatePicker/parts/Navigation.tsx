@@ -14,7 +14,6 @@ const DatePickerCalendarNav = () => {
         className={styles.navButton}
         onClick={prevMonth}
         type="button"
-        tabIndex={1}
         aria-label="previous-month"
       >
         <ChevronLeft />
@@ -26,7 +25,6 @@ const DatePickerCalendarNav = () => {
         className={styles.navButton}
         onClick={nextMonth}
         type="button"
-        tabIndex={1}
         aria-label="next-month"
       >
         <ChevronRight />
