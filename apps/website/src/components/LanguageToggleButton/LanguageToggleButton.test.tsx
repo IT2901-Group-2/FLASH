@@ -61,7 +61,9 @@ describe("LanguageToggleButton", () => {
     render(<LanguageToggleButton />);
 
     expect(
-      screen.getByRole("button", { name: "Switch language to NO" })
+      screen.getByRole("button", {
+        name: "Current language: EN. Switch to NO",
+      })
     ).toBeInTheDocument();
   });
 
@@ -71,7 +73,9 @@ describe("LanguageToggleButton", () => {
     render(<LanguageToggleButton />);
 
     expect(
-      screen.getByRole("button", { name: "Switch language to EN" })
+      screen.getByRole("button", {
+        name: "Current language: NO. Switch to EN",
+      })
     ).toBeInTheDocument();
   });
 
@@ -81,7 +85,9 @@ describe("LanguageToggleButton", () => {
     render(<LanguageToggleButton />);
 
     expect(
-      screen.getByRole("button", { name: "Switch language to NO" })
+      screen.getByRole("button", {
+        name: "Current language: EN. Switch to NO",
+      })
     ).toBeInTheDocument();
   });
 
@@ -91,7 +97,9 @@ describe("LanguageToggleButton", () => {
     render(<LanguageToggleButton />);
 
     expect(
-      screen.getByRole("button", { name: "Switch language to NO" })
+      screen.getByRole("button", {
+        name: "Current language: EN. Switch to NO",
+      })
     ).toBeInTheDocument();
   });
 
@@ -101,11 +109,18 @@ describe("LanguageToggleButton", () => {
 
     render(<LanguageToggleButton />);
 
-    await user.click(screen.getByRole("button", { name: "Switch language to NO" }));
+    const button = screen.getByRole("button", {
+      name: "Current language: EN. Switch to NO",
+    });
+
+    await user.click(button);
 
     expect(replaceMock).toHaveBeenCalledWith("/admin/dashboard/events/123?tab=details", {
       locale: "no",
     });
+    expect(refreshMock).toHaveBeenCalledTimes(1);
+    expect(button).toHaveAttribute("aria-busy", "true");
+    expect(button).toBeDisabled();
   });
 
   it("navigates without a query string when there are no search params", async () => {
@@ -114,7 +129,11 @@ describe("LanguageToggleButton", () => {
 
     render(<LanguageToggleButton />);
 
-    await user.click(screen.getByRole("button", { name: "Switch language to NO" }));
+    await user.click(
+      screen.getByRole("button", {
+        name: "Current language: EN. Switch to NO",
+      })
+    );
 
     expect(replaceMock).toHaveBeenCalledWith("/admin/dashboard/events/123", {
       locale: "no",
@@ -127,7 +146,9 @@ describe("LanguageToggleButton", () => {
 
     render(<LanguageToggleButton />);
 
-    const button = screen.getByRole("button", { name: "Switch language to NO" });
+    const button = screen.getByRole("button", {
+      name: "Current language: EN. Switch to NO",
+    });
 
     await user.click(button);
     await user.click(button);
