@@ -58,8 +58,11 @@ export default function Page() {
   // TODO: For pilot release. Should be removed after pilot is finished
   const surveyDialogRef = useRef<HTMLDialogElement>(null);
 
-  const uploadCountStorageKey = `uploaded-photo-count:${eventId}`;
-  const surveyShownStorageKey = `uploaded-photo-survey-shown:${eventId}`;
+  const userStorageId = eventAuth.isAuthenticated
+    ? `${eventAuth.nickname}:${eventAuth.isModerator ? "moderator" : "guest"}`
+    : "anonymous";
+  const uploadCountStorageKey = `uploaded-photo-count:${userStorageId}`;
+  const surveyShownStorageKey = `uploaded-photo-survey-shown:${userStorageId}`;
 
   // Helpers for survey popup logic
   const getStoredUploadCount = useCallback(() => {
@@ -86,9 +89,9 @@ export default function Page() {
   );
 
   useEffect(() => {
-    if (!eventId) return;
+    if (!eventAuth.isAuthenticated) return;
     maybeShowSurveyPopup(getStoredUploadCount());
-  }, [eventId, getStoredUploadCount, maybeShowSurveyPopup]);
+  }, [eventAuth.isAuthenticated, getStoredUploadCount, maybeShowSurveyPopup]);
   // End of survey popup logic
 
   const uploadDescription = tUpload("description", {
