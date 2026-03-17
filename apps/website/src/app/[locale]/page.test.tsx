@@ -34,6 +34,10 @@ vi.mock("@/providers/JoinedEventsContext", () => ({
   useJoinedEvents: vi.fn(() => []),
 }));
 
+vi.mock("@/components/LanguageToggleButton/LanguageToggleButton", () => ({
+  default: () => <div data-testid="language-toggle-button">Language Toggle</div>,
+}));
+
 describe("Page", () => {
   afterEach(() => {
     cleanup();

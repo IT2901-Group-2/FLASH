@@ -1,7 +1,11 @@
-import { describe, it, expect, afterEach } from "vitest";
+import { describe, it, expect, afterEach, vi } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import Page from "./page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+vi.mock("@/components/LanguageToggleButton/LanguageToggleButton", () => ({
+  default: () => <div data-testid="language-toggle-button">Language Toggle</div>,
+}));
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
