@@ -3,12 +3,17 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ThemeToggleButton from "./ThemeToggleButton";
 
-const { mockedUseTheme } = vi.hoisted(() => ({
+const { mockedUseTheme, mockedUseIsMounted } = vi.hoisted(() => ({
   mockedUseTheme: vi.fn(),
+  mockedUseIsMounted: vi.fn(),
 }));
 
 vi.mock("@/hooks/useTheme", () => ({
   useTheme: mockedUseTheme,
+}));
+
+vi.mock("@/hooks/useIsMounted", () => ({
+  useIsMounted: mockedUseIsMounted,
 }));
 
 describe("ThemeToggleButton", () => {
@@ -16,40 +21,50 @@ describe("ThemeToggleButton", () => {
     vi.clearAllMocks();
   });
 
-  it("renders an accessible button", () => {
-    mockedUseTheme.mockReturnValue({
-      resolvedTheme: "light",
-      toggleTheme: vi.fn(),
-    });
-
-    render(<ThemeToggleButton />);
-
-    expect(
-      screen.getByRole("button", { name: "Switch theme to DARK" })
-    ).toBeInTheDocument();
-    expect(screen.getByText("DARK")).toBeInTheDocument();
-  });
-
-  it("shows DARK when current theme is light", () => {
-    mockedUseTheme.mockReturnValue({
-      resolvedTheme: "light",
-      toggleTheme: vi.fn(),
-    });
-
-    render(<ThemeToggleButton />);
-
-    expect(screen.getByText("DARK")).toBeInTheDocument();
-  });
-
-  it("shows LIGHT when current theme is dark", () => {
+  it("uses a stable fallback before mounted", () => {
     mockedUseTheme.mockReturnValue({
       resolvedTheme: "dark",
       toggleTheme: vi.fn(),
     });
+    mockedUseIsMounted.mockReturnValue(false);
 
-    render(<ThemeToggleButton />);
+    const { container } = render(<ThemeToggleButton />);
 
-    expect(screen.getByText("LIGHT")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Switch theme to DARK" })
+    ).toBeInTheDocument();
+    expect(container.querySelector(".lucide-moon")).toBeInTheDocument();
+    expect(container.querySelector(".lucide-sun")).not.toBeInTheDocument();
+  });
+
+  it("uses DARK as the next theme when current theme is light", () => {
+    mockedUseTheme.mockReturnValue({
+      resolvedTheme: "light",
+      toggleTheme: vi.fn(),
+    });
+    mockedUseIsMounted.mockReturnValue(true);
+
+    const { container } = render(<ThemeToggleButton />);
+
+    expect(
+      screen.getByRole("button", { name: "Switch theme to DARK" })
+    ).toBeInTheDocument();
+    expect(container.querySelector(".lucide-moon")).toBeInTheDocument();
+  });
+
+  it("uses LIGHT as the next theme when current theme is dark", () => {
+    mockedUseTheme.mockReturnValue({
+      resolvedTheme: "dark",
+      toggleTheme: vi.fn(),
+    });
+    mockedUseIsMounted.mockReturnValue(true);
+
+    const { container } = render(<ThemeToggleButton />);
+
+    expect(
+      screen.getByRole("button", { name: "Switch theme to LIGHT" })
+    ).toBeInTheDocument();
+    expect(container.querySelector(".lucide-sun")).toBeInTheDocument();
   });
 
   it("toggles theme when clicked", async () => {
@@ -58,6 +73,7 @@ describe("ThemeToggleButton", () => {
       resolvedTheme: "light",
       toggleTheme,
     });
+    mockedUseIsMounted.mockReturnValue(true);
 
     const user = userEvent.setup();
 

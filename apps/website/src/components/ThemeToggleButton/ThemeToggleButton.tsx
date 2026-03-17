@@ -1,6 +1,7 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
+import { useIsMounted } from "@/hooks/useIsMounted";
 import { useTheme } from "@/hooks/useTheme";
 import styles from "./ThemeToggleButton.module.css";
 
@@ -11,7 +12,10 @@ import styles from "./ThemeToggleButton.module.css";
 
 const ThemeToggleButton = () => {
   const { resolvedTheme, toggleTheme } = useTheme();
-  const nextTheme = resolvedTheme === "light" ? "dark" : "light";
+  const mounted = useIsMounted();
+
+  const nextTheme = mounted ? (resolvedTheme === "light" ? "dark" : "light") : "dark";
+  const showSunIcon = mounted ? resolvedTheme === "dark" : false;
 
   return (
     <button
@@ -20,7 +24,7 @@ const ThemeToggleButton = () => {
       className={styles.button}
       aria-label={`Switch theme to ${nextTheme.toUpperCase()}`}
     >
-      {resolvedTheme === "dark" ? (
+      {showSunIcon ? (
         <Sun size={16} aria-hidden="true" />
       ) : (
         <Moon size={16} aria-hidden="true" />
