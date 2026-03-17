@@ -12,7 +12,7 @@
     "download": "Download",
     "signIn": "Sign in",
     "join": "Join Event",
-    "openCamera": "Open Camera",
+    "toggleCamera": "{open, select, true {Close camera} other {Open camera}}",
     "uploadImage": "Upload Image",
     "slideshow": "Slideshow",
     "createNewEvent": "Create New Event",

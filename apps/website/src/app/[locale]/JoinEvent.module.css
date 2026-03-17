@@ -1,35 +1,10 @@
 .pageWrapper {
-  margin: 2rem auto;
-  gap: 1rem;
-  position: relative;
+  margin: auto;
+  gap: 2rem;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: max-content;
-  max-width: calc(100% - 2rem);
-  padding-top: 5rem;
-}
-
-.topControls {
-  position: absolute;
-  top: 2rem;
-  right: 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.75rem;
-}
-
-@media (max-width: 768px) {
-  .pageWrapper {
-    width: min(100%, calc(100% - 2rem));
-  }
-
-  .topControls {
-    right: 0;
-    flex-direction: column;
-    align-items: flex-end;
-  }
+  width: clamp(20rem, 33%, 100vw);
 }

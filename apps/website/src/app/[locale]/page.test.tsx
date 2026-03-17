@@ -38,10 +38,6 @@ vi.mock("@/components/LanguageToggleButton/LanguageToggleButton", () => ({
   default: () => <div data-testid="language-toggle-button">Language Toggle</div>,
 }));
 
-vi.mock("@/components/ThemeToggleButton/ThemeToggleButton", () => ({
-  default: () => <div data-testid="theme-toggle-button">Theme Toggle</div>,
-}));
-
 describe("Page", () => {
   afterEach(() => {
     cleanup();

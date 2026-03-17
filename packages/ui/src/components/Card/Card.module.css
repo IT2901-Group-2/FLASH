@@ -6,10 +6,6 @@
   box-shadow: var(--shadow-dialog);
   color: var(--text-neutral);
 
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-
   &[data-color] {
     background-color: var(--bg-soft);
     border-color: var(--border-default);

@@ -116,7 +116,7 @@ export const updateEventSchema = z.object({
   description: z.string().optional(),
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
-  uploadLimit: z.number().optional(),
+  uploadLimit: z.number().nullable().optional(),
   isArchived: z.boolean().optional(),
 });
 

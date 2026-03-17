@@ -14,7 +14,7 @@
         }
       },
       "scanQr": {
-        "description": "Bruk kameraet ditt til å skanne QR-koden for arrangementet"
+        "description": "Åpne kameraet ditt til å skanne QR-koden til arrangementet"
       },
       "links": {
         "adminAccessPrefix": "Ikke en gjest? Administrer arrangementer som en"
@@ -24,7 +24,8 @@
         "invalidEventCode": "Ugyldig arrangementskode. Vennligst prøv igjen.",
         "missingNickname": "Vennligst skriv inn et kallenavn.",
         "nicknameTaken": "Kallenavnet er allerede tatt.",
-        "joinFailed": "Kunne ikke bli med i arrangementet. Prøv igjen."
+        "joinFailed": "Kunne ikke bli med i arrangementet. Prøv igjen.",
+        "invalidQr": "Ikke en gyldig Qr kode. Prøv igjen."
       },
       "nickname": {
         "title": "Velkommen til",

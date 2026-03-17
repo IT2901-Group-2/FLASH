@@ -11,7 +11,7 @@ export const userTable = sqliteTable(
     id: text().primaryKey().$defaultFn(uid.rnd),
     eventId: text()
       .notNull()
-      .references(() => eventTable.id),
+      .references(() => eventTable.id, { onDelete: "cascade" }),
     name: text().notNull(),
     isModerator: integer({ mode: "boolean" }).notNull(),
     joinedAt: integer({ mode: "timestamp" })

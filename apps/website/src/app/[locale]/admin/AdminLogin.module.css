@@ -1,30 +1,10 @@
 .pageWrapper {
-  margin: 0;
+  margin: auto;
   gap: 2rem;
-  position: relative;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 2em;
-  padding-top: 6rem;
-}
-
-.topControls {
-  position: absolute;
-  top: 2rem;
-  right: 2rem;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.75rem;
-}
-
-@media (max-width: 768px) {
-  .topControls {
-    right: 1rem;
-    flex-direction: column;
-    align-items: flex-end;
-  }
+  width: clamp(20rem, 33%, 100vw);
 }

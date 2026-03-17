@@ -6,7 +6,7 @@ import { BasicInfoStep } from "./Steps/BasicInfoStep";
 import { OptionsStep } from "./Steps/OptionsStep";
 import { FormStepConfig } from "./Steps/types";
 import styles from "./CreateEventDialog.module.css";
-import { CreateEvent, Event } from "@/db";
+import { CreateEvent, Event, UpdateEvent } from "@/db";
 
 const EDIT_STEPS: FormStepConfig[] = [
   { Component: BasicInfoStep },
@@ -55,8 +55,12 @@ export const EditEventDialog = ({
 
   const handleSave = async () => {
     if (!formRef.current?.reportValidity()) return;
+    const payload: UpdateEvent = {
+      ...formData,
+      uploadLimit: formData.uploadLimit ?? null,
+    };
     // Added as .then(), so its easy to add if there are error popups in the future
-    await mutateAsync({ eventId: event.id, data: formData }).then(handleClose);
+    await mutateAsync({ eventId: event.id, data: payload }).then(handleClose);
   };
 
   const handleClose = () => {
