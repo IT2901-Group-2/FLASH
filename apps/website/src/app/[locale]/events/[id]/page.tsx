@@ -113,7 +113,9 @@ export default function Page() {
       let results: PromiseSettledResult<unknown>[] = [];
       try {
         [results] = await Promise.all([
-          Promise.allSettled(Array.from(files).map(file => uploadImage({ eventId, file }))),
+          Promise.allSettled(
+            Array.from(files).map(file => uploadImage({ eventId, file }))
+          ),
           new Promise(resolve => setTimeout(resolve, 650)),
         ]);
       } finally {
