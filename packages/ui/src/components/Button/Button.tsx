@@ -80,7 +80,10 @@ export const Button = ({
   };
 
   const iconNode = icon ? (
-    <span aria-hidden={loading ? true : undefined} className={loading ? styles.hidden : undefined}>
+    <span
+      aria-hidden={loading ? true : undefined}
+      className={loading ? styles.hidden : undefined}
+    >
       {icon}
     </span>
   ) : null;
