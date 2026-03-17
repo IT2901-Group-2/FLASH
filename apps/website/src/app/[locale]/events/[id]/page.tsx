@@ -11,6 +11,7 @@ import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 
+// Used for pilot feedback collection. Should be removed after pilot is finished
 const SURVEY_LINK = "https://nettskjema.no/a/610540";
 const SURVEY_UPLOAD_THRESHOLD = 3;
 
@@ -53,6 +54,7 @@ export default function Page() {
   const uploadsRemaining =
     typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
 
+  // Start of survey popup logic
   // TODO: For pilot release. Should be removed after pilot is finished
   const surveyDialogRef = useRef<HTMLDialogElement>(null);
 
@@ -87,6 +89,7 @@ export default function Page() {
     if (!eventId) return;
     maybeShowSurveyPopup(getStoredUploadCount());
   }, [eventId, getStoredUploadCount, maybeShowSurveyPopup]);
+  // End of survey popup logic
 
   const uploadDescription = tUpload("description", {
     uploadsRemaining:
@@ -151,6 +154,7 @@ export default function Page() {
         </div>
       </Dialog>
 
+      {/* Start of survey popup logic. Should be removed after pilot */}
       <Dialog ref={surveyDialogRef} className={styles.surveyDialog}>
         <div className={styles.surveyDialog}>
           <h2 className={styles.surveyTitle}>{tUpload("survey.title")}</h2>
@@ -173,6 +177,7 @@ export default function Page() {
           </Button>
         </div>
       </Dialog>
+      {/* End of survey popup logic */}
 
       <div className={styles.pageWrapper}>
         <PhoneHeader
