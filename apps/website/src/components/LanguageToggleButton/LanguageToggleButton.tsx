@@ -1,6 +1,5 @@
 "use client";
-
-import { useEffect, useRef } from "react";
+import { useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { Languages } from "lucide-react";
 import { useLocale } from "next-intl";
@@ -17,12 +16,10 @@ type Locale = (typeof routing.locales)[number];
  *
  * Suitable for our current setup with only two locales, but will need to be tweaked if more locales are added in the future.
  *
- * > _Last updated: `2026-03-16`_
+ * > _Last updated: `2026-03-17`_
  */
 const LanguageToggleButton = () => {
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isSwitchingRef = useRef(false);
-
+  const [isSwitching, setIsSwitching] = useState(false);
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
@@ -32,43 +29,32 @@ const LanguageToggleButton = () => {
     ? (locale as Locale)
     : routing.defaultLocale;
 
-  const nextLocale = routing.locales.find(l => l !== currentLocale) as Locale;
+  const nextLocale = routing.locales.find(l => l !== currentLocale);
 
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
+  const handleSwitch = useCallback(() => {
+    if (isSwitching || !nextLocale) return;
 
-  const handleSwitch = () => {
-    if (isSwitchingRef.current) {
-      return;
-    }
-
-    isSwitchingRef.current = true;
+    setIsSwitching(true);
 
     const query = searchParams.toString();
     const href = query ? `${pathname}?${query}` : pathname;
-
     router.replace(href, { locale: nextLocale });
     router.refresh();
+  }, [isSwitching, nextLocale, pathname, router, searchParams]);
 
-    timeoutRef.current = setTimeout(() => {
-      isSwitchingRef.current = false;
-    }, 400);
-  };
+  if (!nextLocale) return null;
 
   return (
     <button
       type="button"
       onClick={handleSwitch}
+      disabled={isSwitching}
       className={styles.button}
-      aria-label={`Switch language to ${nextLocale.toUpperCase()}`}
+      aria-label={`Current language: ${currentLocale.toUpperCase()}. Switch to ${nextLocale.toUpperCase()}`}
+      aria-busy={isSwitching}
     >
       <Languages size={16} aria-hidden="true" />
-      <span>{nextLocale.toUpperCase()}</span>
+      <span lang={nextLocale}>{nextLocale.toUpperCase()}</span>
     </button>
   );
 };
