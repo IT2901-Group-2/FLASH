@@ -110,28 +110,27 @@ export default function Page() {
       setUploadError(null);
       setIsUploading(true);
 
+      let results: PromiseSettledResult<unknown>[] = [];
       try {
-        const results = await Promise.allSettled(
+        results = await Promise.allSettled(
           Array.from(files).map(file => uploadImage({ eventId, file }))
         );
-
-        const failureCount = results.filter(r => r.status === "rejected").length;
+      } finally {
+        setIsUploading(false);
+        let successfulUploads = 0;
+        let failureCount = 0;
+        for (const result of results) {
+          if (result.status === "fulfilled") successfulUploads++;
+          else failureCount++;
+        }
         if (failureCount > 0) {
           setUploadError(tUpload("errors.uploadFailed", { count: failureCount }));
         }
-      } finally {
-        setIsUploading(false);
-      const successfulUploads = results.filter(
-        result => result.status === "fulfilled"
-      ).length;
-      if (successfulUploads > 0) {
-        const nextUploadCount = getStoredUploadCount() + successfulUploads;
-        window.localStorage.setItem(uploadCountStorageKey, String(nextUploadCount));
-        maybeShowSurveyPopup(nextUploadCount);
-      }
-
-      if (results.some(result => result.status === "rejected")) {
-        setUploadError(tUpload("errors.uploadFailure"));
+        if (successfulUploads > 0) {
+          const nextUploadCount = getStoredUploadCount() + successfulUploads;
+          window.localStorage.setItem(uploadCountStorageKey, String(nextUploadCount));
+          maybeShowSurveyPopup(nextUploadCount);
+        }
       }
     },
   });
