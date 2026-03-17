@@ -161,7 +161,8 @@ export default function Page() {
       <Dialog ref={surveyDialogRef} className={styles.surveyDialog}>
         <div className={styles.surveyDialog}>
           <h2 className={styles.surveyTitle}>{tUpload("survey.title")}</h2>
-          <p className={styles.surveyText}>{tUpload("survey.description")}</p>
+          <p className={styles.surveyText}>{tUpload("survey.descriptionLead")}</p>
+          <p className={styles.surveyText}>{tUpload("survey.descriptionDetails")}</p>
           <Button
             variant="primary"
             data-color="brand-purple"
