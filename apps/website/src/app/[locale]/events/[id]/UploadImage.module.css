@@ -15,13 +15,14 @@
   gap: 2rem;
 }
 
+/* Styles for the upload dialog. Remove after pilot */
 .surveyDialog {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: center;
   text-align: center;
   gap: 1rem;
-  max-width: 32rem;
+  width: 100%;
 }
 
 .surveyTitle {
@@ -39,6 +40,7 @@
   text-decoration: underline;
   word-break: break-all;
 }
+/* End of styles for the upload dialog. Remove after pilot */
 
 .mobileOnly {
   display: flex;
