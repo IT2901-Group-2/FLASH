@@ -95,6 +95,12 @@
       "errors": {
         "uploadUnavailable": "Unable to upload images for this event.",
         "uploadFailed": "{count, plural, one {Could not upload photo} other {Some photos could not be uploaded}}"
+      },
+      "survey": {
+        "title": "Thanks for uploading photos!",
+        "descriptionLead": "Would you share your feedback with us?",
+        "descriptionDetails": "We are a student bachelor project at NTNU that would love to hear your thoughts on the experience of the application.",
+        "cta": "Go to survey"
       }
     }
   }

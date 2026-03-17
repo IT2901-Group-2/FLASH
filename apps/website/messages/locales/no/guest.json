@@ -95,6 +95,12 @@
       "errors": {
         "uploadUnavailable": "Kan ikke laste opp bilder for dette arrangementet.",
         "uploadFailed": "{count, plural, one {Kunne ikke laste opp bilde} other {Noen bilder kunne ikke lastes opp}}"
+      },
+      "survey": {
+        "title": "Takk for at du lastet opp bilder!",
+        "descriptionLead": "Vil du gi oss en kort tilbakemelding?",
+        "descriptionDetails": "Vi er et bachelorprosjekt ved NTNU som hadde satt stor pris på om du vil gi noen tilbakemeldinger på opplevelsen av applikasjonen.",
+        "cta": "Gå til spørreundersøkelsen"
       }
     }
   }
