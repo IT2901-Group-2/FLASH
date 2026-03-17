@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from "vitest";
-import { render, screen, cleanup, waitFor } from "@testing-library/react";
+import { render, screen, cleanup, waitFor, act } from "@testing-library/react";
 import type { ReactNode } from "react";
 import Page from "./page";
 import * as useFileUploadModule from "@/hooks/useFileUpload";
@@ -87,6 +87,17 @@ vi.mock("@/hooks/useFileUpload", () => ({
   })),
 }));
 
+function createMockFileList(files: File[]): FileList {
+  return {
+    ...files,
+    length: files.length,
+    item: (index: number) => files[index] ?? null,
+    [Symbol.iterator]: function* () {
+      yield* files;
+    },
+  } as unknown as FileList;
+}
+
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
@@ -130,6 +141,67 @@ describe("Guest Upload Page", () => {
   it("uses image query hook", () => {
     render(<Page />);
     expect(useImagesModule.useImagesQuery).toHaveBeenCalledWith("event-123");
+  });
+
+  it("shows upload error key when one or more files fail to upload", async () => {
+    mockUploadImage.mockRejectedValue(new Error("Upload failed"));
+    render(<Page />);
+
+    const { onFilesSelected } = vi.mocked(useFileUploadModule.useFileUpload).mock
+      .calls[0][0];
+    const mockFileList = createMockFileList([
+      new File(["a"], "a.jpg", { type: "image/jpeg" }),
+      new File(["b"], "b.jpg", { type: "image/jpeg" }),
+    ]);
+
+    await act(async () => {
+      await onFilesSelected!(mockFileList);
+    });
+
+    await waitFor(() =>
+      expect(screen.getByRole("alert")).toHaveTextContent("errors.uploadFailed")
+    );
+  });
+
+  it("shows no upload error when all files upload successfully", async () => {
+    mockUploadImage.mockResolvedValue({});
+    render(<Page />);
+
+    const { onFilesSelected } = vi.mocked(useFileUploadModule.useFileUpload).mock
+      .calls[0][0];
+    const mockFileList = createMockFileList([
+      new File(["a"], "a.jpg", { type: "image/jpeg" }),
+    ]);
+
+    await act(async () => {
+      await onFilesSelected!(mockFileList);
+    });
+
+    await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent(""));
+  });
+
+  it("clears previous upload error when a new upload starts", async () => {
+    mockUploadImage.mockRejectedValue(new Error("Upload failed"));
+    render(<Page />);
+
+    const { onFilesSelected } = vi.mocked(useFileUploadModule.useFileUpload).mock
+      .calls[0][0];
+    const mockFileList = createMockFileList([
+      new File(["a"], "a.jpg", { type: "image/jpeg" }),
+    ]);
+
+    await act(async () => {
+      await onFilesSelected!(mockFileList);
+    });
+    await waitFor(() =>
+      expect(screen.getByRole("alert")).toHaveTextContent("errors.uploadFailed")
+    );
+
+    mockUploadImage.mockResolvedValue({});
+    await act(async () => {
+      await onFilesSelected!(mockFileList);
+    });
+    await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent(""));
   });
 
   it("shows upload error when callback runs without event id", async ({ skip }) => {
