@@ -97,7 +97,8 @@
       },
       "survey": {
         "title": "Thanks for uploading photos!",
-        "description": "Would you share your feedback with us?"
+        "description": "Would you share your feedback with us? We are a student bachelor project at NTNU that would love to hear your thoughts on the experience of the application.",
+        "cta": "Go to survey"
       }
     }
   }

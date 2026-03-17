@@ -97,7 +97,8 @@
       },
       "survey": {
         "title": "Takk for at du lastet opp bilder!",
-        "description": "Vil du gi oss en kort tilbakemelding?"
+        "description": "Vil du gi oss en kort tilbakemelding? Vi er et bachelorprosjekt ved NTNU som hadde satt stor pris på om du vil gi noen tilbakemeldinger på opplevelsen av applikasjonen.",
+        "cta": "Gå til spørreundersøkelsen"
       }
     }
   }

@@ -162,14 +162,14 @@ export default function Page() {
         <div className={styles.surveyDialog}>
           <h2 className={styles.surveyTitle}>{tUpload("survey.title")}</h2>
           <p className={styles.surveyText}>{tUpload("survey.description")}</p>
-          <a
-            href={SURVEY_LINK}
-            target="_blank"
-            rel="noreferrer"
-            className={styles.surveyLink}
+          <Button
+            variant="primary"
+            data-color="brand-purple"
+            onClick={() => window.open(SURVEY_LINK, "_blank", "noopener,noreferrer")}
+            fill
           >
-            {SURVEY_LINK}
-          </a>
+            {tUpload("survey.cta")}
+          </Button>
           <Button
             variant="secondary"
             data-color="neutral"
