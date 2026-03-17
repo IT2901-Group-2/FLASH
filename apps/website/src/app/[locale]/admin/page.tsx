@@ -10,9 +10,7 @@ export default function Page() {
   const t = useTranslations("pages.adminLogin");
   return (
     <div className={styles.pageWrapper}>
-      <div className={styles.languageSwitcher}>
-        <LanguageToggleButton />
-      </div>
+      <LanguageToggleButton />
       <CameraIcon />
       <Title
         data-testid="title"

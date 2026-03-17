@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { Languages } from "lucide-react";
 import { useLocale } from "next-intl";
@@ -19,6 +20,9 @@ type Locale = (typeof routing.locales)[number];
  * > _Last updated: `2026-03-16`_
  */
 const LanguageToggleButton = () => {
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isSwitchingRef = useRef(false);
+
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
@@ -30,12 +34,30 @@ const LanguageToggleButton = () => {
 
   const nextLocale = routing.locales.find(l => l !== currentLocale) as Locale;
 
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleSwitch = () => {
+    if (isSwitchingRef.current) {
+      return;
+    }
+
+    isSwitchingRef.current = true;
+
     const query = searchParams.toString();
     const href = query ? `${pathname}?${query}` : pathname;
 
     router.replace(href, { locale: nextLocale });
     router.refresh();
+
+    timeoutRef.current = setTimeout(() => {
+      isSwitchingRef.current = false;
+    }, 400);
   };
 
   return (

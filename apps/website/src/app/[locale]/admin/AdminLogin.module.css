@@ -7,9 +7,3 @@
   align-items: center;
   padding: 2em;
 }
-
-.languageSwitcher {
-  align-self: stretch;
-  display: flex;
-  justify-content: flex-end;
-}

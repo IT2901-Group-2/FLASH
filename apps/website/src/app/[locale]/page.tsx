@@ -12,9 +12,7 @@ const Page = () => {
 
   return (
     <div className={styles.pageWrapper}>
-      <div className={styles.languageSwitcher}>
-        <LanguageToggleButton />
-      </div>
+      <LanguageToggleButton />
       <Logo />
       <Title align="center" size="large" as="h1" description={t("description")}>
         {t("name")}

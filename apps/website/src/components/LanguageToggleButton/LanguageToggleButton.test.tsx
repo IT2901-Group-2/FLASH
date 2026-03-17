@@ -120,4 +120,20 @@ describe("LanguageToggleButton", () => {
       locale: "no",
     });
   });
+
+  it("ignores rapid repeated clicks", async () => {
+    setupMocks({ locale: "en", query: "tab=details" });
+    const user = userEvent.setup();
+
+    render(<LanguageToggleButton />);
+
+    const button = screen.getByRole("button", { name: "Switch language to NO" });
+
+    await user.click(button);
+    await user.click(button);
+    await user.click(button);
+
+    expect(replaceMock).toHaveBeenCalledTimes(1);
+    expect(refreshMock).toHaveBeenCalledTimes(1);
+  });
 });
