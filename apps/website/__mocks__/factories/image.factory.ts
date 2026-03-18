@@ -24,7 +24,7 @@ export type BatchUpdateImageInput = {
  * @example
  * const image = makeImage({ eventId: "event-1", isApproved: true });
  */
-export function makeImage(overrides: Partial<Image> = {}): Image {
+export const makeImage = (overrides: Partial<Image> = {}): Image => {
   return {
     id: nextId(),
     eventId: "event-123",
@@ -34,7 +34,7 @@ export function makeImage(overrides: Partial<Image> = {}): Image {
     updatedAt: new Date(),
     ...overrides,
   };
-}
+};
 
 /**
  * Creates a list of Images, all belonging to the same event.
@@ -42,9 +42,9 @@ export function makeImage(overrides: Partial<Image> = {}): Image {
  * @example
  * const images = makeImages(3, { eventId: "event-1" });
  */
-export function makeImages(count: number, overrides: Partial<Image> = {}): Image[] {
+export const makeImages = (count: number, overrides: Partial<Image> = {}): Image[] => {
   return Array.from({ length: count }, () => makeImage(overrides));
-}
+};
 
 /**
  * Creates a mock File object suitable for upload tests.
@@ -52,19 +52,19 @@ export function makeImages(count: number, overrides: Partial<Image> = {}): Image
  * @example
  * const file = makeMockFile("photo.jpg", "image/jpeg");
  */
-export function makeMockFile(
+export const makeMockFile = (
   name = "test-photo.jpg",
   type = "image/jpeg",
   content = "mock file content"
-): File {
+): File => {
   return new File([content], name, { type });
-}
+};
 
 /**
  * Creates a mock FileList containing a single file.
  * Useful for simulating file input events.
  */
-export function makeMockFileList(file: File): FileList {
+export const makeMockFileList = (file: File): FileList => {
   return {
     0: file,
     length: 1,
@@ -73,12 +73,12 @@ export function makeMockFileList(file: File): FileList {
       yield file;
     },
   } as FileList;
-}
+};
 
 /**
  * Resets the internal ID counter.
  * Call in beforeEach if ID stability matters.
  */
-export function resetImageCounter() {
+export const resetImageCounter = () => {
   _counter = 1;
-}
+};
