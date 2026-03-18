@@ -34,6 +34,7 @@ export default function Page() {
   const images = imagesData ?? [];
 
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const { mutateAsync: uploadImage } = useUploadImageMutation();
 
   // Join Code
@@ -107,22 +108,27 @@ export default function Page() {
       }
 
       setUploadError(null);
+      setIsUploading(true);
 
-      const results = await Promise.allSettled(
-        Array.from(files).map(file => uploadImage({ eventId, file }))
-      );
-
-      const successfulUploads = results.filter(
-        result => result.status === "fulfilled"
-      ).length;
-      if (successfulUploads > 0) {
-        const nextUploadCount = getStoredUploadCount() + successfulUploads;
-        window.localStorage.setItem(uploadCountStorageKey, String(nextUploadCount));
-        maybeShowSurveyPopup(nextUploadCount);
-      }
-
-      if (results.some(result => result.status === "rejected")) {
-        setUploadError(tUpload("errors.uploadPartialFailure"));
+      try {
+        const [results] = await Promise.all([
+          Promise.allSettled(
+            Array.from(files).map(file => uploadImage({ eventId, file }))
+          ),
+          new Promise(resolve => setTimeout(resolve, 650)),
+        ]);
+        const successfulUploads = results.filter(r => r.status === "fulfilled").length;
+        const failureCount = results.length - successfulUploads;
+        if (failureCount > 0) {
+          setUploadError(tUpload("errors.uploadFailed", { count: failureCount }));
+        }
+        if (successfulUploads > 0) {
+          const nextUploadCount = getStoredUploadCount() + successfulUploads;
+          window.localStorage.setItem(uploadCountStorageKey, String(nextUploadCount));
+          maybeShowSurveyPopup(nextUploadCount);
+        }
+      } finally {
+        setIsUploading(false);
       }
     },
   });
@@ -202,6 +208,7 @@ export default function Page() {
             data-color="brand-purple"
             variant="primary"
             onClick={openFilePicker}
+            loading={isUploading}
             className={styles.desktopOnly}
           >
             {tCommon("actions.uploadImage")}
@@ -210,16 +217,20 @@ export default function Page() {
         {!isLoading && (isError || !eventData) ? (
           <p className={styles.errorText}>{tUpload("eventLoadFailed")}</p>
         ) : null}
-        {uploadError ? <p className={styles.errorText}>{uploadError}</p> : null}
+        <p role="alert" className={`${styles.errorText} ${styles.desktopOnly}`}>
+          {uploadError ?? ""}
+        </p>
         <div className={styles.mobileOnly}>
           <ActionCard
-            description={uploadDescription}
+            description={uploadError ?? uploadDescription}
+            descriptionColor={uploadError ? "danger" : undefined}
             primaryButton={{
               "data-color": "brand-purple",
               icon: <Upload size={18} />,
               iconPosition: "right",
               text: tCommon("actions.uploadImage"),
               onClick: openFilePicker,
+              loading: isUploading,
             }}
           />
         </div>
