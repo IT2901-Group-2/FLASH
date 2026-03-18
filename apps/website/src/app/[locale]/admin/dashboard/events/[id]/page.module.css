@@ -10,12 +10,15 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+}
 
-  .headerItem {
+.headerItem {
     display: flex;
     gap: 1rem;
+    min-width: 0;
+    overflow: hidden;
+    width: 100%;
   }
-}
 
 .back {
   margin-top: 0.4rem;
@@ -43,6 +46,7 @@
 }
 
 .card {
+  background-color: red;
   display: flex;
   justify-content: end;
   flex-direction: column;
