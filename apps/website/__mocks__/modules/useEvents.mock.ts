@@ -8,22 +8,17 @@ import {
 } from "../hooks/useEvents.mock";
 
 /**
- * Drop-in `vi.mock()` factory for `@/hooks/useImages`.
- *
- * All hooks return typed idle/empty defaults. Override individual hooks
- * per-test using `vi.mocked()`.
+ * Drop-in vi.mock factory for @/hooks/useEvents.
  *
  * @example
  * // vitest.setup.tsx. Register once globally
- * vi.mock("@/hooks/useImages", () => imageHooksMock());
+ * vi.mock("@/hooks/useEvents", () => eventHooksMock());
  *
  * // YourComponent.test.tsx. Override per test
- * import { useImagesQuery } from "@/hooks/useImages";
- * import { mockImagesLoaded, makePendingImagesForEvent } from "@test-config";
+ * import { useEventsQuery } from "@/hooks/useImages";
+ * import { mockEventsLoaded, makeEvent } from "@test-config";
  *
- * vi.mocked(useImagesQuery).mockReturnValue(
- *   mockImagesLoaded(makePendingImagesForEvent("event-1"))
- * );
+ * vi.mocked(useEventsQuery).mockReturnValue(mockEventsLoaded([makeEvent()]));
  */
 export const eventHooksMock = () => ({
   eventsKeys: {
