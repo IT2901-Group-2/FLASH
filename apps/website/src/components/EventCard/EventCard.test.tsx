@@ -90,36 +90,34 @@ describe("EventCard", () => {
   });
 
   test("renders image counters from fetched images", () => {
-    vi.mocked(useImagesQuery).mockReturnValue(
-      {
-        data: [
-          {
-            id: "img-1",
-            eventId: "id",
-            userId: "user-1",
-            isApproved: true,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            id: "img-2",
-            eventId: "id",
-            userId: "user-1",
-            isApproved: true,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-          {
-            id: "img-3",
-            eventId: "id",
-            userId: "user-2",
-            isApproved: null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-        ],
-      } as never
-    );
+    vi.mocked(useImagesQuery).mockReturnValue({
+      data: [
+        {
+          id: "img-1",
+          eventId: "id",
+          userId: "user-1",
+          isApproved: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: "img-2",
+          eventId: "id",
+          userId: "user-1",
+          isApproved: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: "img-3",
+          eventId: "id",
+          userId: "user-2",
+          isApproved: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+    } as never);
 
     const data = getMockedEvent();
 
