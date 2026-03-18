@@ -1,13 +1,6 @@
-/**
- * Mock factories for context providers used across the app.
- *
- * Usage:
- *   vi.mock("@/providers/EventAuthContext", () => eventAuthMock());
- *   vi.mock("@/providers/JoinedEventsContext", () => joinedEventsMock());
- */
 import { vi } from "vitest";
 import { makeUser } from "../factories/user.factory";
-import type { MockUser } from "../factories/user.factory";
+import { EventAuth } from "@/providers/EventAuthContext";
 
 /**
  * Returns a mock for "@/providers/EventAuthContext".
@@ -20,7 +13,7 @@ import type { MockUser } from "../factories/user.factory";
  * // Override for a specific test:
  * vi.mocked(useEventAuth).mockReturnValue(makeUser({ isModerator: true }));
  */
-export const eventAuthMock = (user: Partial<MockUser> = {}) => ({
+export const eventAuthMock = (user: Partial<EventAuth> = {}) => ({
   useEventAuth: vi.fn(() => makeUser(user)),
 });
 
