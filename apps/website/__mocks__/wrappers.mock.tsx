@@ -15,21 +15,7 @@ import { type ReactNode } from "react";
  *   wrapper: createQueryClientWrapper(),
  * });
  */
-export const createQueryClientWrapper = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: { retry: false },
-      mutations: { retry: false },
-    },
-  });
-
-  const Wrapper = ({ children }: { children: ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-  Wrapper.displayName = "TestQueryClientWrapper";
-
-  return Wrapper;
-};
+export const createQueryClientWrapper = () => createQueryClientWithWrapper().wrapper;
 
 /**
  * Creates a QueryClient + wrapper and exposes the queryClient directly.
