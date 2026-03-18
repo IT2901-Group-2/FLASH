@@ -5,8 +5,7 @@ import { useTranslations } from "next-intl";
 import styles from "./JoinEvent.module.css";
 import { Title } from "@flash/ui";
 import RememberedEvents from "@/components/RememberedEvents/RememberedEvents";
-import LanguageToggleButton from "@/components/LanguageToggleButton/LanguageToggleButton";
-import ThemeToggleButton from "@/components/ThemeToggleButton/ThemeToggleButton";
+import { LanguageToggleButton, ThemeToggleButton } from "@/components/ConfigButtons";
 
 const Page = () => {
   const t = useTranslations("app");

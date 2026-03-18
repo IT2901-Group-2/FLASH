@@ -3,7 +3,7 @@
 import { Moon, Sun } from "lucide-react";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { useTheme } from "@/hooks/useTheme";
-import styles from "./ThemeToggleButton.module.css";
+import styles from "./ConfigButtons.module.css";
 
 /**
  * Renders a button allowing users to switch between light and dark mode.
@@ -22,7 +22,7 @@ const ThemeToggleButton = () => {
     <button
       type="button"
       onClick={toggleTheme}
-      className={styles.button}
+      className={`${styles.button} ${styles.left}`}
       aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
     >
       {isDark ? (

@@ -5,7 +5,7 @@ import { Languages } from "lucide-react";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import styles from "./LanguageToggleButton.module.css";
+import styles from "./ConfigButtons.module.css";
 
 type Locale = (typeof routing.locales)[number];
 
@@ -16,7 +16,7 @@ type Locale = (typeof routing.locales)[number];
  *
  * Suitable for our current setup with only two locales, but will need to be tweaked if more locales are added in the future.
  *
- * > _Last updated: `2026-03-17`_
+ * > _Last updated: `2026-03-18`_
  */
 const LanguageToggleButton = () => {
   const [isSwitching, setIsSwitching] = useState(false);
@@ -49,7 +49,7 @@ const LanguageToggleButton = () => {
       type="button"
       onClick={handleSwitch}
       disabled={isSwitching}
-      className={styles.button}
+      className={`${styles.button} ${styles.right}`}
       aria-label={`Current language: ${currentLocale.toUpperCase()}. Switch to ${nextLocale.toUpperCase()}`}
       aria-busy={isSwitching}
     >
