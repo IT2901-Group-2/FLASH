@@ -3,9 +3,9 @@ import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 import type { CreateEvent, Event, UpdateEvent } from "@/db";
 import { makeEvent } from "../factories/event.factory";
 
-// ----------------------------
+// ---------------------------------------------------------------------------
 // Default return values
-// ----------------------------
+// ---------------------------------------------------------------------------
 
 export const defaultEventsQueryReturn = {
   data: undefined as Event[] | undefined,
@@ -48,38 +48,6 @@ export const defaultDeleteEventMutationReturn = {
   isError: false,
   reset: vi.fn(),
 } as unknown as UseMutationResult<void, Error, { eventId: string }>;
-
-// ----------------------------
-// Mock setup helpers
-// ----------------------------
-
-/**
- * Sets up all useEvents hooks with idle/empty defaults.
- * Call this inside beforeEach to get a clean slate.
- *
- * Requires the hooks module to already be mocked with vi.mock:
- * @example
- * vi.mock("@/hooks/useEvents");
- *
- * beforeEach(() => {
- *   setupEventsMocks();
- * });
- */
-export function setupEventsMocks() {
-  const {
-    useEventsQuery,
-    useCreateEventMutation,
-    useUpdateEventMutation,
-    useDeleteEventMutation,
-    useEventCodeQuery,
-  } = vi.mocked(require("@/hooks/useEvents"));
-
-  useEventsQuery?.mockReturnValue({ ...defaultEventsQueryReturn });
-  useEventCodeQuery?.mockReturnValue({ ...defaultEventCodeQueryReturn });
-  useCreateEventMutation?.mockReturnValue({ ...defaultCreateEventMutationReturn });
-  useUpdateEventMutation?.mockReturnValue({ ...defaultUpdateEventMutationReturn });
-  useDeleteEventMutation?.mockReturnValue({ ...defaultDeleteEventMutationReturn });
-}
 
 /**
  * Creates a mock return value for useEventsQuery with pre-loaded events.
