@@ -29,7 +29,7 @@ export const mockRouter = {
  * @example
  * beforeEach(() => resetMockRouter());
  */
-export function resetMockRouter() {
+export const  resetMockRouter =>() {
   mockRouter.push.mockReset();
   mockRouter.replace.mockReset();
   mockRouter.prefetch.mockReset();

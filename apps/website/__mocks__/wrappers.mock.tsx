@@ -15,7 +15,7 @@ import { type ReactNode } from "react";
  *   wrapper: createQueryClientWrapper(),
  * });
  */
-export function createQueryClientWrapper() {
+export const createQueryClientWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: { retry: false },
@@ -29,7 +29,7 @@ export function createQueryClientWrapper() {
   Wrapper.displayName = "TestQueryClientWrapper";
 
   return Wrapper;
-}
+};
 
 /**
  * Creates a QueryClient + wrapper and exposes the queryClient directly.
@@ -40,7 +40,7 @@ export function createQueryClientWrapper() {
  * const spy = vi.spyOn(queryClient, "invalidateQueries");
  * const { result } = renderHook(() => useMyMutation(), { wrapper });
  */
-export function createQueryClientWithWrapper() {
+export const createQueryClientWithWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: { retry: false },
@@ -54,7 +54,7 @@ export function createQueryClientWithWrapper() {
   wrapper.displayName = "TestQueryClientWrapper";
 
   return { wrapper, queryClient };
-}
+};
 
 /**
  * Renders a component wrapped in a QueryClientProvider.
@@ -63,9 +63,9 @@ export function createQueryClientWithWrapper() {
  * @example
  * const { getByText } = renderWithQuery(<MyPage />);
  */
-export function renderWithQuery(
+export const renderWithQuery = (
   ui: React.ReactElement,
   options?: Omit<RenderOptions, "wrapper">
-): RenderResult {
+): RenderResult => {
   return render(ui, { wrapper: createQueryClientWrapper(), ...options });
-}
+};
