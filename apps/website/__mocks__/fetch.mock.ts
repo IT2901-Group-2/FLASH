@@ -7,7 +7,7 @@ import { vi } from "vitest";
  * vi.stubGlobal("fetch", mockJsonResponse({ ok: true }));
  * vi.stubGlobal("fetch", mockJsonResponse([event1, event2]));
  */
-export function mockJsonResponse<T>(body: T, status = 200) {
+export const mockJsonResponse = <T>(body: T, status = 200) => {
   return vi.fn(
     async () =>
       new Response(JSON.stringify(body), {
@@ -15,7 +15,7 @@ export function mockJsonResponse<T>(body: T, status = 200) {
         headers: { "Content-Type": "application/json" },
       })
   ) as unknown as typeof fetch;
-}
+};
 
 /**
  * Creates a vi.fn() that resolves to a 401 Unauthorized JSON response.
@@ -24,9 +24,9 @@ export function mockJsonResponse<T>(body: T, status = 200) {
  * @example
  * vi.stubGlobal("fetch", mockUnauthorizedResponse("Token expired"));
  */
-export function mockUnauthorizedResponse(message = "Unauthorized") {
+export const mockUnauthorizedResponse = (message = "Unauthorized") => {
   return mockJsonResponse({ message }, 401);
-}
+};
 
 /**
  * Creates a vi.fn() that resolves to a 500 Internal Server Error JSON response.
@@ -34,9 +34,9 @@ export function mockUnauthorizedResponse(message = "Unauthorized") {
  * @example
  * vi.stubGlobal("fetch", mockServerErrorResponse("Database unavailable"));
  */
-export function mockServerErrorResponse(message = "Internal Server Error") {
+export const mockServerErrorResponse = (message = "Internal Server Error") => {
   return mockJsonResponse({ message }, 500);
-}
+};
 
 /**
  * Creates a vi.fn() that rejects.
@@ -45,11 +45,11 @@ export function mockServerErrorResponse(message = "Internal Server Error") {
  * @example
  * vi.stubGlobal("fetch", mockNetworkFailure());
  */
-export function mockNetworkFailure(message = "Network request failed") {
+export const mockNetworkFailure = (message = "Network request failed") => {
   return vi.fn(async () => {
     throw new Error(message);
   }) as unknown as typeof fetch;
-}
+};
 
 /**
  * Extracts the parsed JSON body from the first call to a fetch mock.
@@ -62,13 +62,13 @@ export function mockNetworkFailure(message = "Network request failed") {
  * const body = getRequestBody(fetchMock);
  * expect(body.name).toBe("Birthday Bash");
  */
-export function getRequestBody<T = Record<string, unknown>>(
+export const getRequestBody = <T = Record<string, unknown>>(
   fetchMock: ReturnType<typeof vi.fn>,
   callIndex = 0
-): T {
+): T => {
   const [, init] = fetchMock.mock.calls[callIndex] as [string, RequestInit];
   return JSON.parse(init?.body as string) as T;
-}
+};
 
 /**
  * Extracts the URL string from the nth call to a fetch mock.
@@ -76,9 +76,9 @@ export function getRequestBody<T = Record<string, unknown>>(
  * @example
  * expect(getRequestUrl(fetchMock)).toContain("/api/events/123");
  */
-export function getRequestUrl(
+export const getRequestUrl = (
   fetchMock: ReturnType<typeof vi.fn>,
   callIndex = 0
-): string {
+): string => {
   return fetchMock.mock.calls[callIndex]?.[0] as string;
-}
+};
