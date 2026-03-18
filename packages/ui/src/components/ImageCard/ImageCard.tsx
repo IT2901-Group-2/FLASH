@@ -85,16 +85,12 @@ export const ImageCard = ({
   ...rest
 }: ImageCardProps) => {
   const [src, setSrc] = useState<string>(placeholder ?? _src);
-  const handleLoaded = useCallback(() => setSrc(_src), [setSrc, _src]);
 
   useLayoutEffect(() => {
     const image = new Image();
     image.src = _src;
-    image.addEventListener("load", handleLoaded);
-    return () => {
-      image.removeEventListener("load", handleLoaded);
-    };
-  }, [_src, handleLoaded]);
+    image.addEventListener("load", () => setSrc(_src), { once: true });
+  }, [_src, setSrc]);
 
   return (
     <div
