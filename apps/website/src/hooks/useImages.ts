@@ -1,7 +1,6 @@
 import { getImageSchema, GetImagesParams, UpdateImage } from "@/db";
 import { makeRequest } from "@/lib/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { eventsKeys } from "./useEvents";
 import z from "zod";
 
 const imageArraySchema = z.array(getImageSchema);
@@ -79,10 +78,7 @@ export function useUploadImageMutation() {
     mutationFn: ({ eventId, file }: { eventId: string; file: Blob }) =>
       makeRequest(getImageSchema, `/api/events/${eventId}/images`, "POST", file),
     onSuccess: async (_data, { eventId }) => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) }),
-        queryClient.invalidateQueries({ queryKey: eventsKeys.all }),
-      ]);
+      await queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) });
     },
   });
 }
@@ -111,10 +107,7 @@ export function useUpdateImageMutation() {
         data
       ),
     onSuccess: async (_data, { eventId }) => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) }),
-        queryClient.invalidateQueries({ queryKey: eventsKeys.all }),
-      ]);
+      await queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) });
     },
   });
 }
@@ -141,10 +134,7 @@ export function useBatchUpdateImageMutation() {
         isApproved,
       }),
     onSuccess: async (_data, { eventId }) => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) }),
-        queryClient.invalidateQueries({ queryKey: eventsKeys.all }),
-      ]);
+      await queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) });
     },
   });
 }
@@ -159,10 +149,7 @@ export function useDeleteImageMutation() {
     mutationFn: ({ eventId, imageId }: { eventId: string; imageId: string }) =>
       makeRequest(getImageSchema, `/api/events/${eventId}/images/${imageId}`, "DELETE"),
     onSuccess: async (_data, { eventId }) => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) }),
-        queryClient.invalidateQueries({ queryKey: eventsKeys.all }),
-      ]);
+      await queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) });
     },
   });
 }

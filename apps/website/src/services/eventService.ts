@@ -2,7 +2,6 @@ import { DatabaseService, dbService } from "./databaseService";
 import {
   CreateEvent,
   Event,
-  GetEvent,
   EventCode,
   eventCodeTable,
   eventTable,
@@ -10,11 +9,10 @@ import {
   GetEventsParams,
   UpdateEvent,
   userTable,
-  imageTable,
 } from "@/db";
 import { AsyncResult, Result } from "typescript-result";
 import { getFirstRow } from "@/lib/utils/sql";
-import { and, eq, like, inArray, lt, lte, gte, gt, desc, asc, sql } from "drizzle-orm";
+import { and, eq, like, inArray, lt, lte, gte, gt, desc, asc } from "drizzle-orm";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { SQLiteColumn } from "drizzle-orm/sqlite-core";
 import { HTTPError } from "@/lib/utils/error";
@@ -42,7 +40,7 @@ export class EventService {
     archived,
     sortBy,
     order,
-  }: GetEventsParams = {}): AsyncResult<GetEvent[], Error> {
+  }: GetEventsParams = {}): AsyncResult<Event[], Error> {
     const now = new Date();
 
     const sortOrder = order === "descending" ? desc : asc;
@@ -58,34 +56,7 @@ export class EventService {
 
     return Result.try(() => {
       const baseQuery = this.dbService.db
-        .select({
-          id: eventTable.id,
-          name: eventTable.name,
-          description: eventTable.description,
-          startDate: eventTable.startDate,
-          endDate: eventTable.endDate,
-          uploadLimit: eventTable.uploadLimit,
-          isArchived: eventTable.isArchived,
-          createdAt: eventTable.createdAt,
-          updatedAt: eventTable.updatedAt,
-          totalPhotos: sql<number>`(
-            SELECT COUNT(*)
-            FROM ${imageTable}
-            WHERE ${imageTable.eventId} = ${eventTable.id}
-          )`.mapWith(Number),
-          approvedPhotos: sql<number>`(
-            SELECT COUNT(*)
-            FROM ${imageTable}
-            WHERE ${imageTable.eventId} = ${eventTable.id}
-              AND ${imageTable.isApproved} = 1
-          )`.mapWith(Number),
-          pendingPhotos: sql<number>`(
-            SELECT COUNT(*)
-            FROM ${imageTable}
-            WHERE ${imageTable.eventId} = ${eventTable.id}
-              AND ${imageTable.isApproved} IS NULL
-          )`.mapWith(Number),
-        })
+        .select()
         .from(eventTable)
         .where(
           and(
