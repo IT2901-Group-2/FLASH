@@ -10,6 +10,7 @@ import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
+import Image from "next/image";
 
 // Used for pilot feedback collection. Should be removed after pilot is finished
 const SURVEY_LINK = "https://nettskjema.no/a/610540";
@@ -239,6 +240,7 @@ export default function Page() {
               alt={tUpload("imageAlt", { index: index + 1, total: images.length })}
               title={tUpload("imageTitle", { index: index + 1 })}
               data-image-id={image.id}
+              placeholder={image.previewImage ?? undefined}
             />
           ))}
         </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Loader } from "../Loader/Loader";
 import styles from "./ImageCard.module.css";
 import { cl } from "@/util/helpers/";
@@ -57,6 +57,11 @@ export interface ImageCardProps extends React.HTMLAttributes<HTMLDivElement> {
    * Ref to the div element
    */
   ref?: React.Ref<HTMLDivElement>;
+
+  /*
+   * Image to display while `src` is loading.
+   */
+  placeholder?: string;
 }
 
 /**
@@ -76,8 +81,11 @@ export const ImageCard = ({
   "data-color": color = "brand-purple",
   onClick,
   ref,
+  placeholder,
   ...rest
 }: ImageCardProps) => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   return (
     <div
       data-color={color}
@@ -125,7 +133,16 @@ export const ImageCard = ({
           </div>
         )}
         {state === "pending" && <div className={styles.pendingOverlay}></div>}
-        <img src={src} alt={alt} className={styles.image} />
+        {placeholder !== undefined && (
+          <img src={placeholder} alt={alt} className={styles.image} hidden={!isLoading} />
+        )}
+        <img
+          src={src}
+          alt={alt}
+          className={styles.image}
+          hidden={isLoading}
+          onLoad={() => setIsLoading(false)}
+        />
         {variant === "preview2" && state === "selected" && (
           <div className={styles.moderateCheckBadge} aria-hidden="true">
             <CircleCheckBig aria-hidden="true" />
