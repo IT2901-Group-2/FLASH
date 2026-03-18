@@ -16,6 +16,7 @@ const mockImage: Image = {
   eventId: "event-id",
   createdAt: new Date(),
   updatedAt: new Date(),
+  previewImage: null,
   isApproved: true,
 };
 
