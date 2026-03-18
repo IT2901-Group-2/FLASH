@@ -10,8 +10,9 @@ import { vi } from "vitest";
  * `data-testid` attributes and wire up the same props your real components
  * accept, so existing assertions keep working without any changes.
  *
- * The mock is registered globally in `vitest.setup.tsx` — you never need to
+ * The mock is registered globally in `vitest.setup.tsx` you never need to
  * call `vi.mock("@flash/ui")` in a test file yourself.
+ *
  *
  * @example
  * // The factory is already called for you in vitest.setup.tsx:

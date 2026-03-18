@@ -39,7 +39,8 @@ export function mockServerErrorResponse(message = "Internal Server Error") {
 }
 
 /**
- * Creates a vi.fn() that rejects — simulates a network failure (no response at all).
+ * Creates a vi.fn() that rejects.
+ * Simulates a network failure.
  *
  * @example
  * vi.stubGlobal("fetch", mockNetworkFailure());

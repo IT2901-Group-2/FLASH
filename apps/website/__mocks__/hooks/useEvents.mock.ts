@@ -103,7 +103,9 @@ export function mockEventsLoaded(events: Event[]): UseQueryResult<Event[]> {
 }
 
 /**
- * Loading `useEventsQuery` result — `data` is undefined, `isLoading` is true.
+ * Loading `useEventsQuery` result.
+ *
+ * `data` is undefined, `isLoading` is true.
  * @example
  * vi.mocked(useEventsQuery).mockReturnValue(mockEventsLoading());
  */
@@ -112,7 +114,9 @@ export function mockEventsLoading(): UseQueryResult<Event[]> {
 }
 
 /**
- * Failed `useEventsQuery` result — `isError` is true, `data` is undefined.
+ * Failed `useEventsQuery` result.
+ *
+ * `isError` is true, `data` is undefined.
  * @param error - Defaults to a generic load failure message.
  * @example
  * vi.mocked(useEventsQuery).mockReturnValue(mockEventsError(new Error("500")));

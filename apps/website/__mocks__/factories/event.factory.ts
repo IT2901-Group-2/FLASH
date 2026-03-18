@@ -56,7 +56,10 @@ export function makeUpdateEvent(overrides: Partial<UpdateEvent> = {}): UpdateEve
   };
 }
 
-/** Resets the internal ID counter — call in beforeEach if ID stability matters. */
+/**
+ * Resets the internal ID counter.
+ * Call in beforeEach if ID stability matters.
+ */
 export function resetEventCounter() {
   _counter = 1;
 }

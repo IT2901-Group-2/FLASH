@@ -111,7 +111,9 @@ export function mockImagesLoaded(images: Image[]): UseQueryResult<Image[]> {
 }
 
 /**
- * Loading `useImagesQuery` result — `data` is undefined, `isLoading` is true.
+ * Loading `useImagesQuery` result.
+ *
+ * `data` is undefined, `isLoading` is true.
  * @example
  * vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoading());
  */
@@ -120,7 +122,8 @@ export function mockImagesLoading(): UseQueryResult<Image[]> {
 }
 
 /**
- * Failed `useImagesQuery` result — `isError` is true, `data` is undefined.
+ * Failed `useImagesQuery` result.
+ * `isError` is true, `data` is undefined.
  * @param error - Defaults to a generic load failure message.
  * @example
  * vi.mocked(useImagesQuery).mockReturnValue(mockImagesError(new Error("403 Forbidden")));
@@ -138,7 +141,7 @@ export function mockImagesError(
 
 /**
  * Creates `count` pending images for the same event. Covers the standard moderation `beforeEach`.
- * Use `image.id` in assertions rather than hard-coding IDs — the factory counter can shift.
+ * Use `image.id` in assertions rather than hard-coding IDs. The factory counter can shift.
  * @param eventId - Defaults to `"event-1"`.
  * @param count   - Defaults to `3`.
  * @example

@@ -14,10 +14,10 @@ import {
  * per-test using `vi.mocked()`.
  *
  * @example
- * // vitest.setup.tsx — register once globally
+ * // vitest.setup.tsx. Register once globally
  * vi.mock("@/hooks/useImages", () => imageHooksMock());
  *
- * // YourComponent.test.tsx — override per test
+ * // YourComponent.test.tsx. Override per test
  * import { useImagesQuery } from "@/hooks/useImages";
  * import { mockImagesLoaded, makePendingImagesForEvent } from "@test-config";
  *
