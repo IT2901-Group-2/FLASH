@@ -16,17 +16,16 @@ const ThemeToggleButton = () => {
   const { resolvedTheme, toggleTheme } = useTheme();
   const mounted = useIsMounted();
 
-  const nextTheme = mounted ? (resolvedTheme === "light" ? "dark" : "light") : "dark";
-  const showSunIcon = mounted ? resolvedTheme === "dark" : false;
+  const isDark = mounted && resolvedTheme === "dark";
 
   return (
     <button
       type="button"
       onClick={toggleTheme}
       className={styles.button}
-      aria-label={`Switch theme to ${nextTheme.toUpperCase()}`}
+      aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
     >
-      {showSunIcon ? (
+      {isDark ? (
         <Sun size={16} aria-hidden="true" />
       ) : (
         <Moon size={16} aria-hidden="true" />

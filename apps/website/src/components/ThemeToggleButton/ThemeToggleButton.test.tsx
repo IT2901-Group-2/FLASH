@@ -31,7 +31,7 @@ describe("ThemeToggleButton", () => {
     const { container } = render(<ThemeToggleButton />);
 
     expect(
-      screen.getByRole("button", { name: "Switch theme to DARK" })
+      screen.getByRole("button", { name: "Switch to dark mode" })
     ).toBeInTheDocument();
     expect(container.querySelector(".lucide-moon")).toBeInTheDocument();
     expect(container.querySelector(".lucide-sun")).not.toBeInTheDocument();
@@ -47,7 +47,7 @@ describe("ThemeToggleButton", () => {
     const { container } = render(<ThemeToggleButton />);
 
     expect(
-      screen.getByRole("button", { name: "Switch theme to DARK" })
+      screen.getByRole("button", { name: "Switch to dark mode" })
     ).toBeInTheDocument();
     expect(container.querySelector(".lucide-moon")).toBeInTheDocument();
   });
@@ -62,7 +62,7 @@ describe("ThemeToggleButton", () => {
     const { container } = render(<ThemeToggleButton />);
 
     expect(
-      screen.getByRole("button", { name: "Switch theme to LIGHT" })
+      screen.getByRole("button", { name: "Switch to light mode" })
     ).toBeInTheDocument();
     expect(container.querySelector(".lucide-sun")).toBeInTheDocument();
   });
@@ -79,7 +79,7 @@ describe("ThemeToggleButton", () => {
 
     render(<ThemeToggleButton />);
 
-    await user.click(screen.getByRole("button", { name: "Switch theme to DARK" }));
+    await user.click(screen.getByRole("button", { name: "Switch to dark mode" }));
 
     expect(toggleTheme).toHaveBeenCalledTimes(1);
   });
