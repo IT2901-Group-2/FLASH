@@ -10,7 +10,8 @@ import { makeUser } from "../factories/user.factory";
 import type { MockUser } from "../factories/user.factory";
 
 /**
- * Returns a mock for @/providers/EventAuthContext.
+ * Returns a mock for "@/providers/EventAuthContext".
+ *
  * Default: authenticated, non-moderator user.
  *
  * @example
@@ -24,7 +25,8 @@ export const eventAuthMock = (user: Partial<MockUser> = {}) => ({
 });
 
 /**
- * Returns a mock for @/providers/JoinedEventsContext.
+ * Returns a mock for "@/providers/JoinedEventsContext".
+ *
  * Default: empty joined events array.
  *
  * @example
