@@ -18,7 +18,7 @@ export type MockAuthState = {
  * @example
  * const user = makeUser({ nickname: "alice", isModerator: true });
  */
-export function makeUser(overrides: Partial<MockUser> = {}): MockUser {
+export const makeUser = (overrides: Partial<MockUser> = {}): MockUser => {
   return {
     id: nextId(),
     nickname: "test-user",
@@ -26,21 +26,21 @@ export function makeUser(overrides: Partial<MockUser> = {}): MockUser {
     isModerator: false,
     ...overrides,
   };
-}
+};
 
 /**
  * Creates a moderator user.
  */
-export function makeModerator(overrides: Partial<MockUser> = {}): MockUser {
+export const makeModerator = (overrides: Partial<MockUser> = {}): MockUser => {
   return makeUser({ nickname: "moderator", isModerator: true, ...overrides });
-}
+};
 
 /**
  * Creates an unauthenticated guest user.
  */
-export function makeGuest(overrides: Partial<MockUser> = {}): MockUser {
+export const makeGuest = (overrides: Partial<MockUser> = {}): MockUser => {
   return makeUser({ isAuthenticated: false, isModerator: false, ...overrides });
-}
+};
 
 /**
  * Creates a mock auth response body (used for useAuth hook tests).
@@ -48,14 +48,14 @@ export function makeGuest(overrides: Partial<MockUser> = {}): MockUser {
  * @example
  * const auth = makeAuthState();  // { ok: true }
  */
-export function makeAuthState(overrides: Partial<MockAuthState> = {}): MockAuthState {
+export const makeAuthState = (overrides: Partial<MockAuthState> = {}): MockAuthState => {
   return { ok: true, ...overrides };
-}
+};
 
 /**
  * Resets the internal ID counter.
  * Call in beforeEach if ID stability matters.
  */
-export function resetUserCounter() {
+export const resetUserCounter = () => {
   _counter = 1;
-}
+};
