@@ -9,7 +9,7 @@
   width: 100%;
   max-width: calc(100% - 2rem);
 }
-.card{
+.card {
   min-width: 0;
   width: 100%;
 }

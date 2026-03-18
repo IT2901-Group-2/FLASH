@@ -9,8 +9,7 @@
   width: 100%;
 }
 
-
-.wrapper{
+.wrapper {
   width: clamp(20rem, 50vw, 27rem);
   display: flex;
   flex-direction: column;

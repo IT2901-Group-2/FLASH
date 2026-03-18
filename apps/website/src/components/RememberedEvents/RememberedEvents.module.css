@@ -13,7 +13,7 @@
   gap: 1rem;
 }
 
-.content{
+.content {
   min-width: 0;
   flex: 1 1 0;
 }
@@ -26,7 +26,6 @@
   align-items: center;
   min-width: 0;
   overflow: hidden;
-
 
   &:hover {
     background-color: var(--bg-default);
