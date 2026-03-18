@@ -24,11 +24,6 @@ import { vi } from "vitest";
  *   ...flashUiMock(),
  *   ImageCard: vi.fn(({ title }) => <div data-testid="image-card">{title}</div>),
  * }));
- *
- * ---
- *
- * @function flashUiMock
- * @returns {object} An object whose keys match the named exports of `@flash/ui`.
  */
 export const flashUiMock = () => ({
   Button: vi.fn(
