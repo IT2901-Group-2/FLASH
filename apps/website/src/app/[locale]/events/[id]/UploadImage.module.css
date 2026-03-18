@@ -78,7 +78,7 @@
   padding: 1em 0.3em calc(12rem + env(safe-area-inset-bottom));
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
   .mobileOnly {
     display: none;
   }
@@ -89,7 +89,7 @@
   }
 }
 
-@media screen and (max-width: 768px) {
+@media (width < 768px) {
   .desktopOnly {
     display: none !important;
   }
