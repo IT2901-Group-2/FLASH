@@ -4,13 +4,14 @@ import { Title } from "@flash/ui";
 import styles from "./AdminLogin.module.css";
 import CameraIcon from "@/components/Logo/Logo";
 import { useTranslations } from "next-intl";
-import LanguageToggleButton from "@/components/LanguageToggleButton/LanguageToggleButton";
+import { LanguageToggleButton, ThemeToggleButton } from "@/components/ConfigButtons";
 
 export default function Page() {
   const t = useTranslations("pages.adminLogin");
   return (
     <div className={styles.pageWrapper}>
       <LanguageToggleButton />
+      <ThemeToggleButton />
       <CameraIcon />
       <Title
         data-testid="title"

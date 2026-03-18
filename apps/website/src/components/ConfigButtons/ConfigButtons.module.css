@@ -1,7 +1,6 @@
 .button {
   position: absolute;
   top: 2rem;
-  right: 2rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -33,6 +32,14 @@
     outline: 2px solid var(--border-focus);
     outline-offset: 2px;
   }
+}
+
+.left {
+  left: 2rem;
+}
+
+.right {
+  right: 2rem;
 }
 
 @media (max-width: 768px) {
