@@ -17,8 +17,10 @@ const Page = () => {
       <Title align="center" size="large" as="h1" description={t("description")}>
         {t("name")}
       </Title>
-      <JoinEventCard />
-      <RememberedEvents />
+      <div className={styles.wrapper}>
+        <JoinEventCard />
+        <RememberedEvents />
+      </div>
     </div>
   );
 };
