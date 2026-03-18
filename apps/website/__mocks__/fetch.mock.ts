@@ -52,7 +52,7 @@ export const mockNetworkFailure = (message = "Network request failed") => {
 };
 
 /**
- * Extracts the parsed JSON body from the first call to a fetch mock.
+ * Extracts the parsed JSON body from the nth call to a fetch mock.
  * Useful for asserting on request payloads.
  *
  * @example
