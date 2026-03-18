@@ -16,7 +16,6 @@
   display: flex;
   gap: 1rem;
   min-width: 0;
-  overflow: hidden;
   width: 100%;
 }
 
@@ -47,7 +46,6 @@
 }
 
 .card {
-  background-color: red;
   display: flex;
   justify-content: end;
   flex-direction: column;
