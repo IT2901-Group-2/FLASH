@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useLayoutEffect, useState } from "react";
 import { Loader } from "../Loader/Loader";
 import styles from "./ImageCard.module.css";
 import { cl } from "@/util/helpers/";
@@ -72,7 +72,7 @@ export interface ImageCardProps extends React.HTMLAttributes<HTMLDivElement> {
  */
 export const ImageCard = ({
   variant = "primary",
-  src,
+  src: _src,
   alt,
   title,
   size = "medium",
@@ -84,7 +84,17 @@ export const ImageCard = ({
   placeholder,
   ...rest
 }: ImageCardProps) => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [src, setSrc] = useState<string>(placeholder ?? _src);
+  const handleLoaded = useCallback(() => setSrc(_src), [setSrc, _src]);
+
+  useLayoutEffect(() => {
+    const image = new Image();
+    image.src = _src;
+    image.addEventListener("load", handleLoaded);
+    return () => {
+      image.removeEventListener("load", handleLoaded);
+    };
+  }, [_src, handleLoaded]);
 
   return (
     <div
@@ -133,16 +143,7 @@ export const ImageCard = ({
           </div>
         )}
         {state === "pending" && <div className={styles.pendingOverlay}></div>}
-        {placeholder !== undefined && (
-          <img src={placeholder} alt={alt} className={styles.image} hidden={!isLoading} />
-        )}
-        <img
-          src={src}
-          alt={alt}
-          className={styles.image}
-          hidden={isLoading}
-          onLoad={() => setIsLoading(false)}
-        />
+        <img src={src} alt={alt} className={styles.image} />
         {variant === "preview2" && state === "selected" && (
           <div className={styles.moderateCheckBadge} aria-hidden="true">
             <CircleCheckBig aria-hidden="true" />
