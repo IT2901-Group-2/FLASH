@@ -14,7 +14,7 @@ const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
   const navigation = useRouter();
   return (
     <Card onClick={() => navigation.push(`/events/${id}`)} className={styles.linkcard}>
-      <div>
+      <div className={styles.content}>
         <Title size="small">{name}</Title>
         <span>
           {uploadLimit ?? c("values.unlimited")} {c("values.photos")}
