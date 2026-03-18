@@ -7,6 +7,8 @@ export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
     environment: "jsdom",
+    clearMocks: true,
+    restoreMocks: true,
     setupFiles: ["@testing-library/jest-dom/vitest", "./vitest.setup.tsx"],
     coverage: {
       provider: "istanbul",
