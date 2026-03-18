@@ -101,6 +101,7 @@ export default function Page() {
   });
 
   const { openFilePicker, FileInput } = useFileUpload({
+    multiple: false,
     onFilesSelected: async files => {
       if (!eventId) {
         setUploadError(tUpload("errors.uploadUnavailable"));
