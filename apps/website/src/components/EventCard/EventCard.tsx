@@ -73,10 +73,12 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
             </span>
           </div>
           <div className={cl(styles.column, styles.soft)}>
-            {t("summary.approved")} <span data-testid="event-approved-photos">{approvedPhotos}</span>
+            {t("summary.approved")}{" "}
+            <span data-testid="event-approved-photos">{approvedPhotos}</span>
           </div>
           <div className={cl(styles.column, styles.soft)}>
-            {t("summary.pending")} <span data-testid="event-pending-photos">{pendingPhotos}</span>
+            {t("summary.pending")}{" "}
+            <span data-testid="event-pending-photos">{pendingPhotos}</span>
           </div>
         </div>
         <div className={cl(styles.row, styles.footer)}>
