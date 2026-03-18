@@ -106,9 +106,9 @@ export const defaultDeleteImageMutationReturn = {
  *   vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoaded(makePendingImagesForEvent("event-1")));
  * });
  */
-export function mockImagesLoaded(images: Image[]): UseQueryResult<Image[]> {
+export const mockImagesLoaded = (images: Image[]): UseQueryResult<Image[]> => {
   return { data: images, isLoading: false, isError: false } as UseQueryResult<Image[]>;
-}
+};
 
 /**
  * Loading `useImagesQuery` result.
@@ -117,9 +117,9 @@ export function mockImagesLoaded(images: Image[]): UseQueryResult<Image[]> {
  * @example
  * vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoading());
  */
-export function mockImagesLoading(): UseQueryResult<Image[]> {
+export const mockImagesLoading = (): UseQueryResult<Image[]> => {
   return { data: undefined, isLoading: true, isError: false } as UseQueryResult<Image[]>;
-}
+};
 
 /**
  * Failed `useImagesQuery` result.
@@ -128,16 +128,16 @@ export function mockImagesLoading(): UseQueryResult<Image[]> {
  * @example
  * vi.mocked(useImagesQuery).mockReturnValue(mockImagesError(new Error("403 Forbidden")));
  */
-export function mockImagesError(
+export const mockImagesError = (
   error = new Error("Failed to load images")
-): UseQueryResult<Image[]> {
+): UseQueryResult<Image[]> => {
   return {
     data: undefined,
     isLoading: false,
     isError: true,
     error,
   } as unknown as UseQueryResult<Image[]>;
-}
+};
 
 /**
  * Creates `count` pending images for the same event. Covers the standard moderation `beforeEach`.
@@ -149,6 +149,6 @@ export function mockImagesError(
  * beforeEach(() => { vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoaded(IMAGES)); });
  * fireEvent.click(screen.getByTestId(`image-card-${IMAGES[0].id}`));
  */
-export function makePendingImagesForEvent(eventId = "event-1", count = 3): Image[] {
+export const makePendingImagesForEvent = (eventId = "event-1", count = 3): Image[] => {
   return makeImages(count, { eventId, isApproved: null });
-}
+};
