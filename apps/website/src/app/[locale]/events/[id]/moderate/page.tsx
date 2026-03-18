@@ -128,6 +128,7 @@ export default function ModeratePage() {
                 state={selectMode && selectedIds.has(image.id) ? "selected" : "default"}
                 onClick={() => handleImageClick(image.id)}
                 data-image-id={image.id}
+                placeholder={image.previewImage ?? undefined}
               />
             ))}
           </div>
