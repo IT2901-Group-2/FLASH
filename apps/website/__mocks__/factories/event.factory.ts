@@ -9,7 +9,7 @@ const nextId = () => `event-${_counter++}`;
  * @example
  * const event = makeEvent({ name: "Birthday Bash", uploadLimit: 10 });
  */
-export function makeEvent(overrides: Partial<Event> = {}): Event {
+export const makeEvent = (overrides: Partial<Event> = {}): Event => {
   return {
     id: nextId(),
     name: "Test Event",
@@ -22,7 +22,7 @@ export function makeEvent(overrides: Partial<Event> = {}): Event {
     updatedAt: new Date(),
     ...overrides,
   };
-}
+};
 
 /**
  * Creates a CreateEvent input payload.
@@ -30,7 +30,7 @@ export function makeEvent(overrides: Partial<Event> = {}): Event {
  * @example
  * const payload = makeCreateEvent({ name: "Launch Party" });
  */
-export function makeCreateEvent(overrides: Partial<CreateEvent> = {}): CreateEvent {
+export const makeCreateEvent = (overrides: Partial<CreateEvent> = {}): CreateEvent => {
   return {
     name: "New Test Event",
     description: "",
@@ -39,7 +39,7 @@ export function makeCreateEvent(overrides: Partial<CreateEvent> = {}): CreateEve
     uploadLimit: 5,
     ...overrides,
   };
-}
+};
 
 /**
  * Creates an UpdateEvent patch payload.
@@ -47,19 +47,19 @@ export function makeCreateEvent(overrides: Partial<CreateEvent> = {}): CreateEve
  * @example
  * const patch = makeUpdateEvent({ name: "Renamed Event" });
  */
-export function makeUpdateEvent(overrides: Partial<UpdateEvent> = {}): UpdateEvent {
+export const makeUpdateEvent = (overrides: Partial<UpdateEvent> = {}): UpdateEvent => {
   return {
     name: "Updated Event",
     description: "Updated description",
     uploadLimit: 10,
     ...overrides,
   };
-}
+};
 
 /**
  * Resets the internal ID counter.
  * Call in beforeEach if ID stability matters.
  */
-export function resetEventCounter() {
+export const resetEventCounter = () => {
   _counter = 1;
-}
+};
