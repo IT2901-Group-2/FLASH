@@ -3,10 +3,14 @@ import {
   applyTheme,
   getStoredTheme,
   getSystemTheme,
+  isResolvedTheme,
+  isTheme,
   setStoredTheme,
-  systemThemeListner,
+  systemThemeListener,
+  THEME_PREFERENCE_COOKIE_KEY,
+  THEME_RESOLVED_COOKIE_KEY,
+  THEME_STORAGE_KEY,
 } from "./theme-utils";
-import { THEME_STORAGE_KEY } from "@/providers/ThemeProvider";
 
 describe("getSystemTheme", () => {
   it("should return 'dark' when system prefers dark mode", () => {
@@ -112,6 +116,12 @@ describe("getStoredTheme", () => {
     expect(result).toBeNull();
   });
 
+  it("should return null when an invalid value is stored", () => {
+    localStorage.setItem(THEME_STORAGE_KEY, "invalid-theme");
+    const result = getStoredTheme();
+    expect(result).toBeNull();
+  });
+
   it("should return null when window is undefined", () => {
     const originalWindow = global.window;
     // @ts-expect-error - intentionally setting to undefined for SSR test
@@ -123,9 +133,38 @@ describe("getStoredTheme", () => {
   });
 });
 
+describe("isTheme", () => {
+  it("should return true for valid theme values", () => {
+    expect(isTheme("light")).toBe(true);
+    expect(isTheme("dark")).toBe(true);
+    expect(isTheme("system")).toBe(true);
+  });
+
+  it("should return false for invalid values", () => {
+    expect(isTheme("invalid")).toBe(false);
+    expect(isTheme(null)).toBe(false);
+    expect(isTheme(undefined)).toBe(false);
+  });
+});
+
+describe("isResolvedTheme", () => {
+  it("should return true for valid resolved theme values", () => {
+    expect(isResolvedTheme("light")).toBe(true);
+    expect(isResolvedTheme("dark")).toBe(true);
+  });
+
+  it("should return false for invalid values", () => {
+    expect(isResolvedTheme("system")).toBe(false);
+    expect(isResolvedTheme("invalid")).toBe(false);
+    expect(isResolvedTheme(null)).toBe(false);
+  });
+});
+
 describe("setStoredTheme", () => {
   beforeEach(() => {
     localStorage.clear();
+    document.cookie = `${THEME_PREFERENCE_COOKIE_KEY}=; Max-Age=0; Path=/`;
+    document.cookie = `${THEME_RESOLVED_COOKIE_KEY}=; Max-Age=0; Path=/`;
   });
 
   it("should store 'light' theme in localStorage", () => {
@@ -148,9 +187,16 @@ describe("setStoredTheme", () => {
     setStoredTheme("dark");
     expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("dark");
   });
+
+  it("should persist preference and resolved theme cookies", () => {
+    setStoredTheme("dark", "dark");
+
+    expect(document.cookie).toContain(`${THEME_PREFERENCE_COOKIE_KEY}=dark`);
+    expect(document.cookie).toContain(`${THEME_RESOLVED_COOKIE_KEY}=dark`);
+  });
 });
 
-describe("systemThemeListner", () => {
+describe("systemThemeListener", () => {
   let mockMediaQuery: {
     matches: boolean;
     addEventListener: ReturnType<typeof vi.fn>;
@@ -175,7 +221,7 @@ describe("systemThemeListner", () => {
   });
 
   it("should register event listener when theme is 'system'", () => {
-    const cleanup = systemThemeListner("system");
+    const cleanup = systemThemeListener("system");
 
     expect(mockMatchMedia).toHaveBeenCalledWith("(prefers-color-scheme: dark)");
     expect(mockMediaQuery.addEventListener).toHaveBeenCalledWith(
@@ -187,7 +233,7 @@ describe("systemThemeListner", () => {
   });
 
   it("should not register event listener when theme is 'light'", () => {
-    const cleanup = systemThemeListner("light");
+    const cleanup = systemThemeListener("light");
 
     expect(mockMatchMedia).not.toHaveBeenCalled();
     expect(mockMediaQuery.addEventListener).not.toHaveBeenCalled();
@@ -196,7 +242,7 @@ describe("systemThemeListner", () => {
   });
 
   it("should not register event listener when theme is 'dark'", () => {
-    const cleanup = systemThemeListner("dark");
+    const cleanup = systemThemeListener("dark");
 
     expect(mockMatchMedia).not.toHaveBeenCalled();
     expect(mockMediaQuery.addEventListener).not.toHaveBeenCalled();
@@ -205,17 +251,20 @@ describe("systemThemeListner", () => {
   });
 
   it("should apply theme when system preference changes", () => {
-    systemThemeListner("system");
+    systemThemeListener("system");
 
-    const handler = mockMediaQuery.addEventListener.mock.calls[0][1];
+    const handler = mockMediaQuery.addEventListener.mock.calls[0]?.[1] as
+      | (() => void)
+      | undefined;
+    expect(handler).toBeDefined();
     mockMediaQuery.matches = true;
-    handler();
+    handler?.();
 
     expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
   });
 
   it("should remove event listener when cleanup function is called", () => {
-    const cleanup = systemThemeListner("system");
+    const cleanup = systemThemeListener("system");
 
     expect(mockMediaQuery.addEventListener).toHaveBeenCalled();
 
@@ -228,7 +277,7 @@ describe("systemThemeListner", () => {
   });
 
   it("should return no-op cleanup function when theme is not 'system'", () => {
-    const cleanup = systemThemeListner("light");
+    const cleanup = systemThemeListener("light");
 
     // Should not throw
     expect(() => cleanup()).not.toThrow();
@@ -236,8 +285,8 @@ describe("systemThemeListner", () => {
   });
 
   it("should handle multiple listener registrations and cleanups", () => {
-    const cleanup1 = systemThemeListner("system");
-    const cleanup2 = systemThemeListner("system");
+    const cleanup1 = systemThemeListener("system");
+    const cleanup2 = systemThemeListener("system");
 
     expect(mockMediaQuery.addEventListener).toHaveBeenCalledTimes(2);
 

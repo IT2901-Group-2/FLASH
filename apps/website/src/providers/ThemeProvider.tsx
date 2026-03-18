@@ -3,16 +3,20 @@
 import {
   applyTheme,
   getStoredTheme,
-  getSystemTheme,
+  resolveThemePreference,
   setStoredTheme,
-  systemThemeListner,
+  systemThemeListener,
+  type ResolvedTheme,
+  type Theme,
 } from "@/lib/theme-utils";
-import { createContext, useEffect, useMemo, useState } from "react";
-
-export const THEME_STORAGE_KEY = "theme";
-
-export type ResolvedTheme = "light" | "dark";
-export type Theme = "system" | ResolvedTheme;
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 export interface ThemeContextType {
   /**
@@ -37,8 +41,25 @@ export interface ThemeContextType {
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+/**
+ * Consume the theme context. Must be used inside a {@link ThemeProvider}.
+ *
+ * @throws {Error} When called outside of a ThemeProvider tree.
+ */
+export const useTheme = (): ThemeContextType => {
+  const ctx = useContext(ThemeContext);
+  if (ctx === undefined) {
+    throw new Error("useTheme must be used within a ThemeProvider");
+  }
+  return ctx;
+};
+
 interface ThemeProviderProps {
   children: React.ReactNode;
+  /**
+   * Theme to use before a stored preference is found.
+   * Only read on initial mount - changes to this prop after mount are ignored.
+   */
   defaultTheme?: Theme;
 }
 
@@ -46,7 +67,7 @@ interface ThemeProviderProps {
  * ## ThemeProvider
  *
  * Wrap your application with this provider to expose theme state and helpers.
- * It integrates with `localStorage` (via {@link THEME_STORAGE_KEY}) and listens to
+ * It integrates with `localStorage` and listens to
  * the OS color-scheme changes when the saved preference is `"system"`.
  *
  * Behaviour details:
@@ -55,7 +76,7 @@ interface ThemeProviderProps {
  * (via {@link getSystemTheme}) is used, otherwise the explicit value is used.
  * - When `theme` changes the provider:
  *   1. Applies the resolved theme to the document using {@link applyTheme}.
- *   2. Persists the selected preference using {@link setStoredTheme}.
+ *   2. Persists the selected preference and resolved value using {@link setStoredTheme}.
  * - When `theme === "system"` a system listener is registered to re-apply the
  * resolved theme when the OS preference changes.
  */
@@ -63,33 +84,57 @@ export const ThemeProvider = ({
   children,
   defaultTheme = "system",
 }: ThemeProviderProps) => {
-  const [theme, setTheme] = useState<Theme>(getStoredTheme() ?? defaultTheme);
-
-  const resolvedTheme = useMemo<ResolvedTheme>(() => {
-    return theme === "system" ? getSystemTheme() : theme;
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme(prev => {
-      const effective = prev === "system" ? getSystemTheme() : prev;
-      return effective === "dark" ? "light" : "dark";
-    });
-  };
-
+  const [theme, setThemeState] = useState<Theme>(defaultTheme);
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(
+    () => resolveThemePreference(defaultTheme),
+  );
+ 
+  const defaultThemeRef = useRef(defaultTheme);
+ 
   useEffect(() => {
-    if (theme === "system") applyTheme(getSystemTheme());
-    else applyTheme(theme);
-    setStoredTheme(theme);
-  }, [theme]);
-
+    const stored = getStoredTheme() ?? defaultThemeRef.current;
+    const resolved = resolveThemePreference(stored);
+    setThemeState(stored);
+    setResolvedTheme(resolved);
+    applyTheme(resolved);
+  }, []);
+ 
+  const setTheme = useCallback((next: Theme) => {
+    const resolved = resolveThemePreference(next);
+    applyTheme(resolved);
+    setStoredTheme(next, resolved);
+    setThemeState(next);
+    setResolvedTheme(resolved);
+  }, []);
+ 
+  const toggleTheme = useCallback(() => {
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  }, [setTheme, resolvedTheme]);
+ 
   useEffect(() => {
-    return systemThemeListner(theme);
+    if (theme !== "system") return;
+ 
+    const cleanup = systemThemeListener(theme);
+ 
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = () => {
+      const resolved = resolveThemePreference("system");
+      setResolvedTheme(resolved);
+    };
+ 
+    mediaQuery.addEventListener("change", handleChange);
+ 
+    return () => {
+      cleanup();
+      mediaQuery.removeEventListener("change", handleChange);
+    };
   }, [theme]);
-
+ 
   return (
     <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
 };
+ 
 export default ThemeProvider;
