@@ -51,12 +51,21 @@ export function getEventCookie(
  * @returns An empty result or an error.
  */
 export function setEventCookie(
-  { eventId, id: userId, name, isModerator }: User,
+  {
+    eventId,
+    id: userId,
+    name,
+    isModerator,
+  }: Pick<User, "eventId" | "id" | "name" | "isModerator">,
   secret: string
 ): AsyncResult<void, Error> {
   return Result.try(cookies).map(cs =>
     Result.try(() => jwt.sign({ eventId, userId, name, isModerator }, secret)).map(c => {
-      cs.set(`event-${eventId}`, c, { secure: true, maxAge: 10 * 24 * 60 * 60 });
+      cs.set(`event-${eventId}`, c, {
+        secure: process.env.NODE_ENV === "production",
+        httpOnly: true,
+        maxAge: 10 * 24 * 60 * 60,
+      });
     })
   );
 }

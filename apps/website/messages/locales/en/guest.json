@@ -14,7 +14,7 @@
         }
       },
       "scanQr": {
-        "description": "Use your camera to scan the event QR code"
+        "description": "Open your camera to scan the event QR code"
       },
       "links": {
         "adminAccessPrefix": "Not a guest? Administer events as an"
@@ -24,7 +24,8 @@
         "invalidEventCode": "Invalid event code. Please try again.",
         "missingNickname": "Please enter a nickname.",
         "nicknameTaken": "Nickname is already taken.",
-        "joinFailed": "Unable to join event. Please try again."
+        "joinFailed": "Unable to join event. Please try again.",
+        "invalidQr": "Not a valid QR code. Plase try again."
       },
       "nickname": {
         "title": "Welcome to",
@@ -94,6 +95,12 @@
       "errors": {
         "uploadUnavailable": "Unable to upload images for this event.",
         "uploadPartialFailure": "One or more images failed to upload. Please try again."
+      },
+      "survey": {
+        "title": "Thanks for uploading photos!",
+        "descriptionLead": "Would you share your feedback with us?",
+        "descriptionDetails": "We are a student bachelor project at NTNU that would love to hear your thoughts on the experience of the application.",
+        "cta": "Go to survey"
       }
     }
   }

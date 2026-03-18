@@ -10,6 +10,8 @@ import {
   getJoinCode,
   getEventByCode,
 } from "@/lib/utils/proxy";
+import { setEventCookie } from "./lib/utils/eventCookie";
+import { ADMIN_ID, JWT_SECRET } from "./config";
 
 const handleI18nRouting = createMiddleware(routing);
 
@@ -28,7 +30,19 @@ function isProtected(req: NextRequest): boolean {
 
 export default async function proxy(request: NextRequest): Promise<NextResponse> {
   if (isEventRoute(request)) {
-    const isAuthenticated = await checkEventCookie(getEventId(request));
+    const eventId = getEventId(request);
+    const isAdmin = await verifyAccessToken()
+      .then(() => true)
+      .catch(() => false);
+
+    if (isAdmin) {
+      await setEventCookie(
+        { eventId, id: `${ADMIN_ID}-${eventId}`, name: "Admin", isModerator: true },
+        JWT_SECRET
+      ).getOrThrow();
+    }
+
+    const isAuthenticated = await checkEventCookie(eventId);
     if (!isAuthenticated) {
       return NextResponse.redirect(new URL(`/`, request.url));
     }
@@ -42,6 +56,16 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
       return new NextResponse(`Event with join code ${code} does not exist.`, {
         status: 404,
       });
+    }
+
+    const isAdmin = await verifyAccessToken()
+      .then(() => true)
+      .catch(() => false);
+    if (isAdmin) {
+      await setEventCookie(
+        { eventId, id: `${ADMIN_ID}-${eventId}`, name: "Admin", isModerator: true },
+        JWT_SECRET
+      ).getOrThrow();
     }
 
     const isAuthenticated = await checkEventCookie(eventId);

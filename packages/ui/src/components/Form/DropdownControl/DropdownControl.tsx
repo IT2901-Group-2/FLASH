@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import styles from "./DropdownControl.module.css";
-import { cl } from "@/util/helpers";
+import formStyles from "../Form.module.css";
+import { cl, omit } from "@/util/helpers";
 import { SegmentedControl, SegmentedControlProps } from "../SegmentedControl";
 import DropdownControlItem, { DropdownControlItemProps } from "./DropdownControl.Item";
+import { useFormField } from "../useFormField";
 
 export type DropdownOption = SegmentedControlProps & {
   content?: React.ReactNode;
@@ -53,6 +55,7 @@ const DropdownControl = ({
   ...rest
 }: DropdownControlProps) => {
   const [internalValue, setInternalValue] = useState<string>(defaultValue ?? "");
+  const { errorId, showErrorMsg } = useFormField(rest, "dropdownControl");
 
   const selectedValue = controlledValue ?? internalValue;
 
@@ -74,16 +77,13 @@ const DropdownControl = ({
   return (
     <div
       ref={ref}
-      className={cl(
-        styles.dropdownControls,
-        className,
-        dropdownBorder && styles.dropdownBorder
-      )}
+      className={cl(styles.dropdownControls, className)}
       data-color={color}
+      data-error={!!rest.error}
       {...rest}
     >
       <SegmentedControl
-        {...rest}
+        {...omit({ ...rest }, ["error"])}
         data-color={color}
         value={selectedValue}
         onChange={handleChange}
@@ -99,8 +99,14 @@ const DropdownControl = ({
           />
         ))}
       </SegmentedControl>
-      <div className={styles.panel} data-open={!!activeContent}>
+      <div
+        className={cl(dropdownBorder && styles.dropdownBorder, styles.panel)}
+        data-open={!!activeContent}
+      >
         <div className={styles.panelInner}>{activeContent}</div>
+      </div>
+      <div className={formStyles.error} id={errorId}>
+        {showErrorMsg && <p>{rest.error}</p>}
       </div>
     </div>
   );
