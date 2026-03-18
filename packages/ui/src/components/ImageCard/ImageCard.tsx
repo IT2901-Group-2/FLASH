@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { Loader } from "../Loader/Loader";
 import styles from "./ImageCard.module.css";
 import { cl } from "@/util/helpers/";
