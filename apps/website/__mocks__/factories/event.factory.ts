@@ -14,12 +14,12 @@ export function makeEvent(overrides: Partial<Event> = {}): Event {
     id: nextId(),
     name: "Test Event",
     description: "A test event description",
-    startDate: new Date("2026-03-01T10:00:00.000Z"),
-    endDate: new Date("2026-03-02T10:00:00.000Z"),
+    startDate: new Date(),
+    endDate: new Date(),
     uploadLimit: 5,
     isArchived: false,
-    createdAt: new Date("2026-01-01T00:00:00.000Z"),
-    updatedAt: new Date("2026-01-01T00:00:00.000Z"),
+    createdAt: new Date(),
+    updatedAt: new Date(),
     ...overrides,
   };
 }
@@ -34,8 +34,8 @@ export function makeCreateEvent(overrides: Partial<CreateEvent> = {}): CreateEve
   return {
     name: "New Test Event",
     description: "",
-    startDate: new Date("2026-03-01T10:00:00.000Z"),
-    endDate: new Date("2026-03-02T10:00:00.000Z"),
+    startDate: new Date(),
+    endDate: new Date(),
     uploadLimit: 5,
     ...overrides,
   };
