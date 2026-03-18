@@ -12,12 +12,23 @@ import type {
 // Default return values
 // ---------------------------------------------------------------------------
 
+/**
+ * Idle default for `useImagesQuery`. Used internally by `imageHooksMock()`.
+ * In tests, prefer `mockImagesLoaded` / `mockImagesLoading` / `mockImagesError`.
+ */
 export const defaultImagesQueryReturn = {
   data: undefined as Image[] | undefined,
   isLoading: false,
   isError: false,
 } as UseQueryResult<Image[]>;
 
+/**
+ * Idle default for `useUploadImageMutation`. `mutateAsync` resolves with `makeImage()`.
+ * Spread and replace `mutateAsync` to assert on the upload call:
+ * @example
+ * const mockUpload = vi.fn().mockResolvedValue(makeImage({ eventId: "event-1" }));
+ * vi.mocked(useUploadImageMutation).mockReturnValue({ ...defaultUploadImageMutationReturn, mutateAsync: mockUpload });
+ */
 export const defaultUploadImageMutationReturn = {
   mutateAsync: vi.fn().mockResolvedValue(makeImage()),
   mutate: vi.fn(),
@@ -28,6 +39,13 @@ export const defaultUploadImageMutationReturn = {
   reset: vi.fn(),
 } as unknown as UseMutationResult<Image, Error, CreateImageInput>;
 
+/**
+ * Idle default for `useUpdateImageMutation`. `mutateAsync` resolves with `makeImage()`.
+ * Spread and replace `mutateAsync` to assert on approval changes:
+ * @example
+ * const mockUpdate = vi.fn().mockResolvedValue(makeImage({ isApproved: true }));
+ * vi.mocked(useUpdateImageMutation).mockReturnValue({ ...defaultUpdateImageMutationReturn, mutateAsync: mockUpdate });
+ */
 export const defaultUpdateImageMutationReturn = {
   mutateAsync: vi.fn().mockResolvedValue(makeImage()),
   mutate: vi.fn(),
@@ -42,6 +60,14 @@ export const defaultUpdateImageMutationReturn = {
   { eventId: string; imageId: string; data: UpdateImageInput }
 >;
 
+/**
+ * Idle default for `useBatchUpdateImageMutation`. `mutateAsync` resolves with `undefined`.
+ * Spread and replace `mutateAsync` to assert on bulk approve/reject calls:
+ * @example
+ * const mockBatch = vi.fn().mockResolvedValue(undefined);
+ * vi.mocked(useBatchUpdateImageMutation).mockReturnValue({ ...defaultBatchUpdateImageMutationReturn, mutateAsync: mockBatch });
+ * expect(mockBatch).toHaveBeenCalledWith({ eventId: "event-1", ids: ["img-1", "img-2"], isApproved: true });
+ */
 export const defaultBatchUpdateImageMutationReturn = {
   mutateAsync: vi.fn().mockResolvedValue(undefined),
   mutate: vi.fn(),
@@ -52,6 +78,13 @@ export const defaultBatchUpdateImageMutationReturn = {
   reset: vi.fn(),
 } as unknown as UseMutationResult<void, Error, BatchUpdateImageInput>;
 
+/**
+ * Idle default for `useDeleteImageMutation`. `mutateAsync` resolves with `undefined`.
+ * Spread and replace `mutateAsync` to assert on deletion:
+ * @example
+ * const mockDelete = vi.fn().mockResolvedValue(undefined);
+ * vi.mocked(useDeleteImageMutation).mockReturnValue({ ...defaultDeleteImageMutationReturn, mutateAsync: mockDelete });
+ */
 export const defaultDeleteImageMutationReturn = {
   mutateAsync: vi.fn().mockResolvedValue(undefined),
   mutate: vi.fn(),
@@ -62,30 +95,36 @@ export const defaultDeleteImageMutationReturn = {
   reset: vi.fn(),
 } as unknown as UseMutationResult<void, Error, { eventId: string; imageId: string }>;
 
+// ---------------------------------------------------------------------------
+// State builders
+// ---------------------------------------------------------------------------
+
 /**
- * Creates a mock return value for useImagesQuery with pre-loaded images.
- *
+ * Successful `useImagesQuery` result with the given images.
  * @example
- * vi.mocked(useImagesQuery).mockReturnValue(
- *   mockImagesLoaded([makeImage({ eventId: "event-1", isApproved: null })])
- * );
+ * beforeEach(() => {
+ *   vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoaded(makePendingImagesForEvent("event-1")));
+ * });
  */
 export function mockImagesLoaded(images: Image[]): UseQueryResult<Image[]> {
-  return {
-    data: images,
-    isLoading: false,
-    isError: false,
-  } as UseQueryResult<Image[]>;
+  return { data: images, isLoading: false, isError: false } as UseQueryResult<Image[]>;
 }
 
+/**
+ * Loading `useImagesQuery` result — `data` is undefined, `isLoading` is true.
+ * @example
+ * vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoading());
+ */
 export function mockImagesLoading(): UseQueryResult<Image[]> {
-  return {
-    data: undefined,
-    isLoading: true,
-    isError: false,
-  } as UseQueryResult<Image[]>;
+  return { data: undefined, isLoading: true, isError: false } as UseQueryResult<Image[]>;
 }
 
+/**
+ * Failed `useImagesQuery` result — `isError` is true, `data` is undefined.
+ * @param error - Defaults to a generic load failure message.
+ * @example
+ * vi.mocked(useImagesQuery).mockReturnValue(mockImagesError(new Error("403 Forbidden")));
+ */
 export function mockImagesError(
   error = new Error("Failed to load images")
 ): UseQueryResult<Image[]> {
@@ -98,8 +137,14 @@ export function mockImagesError(
 }
 
 /**
- * Creates 3 pending images for the default moderation test setup.
- * Mirrors the most common beforeEach pattern seen across tests.
+ * Creates `count` pending images for the same event. Covers the standard moderation `beforeEach`.
+ * Use `image.id` in assertions rather than hard-coding IDs — the factory counter can shift.
+ * @param eventId - Defaults to `"event-1"`.
+ * @param count   - Defaults to `3`.
+ * @example
+ * const IMAGES = makePendingImagesForEvent("event-1", 3);
+ * beforeEach(() => { vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoaded(IMAGES)); });
+ * fireEvent.click(screen.getByTestId(`image-card-${IMAGES[0].id}`));
  */
 export function makePendingImagesForEvent(eventId = "event-1", count = 3): Image[] {
   return makeImages(count, { eventId, isApproved: null });
