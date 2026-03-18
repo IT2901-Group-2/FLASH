@@ -23,6 +23,7 @@ const ThemeToggleButton = () => {
       type="button"
       onClick={toggleTheme}
       className={`${styles.button} ${styles.left}`}
+      data-mounted={mounted ? "true" : "false"}
       aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
     >
       {isDark ? (
