@@ -42,45 +42,43 @@
   margin-left: auto;
 }
 
-@layer base, overrides;
+.card {
+  display: flex;
+  justify-content: end;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: fixed;
+  bottom: 1rem;
+  left: 2rem;
+  right: 2rem;
+  width: calc(100% - 4rem);
 
-@layer base {
-  .card {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    position: absolute;
-    bottom: calc(100dvh - 100% - 2rem);
-    left: 0;
-    right: 0;
-    width: 80%;
-    margin: 0 auto;
-
-    > button {
-      width: 100%;
-    }
+  & > button {
+    width: 100%;
+  }
+  .goToEventButton {
+    position: static;
   }
 }
 
-@layer overrides {
-  @media screen and (min-width: 768px) {
-    .card {
-      flex-direction: row;
-      position: unset;
-      background-color: transparent;
-      border: none;
-      box-shadow: none;
-      width: auto;
-      margin: 0;
-      padding: 0;
+@media screen and (min-width: 768px) {
+  .card {
+    position: static;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 0.75rem;
 
-      > button {
-        width: auto;
-      }
+    & > button {
+      width: fit-content;
     }
-
     .goToEventButton {
       position: absolute;
+      bottom: 2rem;
+      right: 2rem;
     }
   }
 }
