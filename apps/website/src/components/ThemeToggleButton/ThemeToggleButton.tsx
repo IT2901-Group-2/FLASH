@@ -8,6 +8,8 @@ import styles from "./ThemeToggleButton.module.css";
 /**
  * Renders a button allowing users to switch between light and dark mode.
  * Uses the resolved theme to display the next theme that will be applied.
+ *
+ * > _Last updated: `2026-03-18`_
  */
 
 const ThemeToggleButton = () => {
