@@ -98,6 +98,17 @@ function createMockFileList(files: File[]): FileList {
   } as unknown as FileList;
 }
 
+function getOnFilesSelected() {
+  const firstCall = vi.mocked(useFileUploadModule.useFileUpload).mock.calls[0];
+  const options = firstCall?.[0] as Parameters<typeof useFileUploadModule.useFileUpload>[0];
+
+  if (!options?.onFilesSelected) {
+    throw new Error("Expected useFileUpload to be called with onFilesSelected");
+  }
+
+  return options.onFilesSelected;
+}
+
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
@@ -147,15 +158,14 @@ describe("Guest Upload Page", () => {
     mockUploadImage.mockRejectedValue(new Error("Upload failed"));
     render(<Page />);
 
-    const { onFilesSelected } = vi.mocked(useFileUploadModule.useFileUpload).mock
-      .calls[0][0];
+    const onFilesSelected = getOnFilesSelected();
     const mockFileList = createMockFileList([
       new File(["a"], "a.jpg", { type: "image/jpeg" }),
       new File(["b"], "b.jpg", { type: "image/jpeg" }),
     ]);
 
     await act(async () => {
-      await onFilesSelected!(mockFileList);
+      await onFilesSelected(mockFileList);
     });
 
     await waitFor(() =>
@@ -167,14 +177,13 @@ describe("Guest Upload Page", () => {
     mockUploadImage.mockResolvedValue({});
     render(<Page />);
 
-    const { onFilesSelected } = vi.mocked(useFileUploadModule.useFileUpload).mock
-      .calls[0][0];
+    const onFilesSelected = getOnFilesSelected();
     const mockFileList = createMockFileList([
       new File(["a"], "a.jpg", { type: "image/jpeg" }),
     ]);
 
     await act(async () => {
-      await onFilesSelected!(mockFileList);
+      await onFilesSelected(mockFileList);
     });
 
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent(""));
@@ -184,14 +193,13 @@ describe("Guest Upload Page", () => {
     mockUploadImage.mockRejectedValue(new Error("Upload failed"));
     render(<Page />);
 
-    const { onFilesSelected } = vi.mocked(useFileUploadModule.useFileUpload).mock
-      .calls[0][0];
+    const onFilesSelected = getOnFilesSelected();
     const mockFileList = createMockFileList([
       new File(["a"], "a.jpg", { type: "image/jpeg" }),
     ]);
 
     await act(async () => {
-      await onFilesSelected!(mockFileList);
+      await onFilesSelected(mockFileList);
     });
     await waitFor(() =>
       expect(screen.getByRole("alert")).toHaveTextContent("errors.uploadFailed")
@@ -199,7 +207,7 @@ describe("Guest Upload Page", () => {
 
     mockUploadImage.mockResolvedValue({});
     await act(async () => {
-      await onFilesSelected!(mockFileList);
+      await onFilesSelected(mockFileList);
     });
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent(""));
   });
