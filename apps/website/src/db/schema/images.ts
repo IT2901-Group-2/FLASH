@@ -32,6 +32,16 @@ export const getImagesParamsSchema = z.object({
     .tuple([z.enum(["pending", "approved", "rejected"])])
     .transform(([str]) => str)
     .optional(),
+  cursor: z
+    .tuple([z.string()])
+    .transform(([str]) => str)
+    .optional(),
+  limit: z
+    .tuple([z.string()])
+    .transform(([str]) => Number.parseInt(str, 10))
+    .pipe(z.number().int().positive().max(100))
+    .prefault(["20"])
+    .optional(),
 });
 
 export const getImageSchema = z.object({

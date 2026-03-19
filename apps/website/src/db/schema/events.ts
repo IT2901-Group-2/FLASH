@@ -74,6 +74,16 @@ export const getEventsParamsSchema = z.object({
     .transform(([str]) => str)
     .prefault(["ascending"])
     .optional(),
+  cursor: z
+    .tuple([z.string()])
+    .transform(([str]) => str)
+    .optional(),
+  limit: z
+    .tuple([z.string()])
+    .transform(([str]) => Number.parseInt(str, 10))
+    .pipe(z.number().int().positive().max(100))
+    .prefault(["20"])
+    .optional(),
 });
 
 export const getEventCodeParamsSchema = z.object({
@@ -120,9 +130,15 @@ export const updateEventSchema = z.object({
   isArchived: z.boolean().optional(),
 });
 
+export const getEventsPageSchema = z.object({
+  items: z.array(getEventSchema),
+  nextCursor: z.string().nullable(),
+});
+
 export type Event = typeof eventTable.$inferSelect;
 export type EventCode = typeof eventCodeTable.$inferSelect;
 export type GetEventsParams = z.infer<typeof getEventsParamsSchema>;
 export type GetEventCodeParams = z.infer<typeof getEventCodeParamsSchema>;
 export type CreateEvent = z.infer<typeof createEventSchema>;
 export type UpdateEvent = z.infer<typeof updateEventSchema>;
+export type GetEventsPage = z.infer<typeof getEventsPageSchema>;
