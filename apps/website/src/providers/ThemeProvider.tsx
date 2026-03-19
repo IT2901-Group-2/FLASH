@@ -9,14 +9,7 @@ import {
   type ResolvedTheme,
   type Theme,
 } from "@/lib/theme-utils";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 export interface ThemeContextType {
   /**
