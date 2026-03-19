@@ -3,21 +3,6 @@ import type { Image } from "@/db";
 let _counter = 1;
 const nextId = () => `image-${_counter++}`;
 
-export type CreateImageInput = {
-  eventId: string;
-  file: File;
-};
-
-export type UpdateImageInput = {
-  isApproved: boolean | null;
-};
-
-export type BatchUpdateImageInput = {
-  eventId: string;
-  ids: string[];
-  isApproved: boolean;
-};
-
 /**
  * Creates a fully-populated Image. Any field can be overridden.
  *

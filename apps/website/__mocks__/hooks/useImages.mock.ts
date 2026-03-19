@@ -2,11 +2,12 @@ import { vi } from "vitest";
 import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 import type { Image } from "@/db";
 import { makeImage, makeImages } from "../factories/image.factory";
-import type {
-  UpdateImageInput,
+import {
   BatchUpdateImageInput,
   CreateImageInput,
-} from "../factories/image.factory";
+  DeleteImageInput,
+  UpdateImageInput,
+} from "@/hooks/useImages";
 
 // ---------------------------------------------------------------------------
 // Default return values
@@ -93,7 +94,7 @@ export const defaultDeleteImageMutationReturn = {
   isSuccess: false,
   isError: false,
   reset: vi.fn(),
-} as unknown as UseMutationResult<void, Error, { eventId: string; imageId: string }>;
+} as unknown as UseMutationResult<void, Error, DeleteImageInput>;
 
 // ---------------------------------------------------------------------------
 // State builders
