@@ -88,7 +88,8 @@ export const defaultDeleteEventMutationReturn = {
 // ---------------------------------------------------------------------------
 
 /**
- * Creates a mocked {@link UseQueryResult} for events, useful for testing and Storybook.
+ * Creates a mock `UseQueryResult` for an events query, suitable for use in tests.
+ * Automatically sets `data` and `error` to `undefined`/`null` based on the provided state flags.
  *
  * @example
  * mockEventsQuery([makeEvent(), makeEvent()]); // { data: [<event1>, <event2>], isLoading: false, isError: false, error: null }
