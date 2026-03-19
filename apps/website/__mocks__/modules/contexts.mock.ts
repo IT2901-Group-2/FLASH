@@ -1,5 +1,5 @@
 import { vi } from "vitest";
-import { makeUser } from "../factories/user.factory";
+import { makeUser } from "../factories/eventAuth.factory";
 import { EventAuth } from "@/providers/EventAuthContext";
 
 /**
