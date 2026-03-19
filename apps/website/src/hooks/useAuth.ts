@@ -3,7 +3,7 @@ import { makeRequest } from "@/lib/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 
-export const okSchema = z.object({ ok: z.literal(true) });
+const okSchema = z.object({ ok: z.literal(true) });
 export type AuthState = z.infer<typeof okSchema>;
 
 /**
