@@ -82,7 +82,7 @@ export const Button = ({
   const iconNode = icon ? (
     <span
       aria-hidden={loading ? true : undefined}
-      className={loading ? styles.hidden : undefined}
+      className={cl(styles.icon, loading && styles.hidden)}
     >
       {icon}
     </span>
