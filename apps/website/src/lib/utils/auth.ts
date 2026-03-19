@@ -15,7 +15,7 @@ export type TokenPayload = {
 };
 
 export type AuthState = {
-  ok: boolean;
+  ok: true;
 };
 
 const ADMIN_PASSWORD_HASH = await bcrypt.hash(ADMIN_PASSWORD, 10);
