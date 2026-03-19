@@ -1,4 +1,4 @@
-import { HTMLAttributes, RefAttributes } from "react";
+import { HTMLAttributes, MouseEvent, RefAttributes } from "react";
 import { Card } from "../Card";
 import styles from "./Dialog.module.css";
 import { cl } from "@/util/helpers";
@@ -17,7 +17,7 @@ export type DialogProps = RefAttributes<HTMLDialogElement> &
      * If clicking outside closes the dialog
      * @default false
      */
-    // closeOnBackdrop?: boolean;
+    closeOnBackdrop?: boolean;
     /**
      * If pressing Escape closes the dialog
      *
@@ -29,9 +29,22 @@ export type DialogProps = RefAttributes<HTMLDialogElement> &
     children?: React.ReactNode;
   };
 
-const Dialog = ({ ref, children, className, ...rest }: DialogProps) => {
+const Dialog = ({ ref, children, className, closeOnBackdrop = false, onClick, ...rest 
+}: DialogProps) => {
+  const handleClick = (event: MouseEvent<HTMLDialogElement>) => {
+    onClick?.(event);
+
+    if (event.defaultPrevented || !closeOnBackdrop) {
+      return;
+    }
+
+    if (event.target === event.currentTarget) {
+      event.currentTarget.close();
+    }
+  };
+
   return (
-    <dialog ref={ref} className={styles.container} autoFocus {...rest}>
+    <dialog ref={ref} className={styles.container} autoFocus onClick={handleClick} {...rest}>
       <Card className={cl(styles.card, className)}>{children}</Card>
     </dialog>
   );

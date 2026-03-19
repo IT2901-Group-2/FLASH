@@ -77,7 +77,7 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
   const totalSteps = FORM_STEPS.length + 1;
 
   return (
-    <Dialog ref={ref} {...rest}>
+    <Dialog ref={ref} closeOnBackdrop={false} {...rest}>
       <ProgressDots
         maxValue={totalSteps}
         value={currentStepIndex + 1}

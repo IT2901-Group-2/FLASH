@@ -23,7 +23,7 @@ const Page = () => {
 
   return (
     <>
-      <Dialog ref={qrCodeRef}>
+      <Dialog ref={qrCodeRef} closeOnBackdrop>
         <ReviewStep result={eventData} status={status} />
         <Button
           variant="secondary"
