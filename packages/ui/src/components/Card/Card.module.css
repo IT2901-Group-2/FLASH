@@ -5,6 +5,7 @@
   border: 1px solid var(--border-focus);
   box-shadow: var(--shadow-dialog);
   color: var(--text-neutral);
+  min-width: 0;
 
   &[data-color] {
     background-color: var(--bg-soft);

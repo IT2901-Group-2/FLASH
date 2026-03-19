@@ -1,5 +1,5 @@
 import { Calendar, EditIcon, Image as ImageIcon, Trash, Users } from "lucide-react";
-import { Card } from "@flash/ui";
+import { Card, Title } from "@flash/ui";
 import styles from "./EventCard.module.css";
 import { cl } from "@/utils/className";
 import { Event } from "@/db";
@@ -54,7 +54,9 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
       />
       <Card {...rest} className={styles.card}>
         <div className={styles.column}>
-          <h3 className={styles.title}>{name}</h3>
+          <Title className={styles.title} size="xsmall">
+            {name}
+          </Title>
           <div className={styles.row}>
             <Calendar size={16} />
             <span>

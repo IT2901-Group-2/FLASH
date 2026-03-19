@@ -48,9 +48,9 @@ export const PhoneHeader = ({
           <Title size="small" as="h1">
             {title}
           </Title>
-          <span>
+          <span className={styles.user}>
             <User />
-            {username}
+            <span className={styles.truncate}>{username}</span>
           </span>
           <span>{description}</span>
         </div>

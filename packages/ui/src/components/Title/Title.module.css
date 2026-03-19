@@ -1,6 +1,8 @@
 .wrapper {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .title {
@@ -10,6 +12,8 @@
   color: var(--text-default);
   line-height: 1.2;
   font-family: inherit;
+  min-width: 0;
+  max-width: 100%;
 
   &[data-color] {
     color: var(--text-subtle);
@@ -112,5 +116,9 @@
 }
 
 .text {
-  display: inline-block;
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
