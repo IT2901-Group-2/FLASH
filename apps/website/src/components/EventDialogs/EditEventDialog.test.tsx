@@ -4,6 +4,18 @@ import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import EditEventDialog from "./EditEventDialog";
 
+const mockDialog = vi.fn(({ children }: { children?: React.ReactNode }) => (
+  <div data-testid="dialog">{children}</div>
+));
+
+vi.mock("@flash/ui", async importOriginal => {
+  const actual = await importOriginal<typeof import("@flash/ui")>();
+  return {
+    ...actual,
+    Dialog: (props: React.ComponentProps<typeof actual.Dialog>) => mockDialog(props),
+  };
+});
+
 // --- Mocks ----------------------------------------------------------------
 
 const mockMutateAsync = vi.fn();
@@ -42,6 +54,15 @@ const mockReportValidity = (valid: boolean) => {
 beforeEach(() => {
   vi.clearAllMocks();
   mockMutateAsync.mockResolvedValue(existingEvent);
+});
+
+describe("EditEventDialog — dialog behavior", () => {
+  it("disables backdrop close", () => {
+    renderCard();
+    expect(mockDialog).toHaveBeenCalledWith(
+      expect.objectContaining({ closeOnBackdrop: false })
+    );
+  });
 });
 
 describe("EditEventDialog — pre-population", () => {

@@ -6,6 +6,18 @@ import { Event } from "@/db";
 
 // --- Mocks ----------------------------------------------------------------
 
+const mockDialog = vi.fn(({ children }: { children?: React.ReactNode }) => (
+  <div data-testid="dialog">{children}</div>
+));
+
+vi.mock("@flash/ui", async importOriginal => {
+  const actual = await importOriginal<typeof import("@flash/ui")>();
+  return {
+    ...actual,
+    Dialog: (props: React.ComponentProps<typeof actual.Dialog>) => mockDialog(props),
+  };
+});
+
 const mockMutateAsync = vi.fn();
 
 vi.mock("@/hooks/useEvents", () => ({
@@ -33,6 +45,15 @@ const mockReportValidity = (valid: boolean) => {
 beforeEach(() => {
   vi.clearAllMocks();
   mockMutateAsync.mockResolvedValue({} as Event);
+});
+
+describe("CreateEventDialog — dialog behavior", () => {
+  it("disables backdrop close", () => {
+    renderCard();
+    expect(mockDialog).toHaveBeenCalledWith(
+      expect.objectContaining({ closeOnBackdrop: false })
+    );
+  });
 });
 
 describe("CreateEventDialog — navigation", () => {
