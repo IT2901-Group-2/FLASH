@@ -1,3 +1,5 @@
+import { AuthState } from "@/lib/utils/auth";
+
 let _counter = 1;
 const nextId = () => `user-${_counter++}`;
 
@@ -6,10 +8,6 @@ export type MockUser = {
   nickname: string;
   isAuthenticated: boolean;
   isModerator: boolean;
-};
-
-export type MockAuthState = {
-  ok: boolean;
 };
 
 /**
@@ -48,7 +46,7 @@ export const makeGuest = (overrides: Partial<MockUser> = {}): MockUser => {
  * @example
  * const auth = makeAuthState();  // { ok: true }
  */
-export const makeAuthState = (overrides: Partial<MockAuthState> = {}): MockAuthState => {
+export const makeAuthState = (overrides: Partial<AuthState> = {}): AuthState => {
   return { ok: true, ...overrides };
 };
 
