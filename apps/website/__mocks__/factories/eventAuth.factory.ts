@@ -1,4 +1,4 @@
-import { AuthState } from "@/lib/utils/auth";
+import { AuthState } from "@/hooks/useAuth";
 import { EventAuth } from "@/providers/EventAuthContext";
 
 /**

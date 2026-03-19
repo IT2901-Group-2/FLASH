@@ -1,7 +1,10 @@
 "use client";
 import { makeRequest } from "@/lib/utils/api";
-import { okSchema } from "@/lib/utils/auth";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
+
+export const okSchema = z.object({ ok: z.literal(true) });
+export type AuthState = z.infer<typeof okSchema>;
 
 /**
  * Attempts a token refresh on mount to restore session state.
