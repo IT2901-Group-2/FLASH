@@ -15,7 +15,7 @@ import {
  * vi.mock("@/hooks/useEvents", () => eventHooksMock());
  *
  * // YourComponent.test.tsx. Override per test
- * import { useEventsQuery } from "@/hooks/useImages";
+ * import { useEventsQuery } from "@/hooks/useEvents";
  * import { mockEventsLoaded, makeEvent } from "@test-config";
  *
  * vi.mocked(useEventsQuery).mockReturnValue(mockEventsLoaded([makeEvent()]));
