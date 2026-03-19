@@ -29,7 +29,13 @@ export type DialogProps = RefAttributes<HTMLDialogElement> &
     children?: React.ReactNode;
   };
 
-const Dialog = ({ ref, children, className, closeOnBackdrop = false, onClick, ...rest 
+const Dialog = ({
+  ref,
+  children,
+  className,
+  closeOnBackdrop = false,
+  onClick,
+  ...rest
 }: DialogProps) => {
   const handleClick = (event: MouseEvent<HTMLDialogElement>) => {
     onClick?.(event);
@@ -44,7 +50,13 @@ const Dialog = ({ ref, children, className, closeOnBackdrop = false, onClick, ..
   };
 
   return (
-    <dialog ref={ref} className={styles.container} autoFocus onClick={handleClick} {...rest}>
+    <dialog
+      ref={ref}
+      className={styles.container}
+      autoFocus
+      onClick={handleClick}
+      {...rest}
+    >
       <Card className={cl(styles.card, className)}>{children}</Card>
     </dialog>
   );
