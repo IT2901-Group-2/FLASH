@@ -117,6 +117,8 @@ export function useUpdateImageMutation() {
  * Accepts an array of image IDs and an isApproved flag.
  */
 export function useBatchUpdateImageMutation() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: ({
       eventId,
@@ -131,6 +133,9 @@ export function useBatchUpdateImageMutation() {
         ids,
         isApproved,
       }),
+    onSuccess: async (_data, { eventId }) => {
+      await queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) });
+    },
   });
 }
 
