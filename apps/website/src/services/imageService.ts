@@ -10,6 +10,7 @@ import { JWT_SECRET, storage } from "@/config";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { getEventCookie } from "@/lib/utils/eventCookie";
 import { HTTPError } from "@/lib/utils/error";
+import JSZip from "jszip";
 
 const uid = new ShortUniqueId();
 
@@ -210,6 +211,27 @@ export class ImageService {
       )
       .onSuccess(() => this.dbService.flush())
       .map(row => this.storage.rm(`${row.id}.webp`).map(() => row));
+  }
+
+  /**
+   * Downloads all images associated with the specified event as a zip archive.
+   *
+   * @param eventId The id of the event.
+   * @returns A result containing the zip archive as a `Buffer` or an error.
+   */
+  downloadImages(eventId: string): AsyncResult<Buffer, Error> {
+    return this.getImages(eventId).map(async images => {
+      const zip = new JSZip();
+
+      await Promise.allSettled(
+        images.map(async (image, index) => {
+          const buffer = await this.storage.read(`${image.id}.webp`).getOrThrow();
+          zip.file(`image-${index + 1}.webp`, buffer);
+        })
+      );
+
+      return zip.generateAsync({ type: "nodebuffer" });
+    });
   }
 }
 

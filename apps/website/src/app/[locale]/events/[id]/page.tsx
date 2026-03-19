@@ -10,6 +10,7 @@ import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
+import { saveAs } from "file-saver";
 
 // Used for pilot feedback collection. Should be removed after pilot is finished
 const SURVEY_LINK = "https://nettskjema.no/a/610540";
@@ -140,6 +141,11 @@ export default function Page() {
     }
   }, [eventAuth, router]);
 
+  const handleDownload = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    saveAs(`/api/events/${eventId}/images/download`, `event-${eventId}.zip`);
+  };
+
   return (
     <>
       <FileInput />
@@ -214,6 +220,7 @@ export default function Page() {
           >
             {tCommon("actions.uploadImage")}
           </Button>
+          <Button onClick={handleDownload}>Download</Button>
         </PhoneHeader>
         {!isLoading && (isError || !eventData) ? (
           <p className={styles.errorText}>{tUpload("eventLoadFailed")}</p>
@@ -251,6 +258,7 @@ export default function Page() {
               alt={tUpload("imageAlt", { index: index + 1, total: images.length })}
               title={tUpload("imageTitle", { index: index + 1 })}
               data-image-id={image.id}
+              showDownload={true}
             />
           ))}
         </div>
