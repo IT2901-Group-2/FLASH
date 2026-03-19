@@ -1,7 +1,7 @@
 "use client";
 
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
-import { ArrowLeft, ArrowRight, Download, Play } from "lucide-react";
+import { ArrowLeft, ArrowRight, Share, Play } from "lucide-react";
 import { useParams } from "next/navigation";
 import { Button, Card, Dialog, Title } from "@flash/ui";
 import styles from "./page.module.css";
@@ -43,11 +43,11 @@ const Page = () => {
         <Card className={styles.card}>
           <Button
             data-color="brand-purple"
-            icon={<Download />}
+            icon={<Share />}
             variant="secondary"
             onClick={() => qrCodeRef.current?.showModal()}
           >
-            {c("downloadQrCode")}
+            {c("shareEvent")}
           </Button>
           <Button
             data-color="brand-purple"
