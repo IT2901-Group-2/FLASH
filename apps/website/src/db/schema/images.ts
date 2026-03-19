@@ -63,7 +63,13 @@ export const updateImagesSchema = z.object({
   isApproved: z.boolean(),
 });
 
+export const getImagesPageSchema = z.object({
+  items: z.array(getImageSchema),
+  nextCursor: z.string().nullable(),
+});
+
 export type Image = typeof imageTable.$inferSelect;
 export type GetImagesParams = z.infer<typeof getImagesParamsSchema>;
 export type UpdateImage = z.infer<typeof updateImageSchema>;
 export type UpdateImages = z.infer<typeof updateImagesSchema>;
+export type GetImagesPage = z.infer<typeof getImagesPageSchema>;
