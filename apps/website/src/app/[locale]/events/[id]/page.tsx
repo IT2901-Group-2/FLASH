@@ -38,10 +38,7 @@ export default function Page() {
   const { mutateAsync: uploadImage } = useUploadImageMutation();
 
   // Join Code
-  const { data: joinCode } = useEventCodeQuery(
-    eventId,
-    eventAuth.isModerator ? "moderator" : "guest"
-  );
+  const { data: joinCode } = useEventCodeQuery(eventId, "guest");
   const [joinLink, setJoinLink] = useState<string | null>(null);
   useEffect(() => {
     (async () =>
