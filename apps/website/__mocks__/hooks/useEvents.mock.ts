@@ -88,6 +88,29 @@ export const defaultDeleteEventMutationReturn = {
 // ---------------------------------------------------------------------------
 
 /**
+ * Creates a mocked {@link UseQueryResult} for events, useful for testing and Storybook.
+ *
+ * @example
+ * mockEventsQuery([makeEvent(), makeEvent()]); // { data: [<event1>, <event2>], isLoading: false, isError: false, error: null }
+ * mockEventsQuery([], { isLoading: true }); // { data: undefined, isLoading: true, isError: false, error: null }
+ * mockEventsQuery([], { isError: true }); // { data: undefined, isLoading: false, isError: true, error: Error("Failed to load events") }
+ * mockEventsQuery([], { isError: true, error: new Error("custom") }); // { data: undefined, isLoading: false, isError: true, error: Error("custom") }
+ */
+export const mockEventsQueryResult = ({
+  data,
+  isLoading = false,
+  isError = false,
+  error = new Error("Failed to load events"),
+}: Partial<UseQueryResult<Event[]>>): UseQueryResult<Event[]> => {
+  return {
+    data: isLoading || isError ? undefined : data,
+    error: isLoading || !isError ? null : error,
+    isLoading,
+    isError,
+  } as UseQueryResult<Event[]>;
+};
+
+/**
  * Successful `useEventsQuery` result with the given events.
  * @example
  * beforeEach(() => {
@@ -98,9 +121,8 @@ export const defaultDeleteEventMutationReturn = {
  *    );
  * });
  */
-export const mockEventsLoaded = (events: Event[]): UseQueryResult<Event[]> => {
-  return { data: events, isLoading: false, isError: false } as UseQueryResult<Event[]>;
-};
+export const mockEventsLoaded = (events: Event[]): UseQueryResult<Event[]> =>
+  mockEventsQueryResult({ data: events });
 
 /**
  * Loading `useEventsQuery` result.
@@ -109,9 +131,8 @@ export const mockEventsLoaded = (events: Event[]): UseQueryResult<Event[]> => {
  * @example
  * vi.mocked(useEventsQuery).mockReturnValue(mockEventsLoading());
  */
-export const mockEventsLoading = (): UseQueryResult<Event[]> => {
-  return { data: undefined, isLoading: true, isError: false } as UseQueryResult<Event[]>;
-};
+export const mockEventsLoading = (): UseQueryResult<Event[]> =>
+  mockEventsQueryResult({ isLoading: true });
 
 /**
  * Failed `useEventsQuery` result.
@@ -121,13 +142,5 @@ export const mockEventsLoading = (): UseQueryResult<Event[]> => {
  * @example
  * vi.mocked(useEventsQuery).mockReturnValue(mockEventsError(new Error("500")));
  */
-export const mockEventsError = (
-  error = new Error("Failed to load events")
-): UseQueryResult<Event[]> => {
-  return {
-    data: undefined,
-    isLoading: false,
-    isError: true,
-    error,
-  } as unknown as UseQueryResult<Event[]>;
-};
+export const mockEventsError = (error?: Error): UseQueryResult<Event[]> =>
+  mockEventsQueryResult({ error, isError: true });
