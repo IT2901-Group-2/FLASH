@@ -1,22 +1,14 @@
 "use client";
 import { makeRequest } from "@/lib/utils/api";
-import { AuthState } from "@/lib/utils/auth";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  UseQueryResult,
-} from "@tanstack/react-query";
-import { z } from "zod";
-
-const okSchema = z.object({ ok: z.literal(true) });
+import { okSchema } from "@/lib/utils/auth";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 /**
  * Attempts a token refresh on mount to restore session state.
  * staleTime: infinity prevents background refetches - auth state is
  * managed manually via setQueryData from mutations.
  */
-export function useAuth(): UseQueryResult<AuthState, Error> {
+export function useAuth() {
   return useQuery({
     queryKey: ["auth"],
     queryFn: async () => {

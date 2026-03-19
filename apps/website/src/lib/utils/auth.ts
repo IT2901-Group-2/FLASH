@@ -7,6 +7,7 @@ import {
 } from "@/config/admin";
 import bcrypt from "bcryptjs";
 import { JWT_SECRET } from "@/config";
+import { z } from "zod";
 
 // Types
 // Shape of the JWT payload - currently just marks the bearer as admin
@@ -14,9 +15,9 @@ export type TokenPayload = {
   admin: true;
 };
 
-export type AuthState = {
-  ok: true;
-};
+export const okSchema = z.object({ ok: z.literal(true) });
+
+export type AuthState = z.infer<typeof okSchema>;
 
 const ADMIN_PASSWORD_HASH = await bcrypt.hash(ADMIN_PASSWORD, 10);
 
