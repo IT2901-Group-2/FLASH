@@ -100,7 +100,9 @@ function createMockFileList(files: File[]): FileList {
 
 function getOnFilesSelected() {
   const firstCall = vi.mocked(useFileUploadModule.useFileUpload).mock.calls[0];
-  const options = firstCall?.[0] as Parameters<typeof useFileUploadModule.useFileUpload>[0];
+  const options = firstCall?.[0] as Parameters<
+    typeof useFileUploadModule.useFileUpload
+  >[0];
 
   if (!options?.onFilesSelected) {
     throw new Error("Expected useFileUpload to be called with onFilesSelected");
