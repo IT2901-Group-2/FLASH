@@ -101,15 +101,38 @@ export const defaultDeleteImageMutationReturn = {
 // ---------------------------------------------------------------------------
 
 /**
+ * Creates a mock `UseQueryResult` for an images query, suitable for use in tests.
+ * Automatically sets `data` and `error` to `undefined`/`null` based on the provided state flags.
+ *
+ * @example
+ * mockImagesQuery([makeImage(), makeImage()]); // { data: [<Image1>, <Image2>], isLoading: false, isError: false, error: null }
+ * mockImagesQuery([], { isLoading: true }); // { data: undefined, isLoading: true, isError: false, error: null }
+ * mockImagesQuery([], { isError: true }); // { data: undefined, isLoading: false, isError: true, error: Error("Failed to load Images") }
+ * mockImagesQuery([], { isError: true, error: new Error("custom") }); // { data: undefined, isLoading: false, isError: true, error: Error("custom") }
+ */
+export const mockImagesQueryResult = ({
+  data,
+  isLoading = false,
+  isError = false,
+  error = new Error("Failed to load Images"),
+}: Partial<UseQueryResult<Image[]>>): UseQueryResult<Image[]> => {
+  return {
+    data: isLoading || isError ? undefined : data,
+    error: isLoading || !isError ? null : error,
+    isLoading,
+    isError,
+  } as UseQueryResult<Image[]>;
+};
+
+/**
  * Successful `useImagesQuery` result with the given images.
  * @example
  * beforeEach(() => {
  *   vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoaded(makePendingImagesForEvent("event-1")));
  * });
  */
-export const mockImagesLoaded = (images: Image[]): UseQueryResult<Image[]> => {
-  return { data: images, isLoading: false, isError: false } as UseQueryResult<Image[]>;
-};
+export const mockImagesLoaded = (images: Image[]): UseQueryResult<Image[]> =>
+  mockImagesQueryResult({ data: images });
 
 /**
  * Loading `useImagesQuery` result.
@@ -118,9 +141,8 @@ export const mockImagesLoaded = (images: Image[]): UseQueryResult<Image[]> => {
  * @example
  * vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoading());
  */
-export const mockImagesLoading = (): UseQueryResult<Image[]> => {
-  return { data: undefined, isLoading: true, isError: false } as UseQueryResult<Image[]>;
-};
+export const mockImagesLoading = (): UseQueryResult<Image[]> =>
+  mockImagesQueryResult({ isLoading: true });
 
 /**
  * Failed `useImagesQuery` result.
@@ -129,16 +151,8 @@ export const mockImagesLoading = (): UseQueryResult<Image[]> => {
  * @example
  * vi.mocked(useImagesQuery).mockReturnValue(mockImagesError(new Error("403 Forbidden")));
  */
-export const mockImagesError = (
-  error = new Error("Failed to load images")
-): UseQueryResult<Image[]> => {
-  return {
-    data: undefined,
-    isLoading: false,
-    isError: true,
-    error,
-  } as unknown as UseQueryResult<Image[]>;
-};
+export const mockImagesError = (error?: Error): UseQueryResult<Image[]> =>
+  mockImagesQueryResult({ error, isError: true });
 
 /**
  * Creates `count` pending images for the same event. Covers the standard moderation `beforeEach`.
