@@ -42,7 +42,7 @@ export interface ThemeContextType {
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 /**
- * Consume the theme context. Must be used inside a {@link ThemeProvider}.
+ * Consume the theme context.
  *
  * @throws {Error} When called outside of a ThemeProvider tree.
  */
@@ -84,21 +84,15 @@ export const ThemeProvider = ({
   children,
   defaultTheme = "system",
 }: ThemeProviderProps) => {
-  const [theme, setThemeState] = useState<Theme>(defaultTheme);
-  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(
-    () => resolveThemePreference(defaultTheme),
+  const [theme, setThemeState] = useState<Theme>(() => getStoredTheme() ?? defaultTheme);
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() =>
+    resolveThemePreference(getStoredTheme() ?? defaultTheme)
   );
- 
-  const defaultThemeRef = useRef(defaultTheme);
- 
+
   useEffect(() => {
-    const stored = getStoredTheme() ?? defaultThemeRef.current;
-    const resolved = resolveThemePreference(stored);
-    setThemeState(stored);
-    setResolvedTheme(resolved);
-    applyTheme(resolved);
-  }, []);
- 
+    applyTheme(resolvedTheme);
+  }, [resolvedTheme]);
+
   const setTheme = useCallback((next: Theme) => {
     const resolved = resolveThemePreference(next);
     applyTheme(resolved);
@@ -106,35 +100,30 @@ export const ThemeProvider = ({
     setThemeState(next);
     setResolvedTheme(resolved);
   }, []);
- 
+
   const toggleTheme = useCallback(() => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   }, [setTheme, resolvedTheme]);
- 
+
   useEffect(() => {
     if (theme !== "system") return;
- 
     const cleanup = systemThemeListener(theme);
- 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = () => {
-      const resolved = resolveThemePreference("system");
-      setResolvedTheme(resolved);
+      setResolvedTheme(resolveThemePreference("system"));
     };
- 
     mediaQuery.addEventListener("change", handleChange);
- 
     return () => {
       cleanup();
       mediaQuery.removeEventListener("change", handleChange);
     };
   }, [theme]);
- 
+
   return (
     <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
 };
- 
+
 export default ThemeProvider;
