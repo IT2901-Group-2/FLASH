@@ -101,6 +101,10 @@
   justify-content: center;
 }
 
+.icon {
+  display: inline-flex;
+}
+
 .hidden {
   visibility: hidden;
 }
