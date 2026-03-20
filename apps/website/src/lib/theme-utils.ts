@@ -1,4 +1,3 @@
-import Error from "next/dist/pages/_error";
 import { cookies } from "next/dist/server/request/cookies";
 import type { ResolvedTheme, Theme } from "@/lib/theme-config";
 import { AsyncResult, Result } from "typescript-result";
