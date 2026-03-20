@@ -5,6 +5,25 @@ import z from "zod";
 
 const imageArraySchema = z.array(getImageSchema);
 
+export type CreateImageInput = {
+  eventId: string;
+  file: Blob;
+};
+
+export type UpdateImageInput = {
+  eventId: string;
+  imageId: string;
+  data: UpdateImage;
+};
+
+export type DeleteImageInput = { eventId: string; imageId: string };
+
+export type BatchUpdateImageInput = {
+  eventId: string;
+  ids: string[];
+  isApproved: boolean;
+};
+
 /**
  * Serializes `GetImages` filters into a URL query string.
  * Returns an empty string when no params are provided.
@@ -75,7 +94,7 @@ export function useUploadImageMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ eventId, file }: { eventId: string; file: Blob }) =>
+    mutationFn: ({ eventId, file }: CreateImageInput) =>
       makeRequest(getImageSchema, `/api/events/${eventId}/images`, "POST", file),
     onSuccess: async (_data, { eventId }) => {
       await queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) });
@@ -91,15 +110,7 @@ export function useUpdateImageMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
-      eventId,
-      imageId,
-      data,
-    }: {
-      eventId: string;
-      imageId: string;
-      data: UpdateImage;
-    }) =>
+    mutationFn: ({ eventId, imageId, data }: UpdateImageInput) =>
       makeRequest(
         getImageSchema,
         `/api/events/${eventId}/images/${imageId}`,
@@ -120,15 +131,7 @@ export function useBatchUpdateImageMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
-      eventId,
-      ids,
-      isApproved,
-    }: {
-      eventId: string;
-      ids: string[];
-      isApproved: boolean;
-    }) =>
+    mutationFn: ({ eventId, ids, isApproved }: BatchUpdateImageInput) =>
       makeRequest(imageArraySchema, `/api/events/${eventId}/images`, "PATCH", {
         ids,
         isApproved,
@@ -146,7 +149,7 @@ export function useDeleteImageMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ eventId, imageId }: { eventId: string; imageId: string }) =>
+    mutationFn: ({ eventId, imageId }: DeleteImageInput) =>
       makeRequest(getImageSchema, `/api/events/${eventId}/images/${imageId}`, "DELETE"),
     onSuccess: async (_data, { eventId }) => {
       await queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) });
