@@ -13,7 +13,7 @@ const meta: Meta<typeof Select> = {
 export default meta;
 type Story = StoryObj<typeof Select>;
 
-export const Size: Story = {
+export const Default: Story = {
   render: () => (
     <Select label="Sort by" required>
       <option value="name">Event name</option>
@@ -35,6 +35,17 @@ export const Size: Story = {
       expect(select).toHaveValue("startDate");
     });
   },
+};
+
+export const Small: Story = {
+  render: () => (
+    <Select label="Sort by" required size="small">
+      <option value="name">Event name</option>
+      <option value="startDate">Start date</option>
+      <option value="endDate">End date</option>
+      <option value="createdAt">Created at</option>
+    </Select>
+  ),
 };
 
 export const Description: Story = {

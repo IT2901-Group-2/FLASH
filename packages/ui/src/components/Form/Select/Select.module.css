@@ -38,6 +38,11 @@
   display: inline-block;
   position: relative;
 
+  [data-size="small"] & {
+    height: 2rem;
+    font-size: var(--font-size-medium);
+  }
+
   > option {
     color: var(--text-neutral-decoration);
   }
