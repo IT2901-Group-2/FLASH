@@ -1,16 +1,16 @@
 import { afterEach, beforeEach, describe, it, expect, vi } from "vitest";
 import {
   applyTheme,
-  getStoredTheme,
   getSystemTheme,
-  isResolvedTheme,
-  isTheme,
   setStoredTheme,
   systemThemeListener,
-  THEME_PREFERENCE_COOKIE_KEY,
-  THEME_RESOLVED_COOKIE_KEY,
-  THEME_STORAGE_KEY,
 } from "./theme-utils";
+import {
+  isResolvedTheme,
+  isTheme,
+  THEME_RESOLVED_COOKIE_KEY,
+  THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+} from "@/lib/theme-config";
 
 describe("getSystemTheme", () => {
   it("should return 'dark' when system prefers dark mode", () => {
@@ -88,51 +88,6 @@ describe("applyTheme", () => {
   });
 });
 
-describe("getStoredTheme", () => {
-  beforeEach(() => {
-    localStorage.clear();
-  });
-
-  it("should return stored theme from localStorage", () => {
-    localStorage.setItem(THEME_STORAGE_KEY, "dark");
-    const result = getStoredTheme();
-    expect(result).toBe("dark");
-  });
-
-  it("should return 'light' when stored", () => {
-    localStorage.setItem(THEME_STORAGE_KEY, "light");
-    const result = getStoredTheme();
-    expect(result).toBe("light");
-  });
-
-  it("should return 'system' when stored", () => {
-    localStorage.setItem(THEME_STORAGE_KEY, "system");
-    const result = getStoredTheme();
-    expect(result).toBe("system");
-  });
-
-  it("should return null when no theme is stored", () => {
-    const result = getStoredTheme();
-    expect(result).toBeNull();
-  });
-
-  it("should return null when an invalid value is stored", () => {
-    localStorage.setItem(THEME_STORAGE_KEY, "invalid-theme");
-    const result = getStoredTheme();
-    expect(result).toBeNull();
-  });
-
-  it("should return null when window is undefined", () => {
-    const originalWindow = global.window;
-    // @ts-expect-error - intentionally setting to undefined for SSR test
-    delete global.window;
-
-    const result = getStoredTheme();
-    expect(result).toBeNull();
-    global.window = originalWindow;
-  });
-});
-
 describe("isTheme", () => {
   it("should return true for valid theme values", () => {
     expect(isTheme("light")).toBe(true);
@@ -162,36 +117,42 @@ describe("isResolvedTheme", () => {
 
 describe("setStoredTheme", () => {
   beforeEach(() => {
-    localStorage.clear();
-    document.cookie = `${THEME_PREFERENCE_COOKIE_KEY}=; Max-Age=0; Path=/`;
     document.cookie = `${THEME_RESOLVED_COOKIE_KEY}=; Max-Age=0; Path=/`;
   });
 
-  it("should store 'light' theme in localStorage", () => {
-    setStoredTheme("light");
-    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("light");
+  it("should persist resolved cookie for light theme", () => {
+    setStoredTheme("light", undefined, {
+      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
+      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+    });
+
+    expect(document.cookie).toContain(`${THEME_RESOLVED_COOKIE_KEY}=light`);
   });
 
-  it("should store 'dark' theme in localStorage", () => {
-    setStoredTheme("dark");
-    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("dark");
+  it("should persist resolved cookie for dark theme", () => {
+    setStoredTheme("dark", undefined, {
+      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
+      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+    });
+
+    expect(document.cookie).toContain(`${THEME_RESOLVED_COOKIE_KEY}=dark`);
   });
 
-  it("should store 'system' theme in localStorage", () => {
-    setStoredTheme("system");
-    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("system");
+  it("should persist resolved cookie for system theme", () => {
+    setStoredTheme("system", undefined, {
+      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
+      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+    });
+
+    expect(document.cookie).toContain(THEME_RESOLVED_COOKIE_KEY);
   });
 
-  it("should overwrite existing theme", () => {
-    localStorage.setItem(THEME_STORAGE_KEY, "light");
-    setStoredTheme("dark");
-    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("dark");
-  });
+  it("should persist resolved theme cookie", () => {
+    setStoredTheme("dark", "dark", {
+      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
+      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+    });
 
-  it("should persist preference and resolved theme cookies", () => {
-    setStoredTheme("dark", "dark");
-
-    expect(document.cookie).toContain(`${THEME_PREFERENCE_COOKIE_KEY}=dark`);
     expect(document.cookie).toContain(`${THEME_RESOLVED_COOKIE_KEY}=dark`);
   });
 });
@@ -221,7 +182,10 @@ describe("systemThemeListener", () => {
   });
 
   it("should register event listener when theme is 'system'", () => {
-    const cleanup = systemThemeListener("system");
+    const cleanup = systemThemeListener("system", {
+      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
+      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+    });
 
     expect(mockMatchMedia).toHaveBeenCalledWith("(prefers-color-scheme: dark)");
     expect(mockMediaQuery.addEventListener).toHaveBeenCalledWith(
@@ -251,7 +215,10 @@ describe("systemThemeListener", () => {
   });
 
   it("should apply theme when system preference changes", () => {
-    systemThemeListener("system");
+    systemThemeListener("system", {
+      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
+      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+    });
 
     const handler = mockMediaQuery.addEventListener.mock.calls[0]?.[1] as
       | (() => void)
@@ -264,7 +231,10 @@ describe("systemThemeListener", () => {
   });
 
   it("should remove event listener when cleanup function is called", () => {
-    const cleanup = systemThemeListener("system");
+    const cleanup = systemThemeListener("system", {
+      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
+      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+    });
 
     expect(mockMediaQuery.addEventListener).toHaveBeenCalled();
 
@@ -285,8 +255,14 @@ describe("systemThemeListener", () => {
   });
 
   it("should handle multiple listener registrations and cleanups", () => {
-    const cleanup1 = systemThemeListener("system");
-    const cleanup2 = systemThemeListener("system");
+    const cleanup1 = systemThemeListener("system", {
+      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
+      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+    });
+    const cleanup2 = systemThemeListener("system", {
+      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
+      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+    });
 
     expect(mockMediaQuery.addEventListener).toHaveBeenCalledTimes(2);
 

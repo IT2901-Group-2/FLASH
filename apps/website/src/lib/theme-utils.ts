@@ -1,32 +1,34 @@
-export const THEME_STORAGE_KEY = "theme";
-export const THEME_PREFERENCE_COOKIE_KEY = "theme-preference";
-export const THEME_RESOLVED_COOKIE_KEY = "theme-resolved";
+import Error from "next/dist/pages/_error";
+import { cookies } from "next/dist/server/request/cookies";
+import type { ResolvedTheme, Theme } from "@/lib/theme-config";
+import { AsyncResult, Result } from "typescript-result";
 
-export type ResolvedTheme = "light" | "dark";
-export type Theme = "system" | ResolvedTheme;
+export function setThemeCookie({
+  name,
+  value,
+  maxAgeSeconds,
+}: {
+  name: string;
+  value: string;
+  maxAgeSeconds: number;
+}): AsyncResult<void, Error> {
+  if (typeof document !== "undefined") {
+    const secure = window.location.protocol === "https:" ? "; Secure" : "";
+    return Result.fromAsync(async () => {
+      document.cookie = `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${maxAgeSeconds}; SameSite=Lax${secure}`;
+    });
+  }
 
-const VALID_THEMES: ReadonlySet<Theme> = new Set(["light", "dark", "system"]);
-const VALID_RESOLVED_THEMES: ReadonlySet<ResolvedTheme> = new Set(["light", "dark"]);
-
-const THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS = 60 * 60 * 24 * 365;
-
-export const isTheme = (value: unknown): value is Theme => {
-  return typeof value === "string" && VALID_THEMES.has(value as Theme);
-};
-
-export const isResolvedTheme = (value: unknown): value is ResolvedTheme => {
-  return typeof value === "string" && VALID_RESOLVED_THEMES.has(value as ResolvedTheme);
-};
-
-const setThemeCookie = (
-  name: string,
-  value: string,
-  maxAgeSeconds = THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS
-): void => {
-  if (typeof document === "undefined") return;
-  const secure = typeof window !== "undefined" && window.location.protocol === "https:";
-  document.cookie = `${name}=${value}; Path=/; Max-Age=${maxAgeSeconds}; SameSite=Lax${secure ? "; Secure" : ""}`;
-};
+  return Result.try(cookies).map(cs =>
+    Result.try(() => {
+      cs.set(name, value, {
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: maxAgeSeconds,
+      });
+    })
+  );
+}
 
 /**
  * Get the current system color scheme preference.
@@ -37,8 +39,9 @@ const setThemeCookie = (
  * @returns "light" | "dark" - `"dark"` if the user's OS/browser prefers dark mode, otherwise `"light"`.
  */
 export const getSystemTheme = (): "light" | "dark" => {
-  if (typeof window === "undefined") return "light";
-  if (typeof window.matchMedia !== "function") return "light";
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+    return "light";
+  }
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 };
 
@@ -63,31 +66,28 @@ export const applyTheme = (resolvedTheme: ResolvedTheme): void => {
 };
 
 /**
- * Read the stored theme from localStorage.
- *
- * Safe in SSR: returns `null` when `window` is not available.
- *
- * @returns {Theme | null} The stored theme value (e.g. `"light"`, `"dark"`, `"system"`) or `null` if not set.
- */
-export const getStoredTheme = (): Theme | null => {
-  if (typeof window === "undefined") return null;
-  const stored = localStorage.getItem(THEME_STORAGE_KEY);
-  return isTheme(stored) ? stored : null;
-};
-
-/**
- * Persist a theme to localStorage.
+ * Persist a resolved theme using cookies.
  *
  * @param {Theme} {@link Theme} - The theme to store (e.g. `"light"`, `"dark"`, `"system"`).
  * @returns {void}
  */
-export const setStoredTheme = (theme: Theme, resolvedTheme?: ResolvedTheme): void => {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(THEME_STORAGE_KEY, theme);
-  setThemeCookie(THEME_PREFERENCE_COOKIE_KEY, theme);
-
+export const setStoredTheme = (
+  theme: Theme,
+  resolvedTheme: ResolvedTheme | undefined,
+  {
+    resolvedCookieKey,
+    cookieMaxAgeSeconds,
+  }: {
+    resolvedCookieKey: string;
+    cookieMaxAgeSeconds: number;
+  }
+): void => {
   const resolved = resolvedTheme ?? (theme === "system" ? getSystemTheme() : theme);
-  setThemeCookie(THEME_RESOLVED_COOKIE_KEY, resolved);
+  setThemeCookie({
+    name: resolvedCookieKey,
+    value: resolved,
+    maxAgeSeconds: cookieMaxAgeSeconds,
+  });
 };
 
 /**
@@ -99,17 +99,47 @@ export const setStoredTheme = (theme: Theme, resolvedTheme?: ResolvedTheme): voi
  * in sync with the current preference.
  *
  * @param {Theme} {@link theme} - If this equals `"system"`, a listener will be registered to track OS theme changes.
+ * @param options.onChange Optional callback when the system theme changes.
+ * When omitted, the listener applies the theme, and if cookie options are provided,
+ * also updates the resolved-theme cookie internally.
  * @returns {() => void} Cleanup function that removes the media query listener.
  */
-export const systemThemeListener = (theme: Theme) => {
-  if (typeof window === "undefined" || theme !== "system") return () => {};
-  if (typeof window.matchMedia !== "function") return () => {};
+export const systemThemeListener = (
+  theme: Theme,
+  options?: {
+    onChange?: (resolvedTheme: ResolvedTheme) => void;
+    resolvedCookieKey?: string;
+    cookieMaxAgeSeconds?: number;
+  }
+) => {
+  if (
+    typeof window === "undefined" ||
+    theme !== "system" ||
+    typeof window.matchMedia !== "function"
+  ) {
+    return () => {};
+  }
   const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
   const handler = () => {
     const resolved = getSystemTheme();
+
+    if (options?.onChange !== undefined) {
+      options.onChange(resolved);
+      return;
+    }
+
     applyTheme(resolved);
-    setThemeCookie(THEME_RESOLVED_COOKIE_KEY, resolved);
+    if (
+      options?.resolvedCookieKey !== undefined &&
+      options.cookieMaxAgeSeconds !== undefined
+    ) {
+      setThemeCookie({
+        name: options.resolvedCookieKey,
+        value: resolved,
+        maxAgeSeconds: options.cookieMaxAgeSeconds,
+      });
+    }
   };
 
   mediaQuery.addEventListener("change", handler);

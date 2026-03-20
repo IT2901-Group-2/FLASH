@@ -2,13 +2,17 @@
 
 import {
   applyTheme,
-  getStoredTheme,
   resolveThemePreference,
   setStoredTheme,
   systemThemeListener,
+} from "@/lib/theme-utils";
+import {
+  isResolvedTheme,
+  THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+  THEME_RESOLVED_COOKIE_KEY,
   type ResolvedTheme,
   type Theme,
-} from "@/lib/theme-utils";
+} from "@/lib/theme-config";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 export interface ThemeContextType {
@@ -60,16 +64,15 @@ interface ThemeProviderProps {
  * ## ThemeProvider
  *
  * Wrap your application with this provider to expose theme state and helpers.
- * It integrates with `localStorage` and listens to
+ * It persists a resolved theme cookie and listens to
  * the OS color-scheme changes when the saved preference is `"system"`.
  *
  * Behaviour details:
- * - On mount the provider reads the persisted preference (via {@link getStoredTheme}).
- * - The `resolvedTheme` is computed: if `theme === "system"` the OS preference
- * (via {@link getSystemTheme}) is used, otherwise the explicit value is used.
+ * - On mount, `resolvedTheme` is read from the SSR `data-theme` attribute when available.
+ * - Otherwise `resolvedTheme` is computed from `defaultTheme`.
  * - When `theme` changes the provider:
  *   1. Applies the resolved theme to the document using {@link applyTheme}.
- *   2. Persists the selected preference and resolved value using {@link setStoredTheme}.
+ *   2. Persists the resolved value using {@link setStoredTheme}.
  * - When `theme === "system"` a system listener is registered to re-apply the
  * resolved theme when the OS preference changes.
  */
@@ -77,19 +80,45 @@ export const ThemeProvider = ({
   children,
   defaultTheme = "system",
 }: ThemeProviderProps) => {
-  const [theme, setThemeState] = useState<Theme>(() => getStoredTheme() ?? defaultTheme);
-  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() =>
-    resolveThemePreference(getStoredTheme() ?? defaultTheme)
-  );
+  const getInitialResolvedTheme = (): ResolvedTheme | null => {
+    if (typeof document !== "undefined") {
+      const ssrResolvedTheme = document.documentElement.getAttribute("data-theme");
+      if (isResolvedTheme(ssrResolvedTheme)) {
+        return ssrResolvedTheme;
+      }
+    }
+
+    return null;
+  };
+
+  const getInitialTheme = (): Theme => {
+    const initialResolvedTheme = getInitialResolvedTheme();
+    if (initialResolvedTheme !== null) return initialResolvedTheme;
+
+    return defaultTheme;
+  };
+
+  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() => {
+    const initialResolvedTheme = getInitialResolvedTheme();
+    if (initialResolvedTheme !== null) return initialResolvedTheme;
+
+    return resolveThemePreference(getInitialTheme());
+  });
 
   useEffect(() => {
     applyTheme(resolvedTheme);
   }, [resolvedTheme]);
 
+  useEffect(() => {
+    setStoredTheme(theme, resolvedTheme, {
+      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
+      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+    });
+  }, [theme, resolvedTheme]);
+
   const setTheme = useCallback((next: Theme) => {
     const resolved = resolveThemePreference(next);
-    applyTheme(resolved);
-    setStoredTheme(next, resolved);
     setThemeState(next);
     setResolvedTheme(resolved);
   }, []);
@@ -100,16 +129,7 @@ export const ThemeProvider = ({
 
   useEffect(() => {
     if (theme !== "system") return;
-    const cleanup = systemThemeListener(theme);
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = () => {
-      setResolvedTheme(resolveThemePreference("system"));
-    };
-    mediaQuery.addEventListener("change", handleChange);
-    return () => {
-      cleanup();
-      mediaQuery.removeEventListener("change", handleChange);
-    };
+    return systemThemeListener(theme, { onChange: setResolvedTheme });
   }, [theme]);
 
   return (
