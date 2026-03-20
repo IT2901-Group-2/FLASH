@@ -8,12 +8,18 @@ import styles from "./RememberedEvents.module.css";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useJoinedEvents } from "@/providers/JoinedEventsContext";
+import { getEventUploadRoute } from "@/lib/routes";
 
 const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
   const c = useTranslations("common");
   const navigation = useRouter();
   return (
-    <Card onClick={() => navigation.push(`/events/${id}`)} className={styles.linkcard}>
+    <Card
+      onClick={() =>
+        navigation.push(getEventUploadRoute(id, { fromRememberedEvents: true }))
+      }
+      className={styles.linkcard}
+    >
       <div className={styles.content}>
         <Title size="small">{name}</Title>
         <span>

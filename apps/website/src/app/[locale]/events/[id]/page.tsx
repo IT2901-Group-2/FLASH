@@ -5,11 +5,12 @@ import styles from "./UploadImage.module.css";
 import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
+import { getAdminDashboardEventRoute, routes } from "@/lib/routes";
 
 // Used for pilot feedback collection. Should be removed after pilot is finished
 const SURVEY_LINK = "https://nettskjema.no/a/610540";
@@ -17,13 +18,14 @@ const SURVEY_UPLOAD_THRESHOLD = 3;
 
 export default function Page() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const tCommon = useTranslations("common");
   const tUpload = useTranslations("guest.event.upload");
   const eventAuth = useEventAuth();
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   // Event Data
-  const eventId = useParams<{ id: string }>().id;
+  const { id: eventId, locale } = useParams<{ id: string; locale: string }>();
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );
@@ -99,6 +101,14 @@ export default function Page() {
     uploadsRemaining:
       typeof uploadsRemaining === "number" ? uploadsRemaining : tUpload("unlimited"),
   });
+
+  const fromRememberedEvents = searchParams.get("source") === "remembered";
+
+  const backHref = eventAuth.isModerator
+    ? fromRememberedEvents
+      ? routes.root
+      : getAdminDashboardEventRoute(locale, eventId)
+    : routes.root;
 
   const { openFilePicker, FileInput } = useFileUpload({
     multiple: false,
@@ -195,6 +205,7 @@ export default function Page() {
           title={eventName}
           username={eventAuth?.nickname ?? ""}
           description={uploadDescription}
+          backHref={backHref}
         >
           <Button
             icon={<QrCode />}
