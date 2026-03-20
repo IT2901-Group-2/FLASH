@@ -8,7 +8,7 @@ import { ChevronDown } from "lucide-react";
 export interface SelectProps
   extends
     FormFieldProps,
-    Omit<SelectHTMLAttributes<HTMLSelectElement>, "size" | "multiple"> {
+    Omit<SelectHTMLAttributes<HTMLSelectElement>, "size" | "multiple" | "onChange"> {
   /**
    * Collection of <option />-elements.
    */
@@ -68,6 +68,7 @@ const Select = ({
           {...omit(rest, ["error", "errorId", "size", "readOnly"])}
           {...inputProps}
           className={cl(styles.select)}
+          disabled={disabled}
         >
           {children}
         </select>

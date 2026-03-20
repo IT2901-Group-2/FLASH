@@ -22,3 +22,51 @@ export const Size: Story = {
     </Select>
   ),
 };
+
+export const Description: Story = {
+  render: () => (
+    <Select label="Sort by" description="The order the events apear in">
+      <option value="name">Event name</option>
+      <option value="startDate">Start date</option>
+      <option value="endDate">End date</option>
+      <option value="createdAt">Created at</option>
+    </Select>
+  ),
+};
+
+export const Error: Story = {
+  render: () => (
+    <Select
+      label="Sort by"
+      description="The order the events apear in"
+      error="You must choose an order"
+    >
+      <option value="name">Event name</option>
+      <option value="startDate">Start date</option>
+      <option value="endDate">End date</option>
+      <option value="createdAt">Created at</option>
+    </Select>
+  ),
+};
+
+export const HideLabel: Story = {
+  render: () => (
+    <Select label="Sort by" hideLabel>
+      <option value="name">Event name</option>
+      <option value="startDate">Start date</option>
+      <option value="endDate">End date</option>
+      <option value="createdAt">Created at</option>
+    </Select>
+  ),
+};
+
+export const Disabled: Story = {
+  render: () => (
+    <Select label="Sort by" disabled>
+      <option value="name">Event name</option>
+      <option value="startDate">Start date</option>
+      <option value="endDate">End date</option>
+      <option value="createdAt">Created at</option>
+    </Select>
+  ),
+};
