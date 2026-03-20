@@ -10,6 +10,7 @@
   border: 0.1rem solid var(--border-subtle);
 
   cursor: pointer;
+  font-size: var(--font-size-large);
 
   &:focus {
     outline: 0.2rem solid var(--border-focus);
@@ -21,21 +22,25 @@
   }
 }
 
-.select {
+.trigger {
+  /* Match your old select styles */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  /* Add padding, border, background etc. here */
+
   appearance: none;
   border-radius: inherit;
   border: none;
   outline: none;
   height: 3rem;
-  padding: 0.5rem 0.5rem;
-  padding-right: 2.5rem;
+  padding: 0.5rem;
   color: var(--text-neutral);
 
   width: 100%;
   background-color: transparent;
-  font-size: var(--font-size-large);
 
-  display: inline-block;
   position: relative;
 
   [data-size="small"] & {
@@ -43,17 +48,41 @@
     font-size: var(--font-size-medium);
   }
 
-  > option {
-    color: var(--text-neutral-decoration);
+  .open {
+    /* Style for open state, e.g. different border */
   }
 }
 
-.icon {
+.listbox {
   position: absolute;
-  pointer-events: none;
-  right: 0.5rem;
-  aspect-ratio: 1/1;
-  width: 1.5rem;
-  height: 1.5rem;
-  color: var(--text-neutral-decoration);
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 1rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  background-color: inherit;
+  border-radius: var(--radius-16);
+  border: inherit;
+}
+
+.option {
+  cursor: pointer;
+  font-size: inherit;
+  padding: 0.25rem;
+  color: var(--text-decoration);
+
+  &:not(:last-child) {
+    border-bottom: 0.1rem solid var(--border-subtle);
+  }
+
+  &:hover {
+    color: inherit;
+  }
 }

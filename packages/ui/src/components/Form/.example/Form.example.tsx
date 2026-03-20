@@ -81,10 +81,10 @@ const FormExample = ({ register, control, errors }: Props) => {
         )}
       />
       <Select label="Sort by" {...register("sortOrder")}>
-        <option value="name">Event name</option>
-        <option value="startDate">Start date</option>
-        <option value="endDate">End date</option>
-        <option value="createdAt">Created at</option>
+        <Select.Option value="name" label="Event name" />
+        <Select.Option value="startDate" label="Start date" />
+        <Select.Option value="endDate" label="End date" />
+        <Select.Option value="createdAt" label="Created at" />
       </Select>
       <div style={{ display: "flex", gap: "1rem" }}>
         <Button type="reset" variant="secondary" fill>
