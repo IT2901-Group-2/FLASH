@@ -1,11 +1,10 @@
-import { Children, isValidElement, SelectHTMLAttributes, useState } from "react";
+import { SelectHTMLAttributes, useState } from "react";
 import { FormFieldProps, useFormField } from "../useFormField";
-import { cl, omit } from "@/util/helpers";
+import { cl } from "@/util/helpers";
 import formStyles from "../Form.module.css";
 import styles from "./Select.module.css";
 import { ChevronDown } from "lucide-react";
 import SelectOption from "./Select.Option";
-import { SelectProvider } from "./Select.context";
 
 export interface SelectProps
   extends
@@ -102,7 +101,7 @@ const Select = ({
           // }}
         >
           <span className={styles.triggerValue}>
-            {<span className={styles.placeholder}>{"TEMP"}</span>}
+            {<span className={styles.placeholder}>{value}</span>}
           </span>
           <ChevronDown className={cl(styles.icon, open && styles.iconOpen)} />
         </button>
