@@ -9,7 +9,7 @@ import {
 import { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 import Page from "./page";
 import { CreateEvent, Event, UpdateEvent } from "@/db";
-import { createQueryClientWrapper } from "@test-config";
+import { createQueryClientWrapper } from "@mocks";
 
 vi.mock("@/hooks/useEvents", () => ({
   useEventsQuery: vi.fn(),
