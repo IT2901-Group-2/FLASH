@@ -12,28 +12,6 @@ import {
 } from "./Select.context";
 import { useSelect } from "./useSelect";
 
-type ControlledProps = {
-  /**
-   * Controlled selected value.
-   */
-  value: string;
-  /**
-   * If not controlled, a default-value needs to be set.
-   */
-  defaultValue?: never;
-};
-
-type UncontrolledProps = {
-  /**
-   * Controlled selected value.
-   */
-  value?: never;
-  /**
-   * If not controlled, a default-value needs to be set.
-   */
-  defaultValue: string;
-};
-
 export type SelectProps = FormFieldProps &
   Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "multiple"> & {
     /**
@@ -55,7 +33,7 @@ export type SelectProps = FormFieldProps &
     value?: string;
     defaultValue?: string;
     ref?: React.Ref<HTMLInputElement>;
-  } & (ControlledProps | UncontrolledProps);
+  };
 
 const Select = ({
   children,
