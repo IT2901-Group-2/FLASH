@@ -12,6 +12,10 @@
   cursor: pointer;
   font-size: var(--font-size-large);
 
+  &:focus-within {
+    border-color: var(--border-focus);
+  }
+
   [data-error="true"] & {
     border-color: var(--border-danger);
   }
