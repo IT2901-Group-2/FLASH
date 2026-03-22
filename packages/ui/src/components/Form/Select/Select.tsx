@@ -1,4 +1,4 @@
-import { InputHTMLAttributes } from "react";
+import { InputHTMLAttributes, useEffect, useRef } from "react";
 import { FormFieldProps, useFormField } from "../useFormField";
 import { cl } from "@/util/helpers";
 import formStyles from "../Form.module.css";
@@ -81,6 +81,21 @@ const Select = ({
     "select"
   );
 
+  const optionsContainerRef = useRef<HTMLUListElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (
+        optionsContainerRef.current &&
+        !optionsContainerRef.current.contains(e.target as Node)
+      )
+        context.setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open, optionsContainerRef]);
+
   return (
     <SelectDescendantsProvider manager={descendants}>
       <SelectProvider value={{ ...context, size }}>
@@ -122,7 +137,11 @@ const Select = ({
               <ChevronDown className={cl(styles.icon, context.open && styles.iconOpen)} />
             </button>
 
-            <ul hidden={!context.open} className={cl(context.open && styles.listbox)}>
+            <ul
+              data-open={context.open}
+              className={styles.listbox}
+              ref={optionsContainerRef}
+            >
               <label className={cl(formStyles.label, styles.mobileLabel)}>{label}</label>
               {children}
             </ul>

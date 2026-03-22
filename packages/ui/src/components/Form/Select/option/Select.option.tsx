@@ -1,6 +1,7 @@
 import { cl, omit } from "@/util/helpers";
 import styles from "../Select.module.css";
 import { useSelectOption } from "./useSelectOption";
+import { Circle } from "lucide-react";
 
 export interface SelectOption extends Omit<
   React.HTMLAttributes<HTMLButtonElement>,
@@ -31,12 +32,12 @@ const SelectOption = ({ value, label, disabled, ref, ...rest }: SelectOption) =>
       aria-selected={isSelected}
       aria-disabled={disabled}
       tabIndex={disabled ? -1 : 0}
-      className={cl(
-        styles.option,
-        isSelected && styles.selected,
-        disabled && styles.disabled
-      )}
+      data-selected={isSelected}
+      className={cl(styles.option, disabled && styles.disabled)}
     >
+      <span className={styles.icon}>
+        <Circle />
+      </span>
       {label}
     </button>
   );
