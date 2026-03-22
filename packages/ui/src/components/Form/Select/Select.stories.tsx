@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import Select from "./Select";
 import { expect, userEvent } from "storybook/test";
-// import { expect, userEvent } from "storybook/test";
 
 const meta: Meta<typeof Select> = {
   title: "Building Blocks/Components/Select",
@@ -30,6 +29,33 @@ export const Default: Story = {
       <Select.Option value="createdAt" label="Created At" />
     </Select>
   ),
+  play: async ({ canvas, step }) => {
+    const user = userEvent.setup();
+    const trigger = canvas.getByRole("combobox");
+    const label = canvas.getByTestId("mainLabel");
+
+    await step("Verify all elements precent", async () => {
+      await expect(label).toBeVisible();
+      await expect(label).toHaveTextContent("Sort by");
+
+      await expect(trigger).toBeInTheDocument();
+      await expect(trigger).toHaveTextContent("Name");
+    });
+
+    await step("Interactions", async () => {
+      await expect(trigger).toHaveTextContent("Name");
+
+      // Open the custom listbox and pick a new option
+      await user.click(trigger);
+      await user.click(canvas.getByRole("option", { name: "Start Date" }));
+      await expect(trigger).toHaveTextContent("Start Date");
+
+      // Open again and pick another
+      await user.click(trigger);
+      await user.click(canvas.getByRole("option", { name: "Created At" }));
+      await expect(trigger).toHaveTextContent("Created At");
+    });
+  },
 };
 
 export const Small: Story = {
@@ -41,6 +67,10 @@ export const Small: Story = {
       <Select.Option value="createdAt" label="Created At" />
     </Select>
   ),
+  play: async ({ canvas }) => {
+    const wrapper = canvas.getByTestId("select");
+    await expect(wrapper).toHaveAttribute("data-size", "small");
+  },
 };
 
 export const Description: Story = {
@@ -56,6 +86,9 @@ export const Description: Story = {
       <Select.Option value="createdAt" label="Created At" />
     </Select>
   ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText("The order the events apear in")).toBeInTheDocument();
+  },
 };
 
 export const Error: Story = {
@@ -72,6 +105,14 @@ export const Error: Story = {
       <Select.Option value="createdAt" label="Created At" />
     </Select>
   ),
+  play: async ({ canvas }) => {
+    const trigger = canvas.getByRole("combobox");
+    const wrapper = canvas.getByTestId("select");
+
+    await expect(canvas.getByText("You must choose an order")).toBeInTheDocument();
+    await expect(trigger).toHaveAttribute("aria-invalid", "true");
+    await expect(wrapper).toHaveAttribute("data-error", "true");
+  },
 };
 
 export const HideLabel: Story = {
@@ -83,6 +124,11 @@ export const HideLabel: Story = {
       <Select.Option value="createdAt" label="Created At" />
     </Select>
   ),
+  play: async ({ canvas }) => {
+    const label = canvas.getByTestId("mainLabel");
+    await expect(label).toBeInTheDocument();
+    await expect(label).not.toBeVisible();
+  },
 };
 
 export const Disabled: Story = {
@@ -94,4 +140,13 @@ export const Disabled: Story = {
       <Select.Option value="createdAt" label="Created At" />
     </Select>
   ),
+  play: async ({ canvas, canvasElement }) => {
+    const user = userEvent.setup();
+    const trigger = canvas.getByRole("combobox");
+
+    await expect(trigger).toBeDisabled();
+    await user.click(trigger);
+    const listbox = canvasElement.querySelector("[data-open]");
+    await expect(listbox).toHaveAttribute("data-open", "false");
+  },
 };
