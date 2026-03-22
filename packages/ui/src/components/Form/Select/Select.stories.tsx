@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import Select from "./Select";
+import { expect, userEvent } from "storybook/test";
 // import { expect, userEvent } from "storybook/test";
 
 const meta: Meta<typeof Select> = {
@@ -29,19 +30,6 @@ export const Default: Story = {
       <Select.Option value="createdAt" label="Created At" />
     </Select>
   ),
-  // play: async ({ canvas, step }) => {
-  //   const select = canvas.getByRole("combobox");
-
-  //   await step("renders label and select", async () => {
-  //     expect(canvas.getByText("Sort by")).toBeInTheDocument();
-  //     expect(select).toBeInTheDocument();
-  //   });
-
-  //   await step("can select an option", async () => {
-  //     await userEvent.selectOptions(select, "startDate");
-  //     expect(select).toHaveValue("startDate");
-  //   });
-  // },
 };
 
 export const Small: Story = {
@@ -68,11 +56,6 @@ export const Description: Story = {
       <Select.Option value="createdAt" label="Created At" />
     </Select>
   ),
-  // play: async ({ canvas, step }) => {
-  //   await step("renders description", async () => {
-  //     expect(canvas.getByText("The order the events apear in")).toBeInTheDocument();
-  //   });
-  // },
 };
 
 export const Error: Story = {
@@ -89,15 +72,6 @@ export const Error: Story = {
       <Select.Option value="createdAt" label="Created At" />
     </Select>
   ),
-  // play: async ({ canvas, step }) => {
-  //   await step("renders error message", async () => {
-  //     expect(canvas.getByText("You must choose an order")).toBeInTheDocument();
-  //   });
-
-  //   await step("select has invalid state", async () => {
-  //     expect(canvas.getByRole("combobox")).toBeInvalid();
-  //   });
-  // },
 };
 
 export const HideLabel: Story = {
@@ -109,13 +83,6 @@ export const HideLabel: Story = {
       <Select.Option value="createdAt" label="Created At" />
     </Select>
   ),
-  // play: async ({ canvas, step }) => {
-  //   await step("label is visually hidden but accessible", async () => {
-  //     const label = canvas.getByText("Sort by");
-  //     expect(label).toBeInTheDocument();
-  //     expect(label).not.toBeVisible();
-  //   });
-  // },
 };
 
 export const Disabled: Story = {
@@ -127,16 +94,4 @@ export const Disabled: Story = {
       <Select.Option value="createdAt" label="Created At" />
     </Select>
   ),
-  // play: async ({ canvas, step }) => {
-  //   const select = canvas.getByRole("combobox");
-
-  //   await step("select is disabled", async () => {
-  //     expect(select).toBeDisabled();
-  //   });
-
-  //   await step("cannot interact with disabled select", async () => {
-  //     await userEvent.selectOptions(select, "startDate");
-  //     expect(select).not.toHaveValue("startDate");
-  //   });
-  // },
 };
