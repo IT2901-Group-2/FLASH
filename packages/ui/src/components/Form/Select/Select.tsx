@@ -126,9 +126,7 @@ const Select = ({
               className={cl(styles.trigger, context.open && styles.open)}
               onClick={() => context.setOpen(true)}
             >
-              <span className={styles.triggerValue}>
-                <span className={styles.placeholder}>{selectedLabel}</span>
-              </span>
+              <span className={styles.triggerValue}>{selectedLabel}</span>
               <ChevronDown className={cl(styles.icon, context.open && styles.iconOpen)} />
             </button>
 
