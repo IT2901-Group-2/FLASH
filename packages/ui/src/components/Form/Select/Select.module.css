@@ -12,22 +12,21 @@
   cursor: pointer;
   font-size: var(--font-size-large);
 
-  &:focus-within {
-    border-color: var(--border-focus);
-  }
-
   [data-error="true"] & {
     border-color: var(--border-danger);
+  }
+
+  [data-size="small"] & {
+    height: 2rem;
+    font-size: var(--font-size-medium);
   }
 }
 
 .trigger {
-  /* Match your old select styles */
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  /* Add padding, border, background etc. here */
 
   appearance: none;
   border-radius: inherit;
@@ -41,11 +40,6 @@
   background-color: transparent;
 
   position: relative;
-
-  [data-size="small"] & {
-    height: 2rem;
-    font-size: var(--font-size-medium);
-  }
 }
 
 .listbox {
@@ -61,9 +55,10 @@
   display: flex;
   flex-direction: column;
 
+  border: inherit;
+
   background-color: inherit;
   border-radius: var(--radius-16);
-  border: inherit;
 
   &[data-open="false"] {
     opacity: 0;
@@ -73,7 +68,7 @@
 .option {
   cursor: pointer;
   font-size: inherit;
-  padding: 0.5rem 0.25rem;
+
   color: var(--text-decoration);
   background-color: inherit;
   border: 0;
@@ -84,6 +79,10 @@
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
+
+  [data-size="small"] & {
+    padding: 0.25rem;
+  }
 
   &:not(:last-child) {
     border-bottom: 0.1rem solid var(--border-subtle);
@@ -100,7 +99,7 @@
     width: 1rem;
     height: 1rem;
 
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
 
@@ -129,6 +128,10 @@
   font-size: var(--font-size-heading-medium);
   font-weight: var(--font-weight-bold);
   margin-block: 1rem 1.5rem;
+
+  [data-size="small"] & {
+    margin-block: 0.5rem 1rem;
+  }
 }
 
 @media screen and (max-width: 768px) {
@@ -171,12 +174,15 @@
   }
 
   .option {
-    font-size: var(--font-size-heading-xsmall);
     padding-block: 1rem;
     color: inherit;
 
     &[data-selected="true"] {
       font-weight: var(--font-weight-bold);
+    }
+
+    .icon {
+      display: flex;
     }
   }
 }
