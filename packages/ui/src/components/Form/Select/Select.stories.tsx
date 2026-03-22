@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import Select from "./Select";
-import { Div } from "storybook/internal/components";
 // import { expect, userEvent } from "storybook/test";
 
 const meta: Meta<typeof Select> = {
@@ -11,7 +10,7 @@ const meta: Meta<typeof Select> = {
   args: {},
   decorators: [
     Story => (
-      <div style={{ width: "20rem" }}>
+      <div style={{ width: "16rem" }}>
         <Story />
       </div>
     ),
@@ -23,7 +22,7 @@ type Story = StoryObj<typeof Select>;
 
 export const Default: Story = {
   render: () => (
-    <Select label="Sort by" required>
+    <Select label="Sort by" defaultValue="name" required>
       <Select.Option value="name" label="Name" />
       <Select.Option value="startDate" label="Start Date" />
       <Select.Option value="endDate" label="End Date" />
@@ -47,7 +46,7 @@ export const Default: Story = {
 
 export const Small: Story = {
   render: () => (
-    <Select label="Sort by" required size="small">
+    <Select label="Sort by" defaultValue="name" required size="small">
       <Select.Option value="name" label="Name" />
       <Select.Option value="startDate" label="Start Date" />
       <Select.Option value="endDate" label="End Date" />
@@ -58,7 +57,11 @@ export const Small: Story = {
 
 export const Description: Story = {
   render: () => (
-    <Select label="Sort by" description="The order the events apear in">
+    <Select
+      label="Sort by"
+      defaultValue="name"
+      description="The order the events apear in"
+    >
       <Select.Option value="name" label="Name" />
       <Select.Option value="startDate" label="Start Date" />
       <Select.Option value="endDate" label="End Date" />
@@ -76,6 +79,7 @@ export const Error: Story = {
   render: () => (
     <Select
       label="Sort by"
+      defaultValue="name"
       description="The order the events apear in"
       error="You must choose an order"
     >
@@ -98,7 +102,7 @@ export const Error: Story = {
 
 export const HideLabel: Story = {
   render: () => (
-    <Select label="Sort by" hideLabel>
+    <Select label="Sort by" defaultValue="name" hideLabel>
       <Select.Option value="name" label="Name" />
       <Select.Option value="startDate" label="Start Date" />
       <Select.Option value="endDate" label="End Date" />
@@ -116,7 +120,7 @@ export const HideLabel: Story = {
 
 export const Disabled: Story = {
   render: () => (
-    <Select label="Sort by" disabled>
+    <Select label="Sort by" defaultValue="name" disabled>
       <Select.Option value="name" label="Name" />
       <Select.Option value="startDate" label="Start Date" />
       <Select.Option value="endDate" label="End Date" />

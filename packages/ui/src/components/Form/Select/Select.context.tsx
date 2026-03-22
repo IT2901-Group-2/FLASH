@@ -1,56 +1,21 @@
-import { createContext, useContext, useState } from "react";
+import { createDescendantContext } from "@/util/hooks/";
+import { createStrictContext } from "@/util/helpers";
+import { useSelect } from "./useSelect";
+import { SelectProps } from "./Select";
 
-interface SelectContextValue {
-  value: string;
-  setValue: (value: string) => void;
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  disabled?: boolean;
-  required?: boolean;
-  listboxId: string;
-  triggerId: string;
-}
+// Descendant context — gives each item access to the ordered registry.
+export const [
+  SelectDescendantsProvider,
+  useSelectDescendantsContext,
+  useSelectDescendants,
+  useSelectDescendant,
+] = createDescendantContext<HTMLButtonElement, { value: string; label: string }>();
 
-const SelectContext = createContext<SelectContextValue | null>(null);
+// State context — selected/focused value + setters.
+type SelectContextValue = ReturnType<typeof useSelect> & Pick<SelectProps, "size">;
 
-export function useSelectContext() {
-  const ctx = useContext(SelectContext);
-  if (!ctx) throw new Error("useSelectContext must be used within a SelectProvider");
-  return ctx;
-}
-
-export function SelectProvider({
-  children,
-  listboxId,
-  triggerId,
-  disabled,
-  required,
-  defaultValue = "",
-}: {
-  children: React.ReactNode;
-  listboxId: string;
-  triggerId: string;
-  disabled?: boolean;
-  required?: boolean;
-  defaultValue?: string;
-}) {
-  const [value, setValue] = useState(defaultValue);
-  const [open, setOpen] = useState(false);
-
-  return (
-    <SelectContext.Provider
-      value={{
-        value,
-        setValue,
-        open,
-        setOpen,
-        disabled,
-        required,
-        listboxId,
-        triggerId,
-      }}
-    >
-      {children}
-    </SelectContext.Provider>
-  );
-}
+export const { Provider: SelectProvider, useContext: useSelectContext } =
+  createStrictContext<SelectContextValue>({
+    name: "SelectContext",
+    errorMessage: "<Select.Item> must be wrapped within <Select>",
+  });
