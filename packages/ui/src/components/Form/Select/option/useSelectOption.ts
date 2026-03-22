@@ -47,7 +47,8 @@ export function useSelectOption({
     isSelected,
     isFocused: focusedValue === value,
     "aria-checked": isSelected,
-    onClick: composeEventHandlers(onClick, () => {
+    onClick: composeEventHandlers(onClick, e => {
+      e.preventDefault();
       if (selectedValue !== value) setSelectedValue(value);
       setOpen(false);
     }),

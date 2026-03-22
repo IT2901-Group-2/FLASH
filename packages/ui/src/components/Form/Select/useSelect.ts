@@ -6,15 +6,20 @@ export function useSelect({
   value,
   defaultValue,
   onChange,
-}: Pick<SelectProps, "value" | "defaultValue" | "onChange">) {
+  name,
+}: Pick<SelectProps, "value" | "defaultValue" | "onChange" | "name">) {
   const [open, setOpen] = useState(false);
   const [focusedValue, setFocusedValue] = useState(defaultValue);
   const [selectedValue, setSelectedValue] = useControllableState({
     defaultValue,
     value,
     onChange: onChange
-      ? (val: string) =>
-          onChange({ target: { value: val } } as React.ChangeEvent<HTMLSelectElement>)
+      ? (val: string) => {
+          console.log(onChange, val);
+          onChange({
+            target: { value: val, name },
+          } as React.ChangeEvent<HTMLInputElement>);
+        }
       : undefined,
   });
 

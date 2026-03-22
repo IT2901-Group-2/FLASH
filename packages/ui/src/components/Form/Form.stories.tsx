@@ -30,7 +30,7 @@ export const Demo: Story = {
         numberOfPhotos: undefined,
         dateRange: { startDate: null, endDate: null },
         eventTime: TIME_PRESETS.full,
-        sortOrder: "startDate",
+        sortOrder: "",
       },
     });
 

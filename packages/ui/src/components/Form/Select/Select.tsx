@@ -1,4 +1,4 @@
-import { SelectHTMLAttributes } from "react";
+import { InputHTMLAttributes } from "react";
 import { FormFieldProps, useFormField } from "../useFormField";
 import { cl, omit } from "@/util/helpers";
 import formStyles from "../Form.module.css";
@@ -35,7 +35,7 @@ type UncontrolledProps = {
 };
 
 export type SelectProps = FormFieldProps &
-  Omit<SelectHTMLAttributes<HTMLSelectElement>, "size" | "multiple"> & {
+  Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "multiple"> & {
     /**
      * Collection of <option />-elements.
      */
@@ -54,11 +54,10 @@ export type SelectProps = FormFieldProps &
     hideLabel?: boolean;
     value?: string;
     defaultValue?: string;
-    ref?: React.Ref<HTMLSelectElement>;
+    ref?: React.Ref<HTMLInputElement>;
   } & (ControlledProps | UncontrolledProps);
 
 const Select = ({
-  "data-color": color,
   children,
   className,
   label,
@@ -68,9 +67,11 @@ const Select = ({
   onChange,
   hideLabel = false,
   disabled,
+  name,
+  ref,
   ...rest
 }: SelectProps) => {
-  const context = useSelect({ defaultValue, value, onChange });
+  const context = useSelect({ defaultValue, value, onChange, name });
   const descendants = useSelectDescendants();
   const selectedLabel = descendants
     .values()
@@ -87,7 +88,6 @@ const Select = ({
         <div
           data-size={size}
           className={cl(formStyles.field, disabled && formStyles.disabled, className)}
-          data-color={color}
           data-error={!!rest.error}
           data-testid="select"
         >
@@ -108,12 +108,15 @@ const Select = ({
               {description}
             </div>
           )}
-          <select
-            value={context.selectedValue}
-            hidden
-            onChange={() => {}}
-            {...omit({ ...rest }, ["size", "style"])}
+
+          <input
+            ref={ref}
+            type="hidden"
+            readOnly
+            value={context.selectedValue ?? ""}
+            {...omit(rest, ["size", "style"])}
           />
+
           <div className={styles.container}>
             <button
               id={inputProps.id}
