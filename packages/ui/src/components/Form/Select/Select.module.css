@@ -36,8 +36,6 @@
 
   width: 100%;
   background-color: transparent;
-
-  position: relative;
 }
 
 .listbox {
@@ -96,6 +94,7 @@
     position: relative;
     aspect-ratio: 1/1;
     width: 1rem;
+    height: 1rem;
 
     display: none;
     justify-content: center;
@@ -145,8 +144,6 @@
 
     height: min-content;
     max-height: 75vh;
-
-    width: 100vw;
     overflow-y: auto; /* important if content is tall */
 
     padding: 1rem 2.5rem 12.5% 12.5%;

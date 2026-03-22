@@ -106,6 +106,7 @@ const Select = ({
           data-testid="select"
         >
           <label
+            data-testid="mainLabel"
             hidden={hideLabel}
             htmlFor={inputProps.id}
             className={cl(formStyles.label)}
@@ -127,9 +128,10 @@ const Select = ({
               id={inputProps.id}
               type="button"
               role="combobox"
+              aria-invalid={!!rest.error}
               disabled={disabled}
               className={cl(styles.trigger, context.open && styles.open)}
-              onClick={() => context.setOpen(o => !o)}
+              onClick={() => context.setOpen(true)}
             >
               <span className={styles.triggerValue}>
                 {<span className={styles.placeholder}>{selectedLabel}</span>}
