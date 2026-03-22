@@ -18,7 +18,7 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@test-setup": path.resolve(__dirname, "./vitest.setup"),
-      "@mocks": path.resolve(__dirname, "./__mocks__"),
+      "@test-config": path.resolve(__dirname, "./__mocks__"),
     },
   },
 });

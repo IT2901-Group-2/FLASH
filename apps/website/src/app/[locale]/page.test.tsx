@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import Page from "./page";
-import { createQueryClientWrapper } from "@mocks";
+import { createQueryClientWrapper } from "@test-config";
 
 // Track which translation keys are requested
 const translationKeys: string[] = [];

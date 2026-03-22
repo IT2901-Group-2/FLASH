@@ -23,7 +23,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@test-setup": ["./vitest.setup"],
-      "@mocks": ["./__mocks__"]
+      "@test-config": ["./__mocks__"]
     }
   },
   "include": [

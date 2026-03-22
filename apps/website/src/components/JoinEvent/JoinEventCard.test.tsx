@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, test } from "vitest";
 import { render, screen } from "@testing-library/react";
 import JoinEventCard from "./JoinEventCard";
-import { createQueryClientWrapper } from "@mocks";
+import { createQueryClientWrapper } from "@test-config";
 
 describe("JoinEventCard", () => {
   beforeEach(() => {

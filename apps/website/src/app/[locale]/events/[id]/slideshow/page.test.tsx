@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import styles from "./slideshow.module.css";
 import Page from "./page";
-import { mockRouter } from "@mocks";
+import { mockRouter } from "@test-config";
 
 // --- mocks ---
 
