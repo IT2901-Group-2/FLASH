@@ -7,8 +7,17 @@ export interface SelectOption extends Omit<
   React.HTMLAttributes<HTMLButtonElement>,
   "children"
 > {
+  /**
+   * Internal value of this option
+   */
   value: string;
+  /**
+   * The display value of this option
+   */
   label: string;
+  /**
+   * If this option is disabled or not
+   */
   disabled?: boolean;
   /**
    * Foreward referance
