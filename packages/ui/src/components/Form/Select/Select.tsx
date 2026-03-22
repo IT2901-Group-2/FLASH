@@ -76,15 +76,12 @@ const Select = ({
     .values()
     .find(d => d.value === context.selectedValue)?.label;
 
-  const { inputProps, errorId, showErrorMsg, size, inputDescriptionId } = useFormField(
-    rest,
-    "select"
-  );
+  const { inputProps, errorId, showErrorMsg, size } = useFormField(rest, "select");
 
   const optionsContainerRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
-    if (!open) return;
+    if (!context.open) return;
     const handler = (e: MouseEvent) => {
       if (
         optionsContainerRef.current &&
@@ -94,7 +91,7 @@ const Select = ({
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, [open, optionsContainerRef]);
+  }, [context.open, context.setOpen]);
 
   return (
     <SelectDescendantsProvider manager={descendants}>
@@ -115,11 +112,7 @@ const Select = ({
             {rest.required && <span className={formStyles.requiredStar}>*</span>}
           </label>
           {!!description && (
-            <div
-              hidden={hideLabel}
-              className={formStyles.description}
-              id={inputDescriptionId}
-            >
+            <div hidden={hideLabel} className={formStyles.description}>
               {description}
             </div>
           )}
@@ -134,7 +127,7 @@ const Select = ({
               onClick={() => context.setOpen(true)}
             >
               <span className={styles.triggerValue}>
-                {<span className={styles.placeholder}>{selectedLabel}</span>}
+                <span className={styles.placeholder}>{selectedLabel}</span>
               </span>
               <ChevronDown className={cl(styles.icon, context.open && styles.iconOpen)} />
             </button>
