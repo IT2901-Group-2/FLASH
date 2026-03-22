@@ -14,12 +14,10 @@ export function useSelect({
     defaultValue,
     value,
     onChange: onChange
-      ? (val: string) => {
-          console.log(onChange, val);
+      ? (val: string) =>
           onChange({
             target: { value: val, name },
-          } as React.ChangeEvent<HTMLInputElement>);
-        }
+          } as React.ChangeEvent<HTMLInputElement>)
       : undefined,
   });
 

@@ -1,6 +1,6 @@
 import { InputHTMLAttributes } from "react";
 import { FormFieldProps, useFormField } from "../useFormField";
-import { cl, omit } from "@/util/helpers";
+import { cl } from "@/util/helpers";
 import formStyles from "../Form.module.css";
 import styles from "./Select.module.css";
 import { ChevronDown } from "lucide-react";
@@ -68,7 +68,6 @@ const Select = ({
   hideLabel = false,
   disabled,
   name,
-  ref,
   ...rest
 }: SelectProps) => {
   const context = useSelect({ defaultValue, value, onChange, name });
@@ -108,15 +107,6 @@ const Select = ({
               {description}
             </div>
           )}
-
-          <input
-            ref={ref}
-            type="hidden"
-            readOnly
-            value={context.selectedValue ?? ""}
-            {...omit(rest, ["size", "style"])}
-          />
-
           <div className={styles.container}>
             <button
               id={inputProps.id}

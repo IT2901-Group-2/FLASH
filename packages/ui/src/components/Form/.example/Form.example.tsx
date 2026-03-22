@@ -22,8 +22,6 @@ type Props = {
 const FormExample = ({ register, control, errors }: Props) => {
   const dateRange = useWatch({ control, name: "dateRange" });
 
-  const { onChange, ...sortOrder } = register("sortOrder");
-
   return (
     <>
       <TextField
@@ -82,15 +80,7 @@ const FormExample = ({ register, control, errors }: Props) => {
           />
         )}
       />
-      <Select
-        label="Sort by"
-        defaultValue="name"
-        {...sortOrder}
-        onChange={e => {
-          console.log(e);
-          onChange(e);
-        }}
-      >
+      <Select label="Sort by" defaultValue="name" {...register("sortOrder")}>
         <Select.Option value="name" label="Event name" />
         <Select.Option value="startDate" label="Start date" />
         <Select.Option value="endDate" label="End date" />
