@@ -30,9 +30,14 @@ export type SelectProps = FormFieldProps &
      * Shows label and description for screenreaders only.
      */
     hideLabel?: boolean;
+    /**
+     * value for when the component is externaly controled.
+     */
     value?: string;
+    /**
+     * A default value for the component
+     */
     defaultValue?: string;
-    ref?: React.Ref<HTMLInputElement>;
   };
 
 const Select = ({
