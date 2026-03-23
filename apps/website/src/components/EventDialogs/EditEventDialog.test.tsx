@@ -4,6 +4,8 @@ import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import EditEventDialog from "./EditEventDialog";
 
+// --- Mocks ----------------------------------------------------------------
+
 const mockDialog = vi.fn(({ children }: { children?: React.ReactNode }) => (
   <div data-testid="dialog">{children}</div>
 ));
@@ -15,8 +17,6 @@ vi.mock("@flash/ui", async importOriginal => {
     Dialog: (props: React.ComponentProps<typeof actual.Dialog>) => mockDialog(props),
   };
 });
-
-// --- Mocks ----------------------------------------------------------------
 
 const mockMutateAsync = vi.fn();
 
