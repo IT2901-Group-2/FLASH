@@ -53,11 +53,10 @@ function getInitialState(defaultTheme: Theme): {
   const ssrResolved = getSSRResolvedTheme();
 
   if (ssrResolved !== null) {
-    return { theme: ssrResolved, resolvedTheme: ssrResolved };
+    return { theme: defaultTheme, resolvedTheme: ssrResolved };
   }
 
-  const resolvedTheme = resolveThemePreference(defaultTheme);
-  return { theme: defaultTheme, resolvedTheme };
+  return { theme: defaultTheme, resolvedTheme: resolveThemePreference(defaultTheme) };
 }
 
 export interface ThemeContextType {
@@ -125,11 +124,8 @@ export const ThemeProvider = ({
   children,
   defaultTheme = "system",
 }: ThemeProviderProps) => {
-  const [theme, setThemeState] = useState<Theme>(
-    () => getInitialState(defaultTheme).theme
-  );
-  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(
-    () => getInitialState(defaultTheme).resolvedTheme
+  const [{ theme, resolvedTheme }, setThemeState] = useState(() =>
+    getInitialState(defaultTheme)
   );
 
   useEffect(() => {
@@ -140,14 +136,13 @@ export const ThemeProvider = ({
   useEffect(() => {
     if (theme !== "system") return;
     return systemThemeListener("system", {
-      onChange: setResolvedTheme,
+      onChange: resolved => setThemeState(prev => ({ ...prev, resolvedTheme: resolved })),
       cookie: COOKIE_OPTIONS,
     });
   }, [theme]);
 
   const setTheme = useCallback((next: Theme) => {
-    setThemeState(next);
-    setResolvedTheme(resolveThemePreference(next));
+    setThemeState({ theme: next, resolvedTheme: resolveThemePreference(next) });
   }, []);
 
   const toggleTheme = useCallback(() => {
