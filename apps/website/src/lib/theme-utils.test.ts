@@ -79,6 +79,7 @@ describe("applyTheme", () => {
     applyTheme("dark");
     expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
   });
+
   it("should do nothing when document is undefined", () => {
     const originalDocument = global.document;
     // @ts-expect-error - intentionally setting to undefined
@@ -116,44 +117,40 @@ describe("isResolvedTheme", () => {
 });
 
 describe("setStoredTheme", () => {
+  // Shared cookie options matching the patched two-argument API.
+  const cookieOptions = {
+    resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
+    cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+  };
+
   beforeEach(() => {
     document.cookie = `${THEME_RESOLVED_COOKIE_KEY}=; Max-Age=0; Path=/`;
   });
 
   it("should persist resolved cookie for light theme", () => {
-    setStoredTheme("light", undefined, {
-      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
-      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
-    });
-
+    setStoredTheme("light", cookieOptions);
     expect(document.cookie).toContain(`${THEME_RESOLVED_COOKIE_KEY}=light`);
   });
 
   it("should persist resolved cookie for dark theme", () => {
-    setStoredTheme("dark", undefined, {
-      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
-      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
-    });
-
+    setStoredTheme("dark", cookieOptions);
     expect(document.cookie).toContain(`${THEME_RESOLVED_COOKIE_KEY}=dark`);
   });
 
   it("should persist resolved cookie for system theme", () => {
-    setStoredTheme("system", undefined, {
-      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
-      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
-    });
+    const mockMatchMedia = vi.fn().mockImplementation(query => ({
+      matches: false,
+      media: query,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    }));
 
+    vi.stubGlobal("matchMedia", mockMatchMedia);
+
+    setStoredTheme("system", cookieOptions);
     expect(document.cookie).toContain(THEME_RESOLVED_COOKIE_KEY);
-  });
 
-  it("should persist resolved theme cookie", () => {
-    setStoredTheme("dark", "dark", {
-      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
-      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
-    });
-
-    expect(document.cookie).toContain(`${THEME_RESOLVED_COOKIE_KEY}=dark`);
+    vi.unstubAllGlobals();
   });
 });
 
@@ -164,6 +161,14 @@ describe("systemThemeListener", () => {
     removeEventListener: ReturnType<typeof vi.fn>;
   };
   let mockMatchMedia: ReturnType<typeof vi.fn>;
+
+  // Shared cookie options matching the patched nested `cookie` shape.
+  const listenerOptions = {
+    cookie: {
+      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
+      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+    },
+  };
 
   beforeEach(() => {
     mockMediaQuery = {
@@ -182,10 +187,7 @@ describe("systemThemeListener", () => {
   });
 
   it("should register event listener when theme is 'system'", () => {
-    const cleanup = systemThemeListener("system", {
-      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
-      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
-    });
+    const cleanup = systemThemeListener("system", listenerOptions);
 
     expect(mockMatchMedia).toHaveBeenCalledWith("(prefers-color-scheme: dark)");
     expect(mockMediaQuery.addEventListener).toHaveBeenCalledWith(
@@ -215,10 +217,7 @@ describe("systemThemeListener", () => {
   });
 
   it("should apply theme when system preference changes", () => {
-    systemThemeListener("system", {
-      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
-      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
-    });
+    systemThemeListener("system", listenerOptions);
 
     const handler = mockMediaQuery.addEventListener.mock.calls[0]?.[1] as
       | (() => void)
@@ -231,10 +230,7 @@ describe("systemThemeListener", () => {
   });
 
   it("should remove event listener when cleanup function is called", () => {
-    const cleanup = systemThemeListener("system", {
-      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
-      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
-    });
+    const cleanup = systemThemeListener("system", listenerOptions);
 
     expect(mockMediaQuery.addEventListener).toHaveBeenCalled();
 
@@ -255,14 +251,8 @@ describe("systemThemeListener", () => {
   });
 
   it("should handle multiple listener registrations and cleanups", () => {
-    const cleanup1 = systemThemeListener("system", {
-      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
-      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
-    });
-    const cleanup2 = systemThemeListener("system", {
-      resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
-      cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
-    });
+    const cleanup1 = systemThemeListener("system", listenerOptions);
+    const cleanup2 = systemThemeListener("system", listenerOptions);
 
     expect(mockMediaQuery.addEventListener).toHaveBeenCalledTimes(2);
 
