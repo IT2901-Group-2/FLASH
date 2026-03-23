@@ -15,13 +15,3 @@ export function getAdminDashboardEventsRoute(locale: string): string {
 export function getAdminDashboardEventRoute(locale: string, eventId: string): string {
   return `${getAdminDashboardEventsRoute(locale)}/${encodeURIComponent(eventId)}`;
 }
-
-export function getEventUploadRoute(
-  eventId: string,
-  options?: { fromRememberedEvents?: boolean }
-): string {
-  const eventRoute = `/events/${encodeURIComponent(eventId)}`;
-  if (!options?.fromRememberedEvents) return eventRoute;
-
-  return `${eventRoute}?source=remembered`;
-}
