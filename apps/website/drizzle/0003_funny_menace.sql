@@ -1,1 +1,0 @@
-ALTER TABLE `images` ADD `previewImage` text;

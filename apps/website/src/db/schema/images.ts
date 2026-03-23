@@ -17,7 +17,7 @@ export const imageTable = sqliteTable("images", {
     .notNull()
     .references(() => userTable.id, { onDelete: "cascade" }),
   isApproved: integer({ mode: "boolean" }),
-  previewImage: text(),
+  previewImage: text().notNull(),
   createdAt: integer({ mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
@@ -40,7 +40,7 @@ export const getImageSchema = z.object({
   eventId: z.string(),
   userId: z.string(),
   isApproved: z.boolean().nullable(),
-  previewImage: z.string().nullable(),
+  previewImage: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });

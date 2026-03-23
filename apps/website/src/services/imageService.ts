@@ -123,7 +123,7 @@ export class ImageService {
       );
 
       const previewImage = yield* Result.try(() =>
-        sharpImage.clone().resize({ width: 32, height: 32 }).blur().toBuffer()
+        sharpImage.clone().resize({ width: 32, height: 32 }).greyscale().blur().toBuffer()
       ).map(buff => `data:image/webp;base64,${buff.toString("base64")}`);
 
       return Result.try(() =>
