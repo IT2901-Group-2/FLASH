@@ -29,10 +29,15 @@ export function semanticRootTokens(theme: ColorTheme) {
       secondary: { value: theme == "light" ? "#828284" : "#8F8F90", type: "color" },
       tertiary: { value: theme == "light" ? "#474747" : "#C7C7C8", type: "color" },
     },
+    "color-backdrop": {
+      value: theme == "light" ? "#474747FC" : "#242424FC",
+      type: "color",
+    },
   } satisfies {
     "color-background": Record<ColorScale, StyleDictionaryToken<"color">>;
     "color-logo": Record<"primary" | "secondary", StyleDictionaryToken<"color">>;
     "color-border": Record<ColorScale, StyleDictionaryToken<"color">>;
     "color-text": Record<TextColorScale, StyleDictionaryToken<"color">>;
+    "color-backdrop": StyleDictionaryToken<"color">;
   };
 }
