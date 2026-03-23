@@ -1,3 +1,4 @@
+import { InputProps } from "@flash/ui";
 import React from "react";
 import { vi } from "vitest";
 
@@ -40,9 +41,21 @@ export const flashUiMock = () => ({
     )
   ),
 
+  ProgressDots: vi.fn(() => <div data-testid="progress-dots" />),
+
+  Card: vi.fn(({ children }: { children?: React.ReactNode }) => (
+    <div data-testid="card">{children}</div>
+  )),
+
   Dialog: vi.fn(({ children }: { children?: React.ReactNode }) => (
     <div data-testid="dialog">{children}</div>
   )),
+
+  Input: vi.fn(({ children, ...props }: InputProps) => {
+    <input data-testid="input" {...props}>
+      {children}
+    </input>;
+  }),
 
   QRDisplay: vi.fn(({ value, code }: { value: string; code: string }) => (
     <div data-testid="qr-display" data-value={value} data-code={code} />
