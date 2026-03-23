@@ -16,7 +16,7 @@
   max-width: 100%;
 
   &[data-color] {
-    color: var(--color-text-secondary);
+    color: var(--color-base);
   }
 
   /* ----- Font Size ----- */
