@@ -1,15 +1,15 @@
 .card {
   border-radius: var(--radius-16);
   padding: 1.5rem;
-  background-color: var(--color-primary-base);
+  background-color: var(--color-background-base);
   border: 1px solid var(--color-border-base);
   box-shadow: var(--shadow-dialog);
   color: var(--color-text-base);
   min-width: 0;
 
   &[data-color] {
-    background-color: var(--color-primary-light);
+    background-color: var(--color-base);
     border-color: var(--color-border-dark);
-    color: var(--color-text-base);
+    color: var(--color-text-light);
   }
 }
