@@ -60,6 +60,7 @@ export default function Page() {
           return;
         }
 
+        // Guard against eager chain-fetching while the sentinel remains visible.
         const currentScrollY = window.scrollY;
 
         // Avoid fetching on initial render when the sentinel is already visible.

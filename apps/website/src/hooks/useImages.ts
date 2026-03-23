@@ -24,6 +24,9 @@ function toOffsetCursor(cursor?: string): number {
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
 }
 
+/**
+ * Converts a response from the images API into a format suitable for infinite scrolling.
+ */
 function toImagesInfinitePage(
   response: z.infer<typeof imagesListResponseSchema>,
   pageSize: number,
