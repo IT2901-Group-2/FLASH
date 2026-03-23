@@ -145,7 +145,7 @@ export default function Page() {
   return (
     <>
       <FileInput />
-      <Dialog ref={dialogRef} className={styles.qrCodeContainer}>
+      <Dialog ref={dialogRef} closedby="any" className={styles.qrCodeContainer}>
         <div className={styles.qrCodeContainer}>
           {joinLink !== null && (
             <QRDisplay

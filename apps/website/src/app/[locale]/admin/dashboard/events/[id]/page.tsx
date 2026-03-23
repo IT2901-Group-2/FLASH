@@ -24,7 +24,7 @@ const Page = () => {
 
   return (
     <>
-      <Dialog ref={qrCodeRef}>
+      <Dialog ref={qrCodeRef} closedby="any">
         <ReviewStep result={eventData} status={status} />
         <Button
           variant="secondary"
