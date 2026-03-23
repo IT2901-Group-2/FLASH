@@ -7,13 +7,15 @@ import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
-import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
+import { useInfiniteImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 
 // Used for pilot feedback collection. Should be removed after pilot is finished
 const SURVEY_LINK = "https://nettskjema.no/a/610540";
 const SURVEY_UPLOAD_THRESHOLD = 3;
+const IMAGE_PAGE_SIZE = 12;
+const MIN_SCROLL_DELTA_FOR_AUTO_FETCH = 120;
 
 export default function Page() {
   const router = useRouter();
@@ -30,8 +32,63 @@ export default function Page() {
   const eventData = data?.[0];
 
   // Image Data
-  const { data: imagesData } = useImagesQuery(eventId);
-  const images = imagesData ?? [];
+  const {
+    data: imagesPages,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+    isLoading: isImagesLoading,
+  } = useInfiniteImagesQuery(eventId, undefined, IMAGE_PAGE_SIZE);
+  const images = imagesPages?.pages.flatMap(page => page.items) ?? [];
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+  const fetchedThisIntersectionRef = useRef(false);
+  const lastAutoFetchScrollYRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!hasNextPage || isFetchingNextPage) return;
+
+    const target = loadMoreRef.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      entries => {
+        const entry = entries[0];
+        if (!entry) return;
+
+        if (!entry.isIntersecting) {
+          fetchedThisIntersectionRef.current = false;
+          return;
+        }
+
+        const currentScrollY = window.scrollY;
+
+        // Avoid fetching on initial render when the sentinel is already visible.
+        if (currentScrollY <= 0) return;
+
+        if (
+          lastAutoFetchScrollYRef.current !== null &&
+          currentScrollY - lastAutoFetchScrollYRef.current <
+            MIN_SCROLL_DELTA_FOR_AUTO_FETCH
+        ) {
+          return;
+        }
+
+        if (fetchedThisIntersectionRef.current) return;
+
+        fetchedThisIntersectionRef.current = true;
+        lastAutoFetchScrollYRef.current = currentScrollY;
+        fetchNextPage();
+      },
+      {
+        root: null,
+        rootMargin: "0px",
+        threshold: 0.2,
+      }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -237,23 +294,38 @@ export default function Page() {
         </div>
       </div>
 
-      {!isLoading && images.length === 0 ? (
+      {!isLoading && !isImagesLoading && images.length === 0 ? (
         <div role="status" className={styles.emptyState}>
           {tUpload("emptyState")}
         </div>
       ) : (
-        <div className={styles.grid}>
-          {images.map((image, index) => (
-            <ImageCard
-              key={image.id}
-              variant="preview2"
-              src={`/api/events/${eventId}/images/${image.id}`}
-              alt={tUpload("imageAlt", { index: index + 1, total: images.length })}
-              title={tUpload("imageTitle", { index: index + 1 })}
-              data-image-id={image.id}
-            />
-          ))}
-        </div>
+        <>
+          <div className={styles.grid}>
+            {images.map((image, index) => (
+              <ImageCard
+                key={image.id}
+                variant="preview2"
+                src={`/api/events/${eventId}/images/${image.id}`}
+                alt={tUpload("imageAlt", { index: index + 1, total: images.length })}
+                title={tUpload("imageTitle", { index: index + 1 })}
+                data-image-id={image.id}
+              />
+            ))}
+          </div>
+          {hasNextPage ? (
+            <div ref={loadMoreRef} className={styles.loadMoreSentinel} />
+          ) : null}
+          {hasNextPage ? (
+            <Button
+              variant="secondary"
+              data-color="brand-purple"
+              onClick={() => fetchNextPage()}
+              loading={isFetchingNextPage}
+            >
+              {tCommon("actions.loadMore")}
+            </Button>
+          ) : null}
+        </>
       )}
     </>
   );
