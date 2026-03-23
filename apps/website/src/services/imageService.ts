@@ -1,11 +1,11 @@
 import { FileStorage } from "@flash/file-storage";
 import { DatabaseService, dbService } from "./databaseService";
 import { AsyncResult, Result } from "typescript-result";
-import { GetImagesParams, Image, imageTable, UpdateImage } from "@/db";
+import { GetImagesPage, GetImagesParams, Image, imageTable, UpdateImage } from "@/db";
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
 import { getFirstRow } from "@/lib/utils/sql";
-import { and, eq, inArray, isNull } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import { JWT_SECRET, storage } from "@/config";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { getEventCookie } from "@/lib/utils/eventCookie";
@@ -52,10 +52,15 @@ export class ImageService {
    */
   getImages(
     eventId: string,
-    { id, approval }: GetImagesParams = {}
-  ): AsyncResult<Image[], Error> {
-    return Result.try(() =>
-      this.dbService.db
+    { id, approval, cursor, limit = 20 }: GetImagesParams = {}
+  ): AsyncResult<GetImagesPage, Error> {
+    const offset =
+      cursor !== undefined && Number.isFinite(Number.parseInt(cursor, 10))
+        ? Math.max(0, Number.parseInt(cursor, 10))
+        : 0;
+
+    return Result.try(async () => {
+      const rows = await this.dbService.db
         .select()
         .from(imageTable)
         .where(
@@ -68,7 +73,18 @@ export class ImageService {
             approval === "pending" ? isNull(imageTable.isApproved) : undefined
           )
         )
-    );
+        .orderBy(desc(imageTable.createdAt), desc(imageTable.id))
+        .offset(offset)
+        .limit(limit + 1);
+
+      const hasMore = rows.length > limit;
+      const items = hasMore ? rows.slice(0, limit) : rows;
+
+      return {
+        items,
+        nextCursor: hasMore ? String(offset + limit) : null,
+      };
+    });
   }
 
   /**
