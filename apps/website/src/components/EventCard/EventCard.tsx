@@ -57,7 +57,14 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
       <Dialog ref={deleteConfirmRef}>
         <Title>{t("deleteConfirmation.title")}</Title>
         <p>{t("deleteConfirmation.message")}</p>
-        <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end", marginTop: "1rem" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "0.5rem",
+            justifyContent: "flex-end",
+            marginTop: "1rem",
+          }}
+        >
           <Button
             variant="secondary"
             data-color="neutral"
@@ -65,10 +72,7 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
           >
             {c("cancel")}
           </Button>
-          <Button
-            data-color="danger"
-            onClick={confirmDelete}
-          >
+          <Button data-color="danger" onClick={confirmDelete}>
             {c("delete")}
           </Button>
         </div>
