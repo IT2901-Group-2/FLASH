@@ -54,7 +54,7 @@ vi.mock("next-intl", async importOriginal => {
 vi.mock("@flash/ui", () => flashUiMock());
 
 /**
- * Factory contains ONLY vi.fn() calls — no reference to any imported variable.
+ * Factory contains ONLY vi.fn() calls - no reference to any imported variable.
  *
  * Vitest hoists vi.mock() above all imports, so using an imported value here
  * (e.g. mockRouter) would be undefined.  The real return values are wired up
