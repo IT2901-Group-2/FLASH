@@ -16,7 +16,7 @@ export const routes = {
 } as const;
 
 /**
- * Generates the route for the admin dashboard event overview page based on the event ID..
+ * Generates the route for the admin dashboard event overview page.
  * @returns The URL path to the admin dashboard event overview page.
  *
  * "/admin/dashboard/events"
