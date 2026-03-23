@@ -1,9 +1,43 @@
-import { getImageSchema, GetImagesParams, UpdateImage } from "@/db";
+import { getImageSchema, getImagesPageSchema, GetImagesParams, UpdateImage } from "@/db";
 import { makeRequest } from "@/lib/utils/api";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import z from "zod";
 
 const imageArraySchema = z.array(getImageSchema);
+const imagesListResponseSchema = z.union([getImagesPageSchema, imageArraySchema]);
+
+function toImagesPage(
+  response: z.infer<typeof imagesListResponseSchema>
+): z.infer<typeof getImagesPageSchema> {
+  return Array.isArray(response) ? { items: response, nextCursor: null } : response;
+}
+
+function toOffsetCursor(cursor?: string): number {
+  if (cursor === undefined) return 0;
+
+  const parsed = Number.parseInt(cursor, 10);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
+}
+
+function toImagesInfinitePage(
+  response: z.infer<typeof imagesListResponseSchema>,
+  pageSize: number,
+  cursor?: string
+): z.infer<typeof getImagesPageSchema> {
+  if (!Array.isArray(response)) return response;
+
+  const offset = toOffsetCursor(cursor);
+  const items = response.slice(offset, offset + pageSize);
+  const nextCursor =
+    offset + pageSize < response.length ? String(offset + pageSize) : null;
+
+  return { items, nextCursor };
+}
 
 /**
  * Serializes `GetImages` filters into a URL query string.
@@ -26,6 +60,12 @@ function toImagesSearchParams(params?: GetImagesParams): string {
   }
   if (params.approval !== undefined) {
     sp.append("approval", params.approval);
+  }
+  if (params.cursor !== undefined) {
+    sp.append("cursor", params.cursor);
+  }
+  if (params.limit !== undefined) {
+    sp.append("limit", String(params.limit));
   }
 
   const qs = sp.toString();
@@ -59,9 +99,36 @@ export function useImagesQuery(
     queryKey: imagesKeys.list(eventId, params),
     queryFn: () =>
       makeRequest(
-        imageArraySchema,
+        imagesListResponseSchema,
         `/api/events/${eventId}/images${toImagesSearchParams(params)}`
-      ),
+      ).then(response => toImagesPage(response).items),
+    enabled: !!eventId,
+    refetchInterval,
+  });
+}
+
+/**
+ * Fetches event images with cursor pagination for infinite loading.
+ */
+export function useInfiniteImagesQuery(
+  eventId?: string,
+  params?: Omit<GetImagesParams, "cursor" | "limit">,
+  pageSize: number = 20,
+  refetchInterval?: number
+) {
+  return useInfiniteQuery({
+    queryKey: [...imagesKeys.list(eventId, params), "infinite", pageSize] as const,
+    initialPageParam: undefined as string | undefined,
+    queryFn: ({ pageParam }) =>
+      makeRequest(
+        imagesListResponseSchema,
+        `/api/events/${eventId}/images${toImagesSearchParams({
+          ...params,
+          cursor: pageParam,
+          limit: pageSize,
+        })}`
+      ).then(response => toImagesInfinitePage(response, pageSize, pageParam)),
+    getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
     enabled: !!eventId,
     refetchInterval,
   });
