@@ -32,33 +32,29 @@
   }
 
   &[data-variant="primary"] {
-    background-color: var(--color-brand-base);
+    background-color: var(--color-base);
     color: white;
 
-    &:hover {
-      background-color: var(--color-brand-light);
+    &:hover:not(:disabled, .disabled) {
+      background-color: var(--color-light);
     }
 
-    &:active {
-      background-color: var(--color-brand-dark);
-    }
-
-    &:is(:disabled, .disabled) {
-      background-color: var(--color-brand-base);
+    &:active:not(:disabled, .disabled) {
+      background-color: var(--color-dark);
     }
   }
 
   &[data-variant="secondary"] {
     background-color: transparent;
     color: var(--color-text-base);
-    border: 0.125rem solid var(--color-brand-base);
+    border: 0.125rem solid var(--color-base);
 
     &:hover {
-      background-color: var(--color-primary-light);
+      background-color: color-mix(in srgb, var(--color-light) 60%, transparent);
     }
 
     &:active {
-      background-color: var(--color-primary-dark);
+      background-color: color-mix(in srgb, var(--color-dark) 60%, transparent);
     }
 
     &:is(:disabled, .disabled) {
@@ -71,11 +67,11 @@
     color: var(--color-text-base);
 
     &:hover {
-      background-color: var(--color-primary-light);
+      background-color: color-mix(in srgb, var(--color-light) 60%, transparent);
     }
 
     &:active {
-      background-color: var(--color-primary-dark);
+      background-color: color-mix(in srgb, var(--color-dark) 60%, transparent);
     }
 
     &:is(:disabled, .disabled) {

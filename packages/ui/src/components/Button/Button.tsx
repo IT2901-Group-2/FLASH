@@ -64,7 +64,7 @@ export const Button = ({
   size = "medium",
   loading = false,
   disabled,
-  "data-color": data = "neutral",
+  "data-color": color = "brand-purple",
   icon,
   iconPosition = "left",
   className,
@@ -90,7 +90,7 @@ export const Button = ({
 
   return (
     <button
-      data-color={data}
+      data-color={color}
       data-variant={variant}
       data-size={size}
       data-fill={fill}
