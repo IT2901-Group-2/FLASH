@@ -93,10 +93,15 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
             </span>
           </div>
           <div className={styles.row}>
-            <button className={styles.actionButton} onClick={handleEdit}>
+            <button
+              data-testid="edit-button"
+              className={styles.actionButton}
+              onClick={handleEdit}
+            >
               <EditIcon size={20} />
             </button>
             <button
+              data-testid="delete-button"
               className={styles.actionButton}
               data-color="danger"
               onClick={handleDelete}
