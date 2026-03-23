@@ -1,13 +1,23 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import type { Event } from "@/db";
 import EventCard from "./EventCard";
 import { createQueryClientWrapper } from "@test-config";
 import { useImagesQuery } from "@/hooks/useImages";
+import { useDeleteEventMutation } from "@/hooks/useEvents";
 
 vi.mock("@/hooks/useImages", () => ({
   useImagesQuery: vi.fn(() => ({ data: [] })),
 }));
+
+vi.mock("@/hooks/useEvents", async importOriginal => {
+  const actual = await importOriginal<typeof import("@/hooks/useEvents")>();
+
+  return {
+    ...actual,
+    useDeleteEventMutation: vi.fn(() => ({ mutate: vi.fn() })),
+  };
+});
 
 function getMockedEvent(data: Partial<Event> = {}): Event {
   return {
@@ -29,6 +39,7 @@ describe("EventCard", () => {
     cleanup();
     vi.restoreAllMocks();
     vi.mocked(useImagesQuery).mockReturnValue({ data: [] } as never);
+    vi.mocked(useDeleteEventMutation).mockReturnValue({ mutate: vi.fn() } as never);
   });
 
   test("renders event name and formatted date", () => {
@@ -126,5 +137,44 @@ describe("EventCard", () => {
     expect(screen.getByTestId("event-total-photos").textContent).toContain("3");
     expect(screen.getByTestId("event-approved-photos").textContent).toContain("2");
     expect(screen.getByTestId("event-pending-photos").textContent).toContain("1");
+  });
+
+  test("shows delete warning and only deletes after confirmation", () => {
+    const mutate = vi.fn();
+    vi.mocked(useDeleteEventMutation).mockReturnValue({ mutate } as never);
+
+    const showModal = vi.fn(function (this: HTMLDialogElement) {
+      this.setAttribute("open", "");
+    });
+    const close = vi.fn();
+
+    Object.defineProperty(HTMLDialogElement.prototype, "showModal", {
+      configurable: true,
+      value: showModal,
+    });
+    Object.defineProperty(HTMLDialogElement.prototype, "close", {
+      configurable: true,
+      value: close,
+    });
+
+    const data = getMockedEvent({ id: "event-123" });
+    render(<EventCard data={data} />, { wrapper: createQueryClientWrapper() });
+
+    const iconDeleteButton = screen
+      .getAllByRole("button")
+      .find(
+        button =>
+          button.getAttribute("data-color") === "danger" &&
+          !!button.querySelector("svg")
+      );
+    expect(iconDeleteButton).toBeDefined();
+
+    fireEvent.click(iconDeleteButton!);
+
+    expect(showModal).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByRole("button", { name: "delete" }));
+
+    expect(mutate).toHaveBeenCalledWith({ eventId: "event-123" });
   });
 });
