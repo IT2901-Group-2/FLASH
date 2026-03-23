@@ -44,6 +44,12 @@ export default function Page() {
   const fetchedThisIntersectionRef = useRef(false);
   const lastAutoFetchScrollYRef = useRef<number | null>(null);
 
+  /**
+   * Sets up an intersection observer on the "load more" sentinel element to automatically
+   * fetch the next page of images when the user scrolls near the bottom of the list.
+   * Includes guards to prevent multiple rapid fetches while the sentinel is visible,
+   * and to avoid fetching on initial render if the sentinel is already in view.
+   */
   useEffect(() => {
     if (!hasNextPage || isFetchingNextPage) return;
 
