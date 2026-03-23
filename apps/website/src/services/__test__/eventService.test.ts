@@ -120,21 +120,21 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents({ id: ["unknown-id"], archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set([]));
 
     expect(
       await eventService
         .getEvents({ id: ["wedding-1"], archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["wedding-1"]));
 
     expect(
       await eventService
         .getEvents({ id: ["uppercase-1", "birthday-1"], archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["uppercase-1", "birthday-1"]));
   });
@@ -143,35 +143,35 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents({ name: "Birthday", archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["birthday-1"]));
 
     expect(
       await eventService
         .getEvents({ name: "eddi", archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["wedding-1", "wedding-2"]));
 
     expect(
       await eventService
         .getEvents({ name: "gibberish", archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set([]));
 
     expect(
       await eventService
         .getEvents({ name: "LOwErCaSE", archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["lowercase-1"]));
 
     expect(
       await eventService
         .getEvents({ name: "uppercase", archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["uppercase-1"]));
   });
@@ -180,21 +180,21 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents({ status: "finished" })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["birthday-1", "wedding-2", "lowercase-1"]));
 
     expect(
       await eventService
         .getEvents({ status: "active" })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["birthday-2", "uppercase-1"]));
 
     expect(
       await eventService
         .getEvents({ status: "upcoming" })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["wedding-1"]));
   });
@@ -203,7 +203,7 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents()
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(
       new Set([
@@ -219,14 +219,14 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents({ archived: true })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["birthday-2"]));
 
     expect(
       await eventService
         .getEvents({ archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(
       new Set(["birthday-1", "wedding-1", "wedding-2", "lowercase-1", "uppercase-1"])
@@ -237,35 +237,35 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents({ status: "active", archived: false })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["uppercase-1"]));
 
     expect(
       await eventService
         .getEvents({ status: "finished", name: "d" })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["birthday-1", "wedding-2"]));
 
     expect(
       await eventService
         .getEvents({ status: "finished", name: "1" })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["birthday-1"]));
 
     expect(
       await eventService
         .getEvents({ status: "finished", id: ["lowercase-1"] })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["lowercase-1"]));
 
     expect(
       await eventService
         .getEvents({ name: "birthday", id: ["wedding-1", "lowercase-1", "birthday-2"] })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["birthday-2"]));
   });
@@ -274,13 +274,13 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents({ sortBy: "name", order: "ascending" })
-        .map(rows => rows.map(row => row.name))
+        .map(page => page.items.map(row => row.name))
         .getOrThrow()
     ).toStrictEqual(mockEvents.map(e => e.name).sort());
     expect(
       await eventService
         .getEvents({ sortBy: "name", order: "descending" })
-        .map(rows => rows.map(row => row.name))
+        .map(page => page.items.map(row => row.name))
         .getOrThrow()
     ).toStrictEqual(
       mockEvents
@@ -294,13 +294,13 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents({ sortBy: "description", order: "ascending" })
-        .map(rows => rows.map(row => row.description))
+        .map(page => page.items.map(row => row.description))
         .getOrThrow()
     ).toStrictEqual(mockEvents.map(e => e.description).sort());
     expect(
       await eventService
         .getEvents({ sortBy: "description", order: "descending" })
-        .map(rows => rows.map(row => row.description))
+        .map(page => page.items.map(row => row.description))
         .getOrThrow()
     ).toStrictEqual(
       mockEvents
@@ -314,7 +314,7 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents({ sortBy: "startDate", order: "ascending" })
-        .map(rows => rows.map(row => row.startDate))
+        .map(page => page.items.map(row => row.startDate))
         .getOrThrow()
     ).toStrictEqual(
       mockEvents.map(e => e.startDate).sort((a, b) => a.getTime() - b.getTime())
@@ -322,7 +322,7 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents({ sortBy: "startDate", order: "descending" })
-        .map(rows => rows.map(row => row.startDate))
+        .map(page => page.items.map(row => row.startDate))
         .getOrThrow()
     ).toStrictEqual(
       mockEvents
@@ -336,7 +336,7 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents({ sortBy: "endDate", order: "ascending" })
-        .map(rows => rows.map(row => row.endDate))
+        .map(page => page.items.map(row => row.endDate))
         .getOrThrow()
     ).toStrictEqual(
       mockEvents.map(e => e.endDate).sort((a, b) => a.getTime() - b.getTime())
@@ -344,7 +344,7 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents({ sortBy: "endDate", order: "descending" })
-        .map(rows => rows.map(row => row.endDate))
+        .map(page => page.items.map(row => row.endDate))
         .getOrThrow()
     ).toStrictEqual(
       mockEvents
@@ -358,7 +358,7 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents({ sortBy: "uploadLimit", order: "ascending" })
-        .map(rows => rows.map(row => row.uploadLimit))
+        .map(page => page.items.map(row => row.uploadLimit))
         .getOrThrow()
     ).toStrictEqual(
       mockEvents
@@ -368,7 +368,7 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents({ sortBy: "uploadLimit", order: "descending" })
-        .map(rows => rows.map(row => row.uploadLimit))
+        .map(page => page.items.map(row => row.uploadLimit))
         .getOrThrow()
     ).toStrictEqual(
       mockEvents
@@ -382,7 +382,7 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents({ sortBy: "createdAt", order: "ascending" })
-        .map(rows => rows.map(row => row.createdAt))
+        .map(page => page.items.map(row => row.createdAt))
         .getOrThrow()
     ).toStrictEqual(
       mockEvents.map(e => e.createdAt).sort((a, b) => a.getTime() - b.getTime())
@@ -390,7 +390,7 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents({ sortBy: "createdAt", order: "descending" })
-        .map(rows => rows.map(row => row.createdAt))
+        .map(page => page.items.map(row => row.createdAt))
         .getOrThrow()
     ).toStrictEqual(
       mockEvents
@@ -404,7 +404,7 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents({ sortBy: "updatedAt", order: "ascending" })
-        .map(rows => rows.map(row => row.updatedAt))
+        .map(page => page.items.map(row => row.updatedAt))
         .getOrThrow()
     ).toStrictEqual(
       mockEvents.map(e => e.updatedAt).sort((a, b) => a.getTime() - b.getTime())
@@ -412,7 +412,7 @@ describe("EventService getEvents", () => {
     expect(
       await eventService
         .getEvents({ sortBy: "updatedAt", order: "descending" })
-        .map(rows => rows.map(row => row.updatedAt))
+        .map(page => page.items.map(row => row.updatedAt))
         .getOrThrow()
     ).toStrictEqual(
       mockEvents

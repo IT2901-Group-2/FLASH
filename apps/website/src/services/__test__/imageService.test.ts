@@ -120,21 +120,21 @@ describe("ImageService getImages", () => {
     expect(
       await imageService
         .getImages("birthday")
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-1", "image-2"]));
 
     expect(
       await imageService
         .getImages("wedding")
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-3", "image-4", "image-5"]));
 
     expect(
       await imageService
         .getImages("funeral")
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set([]));
   });
@@ -143,14 +143,14 @@ describe("ImageService getImages", () => {
     expect(
       await imageService
         .getImages("birthday", { id: ["image-1", "image-20", "image-4"] })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-1"]));
 
     expect(
       await imageService
         .getImages("wedding", { id: ["image-5", "image-4", "image-1"] })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-4", "image-5"]));
   });
@@ -159,28 +159,28 @@ describe("ImageService getImages", () => {
     expect(
       await imageService
         .getImages("birthday", { approval: "approved" })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-2"]));
 
     expect(
       await imageService
         .getImages("birthday", { approval: "pending" })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-1"]));
 
     expect(
       await imageService
         .getImages("wedding", { approval: "pending" })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set([]));
 
     expect(
       await imageService
         .getImages("wedding", { approval: "approved" })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-3", "image-5"]));
   });
@@ -192,7 +192,7 @@ describe("ImageService getImages", () => {
           id: ["image-5", "image-4", "image-1"],
           approval: "rejected",
         })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-4"]));
 
@@ -202,7 +202,7 @@ describe("ImageService getImages", () => {
           id: ["image-5", "image-4", "image-1"],
           approval: "approved",
         })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-5"]));
   });
