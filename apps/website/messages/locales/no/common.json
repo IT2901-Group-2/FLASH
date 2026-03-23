@@ -14,6 +14,7 @@
     "join": "Bli med",
     "toggleCamera": "{open, select, true {Lukk kamera} other {Åpne kamera}}",
     "uploadImage": "Last opp bilde",
+    "loadMore": "Last inn flere",
     "slideshow": "Lysbildefremvisning",
     "createNewEvent": "Lag nytt arrangement",
     "shareEvent": "Del arrangement",
