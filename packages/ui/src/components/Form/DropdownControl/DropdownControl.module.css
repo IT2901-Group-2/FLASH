@@ -1,11 +1,12 @@
 .dropdownControls {
   width: 100%;
   overflow: hidden;
+}
 
 .dropdownBorder {
   border: 0.1rem solid var(--color-border-base);
   border-top: none;
-  
+
   &[data-error="true"] {
     border-color: var(--border-danger);
   }
