@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import {
   imagesKeys,
+  useInfiniteImagesQuery,
   useImagesQuery,
   useUploadImageMutation,
   useUpdateImageMutation,
@@ -150,6 +151,103 @@ describe("useImagesQuery", () => {
     await waitFor(() => expect(result.current.isError).toBe(true));
 
     expect(result.current.error?.message).toBe("Testing custom error");
+  });
+});
+
+describe("useInfiniteImagesQuery", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+
+  it("fetches next page when API returns paginated objects", async () => {
+    const firstPage = {
+      items: [
+        { ...mockImage, id: "img-1" },
+        { ...mockImage, id: "img-2" },
+      ],
+      nextCursor: "2",
+    };
+    const secondPage = {
+      items: [{ ...mockImage, id: "img-3" }],
+      nextCursor: null,
+    };
+
+    const fetchMock = vi.fn<typeof fetch>(async input => {
+      const url = String(input);
+
+      if (url.includes("cursor=2")) {
+        return new Response(JSON.stringify(secondPage), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      return new Response(JSON.stringify(firstPage), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    });
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useInfiniteImagesQuery("event-1", undefined, 2), {
+      wrapper: createWrapper().wrapper,
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data?.pages[0]?.items.map(i => i.id)).toStrictEqual([
+      "img-1",
+      "img-2",
+    ]);
+
+    await result.current.fetchNextPage();
+
+    await waitFor(() => {
+      expect(result.current.data?.pages).toHaveLength(2);
+    });
+    expect(result.current.data?.pages[1]?.items.map(i => i.id)).toStrictEqual(["img-3"]);
+
+    expect(String(fetchMock.mock.calls[0]?.[0])).toContain("limit=2");
+    expect(fetchMock.mock.calls.some(call => String(call[0]).includes("cursor=2"))).toBe(
+      true
+    );
+  });
+
+  it("slices legacy array responses into cursor pages", async () => {
+    const legacyRows = [
+      { ...mockImage, id: "img-1" },
+      { ...mockImage, id: "img-2" },
+      { ...mockImage, id: "img-3" },
+    ];
+
+    const fetchMock = vi.fn<typeof fetch>(
+      async () =>
+        new Response(JSON.stringify(legacyRows), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+    );
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useInfiniteImagesQuery("event-1", undefined, 2), {
+      wrapper: createWrapper().wrapper,
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data?.pages[0]?.items.map(i => i.id)).toStrictEqual([
+      "img-1",
+      "img-2",
+    ]);
+    expect(result.current.hasNextPage).toBe(true);
+
+    await result.current.fetchNextPage();
+
+    await waitFor(() => {
+      expect(result.current.data?.pages).toHaveLength(2);
+    });
+    expect(result.current.data?.pages[1]?.items.map(i => i.id)).toStrictEqual(["img-3"]);
+    expect(result.current.hasNextPage).toBe(false);
   });
 });
 

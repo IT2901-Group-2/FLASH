@@ -6,6 +6,7 @@ import {
   useCreateEventMutation,
   useDeleteEventMutation,
   useEventCodeQuery,
+  useInfiniteEventsQuery,
   useEventsQuery,
   useUpdateEventMutation,
 } from "../useEvents";
@@ -124,6 +125,72 @@ describe("useEventsQuery", () => {
     await waitFor(() => expect(result.current.isError).toBe(true));
 
     expect(result.current.error?.message).toBe("Testing custom error");
+  });
+});
+
+describe("useInfiniteEventsQuery", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+
+  it("fetches paginated events and requests next cursor", async () => {
+    const firstPage = {
+      items: [
+        { ...mockEvent, id: "event-1" },
+        { ...mockEvent, id: "event-2" },
+      ],
+      nextCursor: "2",
+    };
+    const secondPage = {
+      items: [{ ...mockEvent, id: "event-3" }],
+      nextCursor: null,
+    };
+
+    const fetchMock = vi.fn<typeof fetch>(async input => {
+      const url = String(input);
+
+      if (url.includes("cursor=2")) {
+        return new Response(JSON.stringify(secondPage), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      return new Response(JSON.stringify(firstPage), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    });
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(
+      () => useInfiniteEventsQuery({ status: "active" }, true, 2),
+      {
+        wrapper: createWrapper().wrapper,
+      }
+    );
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data?.pages[0]?.items.map(e => e.id)).toStrictEqual([
+      "event-1",
+      "event-2",
+    ]);
+
+    await result.current.fetchNextPage();
+
+    await waitFor(() => {
+      expect(result.current.data?.pages).toHaveLength(2);
+    });
+    expect(result.current.data?.pages[1]?.items.map(e => e.id)).toStrictEqual([
+      "event-3",
+    ]);
+
+    expect(String(fetchMock.mock.calls[0]?.[0])).toContain("status=active");
+    expect(String(fetchMock.mock.calls[0]?.[0])).toContain("limit=2");
+    expect(fetchMock.mock.calls.some(call => String(call[0]).includes("cursor=2"))).toBe(
+      true
+    );
   });
 });
 
