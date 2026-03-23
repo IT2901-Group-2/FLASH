@@ -9,11 +9,11 @@ export const dataColorTokensConfig = (color: ColorRole) => {
         type: "data-color",
       },
       dark: {
-        value: `{${color}.base.value}`,
+        value: `{${color}.dark.value}`,
         type: "data-color",
       },
       light: {
-        value: `{${color}.base.value}`,
+        value: `{${color}.light.value}`,
         type: "data-color",
       },
     },
