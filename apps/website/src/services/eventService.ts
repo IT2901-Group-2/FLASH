@@ -6,6 +6,7 @@ import {
   eventCodeTable,
   eventTable,
   GetEventCodeParams,
+  GetEventsPage,
   GetEventsParams,
   UpdateEvent,
   userTable,
@@ -40,8 +41,14 @@ export class EventService {
     archived,
     sortBy,
     order,
-  }: GetEventsParams = {}): AsyncResult<Event[], Error> {
+    cursor,
+    limit = 20,
+  }: GetEventsParams = {}): AsyncResult<GetEventsPage, Error> {
     const now = new Date();
+    const offset =
+      cursor !== undefined && Number.isFinite(Number.parseInt(cursor, 10))
+        ? Math.max(0, Number.parseInt(cursor, 10))
+        : 0;
 
     const sortOrder = order === "descending" ? desc : asc;
     const sortColumnMap: Record<NonNullable<GetEventsParams["sortBy"]>, SQLiteColumn> = {
@@ -53,8 +60,10 @@ export class EventService {
       createdAt: eventTable.createdAt,
       updatedAt: eventTable.updatedAt,
     };
+    const sortColumn =
+      sortBy !== undefined ? sortColumnMap[sortBy] : sortColumnMap.createdAt;
 
-    return Result.try(() => {
+    return Result.try(async () => {
       const baseQuery = this.dbService.db
         .select()
         .from(eventTable)
@@ -71,9 +80,18 @@ export class EventService {
           )
         );
 
-      return sortBy === undefined
-        ? baseQuery
-        : baseQuery.orderBy(sortOrder(sortColumnMap[sortBy]));
+      const rows = await baseQuery
+        .orderBy(sortOrder(sortColumn), sortOrder(eventTable.id))
+        .offset(offset)
+        .limit(limit + 1);
+
+      const hasMore = rows.length > limit;
+      const items = hasMore ? rows.slice(0, limit) : rows;
+
+      return {
+        items,
+        nextCursor: hasMore ? String(offset + limit) : null,
+      };
     });
   }
 

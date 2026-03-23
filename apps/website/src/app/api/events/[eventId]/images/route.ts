@@ -13,7 +13,7 @@ export async function GET(
 
   return parseSearchParams(req.nextUrl.searchParams, getImagesParamsSchema)
     .map(filters => imageService.getImages(eventId, filters))
-    .fold(images => NextResponse.json(images), errorResponse);
+    .fold(page => NextResponse.json(page), errorResponse);
 }
 
 export async function PATCH(

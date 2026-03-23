@@ -1,16 +1,30 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { makeRequest } from "@/lib/utils/api";
 import {
   CreateEvent,
   getEventCodeSchema,
+  getEventsPageSchema,
   GetEventCodeParams,
   GetEventsParams,
   getEventSchema,
   UpdateEvent,
 } from "@/db";
 import z from "zod";
+
+const eventsListResponseSchema = z.union([getEventsPageSchema, z.array(getEventSchema)]);
+
+function toEventsPage(
+  response: z.infer<typeof eventsListResponseSchema>
+): z.infer<typeof getEventsPageSchema> {
+  return Array.isArray(response) ? { items: response, nextCursor: null } : response;
+}
 
 /**
  * Serializes an `GetEvents` object into a URL query string (e.g. `?status=active&archived=false`).
@@ -28,6 +42,8 @@ function toEventsSearchParams(params?: GetEventsParams): string {
   if (params.archived !== undefined) sp.append("archived", params.archived.toString());
   if (params.sortBy !== undefined) sp.append("sortBy", params.sortBy);
   if (params.order !== undefined) sp.append("order", params.order);
+  if (params.cursor !== undefined) sp.append("cursor", params.cursor);
+  if (params.limit !== undefined) sp.append("limit", String(params.limit));
 
   const qs = sp.toString();
   return qs ? `?${qs}` : "";
@@ -61,7 +77,31 @@ export function useEventsQuery(params?: GetEventsParams, enabled: boolean = true
   return useQuery({
     queryKey: eventsKeys.list(params),
     queryFn: () =>
-      makeRequest(z.array(getEventSchema), `/api/events${toEventsSearchParams(params)}`),
+      makeRequest(
+        eventsListResponseSchema,
+        `/api/events${toEventsSearchParams(params)}`
+      ).then(response => toEventsPage(response).items),
+    enabled,
+  });
+}
+
+/**
+ * Fetches events with cursor pagination for infinite scrolling/loading.
+ */
+export function useInfiniteEventsQuery(
+  params?: Omit<GetEventsParams, "cursor" | "limit">,
+  enabled: boolean = true,
+  pageSize: number = 20
+) {
+  return useInfiniteQuery({
+    queryKey: [...eventsKeys.list(params), "infinite", pageSize] as const,
+    initialPageParam: undefined as string | undefined,
+    queryFn: ({ pageParam }) =>
+      makeRequest(
+        eventsListResponseSchema,
+        `/api/events${toEventsSearchParams({ ...params, cursor: pageParam, limit: pageSize })}`
+      ).then(toEventsPage),
+    getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
     enabled,
   });
 }
