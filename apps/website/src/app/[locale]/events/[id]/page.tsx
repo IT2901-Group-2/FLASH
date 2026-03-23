@@ -24,7 +24,7 @@ export default function Page() {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   // Event Data
-  const { id: eventId, locale } = useParams<{ id: string; locale: string }>();
+  const { id: eventId } = useParams<{ id: string }>();
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );
@@ -102,7 +102,7 @@ export default function Page() {
   });
 
   const backHref = eventAuth.isModerator
-    ? getAdminDashboardEventRoute(locale, eventId)
+    ? getAdminDashboardEventRoute(eventId)
     : routes.root;
 
   const { openFilePicker, FileInput } = useFileUpload({

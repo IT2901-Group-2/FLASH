@@ -40,7 +40,7 @@ const Page = () => {
         <div className={styles.headerItem}>
           <ArrowLeft
             className={styles.back}
-            onClick={() => navigation.push(getAdminDashboardEventsRoute(locale))}
+            onClick={() => navigation.push(getAdminDashboardEventsRoute())}
           />
           <Title description={eventData?.description}>{eventData?.name}</Title>
         </div>

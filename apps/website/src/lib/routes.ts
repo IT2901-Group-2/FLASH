@@ -8,10 +8,11 @@ export const routes = {
   adminDashboardEvents: ADMIN_DASHBOARD_EVENTS_ROUTE,
 } as const;
 
-export function getAdminDashboardEventsRoute(locale: string): string {
-  return `/${encodeURIComponent(locale)}${routes.adminDashboardEvents}`;
+export function getAdminDashboardEventsRoute(): string {
+  return routes.adminDashboardEvents;
 }
 
-export function getAdminDashboardEventRoute(locale: string, eventId: string): string {
-  return `${getAdminDashboardEventsRoute(locale)}/${encodeURIComponent(eventId)}`;
+export function getAdminDashboardEventRoute(eventId: string): string {
+  return `${getAdminDashboardEventsRoute()}/${encodeURIComponent(eventId)}`;
 }
+
