@@ -10,6 +10,7 @@ import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
+import { getAdminDashboardEventRoute, routes } from "@/lib/routes";
 
 // Used for pilot feedback collection. Should be removed after pilot is finished
 const SURVEY_LINK = "https://nettskjema.no/a/610540";
@@ -23,7 +24,7 @@ export default function Page() {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   // Event Data
-  const eventId = useParams<{ id: string }>().id;
+  const { id: eventId } = useParams<{ id: string }>();
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );
@@ -96,6 +97,10 @@ export default function Page() {
     uploadsRemaining:
       typeof uploadsRemaining === "number" ? uploadsRemaining : tUpload("unlimited"),
   });
+
+  const backHref = eventAuth.isModerator
+    ? getAdminDashboardEventRoute(eventId)
+    : routes.root;
 
   const { openFilePicker, FileInput } = useFileUpload({
     multiple: false,
@@ -192,6 +197,7 @@ export default function Page() {
           title={eventName}
           username={eventAuth?.nickname ?? ""}
           description={uploadDescription}
+          backHref={backHref}
         >
           <Button
             icon={<QrCode />}
