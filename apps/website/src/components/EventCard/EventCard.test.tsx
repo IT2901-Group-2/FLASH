@@ -164,8 +164,7 @@ describe("EventCard", () => {
       .getAllByRole("button")
       .find(
         button =>
-          button.getAttribute("data-color") === "danger" &&
-          !!button.querySelector("svg")
+          button.getAttribute("data-color") === "danger" && !!button.querySelector("svg")
       );
     expect(iconDeleteButton).toBeDefined();
 
