@@ -15,6 +15,10 @@
     width: 100%;
   }
 
+  &.loading {
+    position: relative;
+  }
+
   &:hover:not(:active, .loading, .disabled) {
     transform: translateY(-0.25rem);
   }
@@ -87,4 +91,20 @@
     height: 2rem;
     font-size: var(--font-size-small);
   }
+}
+
+.loaderOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  display: inline-flex;
+}
+
+.hidden {
+  visibility: hidden;
 }

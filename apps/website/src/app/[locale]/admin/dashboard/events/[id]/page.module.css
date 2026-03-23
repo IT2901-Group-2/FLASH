@@ -10,11 +10,13 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+}
 
-  .headerItem {
-    display: flex;
-    gap: 1rem;
-  }
+.headerItem {
+  display: flex;
+  gap: 1rem;
+  min-width: 0;
+  width: 100%;
 }
 
 .back {
@@ -23,6 +25,7 @@
   height: 2rem;
   padding: 0.25rem;
   border-radius: var(--radius-8);
+  flex-shrink: 0;
 
   display: flex;
   align-items: center;

@@ -3,6 +3,11 @@ import { cleanup, render, screen } from "@testing-library/react";
 import type { Event } from "@/db";
 import EventCard from "./EventCard";
 import { createQueryClientWrapper } from "@test-config";
+import { useImagesQuery } from "@/hooks/useImages";
+
+vi.mock("@/hooks/useImages", () => ({
+  useImagesQuery: vi.fn(() => ({ data: [] })),
+}));
 
 function getMockedEvent(data: Partial<Event> = {}): Event {
   return {
@@ -23,6 +28,7 @@ describe("EventCard", () => {
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    vi.mocked(useImagesQuery).mockReturnValue({ data: [] } as never);
   });
 
   test("renders event name and formatted date", () => {
@@ -81,5 +87,44 @@ describe("EventCard", () => {
     expect(screen.getByText("summary.totalPhotos")).toBeDefined();
     expect(screen.getByText("summary.approved")).toBeDefined();
     expect(screen.getByText("summary.pending")).toBeDefined();
+  });
+
+  test("renders image counters from fetched images", () => {
+    vi.mocked(useImagesQuery).mockReturnValue({
+      data: [
+        {
+          id: "img-1",
+          eventId: "id",
+          userId: "user-1",
+          isApproved: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: "img-2",
+          eventId: "id",
+          userId: "user-1",
+          isApproved: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: "img-3",
+          eventId: "id",
+          userId: "user-2",
+          isApproved: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+    } as never);
+
+    const data = getMockedEvent();
+
+    render(<EventCard data={data} />, { wrapper: createQueryClientWrapper() });
+
+    expect(screen.getByTestId("event-total-photos").textContent).toContain("3");
+    expect(screen.getByTestId("event-approved-photos").textContent).toContain("2");
+    expect(screen.getByTestId("event-pending-photos").textContent).toContain("1");
   });
 });

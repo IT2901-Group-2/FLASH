@@ -1,10 +1,11 @@
 import { Calendar, EditIcon, Image as ImageIcon, Trash, Users } from "lucide-react";
-import { Card } from "@flash/ui";
+import { Card, Title } from "@flash/ui";
 import styles from "./EventCard.module.css";
 import { cl } from "@/utils/className";
 import { Event } from "@/db";
 import { useDeleteEventMutation } from "@/hooks/useEvents";
-import { MouseEvent, useRef } from "react";
+import { useImagesQuery } from "@/hooks/useImages";
+import { MouseEvent, useMemo, useRef } from "react";
 import EditEventCard from "../EventDialogs/EditEventDialog";
 import { useTranslations } from "next-intl";
 
@@ -20,6 +21,19 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
   const { mutate } = useDeleteEventMutation();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { name, startDate, uploadLimit, id } = data;
+  const { data: images = [] } = useImagesQuery(id);
+
+  const { totalPhotos, approvedPhotos, pendingPhotos } = useMemo(() => {
+    const total = images.length;
+    const approved = images.filter(image => image.isApproved === true).length;
+    const pending = images.filter(image => image.isApproved === null).length;
+
+    return {
+      totalPhotos: total,
+      approvedPhotos: approved,
+      pendingPhotos: pending,
+    };
+  }, [images]);
 
   const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -40,7 +54,9 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
       />
       <Card {...rest} className={styles.card}>
         <div className={styles.column}>
-          <h3 className={styles.title}>{name}</h3>
+          <Title className={styles.title} size="xsmall">
+            {name}
+          </Title>
           <div className={styles.row}>
             <Calendar size={16} />
             <span>
@@ -54,15 +70,17 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
         <div className={styles.info}>
           <div className={cl(styles.column, styles.soft)}>
             {t("summary.totalPhotos")}
-            <span className={styles.row}>
-              <ImageIcon size={16} /> 0
+            <span className={styles.row} data-testid="event-total-photos">
+              <ImageIcon size={16} /> {totalPhotos}
             </span>
           </div>
           <div className={cl(styles.column, styles.soft)}>
-            {t("summary.approved")} <span>0</span>
+            {t("summary.approved")}{" "}
+            <span data-testid="event-approved-photos">{approvedPhotos}</span>
           </div>
           <div className={cl(styles.column, styles.soft)}>
-            {t("summary.pending")} <span>0</span>
+            {t("summary.pending")}{" "}
+            <span data-testid="event-pending-photos">{pendingPhotos}</span>
           </div>
         </div>
         <div className={cl(styles.row, styles.footer)}>

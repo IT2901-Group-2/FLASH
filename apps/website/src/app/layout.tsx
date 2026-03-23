@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FLASH - Let's Anyone Self Host",
+  title: "FLASH - Lets Anyone Self Host",
   description: "Self-hosted Photo Event Management System",
   icons: {
     icon: [

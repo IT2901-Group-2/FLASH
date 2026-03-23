@@ -38,7 +38,7 @@
       },
       "details": {
         "summary": {
-          "totalPhotos": "Totalt antall bilder",
+          "totalPhotos": "Bilder totalt",
           "approved": "Godkjent",
           "pending": "Venter"
         },

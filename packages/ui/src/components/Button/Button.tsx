@@ -78,6 +78,16 @@ export const Button = ({
   const handleKeyUp = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === " " && !disabled && !loading) e.currentTarget.click();
   };
+
+  const iconNode = icon ? (
+    <span
+      aria-hidden={loading ? true : undefined}
+      className={cl(styles.icon, loading && styles.hidden)}
+    >
+      {icon}
+    </span>
+  ) : null;
+
   return (
     <button
       data-color={data}
@@ -86,6 +96,7 @@ export const Button = ({
       data-fill={fill}
       onKeyUp={handleKeyUp}
       {...filterProps}
+      aria-busy={loading || undefined}
       className={cl(
         styles.button,
         loading && styles.loading,
@@ -95,10 +106,16 @@ export const Button = ({
       disabled={disabled || loading}
       type={type}
     >
-      {icon && iconPosition === "left" && icon}
-      {loading && <Loader size={size} variant="inverted" />}
-      {children && !loading && <span>{children}</span>}
-      {icon && iconPosition === "right" && icon}
+      {icon && iconPosition === "left" && iconNode}
+      {loading && (
+        <span className={styles.loaderOverlay}>
+          <Loader size={size} variant="inverted" />
+        </span>
+      )}
+      {children && (
+        <span className={loading ? styles.hidden : undefined}>{children}</span>
+      )}
+      {icon && iconPosition === "right" && iconNode}
     </button>
   );
 };

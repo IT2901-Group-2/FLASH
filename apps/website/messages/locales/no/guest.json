@@ -94,7 +94,7 @@
       "imageTitle": "Bilde {index}",
       "errors": {
         "uploadUnavailable": "Kan ikke laste opp bilder for dette arrangementet.",
-        "uploadPartialFailure": "Ett eller flere bilder kunne ikke lastes opp. Prøv igjen."
+        "uploadFailed": "{count, plural, one {Kunne ikke laste opp bilde} other {Noen bilder kunne ikke lastes opp}}"
       },
       "survey": {
         "title": "Takk for at du lastet opp bilder!",
