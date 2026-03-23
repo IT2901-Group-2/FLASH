@@ -1,5 +1,5 @@
 import { Calendar, EditIcon, Image as ImageIcon, Trash, Users } from "lucide-react";
-import { Card, Title } from "@flash/ui";
+import { Card, Title, Dialog, Button } from "@flash/ui";
 import styles from "./EventCard.module.css";
 import { cl } from "@/utils/className";
 import { Event } from "@/db";
@@ -18,8 +18,10 @@ export interface EventCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const EventCard = ({ data, ...rest }: EventCardProps) => {
   const t = useTranslations("admin.dashboard.event.details");
+  const c = useTranslations("common.actions");
   const { mutate } = useDeleteEventMutation();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const deleteConfirmRef = useRef<HTMLDialogElement>(null);
   const { name, startDate, uploadLimit, id } = data;
   const { data: images = [] } = useImagesQuery(id);
 
@@ -37,6 +39,11 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
 
   const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+    deleteConfirmRef.current?.showModal();
+  };
+
+  const confirmDelete = () => {
+    deleteConfirmRef.current?.close();
     mutate({ eventId: id });
   };
 
@@ -47,6 +54,29 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
 
   return (
     <>
+      <Dialog ref={deleteConfirmRef}>
+        <Title>{t("deleteConfirmation.title")}</Title>
+        <p>{t("deleteConfirmation.message")}</p>
+        <div
+          style={{
+            display: "flex",
+            gap: "0.5rem",
+            justifyContent: "flex-end",
+            marginTop: "1rem",
+          }}
+        >
+          <Button
+            variant="secondary"
+            data-color="neutral"
+            onClick={() => deleteConfirmRef.current?.close()}
+          >
+            {c("cancel")}
+          </Button>
+          <Button data-color="danger" onClick={confirmDelete}>
+            {c("delete")}
+          </Button>
+        </div>
+      </Dialog>
       <EditEventCard
         ref={dialogRef}
         event={data}
