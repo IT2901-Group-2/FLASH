@@ -1,9 +1,12 @@
 .cameraWrapper {
   display: flex;
+  align-items: center;
+  justify-content: center;
+
   width: 3.5rem;
   height: 3.5rem;
+  padding: 0.25rem;
   aspect-ratio: 1/1;
-  align-items: center;
   border-radius: var(--radius-8);
   background: var(--color-text-tertiary);
   box-shadow: var(--shadow-dialog);

@@ -1,11 +1,13 @@
 import { Calendar, EditIcon, Image as ImageIcon, Trash, Users } from "lucide-react";
-import { Card } from "ui";
+import { Card, Title } from "@flash/ui";
 import styles from "./EventCard.module.css";
 import { cl } from "@/utils/className";
 import { Event } from "@/db";
 import { useDeleteEventMutation } from "@/hooks/useEvents";
-import { MouseEvent, useRef } from "react";
+import { useImagesQuery } from "@/hooks/useImages";
+import { MouseEvent, useMemo, useRef } from "react";
 import EditEventCard from "../EventDialogs/EditEventDialog";
+import { useTranslations } from "next-intl";
 
 export interface EventCardProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
@@ -15,9 +17,23 @@ export interface EventCardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const EventCard = ({ data, ...rest }: EventCardProps) => {
+  const t = useTranslations("admin.dashboard.event.details");
   const { mutate } = useDeleteEventMutation();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { name, startDate, uploadLimit, id } = data;
+  const { data: images = [] } = useImagesQuery(id);
+
+  const { totalPhotos, approvedPhotos, pendingPhotos } = useMemo(() => {
+    const total = images.length;
+    const approved = images.filter(image => image.isApproved === true).length;
+    const pending = images.filter(image => image.isApproved === null).length;
+
+    return {
+      totalPhotos: total,
+      approvedPhotos: approved,
+      pendingPhotos: pending,
+    };
+  }, [images]);
 
   const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -38,7 +54,9 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
       />
       <Card {...rest} className={styles.card}>
         <div className={styles.column}>
-          <h3 className={styles.title}>{name}</h3>
+          <Title className={styles.title} size="xsmall">
+            {name}
+          </Title>
           <div className={styles.row}>
             <Calendar size={16} />
             <span>
@@ -51,23 +69,27 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
         </div>
         <div className={styles.info}>
           <div className={cl(styles.column, styles.soft)}>
-            Total Photos
-            <span className={styles.row}>
-              <ImageIcon size={16} /> 0
+            {t("summary.totalPhotos")}
+            <span className={styles.row} data-testid="event-total-photos">
+              <ImageIcon size={16} /> {totalPhotos}
             </span>
           </div>
           <div className={cl(styles.column, styles.soft)}>
-            Approved <span>0</span>
+            {t("summary.approved")}{" "}
+            <span data-testid="event-approved-photos">{approvedPhotos}</span>
           </div>
           <div className={cl(styles.column, styles.soft)}>
-            Pending <span>0</span>
+            {t("summary.pending")}{" "}
+            <span data-testid="event-pending-photos">{pendingPhotos}</span>
           </div>
         </div>
         <div className={cl(styles.row, styles.footer)}>
           <div className={styles.row}>
             <Users size={16} />
             <span>
-              {uploadLimit ? `${uploadLimit} photos per person` : "No photo limit"}
+              {uploadLimit
+                ? t("uploadLimit.perPerson", { count: uploadLimit })
+                : t("uploadLimit.none")}
             </span>
           </div>
           <div className={styles.row}>

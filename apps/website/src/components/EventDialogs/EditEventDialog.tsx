@@ -1,12 +1,12 @@
 import { RefAttributes, useRef, useState } from "react";
-import { Button, Dialog, ProgressDots } from "ui";
+import { Button, Dialog, ProgressDots } from "@flash/ui";
 import { useTranslations } from "next-intl";
 import { useUpdateEventMutation } from "@/hooks/useEvents";
 import { BasicInfoStep } from "./Steps/BasicInfoStep";
 import { OptionsStep } from "./Steps/OptionsStep";
 import { FormStepConfig } from "./Steps/types";
 import styles from "./CreateEventDialog.module.css";
-import { CreateEvent, Event } from "@/db";
+import { CreateEvent, Event, UpdateEvent } from "@/db";
 
 const EDIT_STEPS: FormStepConfig[] = [
   { Component: BasicInfoStep },
@@ -24,7 +24,7 @@ export const EditEventDialog = ({
   onClose,
   ...rest
 }: EditEventDialogProps) => {
-  const t = useTranslations("admin.dashboard.event.edit");
+  const t = useTranslations("common.actions");
   const { mutateAsync, status } = useUpdateEventMutation();
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -55,8 +55,12 @@ export const EditEventDialog = ({
 
   const handleSave = async () => {
     if (!formRef.current?.reportValidity()) return;
+    const payload: UpdateEvent = {
+      ...formData,
+      uploadLimit: formData.uploadLimit ?? null,
+    };
     // Added as .then(), so its easy to add if there are error popups in the future
-    await mutateAsync({ eventId: event.id, data: formData }).then(handleClose);
+    await mutateAsync({ eventId: event.id, data: payload }).then(handleClose);
   };
 
   const handleClose = () => {

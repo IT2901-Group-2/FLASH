@@ -12,8 +12,8 @@ vi.mock("next-intl", () => ({
     return (key: string) => {
       translationKeys.push(key);
       const translations: Record<string, string> = {
-        appTitle: "PhotoEvent",
-        appDescription: "Join and share photos from events",
+        name: "FLASH",
+        description: "Join and share photos from events",
       };
       return translations[key] || key;
     };
@@ -32,6 +32,14 @@ vi.mock("@/components/JoinEvent/JoinEventCard", () => ({
 
 vi.mock("@/providers/JoinedEventsContext", () => ({
   useJoinedEvents: vi.fn(() => []),
+}));
+
+vi.mock("@/components/ConfigButtons/LanguageToggleButton", () => ({
+  default: () => <div data-testid="language-toggle-button">Language Toggle</div>,
+}));
+
+vi.mock("@/components/ConfigButtons/ThemeToggleButton", () => ({
+  default: () => <div data-testid="theme-toggle-button">Theme Toggle</div>,
 }));
 
 describe("Page", () => {
@@ -64,15 +72,15 @@ describe("Page", () => {
     render(<Page />, { wrapper: createQueryClientWrapper() });
 
     // Verify that the component requests the correct translation keys
-    expect(translationKeys).toContain("appTitle");
-    expect(translationKeys).toContain("appDescription");
+    expect(translationKeys).toContain("name");
+    expect(translationKeys).toContain("description");
   });
 
   test("displays translated content", () => {
     render(<Page />, { wrapper: createQueryClientWrapper() });
 
     // Verify the translated text appears in the document
-    expect(screen.getByText("PhotoEvent")).toBeDefined();
+    expect(screen.getByText("FLASH")).toBeDefined();
     expect(screen.getByText("Join and share photos from events")).toBeDefined();
   });
 });

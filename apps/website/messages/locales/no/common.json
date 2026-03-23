@@ -1,0 +1,64 @@
+{
+  "actions": {
+    "back": "Tilbake",
+    "close": "Lukk",
+    "cancel": "Avbryt",
+    "previous": "Forrige",
+    "next": "Neste",
+    "create": "Opprett",
+    "save": "Lagre",
+    "finish": "Fullfør",
+    "done": "Ferdig",
+    "download": "Last ned",
+    "signIn": "Logg inn",
+    "join": "Bli med",
+    "toggleCamera": "{open, select, true {Lukk kamera} other {Åpne kamera}}",
+    "uploadImage": "Last opp bilde",
+    "slideshow": "Lysbildefremvisning",
+    "createNewEvent": "Lag nytt arrangement",
+    "shareEvent": "Del arrangement",
+    "copyLink": "Kopier lenke"
+  },
+  "roles": {
+    "guest": "Gjest",
+    "moderator": "Moderator",
+    "admin": "Administrator"
+  },
+  "navigation": {
+    "main": "Meny",
+    "config": "Konfig",
+    "desktop": "Dashboard",
+    "events": "Arrangementer",
+    "settings": "Innstillinger",
+    "storage": "Lagring",
+    "darkMode": "Mørk modus",
+    "lightMode": "Lys modus"
+  },
+  "fields": {
+    "password": "Passord",
+    "passwordPlaceholder": "•••••",
+    "nickname": "Kallenavn",
+    "eventCode": "Arrangementskode",
+    "eventName": "Navn på arrangement",
+    "eventDescription": "Beskrivelse",
+    "startDate": "Startdato",
+    "endDate": "Sluttdato",
+    "startTime": "Starttid",
+    "endTime": "Slutttid",
+    "maxImages": "Maks bilder"
+  },
+  "values": {
+    "limited": "Begrenset",
+    "unlimited": "Ubegrenset",
+    "photos": "Bilder"
+  },
+  "messages": {
+    "copySuccess": "Kopiert!",
+    "copyFailed": "Klarte ikke å kopiere lenken til utklippstavlen",
+    "scanToUploadPhotos": "Skann for å laste opp bilder"
+  },
+  "slideshow": {
+    "viewProgress": "{index} av {total}",
+    "noApproved": "Ingen godkjente bilder"
+  }
+}

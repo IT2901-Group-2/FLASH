@@ -1,7 +1,7 @@
 import type { HTMLAttributes } from "react";
 import styles from "./PhoneHeader.module.css";
 import { cl } from "@/utils/className";
-import { Title } from "ui";
+import { Title } from "@flash/ui";
 import { ArrowLeft, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -43,14 +43,14 @@ export const PhoneHeader = ({
   return (
     <header className={cl(styles.container, className)} {...rest}>
       <div className={styles.infoSection}>
-        <ArrowLeft className={styles.backButton} onClick={navigation.back} />
+        <ArrowLeft className={styles.backButton} onClick={() => navigation.push("/")} />
         <div className={styles.titleBlock}>
           <Title size="small" as="h1">
             {title}
           </Title>
-          <span>
+          <span className={styles.user}>
             <User />
-            {username}
+            <span className={styles.truncate}>{username}</span>
           </span>
           <span>{description}</span>
         </div>

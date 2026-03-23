@@ -1,0 +1,21 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.video {
+  object-fit: cover;
+}
+
+.finder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 75%;
+  height: 75%;
+  border: 0.25rem solid var(--border-brand-purple);
+  border-radius: var(--radius-16);
+}

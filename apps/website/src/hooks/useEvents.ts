@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { makeRequest } from "@/lib/utils/api";
 import {
   CreateEvent,
+  getEventCodeSchema,
   GetEventCodeParams,
   GetEventsParams,
   getEventSchema,
@@ -50,6 +51,7 @@ export const eventsKeys = {
     [...eventsKeys.all, "list", toEventsSearchParams(params)] as const,
   code: (eventId?: string, role: GetEventCodeParams["role"] = "guest") =>
     [...eventsKeys.all, eventId, "code", role] as const,
+  byCode: (code?: string) => [...eventsKeys.all, "by-code", code] as const,
 };
 
 /**
@@ -75,6 +77,17 @@ export function useEventCodeQuery(
     queryKey: eventsKeys.code(eventId, role),
     queryFn: () => makeRequest(z.string(), `/api/events/${eventId}/code?role=${role}`),
     enabled: !!eventId,
+  });
+}
+
+/**
+ * Resolves join code metadata for the event joining flow.
+ */
+export function useEventByCodeQuery(code?: string) {
+  return useQuery({
+    queryKey: eventsKeys.byCode(code),
+    queryFn: () => makeRequest(getEventCodeSchema, `/api/events/by-code/${code}`),
+    enabled: !!code,
   });
 }
 
@@ -122,6 +135,49 @@ export function useDeleteEventMutation() {
       makeRequest(getEventSchema, `/api/events/${eventId}`, "DELETE"),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: eventsKeys.all });
+    },
+  });
+}
+
+type JoinErrorCode = "NICKNAME_TAKEN" | "JOIN_FAILED";
+
+/**
+ * Converts HTTP response status and payload into a join error code.
+ * @param status HTTP response status
+ * @param payload HTTP response payload
+ * @returns JoinErrorCode
+ */
+function toJoinErrorCode(status: number, payload: unknown): JoinErrorCode {
+  const code =
+    payload && typeof payload === "object" && "code" in payload
+      ? (payload as { code?: unknown }).code
+      : undefined;
+
+  if (status === 409 || code === "NICKNAME_TAKEN") {
+    return "NICKNAME_TAKEN";
+  }
+
+  return "JOIN_FAILED";
+}
+
+/**
+ * Submits the join form and returns redirect target on success.
+ * Throws error to allow UI-specific translation handling.
+ */
+export function useJoinMutation() {
+  return useMutation({
+    mutationFn: async (formData: FormData) => {
+      const response = await fetch("/api/join", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        return { redirectUrl: response.url };
+      }
+
+      const payload = await response.json().catch(() => null);
+      throw new Error(toJoinErrorCode(response.status, payload));
     },
   });
 }

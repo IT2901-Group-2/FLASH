@@ -83,6 +83,12 @@ export const getEventCodeParamsSchema = z.object({
     .prefault(["guest"]),
 });
 
+export const getEventCodeSchema = z.object({
+  eventId: z.string(),
+  code: z.string(),
+  isModerator: z.boolean(),
+});
+
 export const getEventSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -110,7 +116,7 @@ export const updateEventSchema = z.object({
   description: z.string().optional(),
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
-  uploadLimit: z.number().optional(),
+  uploadLimit: z.number().nullable().optional(),
   isArchived: z.boolean().optional(),
 });
 

@@ -2,17 +2,21 @@ import { DatabaseService, dbService } from "./databaseService";
 import {
   CreateEvent,
   Event,
+  EventCode,
   eventCodeTable,
   eventTable,
   GetEventCodeParams,
   GetEventsParams,
   UpdateEvent,
+  userTable,
 } from "@/db";
 import { AsyncResult, Result } from "typescript-result";
 import { getFirstRow } from "@/lib/utils/sql";
 import { and, eq, like, inArray, lt, lte, gte, gt, desc, asc } from "drizzle-orm";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { SQLiteColumn } from "drizzle-orm/sqlite-core";
+import { HTTPError } from "@/lib/utils/error";
+import { ADMIN_ID } from "@/config";
 
 export class EventService {
   private readonly dbService: DatabaseService;
@@ -102,6 +106,25 @@ export class EventService {
   }
 
   /**
+   * Fetches an `EventCode` object from an event code.
+   * The `EventCode` contains all necessary information for joining an event.
+   *
+   * @param code The code to fetch the `EventCode` object for.
+   * @returns A result with an `EventCode` object or an error.
+   */
+  getEventByCode(code: string): AsyncResult<EventCode, Error> {
+    return Result.try(() =>
+      this.dbService.db
+        .select()
+        .from(eventCodeTable)
+        .where(eq(eventCodeTable.code, code))
+        .limit(1)
+    )
+      .map(rows => getFirstRow(rows, `Unable to find event with code: ${code}`))
+      .mapError(err => new HTTPError(err.message, 404));
+  }
+
+  /**
    * Creates a new event in the database.
    * Returns the newly created event.
    *
@@ -129,6 +152,19 @@ export class EventService {
           .onFailure(async () => {
             await this.dbService.db.delete(eventTable).where(eq(eventTable.id, event.id));
           })
+      )
+      .map(event =>
+        Result.try(() =>
+          this.dbService.db
+            .insert(userTable)
+            .values({
+              id: `${ADMIN_ID}-${event.id}`,
+              eventId: event.id,
+              name: "Admin",
+              isModerator: true,
+            })
+            .returning()
+        ).map(() => event)
       )
       .onSuccess(() => this.dbService.flush());
   }

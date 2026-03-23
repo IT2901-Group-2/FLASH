@@ -14,8 +14,8 @@ export function semanticRootTokens(theme: ColorTheme) {
       light: { value: theme == "light" ? "#F9F5F7" : "#111115", type: "color" },
     },
     "color-logo": {
-      primary: { value: theme == "light" ? "#D6AD5B" : "#B8923F", type: "color" },
-      secondary: { value: theme == "light" ? "#F3EACE" : "#2A2414", type: "color" },
+      primary: { value: theme == "light" ? "#D6AD5B" : "#D6AD5B", type: "color" },
+      secondary: { value: theme == "light" ? "#E5D295" : "#F3EACE", type: "color" },
     },
     "color-border": {
       base: { value: theme == "light" ? "#C9BDC0" : "#272529", type: "color" },

@@ -1,12 +1,15 @@
 .layout {
   display: flex;
   position: relative;
+  height: 100dvh;
 }
 
 .content {
   display: flex;
   flex-direction: column;
   width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .header {
@@ -27,7 +30,6 @@
 .main {
   flex: 1;
   padding: 2rem;
-  height: 100vh;
 }
 
 @media screen and (max-width: 767px) {

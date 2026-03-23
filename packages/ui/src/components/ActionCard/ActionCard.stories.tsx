@@ -1,15 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react-vite";
 import ActionCard from "./ActionCard";
-import {
-  Camera,
-  RotateCcw,
-  Upload,
-  X,
-  Save,
-  ArrowRight,
-  QrCode,
-  Edit,
-} from "lucide-react";
+import { RotateCcw, Upload, X, Save, ArrowRight, QrCode, Edit } from "lucide-react";
 import { expect, within } from "storybook/test";
 
 const meta: Meta<typeof ActionCard> = {
@@ -36,31 +27,6 @@ export const UploadImage: Story = {
   },
   play: async ({ canvas }) => {
     await expect(canvas.getByText("You have 10 uploads remaining")).toBeInTheDocument();
-    await expect(
-      canvas.getByRole("button", { name: "Upload Image" })
-    ).toBeInTheDocument();
-  },
-};
-
-/* TakePhoto variant with secondary and primary buttons */
-export const TakePhoto: Story = {
-  args: {
-    secondaryButton: {
-      text: "Take Photo",
-      icon: <Camera size={18} />,
-      iconPosition: "right",
-      "data-color": "brand-purple",
-    },
-    primaryButton: {
-      text: "Upload Image",
-      icon: <Upload size={18} />,
-      iconPosition: "right",
-      "data-color": "brand-purple",
-    },
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await expect(canvas.getByRole("button", { name: "Take Photo" })).toBeInTheDocument();
     await expect(
       canvas.getByRole("button", { name: "Upload Image" })
     ).toBeInTheDocument();
@@ -287,7 +253,6 @@ export const AllVariants: Story = {
       style={{ display: "flex", flexDirection: "column", gap: "2rem", flexWrap: "wrap" }}
     >
       <ActionCard {...UploadImage.args} />
-      <ActionCard {...TakePhoto.args} />
       <ActionCard {...SuccessfulUpload.args} />
       <ActionCard {...FailedUpload.args} />
       <ActionCard {...UploadToSelectedAlbum.args} />

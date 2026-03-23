@@ -1,0 +1,61 @@
+{
+  "dashboard": {
+    "sidebar": {},
+    "main": {},
+    "event": {
+      "create": {
+        "basics": {
+          "title": "Create Event",
+          "description": "Set up a new photo event for your guests. A QR code will be generated automatically."
+        },
+        "options": {
+          "title": "Event Settings",
+          "description": "Configure event options for your event.",
+          "fields": {
+            "uploadLimit": {
+              "label": "Maximum uploads",
+              "limited": "Limited",
+              "unlimited": "Unlimited"
+            },
+            "autoApprovePhotos": "Automatically approve uploaded photos",
+            "guestCanViewAll": "Allow guests to view all uploaded photos"
+          }
+        },
+        "review": {
+          "title": "Share Your Event",
+          "description": "Share the QR code or event link so others can join and upload photos.",
+          "links": {
+            "guest": {
+              "title": "Guest Link",
+              "description": "Anyone with this link can upload photos to the event."
+            },
+            "moderator": {
+              "title": "Moderator Link",
+              "description": "Anyone with this link can review and moderate uploaded photos."
+            }
+          }
+        }
+      },
+      "details": {
+        "summary": {
+          "totalPhotos": "Total Photos",
+          "approved": "Approved",
+          "pending": "Pending"
+        },
+        "uploadLimit": {
+          "perPerson": "{count, plural, one {# photo per person} other {# photos per person}}",
+          "none": "No photo limit"
+        }
+      }
+    }
+  },
+  "login": {
+    "card": {
+      "heading": "Sign in",
+      "description": "Enter your credentials to access the admin panel",
+      "links": {
+        "guestAccessPrefix": "Not an admin? Join an event as a"
+      }
+    }
+  }
+}

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { StepProps } from "./types";
-import { Title, DropdownControl, Input, Switch } from "ui";
+import { Title, DropdownControl, Input, Switch } from "@flash/ui";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 
 export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
-  const t = useTranslations("admin.dashboard.event.create.options");
+  const tStep = useTranslations("admin.dashboard.event.create.options");
+  const tFields = useTranslations("common.fields");
 
   const [limitMode, setLimitMode] = useState<string>(
     formData.uploadLimit === undefined ? "unlimited" : "limited"
@@ -17,16 +18,16 @@ export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
 
   return (
     <>
-      <Title description={t("description")}>{t("title")}</Title>
+      <Title description={tStep("description")}>{tStep("title")}</Title>
       <DropdownControl value={limitMode} onChange={setLimitMode} dropdownBorder>
         <DropdownControl.Item
           value="limited"
-          label={t("input.uploads.limited")}
+          label={tStep("fields.uploadLimit.limited")}
           content={
             <div className={styles.maxImageContainer}>
-              <span>{t("input.uploads.title")}</span>
+              <span>{tStep("fields.uploadLimit.label")}</span>
               <Input
-                aria-label="maxImages"
+                aria-label={tFields("maxImages")}
                 type="number"
                 min={1}
                 value={formData.uploadLimit}
@@ -38,7 +39,10 @@ export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
             </div>
           }
         />
-        <DropdownControl.Item value="unlimited" label={t("input.uploads.unlimited")} />
+        <DropdownControl.Item
+          value="unlimited"
+          label={tStep("fields.uploadLimit.unlimited")}
+        />
       </DropdownControl>
       {/* // TODO: When database is updated, uncomment these */}
       <Switch
@@ -46,14 +50,14 @@ export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
         // checked={formData.autoApprove}
         // onChange={(checked: boolean) => updateFormData("autoApprove", checked)}
       >
-        <b>{t("input.autoApprove")}</b>
+        <b>{tStep("fields.autoApprovePhotos")}</b>
       </Switch>
       <Switch
         position="right"
         // checked={formData.seeAllPictures}
         // onChange={(checked: boolean) => updateFormData("seeAllPictures", checked)}
       >
-        <b>{t("input.guestSeeAll")}</b>
+        <b>{tStep("fields.guestCanViewAll")}</b>
       </Switch>
     </>
   );

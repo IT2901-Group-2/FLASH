@@ -1,5 +1,5 @@
 import { Event } from "@/db";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import EditEventDialog from "./EditEventDialog";
@@ -54,6 +54,15 @@ describe("EditEventDialog — pre-population", () => {
     renderCard();
     expect(screen.getByLabelText("eventDescription")).toHaveValue("Existing description");
   });
+
+  it("pre-populates the upload limit on the options step", async () => {
+    mockReportValidity(true);
+    renderCard();
+
+    await userEvent.click(screen.getByText("next"));
+
+    expect(screen.getByLabelText("maxImages")).toHaveValue(5);
+  });
 });
 
 describe("EditEventDialog — navigation", () => {
@@ -92,6 +101,25 @@ describe("EditEventDialog — saving", () => {
     await userEvent.click(screen.getByText("next"));
     await userEvent.click(screen.getByText("save"));
     await vi.waitFor(() => expect(onClose).toHaveBeenCalledOnce());
+    await waitFor(() => expect(onClose).toHaveBeenCalledOnce());
+  });
+
+  it("saves the updated upload limit", async () => {
+    mockReportValidity(true);
+    renderCard();
+
+    await userEvent.click(screen.getByText("next"));
+    fireEvent.change(screen.getByLabelText("maxImages"), {
+      target: { value: "12" },
+    });
+    await userEvent.click(screen.getByText("save"));
+
+    await waitFor(() =>
+      expect(mockMutateAsync).toHaveBeenCalledWith({
+        eventId: "event-1",
+        data: expect.objectContaining({ uploadLimit: 12 }),
+      })
+    );
   });
 
   it("does not call mutateAsync when validation fails on the last step", async () => {
