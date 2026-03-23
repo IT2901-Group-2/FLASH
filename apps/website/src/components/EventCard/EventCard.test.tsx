@@ -1,6 +1,5 @@
 import {
   eventHooksMock,
-  flashUiMock,
   imageHooksMock,
   makeEvent,
   makeImage,
@@ -16,7 +15,6 @@ import { useDeleteEventMutation } from "@/hooks/useEvents";
 
 vi.mock("@/hooks/useImages", () => imageHooksMock());
 vi.mock("@/hooks/useEvents", () => eventHooksMock());
-vi.mock("@flash/ui", () => flashUiMock());
 
 describe("EventCard", () => {
   afterEach(() => {

@@ -18,6 +18,7 @@
 import { cleanup } from "@testing-library/react";
 import { afterEach, beforeEach, vi } from "vitest";
 import { mockRouter, resetMockRouter } from "./__mocks__/router.mock";
+import { flashUiMock } from "@test-config";
 import {
   redirect,
   useParams,
@@ -42,6 +43,15 @@ vi.mock("next-intl", async importOriginal => {
     useLocale: vi.fn(() => "en"),
   };
 });
+
+/**
+ * Mocks all the components in the @flash/ui package. They are replaced
+ * by minimal replacements.
+ *
+ * There is no need to test theme here as they are tested in their
+ * own package.
+ */
+vi.mock("@flash/ui", () => flashUiMock());
 
 /**
  * Factory contains ONLY vi.fn() calls — no reference to any imported variable.
