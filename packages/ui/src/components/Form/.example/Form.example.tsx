@@ -11,6 +11,7 @@ import { Textarea } from "./../Textarea";
 import { TextField } from "./../TextField";
 import EventTimeField from "./../.example/TimeField";
 import { FormValues } from "./helpers";
+import { Select } from "../Select";
 
 type Props = {
   register: UseFormRegister<FormValues>;
@@ -79,6 +80,12 @@ const FormExample = ({ register, control, errors }: Props) => {
           />
         )}
       />
+      <Select label="Sort by" defaultValue="name" {...register("sortOrder")}>
+        <Select.Option value="name" label="Event name" />
+        <Select.Option value="startDate" label="Start date" />
+        <Select.Option value="endDate" label="End date" />
+        <Select.Option value="createdAt" label="Created at" />
+      </Select>
       <div style={{ display: "flex", gap: "1rem" }}>
         <Button type="reset" variant="secondary" fill>
           Reset
