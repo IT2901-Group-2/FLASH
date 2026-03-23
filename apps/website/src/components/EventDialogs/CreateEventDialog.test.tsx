@@ -51,7 +51,7 @@ describe("CreateEventDialog — dialog behavior", () => {
   it("disables backdrop close", () => {
     renderCard();
     expect(mockDialog).toHaveBeenCalledWith(
-      expect.objectContaining({ closeOnBackdrop: false })
+      expect.objectContaining({ closedby: "none" })
     );
   });
 });

@@ -69,7 +69,7 @@ export const EditEventDialog = ({
   };
 
   return (
-    <Dialog ref={ref} closeOnBackdrop={false} {...rest}>
+    <Dialog ref={ref} closedby="none" {...rest}>
       <ProgressDots
         maxValue={EDIT_STEPS.length}
         value={currentStepIndex + 1}
