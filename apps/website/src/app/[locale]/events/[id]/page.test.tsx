@@ -55,17 +55,29 @@ vi.mock("@/hooks/useImages", () => ({
   useUploadImageMutation: vi.fn(() => ({
     mutateAsync: mockUploadImage,
   })),
-  useImagesQuery: vi.fn(() => ({
-    data: [
-      {
-        id: "image-1",
-        eventId: "event-1",
-        userId: "user-1",
-        isApproved: null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ] satisfies Image[],
+  useInfiniteImagesQuery: vi.fn(() => ({
+    data: {
+      pages: [
+        {
+          items: [
+            {
+              id: "image-1",
+              eventId: "event-1",
+              userId: "user-1",
+              isApproved: null,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+          ] satisfies Image[],
+          nextCursor: null,
+        },
+      ],
+      pageParams: [undefined],
+    },
+    hasNextPage: false,
+    isFetchingNextPage: false,
+    fetchNextPage: vi.fn(),
+    isLoading: false,
   })),
 }));
 
@@ -140,7 +152,11 @@ describe("Guest Upload Page", () => {
 
   it("uses image query hook", () => {
     render(<Page />);
-    expect(useImagesModule.useImagesQuery).toHaveBeenCalledWith("event-123");
+    expect(useImagesModule.useInfiniteImagesQuery).toHaveBeenCalledWith(
+      "event-123",
+      undefined,
+      12
+    );
   });
 
   it("shows upload error key when one or more files fail to upload", async () => {
@@ -148,7 +164,7 @@ describe("Guest Upload Page", () => {
     render(<Page />);
 
     const { onFilesSelected } = vi.mocked(useFileUploadModule.useFileUpload).mock
-      .calls[0][0];
+      .calls[0]![0]!;
     const mockFileList = createMockFileList([
       new File(["a"], "a.jpg", { type: "image/jpeg" }),
       new File(["b"], "b.jpg", { type: "image/jpeg" }),
@@ -168,7 +184,7 @@ describe("Guest Upload Page", () => {
     render(<Page />);
 
     const { onFilesSelected } = vi.mocked(useFileUploadModule.useFileUpload).mock
-      .calls[0][0];
+      .calls[0]![0]!;
     const mockFileList = createMockFileList([
       new File(["a"], "a.jpg", { type: "image/jpeg" }),
     ]);
@@ -185,7 +201,7 @@ describe("Guest Upload Page", () => {
     render(<Page />);
 
     const { onFilesSelected } = vi.mocked(useFileUploadModule.useFileUpload).mock
-      .calls[0][0];
+      .calls[0]![0]!;
     const mockFileList = createMockFileList([
       new File(["a"], "a.jpg", { type: "image/jpeg" }),
     ]);
