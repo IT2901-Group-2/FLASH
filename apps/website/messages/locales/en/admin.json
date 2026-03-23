@@ -45,6 +45,10 @@
         "uploadLimit": {
           "perPerson": "{count, plural, one {# photo per person} other {# photos per person}}",
           "none": "No photo limit"
+        },
+        "deleteConfirmation": {
+          "title": "Delete Event",
+          "message": "Are you sure you want to delete this event?"
         }
       }
     }
