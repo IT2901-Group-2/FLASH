@@ -77,7 +77,7 @@
 .description {
   display: flex;
   align-items: center;
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
   &[data-size="xlarge"] {
     font-size: 1.5rem;
   }
