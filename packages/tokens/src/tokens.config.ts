@@ -11,7 +11,6 @@ import { fontTokenConfig } from "./tokens/font";
 import { opacityTokenConfig } from "./tokens/opacity";
 import { radiusTokenConfig } from "./tokens/radius";
 import { shadowTokenConfig } from "./tokens/shadow";
-import { surfaceTokens } from "./tokens/colors/surface.tokens";
 import { ColorRole } from "./types/output.types";
 
 /**
@@ -23,7 +22,6 @@ export const lightModeTokens = (withSemanticRoles = true) => {
   const config = [
     shadowTokenConfig("light"),
     opacityTokenConfig("light"),
-    surfaceTokens("light"),
     withSemanticRoles ? ColorTokensForAllRoles() : {},
     semanticRootTokens("light"),
     LightTokens,
@@ -40,7 +38,6 @@ export const darkModeTokens = (withSemanticRoles = true) => {
   const config = [
     shadowTokenConfig("dark"),
     opacityTokenConfig("dark"),
-    surfaceTokens("dark"),
     withSemanticRoles ? ColorTokensForAllRoles() : {},
     semanticRootTokens("dark"),
     DarkTokens,
