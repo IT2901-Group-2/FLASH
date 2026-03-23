@@ -78,6 +78,17 @@
   padding: 1em 0.3em calc(12rem + env(safe-area-inset-bottom));
 }
 
+.loadMoreContainer {
+  display: flex;
+  justify-content: center;
+  padding: 0 0.75rem calc(12rem + env(safe-area-inset-bottom));
+}
+
+.loadMoreSentinel {
+  width: 100%;
+  height: 1px;
+}
+
 @media (width >= 768px) {
   .mobileOnly {
     display: none;
@@ -86,6 +97,10 @@
   .grid {
     grid-template-columns: repeat(6, 1fr);
     padding: 1em 1em 0.3em;
+  }
+
+  .loadMoreContainer {
+    padding: 0 1rem 1rem;
   }
 }
 
