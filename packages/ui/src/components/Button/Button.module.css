@@ -50,11 +50,11 @@
     border: 0.125rem solid var(--color-base);
 
     &:hover {
-      background-color: color-mix(in srgb, var(--color-light) 60%, transparent);
+      background-color: color-mix(in srgb, var(--color-light) 50%, transparent);
     }
 
     &:active {
-      background-color: color-mix(in srgb, var(--color-dark) 60%, transparent);
+      background-color: color-mix(in srgb, var(--color-dark) 50%, transparent);
     }
 
     &:is(:disabled, .disabled) {
@@ -67,11 +67,11 @@
     color: var(--color-text-base);
 
     &:hover {
-      background-color: color-mix(in srgb, var(--color-light) 60%, transparent);
+      background-color: color-mix(in srgb, var(--color-light) 50%, transparent);
     }
 
     &:active {
-      background-color: color-mix(in srgb, var(--color-dark) 60%, transparent);
+      background-color: color-mix(in srgb, var(--color-dark) 50%, transparent);
     }
 
     &:is(:disabled, .disabled) {
