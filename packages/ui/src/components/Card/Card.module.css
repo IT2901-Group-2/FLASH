@@ -9,7 +9,7 @@
 
   &[data-color] {
     background-color: var(--color-base);
-    border-color: var(--color-border-dark);
+    /* border-color: var(--color-border-light); */
     color: var(--color-text-light);
   }
 }

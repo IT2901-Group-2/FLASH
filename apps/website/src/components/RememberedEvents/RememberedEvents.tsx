@@ -13,7 +13,11 @@ const RememberedEvent = ({ name, uploadLimit }: Event) => {
   const c = useTranslations("common");
   const navigation = useRouter();
   return (
-    <Card onClick={() => navigation.back()} className={styles.linkcard}>
+    <Card
+      onClick={() => navigation.back()}
+      className={styles.linkcard}
+      data-color="primary"
+    >
       <div className={styles.content}>
         <Title size="small">{name}</Title>
         <span>
@@ -39,7 +43,7 @@ const RememberedEvents = () => {
   if (events.length === 0) return;
 
   return (
-    <Card className={styles.card}>
+    <Card className={styles.card} data-color="primary">
       <div className={styles.title}>
         <Calendar />
         <Title size="medium">{t("list.title")}</Title>
