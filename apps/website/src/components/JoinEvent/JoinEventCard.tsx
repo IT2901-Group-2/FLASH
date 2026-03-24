@@ -48,7 +48,7 @@ const JoinEventCard = () => {
   };
 
   return (
-    <Card>
+    <Card data-color="primary">
       <Title size="medium" align="center" description={tPage("description")} as="h2">
         {tPage("title")}
       </Title>
@@ -66,6 +66,7 @@ const JoinEventCard = () => {
           content={
             <form className={styles.content} onSubmit={handleSubmit}>
               <Input
+                data-color="brand-purple"
                 label={c("fields.eventCode")}
                 placeholder={t("fields.eventCode.placeholder")}
                 icon={<TextAlignStart />}

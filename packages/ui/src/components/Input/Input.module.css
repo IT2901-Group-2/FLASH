@@ -10,7 +10,6 @@
   }
 }
 .inputContainer {
-  --color-base: var(--color-border-base);
   --color-active: var(--color-border-dark);
   --color-disabled: var(--color-border-light);
 
@@ -26,8 +25,8 @@
   position: relative;
 
   &[data-variant="primary"] {
-    background-color: var(--input-bg, var(--color-primary-base));
-    border: 0.1rem solid var(--color-base);
+    background-color: var(--color-primary-light);
+    border: 0.1rem solid var(--color-border-base);
 
     &:focus-within:not(:has(input:disabled), .disabled).error {
       border-color: var(--color-warning-active);
@@ -40,7 +39,7 @@
     }
 
     &:focus-within:not(:has(input:disabled), .disabled) {
-      border-color: var(--color-active);
+      border-color: var(--color-base);
       border-width: 0.1rem;
     }
 
