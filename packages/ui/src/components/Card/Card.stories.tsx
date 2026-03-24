@@ -95,7 +95,7 @@ export const Colors: Story = {
       const primaryCard = canvas.getByText("Primary").closest("div");
       const brandPurpleCard = canvas.getByText("Brand Purple").closest("div");
 
-      await expect(primaryCard).toHaveAttribute("data-color", "parimary");
+      await expect(primaryCard).toHaveAttribute("data-color", "primary");
       await expect(brandPurpleCard).toHaveAttribute("data-color", "brand-purple");
     });
   },
