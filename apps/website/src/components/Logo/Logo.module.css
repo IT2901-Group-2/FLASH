@@ -1,4 +1,4 @@
-.cameraWrapper {
+.logoWrapper {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -8,11 +8,4 @@
   padding: 0.25rem;
   aspect-ratio: 1/1;
   border-radius: var(--radius-8);
-}
-
-.camera {
-  width: 1.5rem;
-  height: 1.5rem;
-  margin: auto;
-  color: var(--color-primary-base);
 }
