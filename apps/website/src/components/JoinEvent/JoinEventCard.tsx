@@ -48,7 +48,7 @@ const JoinEventCard = () => {
   };
 
   return (
-    <Card data-color="primary">
+    <Card>
       <Title size="medium" align="center" description={tPage("description")} as="h2">
         {tPage("title")}
       </Title>

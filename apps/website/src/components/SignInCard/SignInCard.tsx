@@ -19,7 +19,7 @@ export default function SignInCard() {
   };
 
   return (
-    <Card className={styles.card} data-color="primary">
+    <Card className={styles.card}>
       <Title
         align="left"
         size="medium"
