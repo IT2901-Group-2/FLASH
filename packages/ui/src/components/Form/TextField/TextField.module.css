@@ -8,8 +8,8 @@
   background-color: var(--color-primary-base);
   color: var(--color-text-secondary);
 
-  [data-color] & {
-    border-color: var(--color-border-base);
+  [data-color] > & {
+    border-color: var(--color-base);
   }
   &:focus-within {
     border-color: var(--color-border-light);
@@ -37,5 +37,5 @@
   height: 100%;
   width: 100%;
   padding: 0 0.5rem;
-  color: inherit;
+  color: var(--color-text-base);
 }
