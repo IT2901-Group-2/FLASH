@@ -7,8 +7,8 @@
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
-  background-color: var(--bg-strong);
-  color: var(--text-contrast);
+  background-color: var(--color-dark);
+  color: var(--color-background-light);
   font-size: 1.5rem;
   transition:
     background-color 1s ease,
@@ -17,13 +17,13 @@
   z-index: 1;
 
   &:is(:disabled, .disabled) {
-    background-color: var(--bg-moderate);
-    color: var(--color-neutral-800);
+    background-color: var(--color-light);
+    color: var(--color-text-secondary);
   }
 }
 
 .dotLine {
-  background-color: var(--bg-moderate);
+  background-color: var(--color-light);
   width: 100%;
   height: 0.25rem;
   position: absolute;
@@ -43,7 +43,7 @@
 .progressLine {
   height: 100%;
   width: 100%;
-  background-color: var(--bg-strong);
+  background-color: var(--color-dark);
   transform: translateX(calc((var(--progress) * 100%) - 100%));
   transition: transform 1s ease;
 }
