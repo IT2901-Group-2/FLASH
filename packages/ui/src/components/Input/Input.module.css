@@ -1,5 +1,5 @@
 .inputWrapper {
-  --color-warning: var(--color-destructive-base);
+  --color-warning: var(--color-danger-base);
   --color-warning-active: var(--color-destructive-dark);
   --color-success: var(--color-success-base);
   --color-success-active: var(--color-success-dark);
