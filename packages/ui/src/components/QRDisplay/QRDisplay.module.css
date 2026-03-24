@@ -9,9 +9,10 @@
   align-items: center;
   gap: 1em;
 
+  box-shadow: var(--shadow-dialog);
+
   border-radius: var(--radius-16);
-  background-color: var(--color-primary-base);
-  border: 0.1rem solid var(--color-border-base);
+  background-color: var(--color-background-base);
 
   &[data-size="small"] {
     font-size: 12px;
