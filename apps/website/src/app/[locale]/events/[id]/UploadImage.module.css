@@ -15,6 +15,29 @@
   gap: 2rem;
 }
 
+.previewDialog {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  max-height: 92vh;
+  overflow: hidden;
+}
+
+.previewImage {
+  position: relative;
+  width: 100%;
+  height: min(74vh, 75vw);
+  border-radius: var(--radius-8);
+  overflow: hidden;
+  touch-action: none;
+}
+
+.previewImageInner {
+  object-fit: contain;
+}
+
 .mobileOnly {
   display: flex;
   width: 80vw;
