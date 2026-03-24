@@ -8,8 +8,6 @@
   padding: 0.25rem;
   aspect-ratio: 1/1;
   border-radius: var(--radius-8);
-  background: var(--color-text-tertiary);
-  box-shadow: var(--shadow-dialog);
 }
 
 .camera {
