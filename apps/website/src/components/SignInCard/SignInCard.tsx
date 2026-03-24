@@ -19,7 +19,7 @@ export default function SignInCard() {
   };
 
   return (
-    <Card className={styles.card}>
+    <Card className={styles.card} data-color="primary">
       <Title
         align="left"
         size="medium"
@@ -29,7 +29,7 @@ export default function SignInCard() {
       >
         {t("heading")}
       </Title>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className={styles.content}>
         <Input
           className={styles.inputComponent}
           aria-label={c("fields.password")}

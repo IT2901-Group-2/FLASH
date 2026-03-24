@@ -7,15 +7,7 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-}
-
-.content {
-  --input-bg: var(--color-background-base);
-}
-
-:global([data-theme="dark"]) .content {
-  --input-bg: var(--color-secondary-base);
+  gap: 1rem;
 }
 
 .qrContainer {
