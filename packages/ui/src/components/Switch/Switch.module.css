@@ -2,11 +2,11 @@
   --color-text: var(--color-text-base);
   --color-description: var(--color-text-secondary);
 
-  --color-unchecked: var(--color-border-base);
+  --color-unchecked: var(--color-border-light);
   --color-unchecked-readonly: var(--color-border-light);
 
-  --color-unchecked-bg: var(--color-background-base);
-  --color-unchecked-bg-hover: var(--color-background-dark);
+  --color-unchecked-bg: var(--color-border-base);
+  --color-unchecked-bg-hover: var(--color-border-dark);
 
   --color-checked: var(--color-dark);
   --color-checked-thumb: var(--color-background-base);
