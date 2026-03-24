@@ -76,7 +76,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-accent-base);
+  color: var(--color-base);
   flex-shrink: 0;
 
   .error & {
