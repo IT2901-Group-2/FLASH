@@ -82,7 +82,7 @@ export const Switch = ({
   disabled,
   size = "medium",
   id: customID,
-  "data-color": color = "neutral",
+  "data-color": color,
   ...rest
 }: SwitchProps) => {
   const [_checked, setChecked] = useState<boolean>(
