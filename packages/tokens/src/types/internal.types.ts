@@ -1,6 +1,6 @@
 /* --- Color Scale ---*/
 export type ColorScale = "base" | "dark" | "light";
-export type TextColorScale = ColorScale | "secondary" | "tertiary";
+export type TextColorScale = ColorScale | "secondary" | "tertiary" | "contrast";
 
 /* --- Font Family --- */
 

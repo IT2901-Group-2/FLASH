@@ -28,6 +28,7 @@ export function semanticRootTokens(theme: ColorTheme) {
       light: { value: theme == "light" ? "#343448" : "#F3F2F6", type: "color" },
       secondary: { value: theme == "light" ? "#828284" : "#8F8F90", type: "color" },
       tertiary: { value: theme == "light" ? "#474747" : "#C7C7C8", type: "color" },
+      contrast: { value: theme == "light" ? "#F1F0F4" : "#101028", type: "color" },
     },
     "color-backdrop": {
       value: theme == "light" ? "#474747FC" : "#242424FC",
