@@ -92,10 +92,10 @@ export const Colors: Story = {
     });
 
     await step("Cards have correct data-color attributes", async () => {
-      const neutralCard = canvas.getByText("Neutral").closest("div");
+      const primaryCard = canvas.getByText("Primary").closest("div");
       const brandPurpleCard = canvas.getByText("Brand Purple").closest("div");
 
-      await expect(neutralCard).toHaveAttribute("data-color", "neutral");
+      await expect(primaryCard).toHaveAttribute("data-color", "parimary");
       await expect(brandPurpleCard).toHaveAttribute("data-color", "brand-purple");
     });
   },
