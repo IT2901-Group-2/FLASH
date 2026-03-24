@@ -74,14 +74,16 @@ export const Colors: Story = {
     const canvas = within(canvasElement);
 
     await step("All color variants render", async () => {
-      const neutral = canvas.getByText("Neutral");
+      const primary = canvas.getByText("Primary");
+      const secondary = canvas.getByText("Secondary");
       const brandPurple = canvas.getByText("Brand Purple");
       const accent = canvas.getByText("Accent");
       const success = canvas.getByText("Success");
       const warning = canvas.getByText("Warning");
       const danger = canvas.getByText("Danger");
 
-      await expect(neutral).toBeInTheDocument();
+      await expect(primary).toBeInTheDocument();
+      await expect(secondary).toBeInTheDocument();
       await expect(brandPurple).toBeInTheDocument();
       await expect(accent).toBeInTheDocument();
       await expect(success).toBeInTheDocument();
