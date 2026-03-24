@@ -4,20 +4,20 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  color: var(--text-neutral);
-  background-color: var(--bg-input);
   border-radius: var(--radius-16);
-  border: 0.1rem solid var(--border-subtle);
+  border: 0.1rem solid var(--color-border-base);
+  background-color: var(--color-primary-base);
+  color: var(--color-text-secondary);
 
   cursor: pointer;
   font-size: var(--font-size-large);
 
   &:focus-within {
-    border-color: var(--border-focus);
+    border-color: var(--color-border-dark);
   }
 
   [data-error="true"] & {
-    border-color: var(--border-danger);
+    border-color: var(--color-danger-base);
   }
 
   [data-size="small"] & {
@@ -69,7 +69,7 @@
   cursor: pointer;
   font-size: inherit;
 
-  color: var(--text-decoration);
+  color: var(--color-text-secondary);
   background-color: inherit;
   border: 0;
   outline: 0;
@@ -86,7 +86,7 @@
   }
 
   &:not(:last-child) {
-    border-bottom: 0.1rem solid var(--border-subtle);
+    border-bottom: 0.1rem solid var(--color-border-base);
   }
 
   &:hover,
@@ -111,7 +111,7 @@
 
     [aria-selected="true"] &::before {
       content: "";
-      background-color: var(--bg-accent-moderate-pressed);
+      background-color: var(--color-base);
       position: absolute;
       border-radius: var(--radius-full);
       width: 50%;
@@ -168,7 +168,7 @@
 
   .option {
     padding-block: 1rem;
-    color: inherit;
+    color: var(--color-text-base);
 
     &[data-selected="true"] {
       font-weight: var(--font-weight-bold);

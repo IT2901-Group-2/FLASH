@@ -50,6 +50,7 @@ const Select = ({
   onChange,
   hideLabel = false,
   disabled,
+  "data-color": color = "brand-purple",
   name,
   ...rest
 }: SelectProps) => {
@@ -84,6 +85,7 @@ const Select = ({
           className={cl(formStyles.field, disabled && formStyles.disabled, className)}
           data-error={!!rest.error}
           data-testid="select"
+          data-color={color}
         >
           <label
             data-testid="mainLabel"
