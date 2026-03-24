@@ -9,6 +9,7 @@ import {
   isResolvedTheme,
   isTheme,
   THEME_RESOLVED_COOKIE_KEY,
+  THEME_PREF_COOKIE_KEY,
   THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
 } from "@/lib/theme-config";
 
@@ -128,6 +129,7 @@ describe("isResolvedTheme", () => {
 
 describe("setStoredTheme", () => {
   const cookieOptions = {
+    prefCookieKey: THEME_PREF_COOKIE_KEY,
     resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
     cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
   };

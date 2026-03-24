@@ -1,5 +1,10 @@
 import { cookies } from "next/dist/server/request/cookies";
-import type { ResolvedTheme, Theme } from "@/lib/theme-config";
+import {
+  isTheme,
+  THEME_PREF_COOKIE_KEY,
+  type ResolvedTheme,
+  type Theme,
+} from "@/lib/theme-config";
 import { AsyncResult, Result } from "typescript-result";
 
 /**
@@ -86,13 +91,34 @@ export const applyTheme = (resolvedTheme: ResolvedTheme): void => {
  */
 export const setStoredTheme = (
   theme: Theme,
-  cookieOptions: { resolvedCookieKey: string; cookieMaxAgeSeconds: number }
-): AsyncResult<void, Error> =>
+  cookieOptions: {
+    prefCookieKey: string;
+    resolvedCookieKey: string;
+    cookieMaxAgeSeconds: number;
+  }
+): AsyncResult<void, Error> => {
+  const resolved = resolveThemePreference(theme);
   setThemeCookie({
-    name: cookieOptions.resolvedCookieKey,
-    value: resolveThemePreference(theme),
+    name: cookieOptions.prefCookieKey,
+    value: theme,
     maxAgeSeconds: cookieOptions.cookieMaxAgeSeconds,
   });
+  return setThemeCookie({
+    name: cookieOptions.resolvedCookieKey,
+    value: resolved,
+    maxAgeSeconds: cookieOptions.cookieMaxAgeSeconds,
+  });
+};
+
+export const getStoredThemePref = (): Theme | null => {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie
+    .split("; ")
+    .find(row => row.startsWith(`${THEME_PREF_COOKIE_KEY}=`));
+  if (match === undefined) return null;
+  const value = decodeURIComponent(match.split("=")[1] ?? "");
+  return isTheme(value) ? value : null;
+};
 
 /** Options for {@link systemThemeListener}. */
 export interface SystemThemeListenerOptions {

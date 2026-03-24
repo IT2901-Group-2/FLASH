@@ -3,12 +3,14 @@
 import {
   isResolvedTheme,
   THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+  THEME_PREF_COOKIE_KEY,
   THEME_RESOLVED_COOKIE_KEY,
   type ResolvedTheme,
   type Theme,
 } from "@/lib/theme-config";
 import {
   applyTheme,
+  getStoredThemePref,
   resolveThemePreference,
   setStoredTheme,
   systemThemeListener,
@@ -23,6 +25,7 @@ import {
 } from "react";
 
 const COOKIE_OPTIONS = {
+  prefCookieKey: THEME_PREF_COOKIE_KEY,
   resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
   cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
 } as const;
@@ -50,13 +53,9 @@ function getInitialState(defaultTheme: Theme): {
   theme: Theme;
   resolvedTheme: ResolvedTheme;
 } {
-  const ssrResolved = getSSRResolvedTheme();
-
-  if (ssrResolved !== null) {
-    return { theme: defaultTheme, resolvedTheme: ssrResolved };
-  }
-
-  return { theme: defaultTheme, resolvedTheme: resolveThemePreference(defaultTheme) };
+  const theme = getStoredThemePref() ?? defaultTheme;
+  const resolvedTheme = getSSRResolvedTheme() ?? resolveThemePreference(theme);
+  return { theme, resolvedTheme };
 }
 
 export interface ThemeContextType {
@@ -136,7 +135,10 @@ export const ThemeProvider = ({
   useEffect(() => {
     if (theme !== "system") return;
     return systemThemeListener("system", {
-      onChange: resolved => setThemeState(prev => ({ ...prev, resolvedTheme: resolved })),
+      onChange: resolved =>
+        setThemeState(prev =>
+          prev.resolvedTheme === resolved ? prev : { ...prev, resolvedTheme: resolved }
+        ),
       cookie: COOKIE_OPTIONS,
     });
   }, [theme]);

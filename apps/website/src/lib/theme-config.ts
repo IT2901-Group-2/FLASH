@@ -1,5 +1,6 @@
 import { ColorTheme } from "@flash/tokens/types";
 
+export const THEME_PREF_COOKIE_KEY = "theme-preference";
 export const THEME_RESOLVED_COOKIE_KEY = "theme-resolved";
 export const THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS = 60 * 60 * 24 * 365;
 
