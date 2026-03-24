@@ -1,7 +1,7 @@
 .container {
   --color-bg: var(--color-primary-base);
   --color-boder: var(--color-border-base);
-  --color-bg-active: var(--color-accent-base);
+  --color-bg-active: var(--color-accent-dark);
   --color-bg-hover: var(--color-accent-light);
 
   --color-text: var(--color-text-base);
@@ -30,7 +30,7 @@
   color: var(--color-text);
 
   &[data-error="true"] {
-    border-color: var(--border-danger);
+    border-color: var(--color-danger-base);
   }
 
   &[data-fill="true"] {
