@@ -15,33 +15,6 @@
   gap: 2rem;
 }
 
-/* Styles for the upload dialog. Remove after pilot */
-.surveyDialog {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  gap: 1rem;
-  width: 100%;
-}
-
-.surveyTitle {
-  margin: 0;
-}
-
-.surveyText {
-  margin: 0;
-  color: var(--color-neutral-700);
-}
-
-.surveyLink {
-  color: var(--color-brand-purple-600);
-  font-weight: 600;
-  text-decoration: underline;
-  word-break: break-all;
-}
-/* End of styles for the upload dialog. Remove after pilot */
-
 .mobileOnly {
   display: flex;
   width: 80vw;
