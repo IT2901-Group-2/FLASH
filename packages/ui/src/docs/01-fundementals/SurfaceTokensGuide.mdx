@@ -216,26 +216,26 @@ Separates surfaces, wraps inputs and cards. Use `base` by default; `dark` for fo
 
 ---
 
-### `destructive` — Error and delete actions
+### `danger` — Error and delete actions
 
 Irreversible or dangerous interactions only. Do not use for warnings or informational states.
 
 ```css
 .btn-delete {
-  background-color: var(--color-destructive-base);
+  background-color: var(--color-danger-base);
   color: white;
 }
 
 .btn-delete:hover {
-  background-color: var(--color-destructive-light);
+  background-color: var(--color-danger-light);
 }
 
 .btn-delete:active {
-  background-color: var(--color-destructive-dark);
+  background-color: var(--color-danger-dark);
 }
 
 .error-message {
-  color: var(--color-destructive-base);
+  color: var(--color-danger-base);
 }
 ```
 
@@ -260,7 +260,7 @@ Positive feedback, completed states, and confirmations.
 
 ### `warning` — Caution states
 
-Non-destructive alerts and advisory messages. The action is recoverable, use `destructive` if it is not.
+Non-danger alerts and advisory messages. The action is recoverable, use `danger` if it is not.
 
 ```css
 .toast-warning {
