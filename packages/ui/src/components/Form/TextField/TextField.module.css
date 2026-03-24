@@ -4,18 +4,19 @@
   align-items: center;
   height: 3rem;
   border-radius: var(--radius-16);
-  border: 0.1rem solid var(--border-subtle);
-  background-color: var(--bg-input);
+  border: 0.1rem solid var(--color-border-base);
+  background-color: var(--color-primary-base);
+  color: var(--color-text-secondary);
 
   [data-color] & {
-    border-color: var(--border-default);
+    border-color: var(--color-border-base);
   }
   &:focus-within {
-    border-color: var(--border-focus);
+    border-color: var(--color-border-light);
   }
 
   [data-error="true"] & {
-    border: 0.1rem solid var(--border-danger);
+    border: 0.1rem solid var(--color-danger-base);
   }
 
   > svg {
@@ -36,5 +37,4 @@
   height: 100%;
   width: 100%;
   padding: 0 0.5rem;
-  color: var(--text-neutral);
 }
