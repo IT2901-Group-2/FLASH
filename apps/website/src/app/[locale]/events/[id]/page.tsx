@@ -11,6 +11,7 @@ import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 import { getAdminDashboardEventRoute, routes } from "@/lib/routes";
+import Image from "next/image";
 
 // Used for pilot feedback collection. Should be removed after pilot is finished
 const SURVEY_LINK = "https://nettskjema.no/a/610540";
@@ -22,6 +23,7 @@ export default function Page() {
   const tUpload = useTranslations("guest.event.upload");
   const eventAuth = useEventAuth();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const previewDialogRef = useRef<HTMLDialogElement>(null);
 
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
@@ -36,6 +38,10 @@ export default function Page() {
 
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState<{ src: string; alt: string } | null>(
+    null
+  );
   const { mutateAsync: uploadImage } = useUploadImageMutation();
 
   // Join Code
@@ -142,6 +148,37 @@ export default function Page() {
     }
   }, [eventAuth, router]);
 
+  useEffect(() => {
+    if (!isPreviewOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const previousOverscrollBehavior = document.body.style.overscrollBehavior;
+
+    document.body.style.overflow = "hidden";
+    document.body.style.overscrollBehavior = "none";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.body.style.overscrollBehavior = previousOverscrollBehavior;
+    };
+  }, [isPreviewOpen]);
+
+  useEffect(() => {
+    const dialog = previewDialogRef.current;
+    if (!dialog) return;
+
+    const handleClose = () => setIsPreviewOpen(false);
+    dialog.addEventListener("close", handleClose);
+
+    return () => dialog.removeEventListener("close", handleClose);
+  }, []);
+
+  const handleImagePreview = (src: string, alt: string) => {
+    setPreviewImage({ src, alt });
+    setIsPreviewOpen(true);
+    previewDialogRef.current?.showModal();
+  };
+
   return (
     <>
       <FileInput />
@@ -164,6 +201,38 @@ export default function Page() {
             {tCommon("actions.close")}
           </Button>
         </div>
+      </Dialog>
+
+      <Dialog
+        ref={previewDialogRef}
+        closedby="any"
+        className={styles.previewDialog}
+        style={{ width: "min(92vw, 900px)", maxWidth: "92vw", marginTop: 0 }}
+      >
+        {previewImage && (
+          <>
+            <div className={styles.previewImage}>
+              <Image
+                fill
+                src={previewImage.src}
+                alt={previewImage.alt}
+                className={styles.previewImageInner}
+                sizes="(max-width: 900px) 92vw, 900px"
+              />
+            </div>
+            <Button
+              variant="secondary"
+              data-color="neutral"
+              onClick={() => {
+                setIsPreviewOpen(false);
+                previewDialogRef.current?.close();
+              }}
+              fill
+            >
+              {tCommon("actions.close")}
+            </Button>
+          </>
+        )}
       </Dialog>
 
       {/* Start of survey popup logic. Should be removed after pilot */}
@@ -254,6 +323,12 @@ export default function Page() {
               alt={tUpload("imageAlt", { index: index + 1, total: images.length })}
               title={tUpload("imageTitle", { index: index + 1 })}
               data-image-id={image.id}
+              onClick={() =>
+                handleImagePreview(
+                  `/api/events/${eventId}/images/${image.id}`,
+                  tUpload("imageAlt", { index: index + 1, total: images.length })
+                )
+              }
             />
           ))}
         </div>
