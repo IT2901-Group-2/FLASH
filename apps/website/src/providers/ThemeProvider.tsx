@@ -15,14 +15,7 @@ import {
   setStoredTheme,
   systemThemeListener,
 } from "@/lib/theme-utils";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 
 const COOKIE_OPTIONS = {
   prefCookieKey: THEME_PREF_COOKIE_KEY,
@@ -80,19 +73,6 @@ export interface ThemeContextType {
 }
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
-
-/**
- * Consume the theme context.
- *
- * @throws {Error} When called outside of a ThemeProvider tree.
- */
-export const useTheme = (): ThemeContextType => {
-  const ctx = useContext(ThemeContext);
-  if (ctx === undefined) {
-    throw new Error("useTheme must be used within a ThemeProvider");
-  }
-  return ctx;
-};
 
 interface ThemeProviderProps {
   children: React.ReactNode;

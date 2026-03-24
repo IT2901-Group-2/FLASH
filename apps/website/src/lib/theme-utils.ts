@@ -68,7 +68,7 @@ export const resolveThemePreference = (theme: Theme): ResolvedTheme =>
 /**
  * Apply a resolved theme to the document.
  *
- * This sets a `data-theme` attribute on the body element which you can target in CSS.
+ * This sets a `data-theme` attribute on the document element which you can target in CSS.
  *
  * Safe in SSR: no-op when `document` is not available.
  *
