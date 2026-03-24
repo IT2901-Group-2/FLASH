@@ -49,14 +49,22 @@
   stroke-linecap: round;
   stroke-width: 4.8px;
 
+  [data-color] & {
+    stroke: var(--color-light);
+  }
+
   .loader[data-variant="inverted"] & {
-    stroke: var(--color-text-tertiary);
+    stroke: var(--color-border-light);
   }
 }
 
 .background {
   stroke: var(--color-border-light);
   stroke-width: 4.8px;
+
+  [data-color] & {
+    stroke: color-mix(in srgb, var(--color-dark) 70%, black);
+  }
 
   .loader[data-variant="inverted"] & {
     stroke: var(--color-text-secondary);
