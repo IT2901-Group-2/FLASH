@@ -1,15 +1,15 @@
+import { JWT_SECRET, storage } from "@/config";
+import { eventTable, GetImagesParams, Image, imageTable, UpdateImage } from "@/db";
+import { HTTPError } from "@/lib/utils/error";
+import { getEventCookie } from "@/lib/utils/eventCookie";
+import { makeGlobal } from "@/lib/utils/makeGlobal";
+import { getFirstRow } from "@/lib/utils/sql";
 import { FileStorage } from "@flash/file-storage";
-import { DatabaseService, dbService } from "./databaseService";
-import { AsyncResult, Result } from "typescript-result";
-import { GetImagesParams, Image, imageTable, UpdateImage } from "@/db";
+import { and, eq, inArray, isNull, sql } from "drizzle-orm";
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
-import { getFirstRow } from "@/lib/utils/sql";
-import { and, eq, inArray, isNull } from "drizzle-orm";
-import { JWT_SECRET, storage } from "@/config";
-import { makeGlobal } from "@/lib/utils/makeGlobal";
-import { getEventCookie } from "@/lib/utils/eventCookie";
-import { HTTPError } from "@/lib/utils/error";
+import { AsyncResult, Result } from "typescript-result";
+import { DatabaseService, dbService } from "./databaseService";
 
 const uid = new ShortUniqueId();
 
@@ -114,23 +114,53 @@ export class ImageService {
         () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
       )
       .map(({ userId }) =>
-        Result.try(() => sharp(image))
-          .map(sharpImage => this.validateImage(sharpImage))
-          .mapCatching(sharpImage => sharpImage.clone().rotate().webp().toBuffer())
-          .map(buff => this.storage.write(`${imageId}.webp`, buff))
-          .map(() =>
-            Result.try(() =>
-              this.dbService.db
-                .insert(imageTable)
-                .values({ id: imageId, userId, eventId })
-                .returning()
+        Result.try(async () => {
+          const [event] = await this.dbService.db
+            .select({ uploadLimit: eventTable.uploadLimit })
+            .from(eventTable)
+            .where(eq(eventTable.id, eventId))
+            .limit(1);
+
+          /** This should never happen since we check for the existence of the event before allowing uploads.
+           *  Was added to avoid "possibly 'undefined'" error on `event.uploadLimit`.
+           *  Can be removed if the warning message is deemed acceptable.
+           **/
+          if (!event) {
+            throw new HTTPError(`Event with id ${eventId} not found`, 404);
+          }
+
+          const countRow = await this.dbService.db
+            .select({ count: sql<number>`count(*)` })
+            .from(imageTable)
+            .where(and(eq(imageTable.eventId, eventId), eq(imageTable.userId, userId)));
+
+          const uploadCount = Number(countRow[0]?.count ?? 0);
+          const uploadLimit = event.uploadLimit ?? Infinity;
+
+          if (uploadCount >= uploadLimit) {
+            throw new HTTPError("Upload limit reached", 403);
+          }
+
+          return userId;
+        }).map(userId =>
+          Result.try(() => sharp(image))
+            .map(sharpImage => this.validateImage(sharpImage))
+            .mapCatching(sharpImage => sharpImage.clone().rotate().webp().toBuffer())
+            .map(buff => this.storage.write(`${imageId}.webp`, buff))
+            .map(() =>
+              Result.try(() =>
+                this.dbService.db
+                  .insert(imageTable)
+                  .values({ id: imageId, userId, eventId })
+                  .returning()
+              )
+                .map(rows => getFirstRow(rows, "Failed to upload image"))
+                .onSuccess(() => this.dbService.flush())
+                .onFailure(async () => {
+                  await this.storage.rm(`${imageId}.webp`).getOrNull();
+                })
             )
-              .map(rows => getFirstRow(rows, "Failed to upload image"))
-              .onSuccess(() => this.dbService.flush())
-              .onFailure(async () => {
-                await this.storage.rm(`${imageId}.webp`).getOrNull();
-              })
-          )
+        )
       );
   }
 

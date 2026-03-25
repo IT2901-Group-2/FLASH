@@ -94,7 +94,8 @@
       "imageTitle": "Photo {index}",
       "errors": {
         "uploadUnavailable": "Unable to upload images for this event.",
-        "uploadFailed": "{count, plural, one {Could not upload photo} other {Some photos could not be uploaded}}"
+        "uploadFailed": "{count, plural, one {Could not upload photo} other {Some photos could not be uploaded}}",
+        "uploadLimitReached": "You have reached this event's image upload limit."
       }
     }
   }

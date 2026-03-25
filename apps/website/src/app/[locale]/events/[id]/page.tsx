@@ -78,8 +78,20 @@ export default function Page() {
         ]);
         const successfulUploads = results.filter(r => r.status === "fulfilled").length;
         const failureCount = results.length - successfulUploads;
+
+        const hasUploadLimitError = results.some(
+          (result): result is PromiseRejectedResult =>
+            result.status === "rejected" &&
+            result.reason instanceof Error &&
+            /upload\s+limit\s+reached/i.test(result.reason.message)
+        );
+
         if (failureCount > 0) {
-          setUploadError(tUpload("errors.uploadFailed", { count: failureCount }));
+          setUploadError(
+            hasUploadLimitError
+              ? tUpload("errors.uploadLimitReached")
+              : tUpload("errors.uploadFailed", { count: failureCount })
+          );
         }
       } finally {
         setIsUploading(false);

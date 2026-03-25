@@ -163,6 +163,25 @@ describe("Guest Upload Page", () => {
     );
   });
 
+  it("shows upload limit reached key when upload fails due to event upload limit", async () => {
+    mockUploadImage.mockRejectedValue(new Error("Upload limit reached"));
+    render(<Page />);
+
+    const { onFilesSelected } = vi.mocked(useFileUploadModule.useFileUpload).mock
+      .calls[0]![0]!;
+    const mockFileList = createMockFileList([
+      new File(["a"], "a.jpg", { type: "image/jpeg" }),
+    ]);
+
+    await act(async () => {
+      await onFilesSelected!(mockFileList);
+    });
+
+    await waitFor(() =>
+      expect(screen.getByRole("alert")).toHaveTextContent("errors.uploadLimitReached")
+    );
+  });
+
   it("shows no upload error when all files upload successfully", async () => {
     mockUploadImage.mockResolvedValue({});
     render(<Page />);
