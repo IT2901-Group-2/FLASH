@@ -160,9 +160,12 @@ describe("useEventsQuery pagination", () => {
 
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() => useEventsQuery({ status: "active" }, true, 2), {
-      wrapper: createWrapper().wrapper,
-    });
+    const { result } = renderHook(
+      () => useEventsQuery({ status: "active", pageSize: 2 }, true),
+      {
+        wrapper: createWrapper().wrapper,
+      }
+    );
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data?.pages[0]?.items.map(e => e.id)).toStrictEqual([
@@ -184,6 +187,28 @@ describe("useEventsQuery pagination", () => {
     expect(fetchMock.mock.calls.some(call => String(call[0]).includes("cursor=2"))).toBe(
       true
     );
+  });
+
+  it("uses cursor from params as initial page param", async () => {
+    const fetchMock = vi.fn<typeof fetch>(
+      async () =>
+        new Response(JSON.stringify({ items: [], nextCursor: null }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+    );
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderHook(() => useEventsQuery({ status: "active", cursor: 4, pageSize: 3 }), {
+      wrapper: createWrapper().wrapper,
+    });
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+
+    const requestUrl = String(fetchMock.mock.calls[0]?.[0]);
+    expect(requestUrl).toContain("cursor=4");
+    expect(requestUrl).toContain("pageSize=3");
   });
 });
 
