@@ -10,7 +10,7 @@ import { JWT_SECRET, storage } from "@/config";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { getEventCookie } from "@/lib/utils/eventCookie";
 import { HTTPError } from "@/lib/utils/error";
-import JSZip from "jszip";
+import AdmZip from "adm-zip";
 
 const uid = new ShortUniqueId();
 
@@ -131,6 +131,9 @@ export class ImageService {
               .onFailure(async () => {
                 await this.storage.rm(`${imageId}.webp`).getOrNull();
               })
+              .onSuccess(async image => {
+                await this.addImageToZip(eventId, image.id).getOrNull();
+              })
           )
       );
   }
@@ -210,7 +213,10 @@ export class ImageService {
         )
       )
       .onSuccess(() => this.dbService.flush())
-      .map(row => this.storage.rm(`${row.id}.webp`).map(() => row));
+      .map(row => this.storage.rm(`${row.id}.webp`).map(() => row))
+      .onSuccess(async image => {
+        await this.removeImageFromZip(eventId, image.id).getOrNull();
+      });
   }
 
   /**
@@ -220,17 +226,28 @@ export class ImageService {
    * @returns A result containing the zip archive as a `Buffer` or an error.
    */
   downloadImages(eventId: string): AsyncResult<Buffer, Error> {
-    return this.getImages(eventId).map(async images => {
-      const zip = new JSZip();
+    return this.storage.read(`${eventId}.zip`).recover(() => {
+      const zip = new AdmZip();
+      return Result.ok(zip.toBuffer());
+    });
+  }
 
-      await Promise.allSettled(
-        images.map(async (image, index) => {
-          const buffer = await this.storage.read(`${image.id}.webp`).getOrThrow();
-          zip.file(`image-${index + 1}.webp`, buffer);
-        })
-      );
+  private addImageToZip(eventId: string, imageId: string): AsyncResult<void, Error> {
+    return Result.fromAsyncCatching(async () => {
+      const existing = await this.storage.read(`${eventId}.zip`).getOrNull();
+      const zip = new AdmZip(existing ?? Buffer.alloc(0));
+      const buffer = await this.storage.read(`${imageId}.webp`).getOrThrow();
+      zip.addFile(`${imageId}.webp`, buffer);
+      await this.storage.write(`${eventId}.zip`, zip.toBuffer()).getOrThrow();
+    });
+  }
 
-      return zip.generateAsync({ type: "nodebuffer" });
+  private removeImageFromZip(eventId: string, imageId: string): AsyncResult<void, Error> {
+    return Result.fromAsyncCatching(async () => {
+      const existing = await this.storage.read(`${eventId}.zip`).getOrNull();
+      const zip = new AdmZip(existing ?? undefined);
+      zip.deleteFile(`${imageId}.webp`);
+      await this.storage.write(`${eventId}.zip`, zip.toBuffer()).getOrThrow();
     });
   }
 }
