@@ -18,7 +18,6 @@ export default function Page() {
         align="center"
         size="large"
         as="h1"
-        data-color="brand-purple"
         description={t("description")}
       >
         {t("title")}
