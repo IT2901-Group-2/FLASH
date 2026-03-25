@@ -67,7 +67,7 @@
 @media screen and (min-width: 768px) {
   .card {
     position: static;
-    background: transparent;
+    background-color: transparent !important;
     border: none;
     box-shadow: none;
     padding: 0;
