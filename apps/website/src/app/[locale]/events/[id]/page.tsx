@@ -157,7 +157,7 @@ export default function Page() {
           )}
           <Button
             variant="secondary"
-            data-color="neutral"
+            data-color="secondary"
             onClick={() => dialogRef.current?.close()}
             fill
           >
