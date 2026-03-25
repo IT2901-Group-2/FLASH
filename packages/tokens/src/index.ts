@@ -81,6 +81,7 @@ async function buildDataColorTokens() {
   const colors: ColorRole[] = [
     "neutral",
     "primary",
+    "secondary",
     "accent",
     "success",
     "warning",
