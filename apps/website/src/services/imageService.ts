@@ -46,6 +46,15 @@ export class ImageService {
     });
   }
 
+  /**
+   * Ensures that zip operations for a given event are executed serially.
+   * If a zip operation is already in progress for the event, the new operation
+   * will wait for it to complete before starting.
+   * @param eventId The id of the event to lock the zip for.
+   * @param fn The async function to execute within the lock.
+   * @returns A promise that resolves when the funciton has completed.
+   */
+
   private withZipLock(eventId: string, fn: () => Promise<void>): Promise<void> {
     const previous = this.zipLocks.get(eventId) ?? Promise.resolve();
     const next = previous.then(fn, fn);
@@ -250,6 +259,7 @@ export class ImageService {
 
   /**
    * Downloads all images associated with the specified event as a zip archive.
+   * Returns an empty zip if no archive (images) exists yet for the event.
    *
    * @param eventId The id of the event.
    * @returns A result containing the zip archive as a `Buffer` or an error.
@@ -261,6 +271,13 @@ export class ImageService {
     });
   }
 
+  /**
+   * Rebuilds the zip archive for the specified event from scratch.
+   * Fetches all images associated with the event and repacks them into a new zip.
+   * Aquires the zip lock to ensure no concurrent zip operations run during the rebuild.
+   * @param eventId The id of the event to rebuild the zip for.
+   * @returns A result containing void or an error.
+   */
   rebuildZip(eventId: string): AsyncResult<void, Error> {
     return Result.fromAsyncCatching(
       this.withZipLock(eventId, async () => {
@@ -275,6 +292,14 @@ export class ImageService {
     );
   }
 
+  /**
+   * Adds a single image to the zip archive for the specified event.
+   * Creates a new zip if one does not already exist.
+   * Acquires the zip lock to ensure the operation is serialized with other zip operations
+   * @param eventId The id of the event the image belongs to.
+   * @param imageId The id of the image to add to the zip.
+   * @returns A result containing void or an error.
+   */
   private addImageToZip(eventId: string, imageId: string): AsyncResult<void, Error> {
     return Result.fromAsyncCatching(
       this.withZipLock(eventId, async () => {
@@ -290,6 +315,14 @@ export class ImageService {
     );
   }
 
+  /**
+   * Removes a single image from the zip archive for the specified event.
+   * If no zip exists, this is a no-op.
+   * Aquires the zip lock to ensure the operation is serialized with other zip operations.
+   * @param eventId The id of the event the image belongs to.
+   * @param imageId The id of the image to remove from the zip.
+   * @returns A result containing void or an error.
+   */
   private removeImageFromZip(eventId: string, imageId: string): AsyncResult<void, Error> {
     return Result.fromAsyncCatching(
       this.withZipLock(eventId, async () => {
