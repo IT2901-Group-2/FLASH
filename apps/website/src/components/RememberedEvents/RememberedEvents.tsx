@@ -1,19 +1,19 @@
 "use client";
 
-import { useEventsQuery } from "@/hooks/useEvents";
 import { Event } from "@/db";
-import { Calendar, ChevronRight } from "lucide-react";
-import { Card, Title } from "@flash/ui";
-import styles from "./RememberedEvents.module.css";
-import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useEventsQuery } from "@/hooks/useEvents";
 import { useJoinedEvents } from "@/providers/JoinedEventsContext";
+import { Card, Title } from "@flash/ui";
+import { Calendar, ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import styles from "./RememberedEvents.module.css";
 
-const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
+const RememberedEvent = ({ name, uploadLimit }: Event) => {
   const c = useTranslations("common");
   const navigation = useRouter();
   return (
-    <Card onClick={() => navigation.push(`/events/${id}`)} className={styles.linkcard}>
+    <Card onClick={() => navigation.back()} className={styles.linkcard}>
       <div className={styles.content}>
         <Title size="small">{name}</Title>
         <span>

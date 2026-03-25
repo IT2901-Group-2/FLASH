@@ -9,6 +9,7 @@ export type FormValues = {
     startTime: string;
     endTime: string;
   };
+  sortOrder: string;
 };
 
 export const TIME_PRESETS = {

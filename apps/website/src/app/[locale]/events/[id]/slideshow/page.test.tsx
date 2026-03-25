@@ -26,6 +26,20 @@ vi.mock("@/hooks/useIdle", () => ({
   useIdle: () => mockIsIdle,
 }));
 
+const mockEnterFullscreen = vi.fn();
+const mockExitFullscreen = vi.fn();
+let mockFullscreenActive = false;
+
+vi.mock("react-full-screen", () => ({
+  FullScreen: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useFullScreenHandle: () => ({
+    active: mockFullscreenActive,
+    enter: mockEnterFullscreen,
+    exit: mockExitFullscreen,
+    node: { current: null },
+  }),
+}));
+
 const mockImages = [
   { id: "img-1", url: "/img1.jpg" },
   { id: "img-2", url: "/img2.jpg" },
@@ -89,6 +103,7 @@ describe("Slideshow Page", () => {
     mockViewIndex = 0;
     mockHasNextPage = false;
     mockIsFetchingNextPage = false;
+    mockFullscreenActive = false;
     vi.clearAllMocks();
   });
 
@@ -160,6 +175,34 @@ describe("Slideshow Page", () => {
       render(<Page />);
       expect(screen.getByTestId("play")).toBeInTheDocument();
       expect(screen.queryByTestId("pause")).not.toBeInTheDocument();
+    });
+
+    it("enters fullscreen when fullscreen button is clicked and inactive", () => {
+      render(<Page />);
+
+      fireEvent.click(screen.getByTestId("fullscreen-button"));
+
+      expect(mockEnterFullscreen).toHaveBeenCalledTimes(1);
+      expect(mockExitFullscreen).not.toHaveBeenCalled();
+    });
+
+    it("exits fullscreen when fullscreen button is clicked and active", () => {
+      mockFullscreenActive = true;
+      render(<Page />);
+
+      fireEvent.click(screen.getByTestId("fullscreen-button"));
+
+      expect(mockExitFullscreen).toHaveBeenCalledTimes(1);
+      expect(mockEnterFullscreen).not.toHaveBeenCalled();
+    });
+
+    it("shows Shrink icon when fullscreen is active", () => {
+      mockFullscreenActive = true;
+      render(<Page />);
+
+      const fullScreenButton = screen.getByTestId("fullscreen-button");
+      expect(fullScreenButton.querySelector(".lucide-shrink")).toBeTruthy();
+      expect(fullScreenButton.querySelector(".lucide-expand")).toBeNull();
     });
   });
 
