@@ -18,16 +18,18 @@
   min-width: 0;
 
   .backButton {
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
     aspect-ratio: 1/1;
     padding: 0.25rem;
     border-radius: var(--radius-8);
     cursor: pointer;
     flex-shrink: 0;
+    border: 0.1rem solid transparent;
 
     &:hover {
       background-color: var(--color-primary-light);
+      border-color: var(--color-border-base);
     }
 
     &:active {
