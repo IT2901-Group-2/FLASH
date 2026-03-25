@@ -14,8 +14,6 @@ import { getAdminDashboardEventRoute, routes } from "@/lib/routes";
 import Image from "next/image";
 
 // Used for pilot feedback collection. Should be removed after pilot is finished
-const SURVEY_LINK = "https://nettskjema.no/a/610540";
-const SURVEY_UPLOAD_THRESHOLD = 3;
 const IMAGE_PAGE_SIZE = 12;
 
 export default function Page() {
