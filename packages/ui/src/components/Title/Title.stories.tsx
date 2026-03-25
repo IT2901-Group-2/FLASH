@@ -166,7 +166,6 @@ export const Colors: Story = {
     <>
       <Title>Default</Title>
       <Title data-color="primary">Primary</Title>
-      <Title data-color="secondary">Secondary</Title>
       <Title data-color="accent">Accent</Title>
       <Title data-color="brand-purple">Brand Purple</Title>
       <Title data-color="success">Success</Title>
