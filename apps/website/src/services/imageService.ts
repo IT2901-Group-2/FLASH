@@ -17,6 +17,7 @@ const uid = new ShortUniqueId();
 export class ImageService {
   private readonly dbService: DatabaseService;
   private readonly storage: FileStorage;
+  private readonly zipLocks = new Map<string, Promise<void>>();
 
   constructor(dbService: DatabaseService, storage: FileStorage) {
     this.dbService = dbService;
@@ -43,6 +44,21 @@ export class ImageService {
 
       return Result.ok(sharpImage);
     });
+  }
+
+  private withZipLock(eventId: string, fn: () => Promise<void>): Promise<void> {
+    const previous = this.zipLocks.get(eventId) ?? Promise.resolve();
+    const next = previous.then(fn, fn);
+    this.zipLocks.set(
+      eventId,
+      next.catch(() => {})
+    );
+    next.then(() => {
+      if (this.zipLocks.get(eventId) === next) {
+        this.zipLocks.delete(eventId);
+      }
+    });
+    return next;
   }
 
   /**
@@ -127,12 +143,19 @@ export class ImageService {
                 .returning()
             )
               .map(rows => getFirstRow(rows, "Failed to upload image"))
-              .onSuccess(() => this.dbService.flush())
+              .mapCatching(async image => {
+                this.dbService.flush();
+                const result = await this.addImageToZip(eventId, image.id);
+                if (!result.ok) {
+                  console.error(
+                    `Failed to add image ${image.id} to zip for event ${eventId}:`,
+                    result.error
+                  );
+                }
+                return image;
+              })
               .onFailure(async () => {
                 await this.storage.rm(`${imageId}.webp`).getOrNull();
-              })
-              .onSuccess(async image => {
-                await this.addImageToZip(eventId, image.id).getOrNull();
               })
           )
       );
@@ -215,7 +238,13 @@ export class ImageService {
       .onSuccess(() => this.dbService.flush())
       .map(row => this.storage.rm(`${row.id}.webp`).map(() => row))
       .onSuccess(async image => {
-        await this.removeImageFromZip(eventId, image.id).getOrNull();
+        const result = await this.removeImageFromZip(eventId, image.id);
+        if (!result.ok) {
+          console.error(
+            `Failed to remove image ${image.id} from zip for event ${eventId}:`,
+            result.error
+          );
+        }
       });
   }
 
@@ -232,23 +261,44 @@ export class ImageService {
     });
   }
 
+  rebuildZip(eventId: string): AsyncResult<void, Error> {
+    return Result.fromAsyncCatching(
+      this.withZipLock(eventId, async () => {
+        const images = await this.getImages(eventId).getOrThrow();
+        const zip = new AdmZip();
+        for (const image of images) {
+          const buffer = await this.storage.read(`${image.id}.webp`).getOrThrow();
+          zip.addFile(`${image.id}.webp`, buffer);
+        }
+        await this.storage.write(`${eventId}.zip`, zip.toBuffer()).getOrThrow();
+      })
+    );
+  }
+
   private addImageToZip(eventId: string, imageId: string): AsyncResult<void, Error> {
-    return Result.fromAsyncCatching(async () => {
-      const existing = await this.storage.read(`${eventId}.zip`).getOrNull();
-      const zip = new AdmZip(existing ?? Buffer.alloc(0));
-      const buffer = await this.storage.read(`${imageId}.webp`).getOrThrow();
-      zip.addFile(`${imageId}.webp`, buffer);
-      await this.storage.write(`${eventId}.zip`, zip.toBuffer()).getOrThrow();
-    });
+    return Result.fromAsyncCatching(
+      this.withZipLock(eventId, async () => {
+        const existing = await this.storage.read(`${eventId}.zip`).getOrNull();
+        const zip = new AdmZip(existing ?? undefined);
+
+        const buffer = await this.storage.read(`${imageId}.webp`).getOrThrow();
+
+        zip.addFile(`${imageId}.webp`, buffer);
+
+        await this.storage.write(`${eventId}.zip`, zip.toBuffer()).getOrThrow();
+      })
+    );
   }
 
   private removeImageFromZip(eventId: string, imageId: string): AsyncResult<void, Error> {
-    return Result.fromAsyncCatching(async () => {
-      const existing = await this.storage.read(`${eventId}.zip`).getOrNull();
-      const zip = new AdmZip(existing ?? undefined);
-      zip.deleteFile(`${imageId}.webp`);
-      await this.storage.write(`${eventId}.zip`, zip.toBuffer()).getOrThrow();
-    });
+    return Result.fromAsyncCatching(
+      this.withZipLock(eventId, async () => {
+        const existing = await this.storage.read(`${eventId}.zip`).getOrNull();
+        const zip = new AdmZip(existing ?? undefined);
+        zip.deleteFile(`${imageId}.webp`);
+        await this.storage.write(`${eventId}.zip`, zip.toBuffer()).getOrThrow();
+      })
+    );
   }
 }
 
