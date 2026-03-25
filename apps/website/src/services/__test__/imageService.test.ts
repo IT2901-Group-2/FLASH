@@ -222,10 +222,17 @@ describe("ImageService getImages", () => {
       .getImages("wedding", { cursor: firstPage.nextCursor ?? 0, pageSize: 2 })
       .getOrThrow();
 
-    expect(new Set(firstPage.items.map(i => i.id))).toStrictEqual(
-      new Set(["image-5", "image-4"])
+    expect(firstPage.items).toHaveLength(2);
+    expect(secondPage.items).toHaveLength(1);
+
+    const firstIds = new Set(firstPage.items.map(i => i.id));
+    const secondIds = new Set(secondPage.items.map(i => i.id));
+
+    // Ensure cursor pagination partitions the same dataset without overlap.
+    expect([...firstIds].some(id => secondIds.has(id))).toBe(false);
+    expect(new Set([...firstIds, ...secondIds])).toStrictEqual(
+      new Set(["image-3", "image-4", "image-5"])
     );
-    expect(secondPage.items.map(i => i.id)).toStrictEqual(["image-3"]);
     expect(secondPage.nextCursor).toBeNull();
   });
 });

@@ -18,14 +18,6 @@ import {
 } from "@/db";
 import z from "zod";
 
-const eventsListResponseSchema = z.union([getEventsPageSchema, z.array(getEventSchema)]);
-
-function toEventsPage(
-  response: z.infer<typeof eventsListResponseSchema>
-): z.infer<typeof getEventsPageSchema> {
-  return Array.isArray(response) ? { items: response, nextCursor: null } : response;
-}
-
 /**
  * Serializes an `GetEvents` object into a URL query string (e.g. `?status=active&archived=false`).
  * Returns an empty string when no params are provided.
@@ -77,10 +69,9 @@ export function useEventsQuery(params?: GetEventsParams, enabled: boolean = true
   return useQuery({
     queryKey: eventsKeys.list(params),
     queryFn: () =>
-      makeRequest(
-        eventsListResponseSchema,
-        `/api/events${toEventsSearchParams(params)}`
-      ).then(response => toEventsPage(response).items),
+      makeRequest(getEventsPageSchema, `/api/events${toEventsSearchParams(params)}`).then(
+        response => response.items
+      ),
     enabled,
   });
 }
@@ -98,15 +89,10 @@ export function useInfiniteEventsQuery(
     initialPageParam: undefined as number | undefined,
     queryFn: ({ pageParam }) =>
       makeRequest(
-        eventsListResponseSchema,
+        getEventsPageSchema,
         `/api/events${toEventsSearchParams({ ...params, cursor: pageParam, pageSize })}`
-      ).then(toEventsPage),
-    getNextPageParam: lastPage => {
-      if (lastPage.nextCursor === null) return undefined;
-
-      const parsed = Number(lastPage.nextCursor);
-      return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined;
-    },
+      ),
+    getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
     enabled,
   });
 }

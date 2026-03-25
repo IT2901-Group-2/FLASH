@@ -49,7 +49,7 @@ describe("useEventsQuery", () => {
       "fetch",
       vi.fn(
         async () =>
-          new Response(JSON.stringify([mockEvent]), {
+          new Response(JSON.stringify({ items: [mockEvent], nextCursor: null }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
           })
@@ -92,7 +92,8 @@ describe("useEventsQuery", () => {
 
   it("passes query params to fetch", async () => {
     const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(JSON.stringify([]), { status: 200 })
+      async () =>
+        new Response(JSON.stringify({ items: [], nextCursor: null }), { status: 200 })
     );
 
     vi.stubGlobal("fetch", fetchMock);
