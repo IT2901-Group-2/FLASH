@@ -91,7 +91,7 @@
 
   &:hover,
   &:focus {
-    color: inherit;
+    color: var(--color-text-base);
   }
 
   .icon {
