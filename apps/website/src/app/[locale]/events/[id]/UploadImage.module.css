@@ -15,27 +15,77 @@
   gap: 2rem;
 }
 
-.previewDialog {
+.previewPage {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background-color: #000;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
-  max-height: 92vh;
-  overflow: hidden;
 }
 
-.previewImage {
-  position: relative;
-  width: 100%;
-  height: min(74vh, 75vw);
-  border-radius: var(--radius-8);
-  overflow: hidden;
-  touch-action: none;
-}
-
-.previewImageInner {
+.previewFullscreenImage {
   object-fit: contain;
+}
+
+.previewClose {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.25rem;
+  border-radius: var(--radius-8);
+  color: inherit;
+  background-color: var(--bg-input);
+  box-shadow: var(--shadow-dialog);
+  cursor: pointer;
+  z-index: 1;
+
+  &:hover {
+    background-color: var(--bg-raised);
+  }
+
+  &:active {
+    background-color: var(--bg-sunken);
+  }
+}
+
+.previewNavButtonLeft,
+.previewNavButtonRight {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  outline: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-8);
+  cursor: pointer;
+  background-color: var(--bg-input);
+  color: inherit;
+  box-shadow: var(--shadow-dialog);
+  z-index: 1;
+
+  &:hover {
+    background-color: var(--bg-raised);
+  }
+
+  &:active {
+    background-color: var(--bg-sunken);
+  }
+}
+
+.previewNavButtonLeft {
+  left: 1rem;
+}
+
+.previewNavButtonRight {
+  right: 1rem;
 }
 
 .mobileOnly {
@@ -86,6 +136,28 @@
 }
 
 @media (width < 768px) {
+  .previewClose {
+    left: 0.75rem;
+    top: 0.75rem;
+    width: 3rem;
+    height: 3rem;
+    padding: 0.4rem;
+  }
+
+  .previewNavButtonLeft,
+  .previewNavButtonRight {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .previewNavButtonLeft {
+    left: 0.5rem;
+  }
+
+  .previewNavButtonRight {
+    right: 0.5rem;
+  }
+
   .desktopOnly {
     display: none !important;
   }

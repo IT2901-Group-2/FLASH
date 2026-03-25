@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { QrCode, Upload } from "lucide-react";
+import { ChevronLeft, ChevronRight, QrCode, Upload, X } from "lucide-react";
 import styles from "./UploadImage.module.css";
 import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
@@ -19,7 +19,6 @@ export default function Page() {
   const tUpload = useTranslations("guest.event.upload");
   const eventAuth = useEventAuth();
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const previewDialogRef = useRef<HTMLDialogElement>(null);
 
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
@@ -34,10 +33,8 @@ export default function Page() {
 
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState<{ src: string; alt: string } | null>(
-    null
-  );
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+  const touchStartX = useRef<number | null>(null);
   const { mutateAsync: uploadImage } = useUploadImageMutation();
 
   // Join Code
@@ -100,7 +97,7 @@ export default function Page() {
   }, [eventAuth, router]);
 
   useEffect(() => {
-    if (!isPreviewOpen) return;
+    if (previewIndex === null) return;
 
     const previousOverflow = document.body.style.overflow;
     const previousOverscrollBehavior = document.body.style.overscrollBehavior;
@@ -112,23 +109,62 @@ export default function Page() {
       document.body.style.overflow = previousOverflow;
       document.body.style.overscrollBehavior = previousOverscrollBehavior;
     };
-  }, [isPreviewOpen]);
+  }, [previewIndex]);
 
   useEffect(() => {
-    const dialog = previewDialogRef.current;
-    if (!dialog) return;
+    if (previewIndex === null) return;
+    if (images.length === 0) {
+      setPreviewIndex(null);
+      return;
+    }
 
-    const handleClose = () => setIsPreviewOpen(false);
-    dialog.addEventListener("close", handleClose);
+    if (previewIndex > images.length - 1) {
+      setPreviewIndex(images.length - 1);
+    }
+  }, [images.length, previewIndex]);
 
-    return () => dialog.removeEventListener("close", handleClose);
-  }, []);
+  const handleImagePreview = (index: number) => setPreviewIndex(index);
 
-  const handleImagePreview = (src: string, alt: string) => {
-    setPreviewImage({ src, alt });
-    setIsPreviewOpen(true);
-    previewDialogRef.current?.showModal();
+  const closePreview = () => setPreviewIndex(null);
+
+  const nextPreviewImage = () => {
+    if (previewIndex === null || images.length === 0) return;
+    setPreviewIndex((previewIndex + 1) % images.length);
   };
+
+  const prevPreviewImage = () => {
+    if (previewIndex === null || images.length === 0) return;
+    setPreviewIndex((previewIndex - 1 + images.length) % images.length);
+  };
+
+  const handlePreviewTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    touchStartX.current = event.touches[0]?.clientX ?? null;
+  };
+
+  const handlePreviewTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (touchStartX.current === null) return;
+    const endX = event.changedTouches[0]?.clientX;
+    if (typeof endX !== "number") return;
+
+    const deltaX = endX - touchStartX.current;
+    touchStartX.current = null;
+
+    if (Math.abs(deltaX) < 40) return;
+
+    if (deltaX > 0) {
+      prevPreviewImage();
+    } else {
+      nextPreviewImage();
+    }
+  };
+
+  const previewImage =
+    previewIndex !== null && images[previewIndex]
+      ? {
+          src: `/api/events/${eventId}/images/${images[previewIndex].id}`,
+          alt: tUpload("imageAlt", { index: previewIndex + 1, total: images.length }),
+        }
+      : null;
 
   return (
     <>
@@ -154,37 +190,34 @@ export default function Page() {
         </div>
       </Dialog>
 
-      <Dialog
-        ref={previewDialogRef}
-        closedby="any"
-        className={styles.previewDialog}
-        style={{ width: "min(92vw, 900px)", maxWidth: "92vw", marginTop: 0 }}
-      >
-        {previewImage && (
-          <>
-            <div className={styles.previewImage}>
-              <Image
-                fill
-                src={previewImage.src}
-                alt={previewImage.alt}
-                className={styles.previewImageInner}
-                sizes="(max-width: 900px) 92vw, 900px"
-              />
-            </div>
-            <Button
-              variant="secondary"
-              data-color="neutral"
-              onClick={() => {
-                setIsPreviewOpen(false);
-                previewDialogRef.current?.close();
-              }}
-              fill
-            >
-              {tCommon("actions.close")}
-            </Button>
-          </>
-        )}
-      </Dialog>
+      {previewImage && (
+        <div
+          className={styles.previewPage}
+          role="dialog"
+          aria-modal="true"
+          onTouchStart={handlePreviewTouchStart}
+          onTouchEnd={handlePreviewTouchEnd}
+        >
+          <X className={styles.previewClose} onClick={closePreview} />
+          {images.length > 1 && (
+            <button className={styles.previewNavButtonLeft} onClick={prevPreviewImage}>
+              <ChevronLeft />
+            </button>
+          )}
+          <Image
+            fill
+            src={previewImage.src}
+            alt={previewImage.alt}
+            className={styles.previewFullscreenImage}
+            sizes="100vw"
+          />
+          {images.length > 1 && (
+            <button className={styles.previewNavButtonRight} onClick={nextPreviewImage}>
+              <ChevronRight />
+            </button>
+          )}
+        </div>
+      )}
 
       <div className={styles.pageWrapper}>
         <PhoneHeader
@@ -248,12 +281,7 @@ export default function Page() {
               alt={tUpload("imageAlt", { index: index + 1, total: images.length })}
               title={tUpload("imageTitle", { index: index + 1 })}
               data-image-id={image.id}
-              onClick={() =>
-                handleImagePreview(
-                  `/api/events/${eventId}/images/${image.id}`,
-                  tUpload("imageAlt", { index: index + 1, total: images.length })
-                )
-              }
+              onClick={() => handleImagePreview(index)}
             />
           ))}
         </div>
