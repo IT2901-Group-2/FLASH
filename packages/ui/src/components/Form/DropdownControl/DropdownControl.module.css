@@ -41,7 +41,7 @@
 .dropdownBorder {
   border: 0.1rem solid var(--color-border-base);
   border-top: none;
-  background-color: var(--color-primary-dark);
+  background-color: var(--color-primary-base);
 
   & .panel[data-open="true"] {
     padding-inline: 0.75rem;
