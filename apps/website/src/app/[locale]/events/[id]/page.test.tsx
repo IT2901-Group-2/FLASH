@@ -148,7 +148,7 @@ describe("Guest Upload Page", () => {
     render(<Page />);
 
     const { onFilesSelected } = vi.mocked(useFileUploadModule.useFileUpload).mock
-      .calls[0][0];
+      .calls[0]![0]!;
     const mockFileList = createMockFileList([
       new File(["a"], "a.jpg", { type: "image/jpeg" }),
       new File(["b"], "b.jpg", { type: "image/jpeg" }),
@@ -168,7 +168,7 @@ describe("Guest Upload Page", () => {
     render(<Page />);
 
     const { onFilesSelected } = vi.mocked(useFileUploadModule.useFileUpload).mock
-      .calls[0][0];
+      .calls[0]![0]!;
     const mockFileList = createMockFileList([
       new File(["a"], "a.jpg", { type: "image/jpeg" }),
     ]);
@@ -185,7 +185,7 @@ describe("Guest Upload Page", () => {
     render(<Page />);
 
     const { onFilesSelected } = vi.mocked(useFileUploadModule.useFileUpload).mock
-      .calls[0][0];
+      .calls[0]![0]!;
     const mockFileList = createMockFileList([
       new File(["a"], "a.jpg", { type: "image/jpeg" }),
     ]);
@@ -208,9 +208,10 @@ describe("Guest Upload Page", () => {
     skip(); // SKIP for no. All tests need to be redone with better mocks.
     render(<Page />);
 
-    const useFileUploadCall = vi.mocked(useFileUploadModule.useFileUpload).mock.calls[0];
-    const options = useFileUploadCall?.[0];
-    const onFilesSelected = options?.onFilesSelected;
+    const onFilesSelected = vi.mocked(useFileUploadModule.useFileUpload).mock
+      .calls[0]![0]!.onFilesSelected;
+
+    if (!onFilesSelected) throw new Error("Expected onFilesSelected");
 
     const mockFile = new File(["content"], "test.jpg", { type: "image/jpeg" });
     const mockFileList = {
@@ -222,9 +223,7 @@ describe("Guest Upload Page", () => {
       },
     } as FileList;
 
-    if (onFilesSelected) {
-      await onFilesSelected(mockFileList);
-    }
+    await onFilesSelected!(mockFileList);
 
     expect(await screen.findByText("errors.uploadUnavailable")).toBeDefined();
     expect(mockUploadImage).not.toHaveBeenCalled();
