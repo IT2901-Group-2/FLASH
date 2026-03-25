@@ -34,7 +34,7 @@ const CopyButton = ({ isCopied, onCopy, ariaLabel }: CopyButtonProps) => (
       cursor: isCopied ? "default" : "pointer",
       background: "none",
       border: "none",
-      color: "var(--text-neutral)",
+      color: "var(--color-text-secondary)",
       padding: 0,
       display: "flex",
       alignItems: "center",

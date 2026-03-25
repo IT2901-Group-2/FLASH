@@ -16,7 +16,6 @@
   flex-shrink: 0;
 
   font-size: 1.5rem;
-  /* color: var(--text-neutral-contrast); */
   background-color: var(--color-primary-dark);
   border-radius: var(--radius-full);
 }
