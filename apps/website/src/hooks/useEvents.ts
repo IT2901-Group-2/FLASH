@@ -42,7 +42,7 @@ function toEventsSearchParams(params?: GetEventsParams): string {
   if (params.archived !== undefined) sp.append("archived", params.archived.toString());
   if (params.sortBy !== undefined) sp.append("sortBy", params.sortBy);
   if (params.order !== undefined) sp.append("order", params.order);
-  if (params.cursor !== undefined) sp.append("cursor", params.cursor);
+  if (params.cursor !== undefined) sp.append("cursor", String(params.cursor));
   if (params.limit !== undefined) sp.append("limit", String(params.limit));
 
   const qs = sp.toString();
@@ -95,13 +95,18 @@ export function useInfiniteEventsQuery(
 ) {
   return useInfiniteQuery({
     queryKey: [...eventsKeys.list(params), "infinite", pageSize] as const,
-    initialPageParam: undefined as string | undefined,
+    initialPageParam: undefined as number | undefined,
     queryFn: ({ pageParam }) =>
       makeRequest(
         eventsListResponseSchema,
         `/api/events${toEventsSearchParams({ ...params, cursor: pageParam, limit: pageSize })}`
       ).then(toEventsPage),
-    getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
+    getNextPageParam: lastPage => {
+      if (lastPage.nextCursor === null) return undefined;
+
+      const parsed = Number.parseInt(lastPage.nextCursor, 10);
+      return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined;
+    },
     enabled,
   });
 }

@@ -45,10 +45,7 @@ export class EventService {
     limit = 20,
   }: GetEventsParams = {}): AsyncResult<GetEventsPage, Error> {
     const now = new Date();
-    const offset =
-      cursor !== undefined && Number.isFinite(Number.parseInt(cursor, 10))
-        ? Math.max(0, Number.parseInt(cursor, 10))
-        : 0;
+    const offset = cursor ?? 0;
 
     const sortOrder = order === "descending" ? desc : asc;
     const sortColumnMap: Record<NonNullable<GetEventsParams["sortBy"]>, SQLiteColumn> = {

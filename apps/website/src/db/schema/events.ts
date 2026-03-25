@@ -76,7 +76,8 @@ export const getEventsParamsSchema = z.object({
     .optional(),
   cursor: z
     .tuple([z.string()])
-    .transform(([str]) => str)
+    .transform(([str]) => Number.parseInt(str, 10))
+    .pipe(z.number().int().nonnegative())
     .optional(),
   limit: z
     .tuple([z.string()])
