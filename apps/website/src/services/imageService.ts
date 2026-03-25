@@ -70,7 +70,7 @@ export class ImageService {
             approval === "pending" ? isNull(imageTable.isApproved) : undefined
           )
         )
-        .orderBy(desc(imageTable.createdAt), desc(imageTable.id))
+        .orderBy(imageTable.createdAt)
         .offset(offset)
         .limit(pageSize + 1);
 
