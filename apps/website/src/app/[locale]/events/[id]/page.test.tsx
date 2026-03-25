@@ -25,19 +25,27 @@ vi.mock("@/components/PhoneHeader/PhoneHeader", () => ({
 
 vi.mock("@/hooks/useEvents", () => ({
   useEventsQuery: vi.fn(() => ({
-    data: [
-      {
-        id: "event-1",
-        name: "Test Event",
-        description: "",
-        startDate: new Date(),
-        endDate: new Date(),
-        uploadLimit: 5,
-        isArchived: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ] satisfies Event[],
+    data: {
+      pages: [
+        {
+          items: [
+            {
+              id: "event-1",
+              name: "Test Event",
+              description: "",
+              startDate: new Date(),
+              endDate: new Date(),
+              uploadLimit: 5,
+              isArchived: false,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+          ] satisfies Event[],
+          nextCursor: null,
+        },
+      ],
+      pageParams: [undefined],
+    },
     isLoading: false,
     isError: false,
   })),

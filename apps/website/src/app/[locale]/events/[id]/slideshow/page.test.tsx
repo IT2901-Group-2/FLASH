@@ -48,7 +48,12 @@ vi.mock("@/hooks/useImages", () => ({
 }));
 
 vi.mock("@/hooks/useEvents", () => ({
-  useEventsQuery: () => ({ data: [{ id: "event-123", name: "Test Event" }] }),
+  useEventsQuery: () => ({
+    data: {
+      pages: [{ items: [{ id: "event-123", name: "Test Event" }], nextCursor: null }],
+      pageParams: [undefined],
+    },
+  }),
   useEventCodeQuery: () => ({ data: "ABC123" }),
 }));
 

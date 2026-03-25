@@ -15,6 +15,7 @@ const Page = () => {
   const navigation = useRouter();
 
   const { data, isLoading } = useEventsQuery();
+  const events = data?.pages.flatMap(page => page.items) ?? [];
 
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -39,7 +40,7 @@ const Page = () => {
             <Loader size="3xlarge" />
           </div>
         ) : (
-          data?.map(event => (
+          events.map(event => (
             <EventCard
               key={event.id}
               data={event}

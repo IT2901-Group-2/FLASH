@@ -26,7 +26,7 @@ const Page = () => {
 
   const { id } = useParams<{ id: string }>();
   const { data } = useEventsQuery(id ? { id: [id] } : undefined);
-  const eventData = data?.[0];
+  const eventData = data?.pages[0]?.items[0];
 
   const { data: joinCode } = useEventCodeQuery(id, "guest");
 

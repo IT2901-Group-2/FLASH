@@ -6,7 +6,7 @@ import {
   useEventsQuery,
   useUpdateEventMutation,
 } from "@/hooks/useEvents";
-import { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
+import { UseMutationResult } from "@tanstack/react-query";
 import Page from "./page";
 import { CreateEvent, Event, UpdateEvent } from "@/db";
 import { createQueryClientWrapper } from "@test-config";
@@ -34,7 +34,7 @@ describe("Page", () => {
     vi.mocked(useEventsQuery).mockReturnValue({
       data: undefined,
       isLoading: false,
-    } as UseQueryResult<Event[]>);
+    } as ReturnType<typeof useEventsQuery>);
     vi.mocked(useCreateEventMutation).mockReturnValue({
       mutateAsync: vi.fn(),
       status: "idle",
@@ -50,14 +50,14 @@ describe("Page", () => {
     vi.mocked(useDeleteEventMutation).mockReturnValue({
       mutateAsync: vi.fn(),
       status: "idle",
-    } as unknown as UseMutationResult<void, Error, { eventId: string }>);
+    } as unknown as UseMutationResult<Event, Error, { eventId: string }>);
   });
 
   it("shows the spinner when loading", () => {
     vi.mocked(useEventsQuery).mockReturnValue({
       data: undefined,
       isLoading: true,
-    } as UseQueryResult<Event[]>);
+    } as ReturnType<typeof useEventsQuery>);
 
     renderWithProviders(<Page />);
 
@@ -66,9 +66,12 @@ describe("Page", () => {
 
   it("shows events when loaded", () => {
     vi.mocked(useEventsQuery).mockReturnValue({
-      data: [{ id: "1", name: "Test Event" }],
+      data: {
+        pages: [{ items: [{ id: "1", name: "Test Event" }], nextCursor: null }],
+        pageParams: [undefined],
+      },
       isLoading: false,
-    } as UseQueryResult<Event[]>);
+    } as ReturnType<typeof useEventsQuery>);
 
     renderWithProviders(<Page />);
 

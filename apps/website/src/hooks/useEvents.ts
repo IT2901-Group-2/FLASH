@@ -63,23 +63,9 @@ export const eventsKeys = {
 };
 
 /**
- * Fetches a list of events, optionally filtered by the provided query params.
- */
-export function useEventsQuery(params?: GetEventsParams, enabled: boolean = true) {
-  return useQuery({
-    queryKey: eventsKeys.list(params),
-    queryFn: () =>
-      makeRequest(getEventsPageSchema, `/api/events${toEventsSearchParams(params)}`).then(
-        response => response.items
-      ),
-    enabled,
-  });
-}
-
-/**
  * Fetches events with cursor pagination for infinite scrolling/loading.
  */
-export function useInfiniteEventsQuery(
+export function useEventsQuery(
   params?: Omit<GetEventsParams, "cursor" | "pageSize">,
   enabled: boolean = true,
   pageSize: number = 20

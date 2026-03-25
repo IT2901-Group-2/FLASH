@@ -28,12 +28,13 @@ const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
 const RememberedEvents = () => {
   const t = useTranslations("guest.event");
   const eventIDs = useJoinedEvents();
-  const events = useEventsQuery(
+  const eventsData = useEventsQuery(
     {
       id: eventIDs,
     },
     eventIDs.length !== 0
   ).data;
+  const events = eventsData?.pages.flatMap(page => page.items);
   if (!events) return;
 
   if (events.length === 0) return;

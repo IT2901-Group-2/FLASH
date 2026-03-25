@@ -28,7 +28,7 @@ export default function Page() {
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );
-  const eventData = data?.[0];
+  const eventData = data?.pages[0]?.items[0];
 
   // Image Data
   const {

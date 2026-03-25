@@ -6,7 +6,6 @@ import {
   useCreateEventMutation,
   useDeleteEventMutation,
   useEventCodeQuery,
-  useInfiniteEventsQuery,
   useEventsQuery,
   useUpdateEventMutation,
 } from "../useEvents";
@@ -44,7 +43,7 @@ describe("useEventsQuery", () => {
     vi.resetAllMocks();
   });
 
-  it("fetches events successfully", async () => {
+  it("fetches paginated events successfully", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(
@@ -64,7 +63,7 @@ describe("useEventsQuery", () => {
       expect(result.current.isSuccess).toBe(true);
     });
 
-    expect(result.current.data).toStrictEqual([mockEvent]);
+    expect(result.current.data?.pages[0]?.items).toStrictEqual([mockEvent]);
   });
 
   it("handles fetch error", async () => {
@@ -129,11 +128,7 @@ describe("useEventsQuery", () => {
   });
 });
 
-describe("useInfiniteEventsQuery", () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
-
+describe("useEventsQuery pagination", () => {
   it("fetches paginated events and requests next cursor", async () => {
     const firstPage = {
       items: [
@@ -165,12 +160,9 @@ describe("useInfiniteEventsQuery", () => {
 
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(
-      () => useInfiniteEventsQuery({ status: "active" }, true, 2),
-      {
-        wrapper: createWrapper().wrapper,
-      }
-    );
+    const { result } = renderHook(() => useEventsQuery({ status: "active" }, true, 2), {
+      wrapper: createWrapper().wrapper,
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data?.pages[0]?.items.map(e => e.id)).toStrictEqual([

@@ -19,7 +19,7 @@ const Page = () => {
   const { data: joinCode } = useEventCodeQuery(id, "moderator");
   const { data, status } = useEventsQuery({ id: [id?.toString() || ""] });
   if (data === undefined) return;
-  const eventData = data[0];
+  const eventData = data.pages[0]?.items[0];
 
   return (
     <>

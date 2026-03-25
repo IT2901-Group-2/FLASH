@@ -21,7 +21,7 @@ export default function Page() {
     eventCodeData?.eventId ? { id: [eventCodeData.eventId] } : undefined,
     !!eventCodeData?.eventId
   );
-  const eventName = eventData?.[0]?.name;
+  const eventName = eventData?.pages[0]?.items[0]?.name;
 
   const [nickname, setNickname] = useState<string>("");
   const [nicknameError, setNicknameError] = useState<string>("");
