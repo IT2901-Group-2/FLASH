@@ -31,7 +31,7 @@ export function semanticRootTokens(theme: ColorTheme) {
       contrast: { value: theme == "light" ? "#fff" : "#000", type: "color" },
     },
     "color-backdrop": {
-      value: theme == "light" ? "#474747FC" : "#242424FC",
+      value: theme == "light" ? "#474747A8" : "#242424A8",
       type: "color",
     },
   } satisfies {
