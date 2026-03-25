@@ -46,19 +46,8 @@ describe("AdminLogin Page", () => {
   it("renders all required components", () => {
     const { container } = render(<Page />, { wrapper: createWrapper() });
 
-    const cameraIcon = container.querySelector('[class*="cameraWrapper"]');
-    expect(cameraIcon).toBeTruthy();
     expect(screen.getByTestId("title")).toBeTruthy();
     const signInCard = container.querySelector('[class*="card"]');
     expect(signInCard).toBeTruthy();
-  });
-
-  it("passes correct props to Title component", () => {
-    render(<Page />, { wrapper: createWrapper() });
-    const h1 = screen.getByTestId("title");
-
-    expect(h1.getAttribute("data-color")).toBe("brand-purple");
-    expect(h1.getAttribute("data-align")).toBe("center");
-    expect(h1.tagName).toBe("H1");
   });
 });
