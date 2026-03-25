@@ -81,18 +81,18 @@ export const EditEventDialog = ({
         )}
 
         <div className={styles.buttonGroup}>
-          <Button variant="tertiary" data-color="primary" onClick={handleClose}>
+          <Button variant="tertiary" data-color="secondary" onClick={handleClose}>
             {t("cancel")}
           </Button>
 
           {!isOnFirstStep && (
-            <Button variant="secondary" data-color="primary" onClick={goToPreviousStep}>
+            <Button variant="secondary" data-color="secondary" onClick={goToPreviousStep}>
               {t("previous")}
             </Button>
           )}
 
           {!isOnLastStep ? (
-            <Button variant="secondary" data-color="primary" onClick={tryGoToNextStep}>
+            <Button variant="secondary" data-color="secondary" onClick={tryGoToNextStep}>
               {t("next")}
             </Button>
           ) : (
