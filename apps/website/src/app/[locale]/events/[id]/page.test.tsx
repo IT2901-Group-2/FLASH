@@ -77,6 +77,7 @@ vi.mock("@/hooks/useImages", () => ({
     hasNextPage: false,
     isFetchingNextPage: false,
     fetchNextPage: vi.fn(),
+    refetch: vi.fn(),
     isLoading: false,
   })),
 }));

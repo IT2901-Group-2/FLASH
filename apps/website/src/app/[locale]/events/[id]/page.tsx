@@ -15,7 +15,7 @@ import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 const SURVEY_LINK = "https://nettskjema.no/a/610540";
 const SURVEY_UPLOAD_THRESHOLD = 3;
 const IMAGE_PAGE_SIZE = 12;
-const MIN_SCROLL_DELTA_FOR_AUTO_FETCH = 120;
+const POLL_INTERVAL_MS = 15 * 1000;
 
 export default function Page() {
   const router = useRouter();
@@ -37,21 +37,15 @@ export default function Page() {
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
+    refetch: refetchImages,
     isLoading: isImagesLoading,
   } = useInfiniteImagesQuery(eventId, undefined, IMAGE_PAGE_SIZE);
   const images = imagesPages?.pages.flatMap(page => page.items) ?? [];
   const loadMoreRef = useRef<HTMLDivElement>(null);
-  const fetchedThisIntersectionRef = useRef(false);
-  const lastAutoFetchScrollYRef = useRef<number | null>(null);
 
-  /**
-   * Sets up an intersection observer on the "load more" sentinel element to automatically
-   * fetch the next page of images when the user scrolls near the bottom of the list.
-   * Includes guards to prevent multiple rapid fetches while the sentinel is visible,
-   * and to avoid fetching on initial render if the sentinel is already in view.
-   */
+  // Auto-fetch the next page when the user scrolls near the end of the current list.
   useEffect(() => {
-    if (!hasNextPage || isFetchingNextPage) return;
+    if (hasNextPage !== true) return;
 
     const target = loadMoreRef.current;
     if (!target) return;
@@ -59,43 +53,40 @@ export default function Page() {
     const observer = new IntersectionObserver(
       entries => {
         const entry = entries[0];
-        if (!entry) return;
-
-        if (!entry.isIntersecting) {
-          fetchedThisIntersectionRef.current = false;
-          return;
-        }
-
-        // Guard against eager chain-fetching while the sentinel remains visible.
-        const currentScrollY = window.scrollY;
-
-        // Avoid fetching on initial render when the sentinel is already visible.
-        if (currentScrollY <= 0) return;
-
-        if (
-          lastAutoFetchScrollYRef.current !== null &&
-          currentScrollY - lastAutoFetchScrollYRef.current <
-            MIN_SCROLL_DELTA_FOR_AUTO_FETCH
-        ) {
-          return;
-        }
-
-        if (fetchedThisIntersectionRef.current) return;
-
-        fetchedThisIntersectionRef.current = true;
-        lastAutoFetchScrollYRef.current = currentScrollY;
-        fetchNextPage();
+        if (!entry?.isIntersecting || isFetchingNextPage) return;
+        void fetchNextPage();
       },
       {
         root: null,
-        rootMargin: "0px",
-        threshold: 0.2,
+        rootMargin: "200px 0px",
+        threshold: 0,
       }
     );
 
     observer.observe(target);
     return () => observer.disconnect();
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  // If the first page doesn't fill the viewport, keep fetching until it does or no pages remain.
+  useEffect(() => {
+    if (hasNextPage !== true || isFetchingNextPage) return;
+
+    const viewportNotFilled = document.documentElement.scrollHeight <= window.innerHeight;
+    if (!viewportNotFilled) return;
+
+    void fetchNextPage();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage, images.length]);
+
+  // After the final page is loaded, poll periodically for newly uploaded images.
+  useEffect(() => {
+    if (hasNextPage !== false) return;
+
+    const intervalId = window.setInterval(() => {
+      void refetchImages();
+    }, POLL_INTERVAL_MS);
+
+    return () => window.clearInterval(intervalId);
+  }, [hasNextPage, refetchImages]);
 
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -165,7 +156,7 @@ export default function Page() {
   });
 
   const { openFilePicker, FileInput } = useFileUpload({
-    multiple: false,
+    multiple: true,
     onFilesSelected: async files => {
       if (!eventId) {
         setUploadError(tUpload("errors.uploadUnavailable"));
@@ -321,16 +312,6 @@ export default function Page() {
           </div>
           {hasNextPage ? (
             <div ref={loadMoreRef} className={styles.loadMoreSentinel} />
-          ) : null}
-          {hasNextPage ? (
-            <Button
-              variant="secondary"
-              data-color="brand-purple"
-              onClick={() => fetchNextPage()}
-              loading={isFetchingNextPage}
-            >
-              {tCommon("actions.loadMore")}
-            </Button>
           ) : null}
         </>
       )}
