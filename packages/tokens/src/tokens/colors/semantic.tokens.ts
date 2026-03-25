@@ -8,11 +8,13 @@ import { DangerColorTokenConfig } from "./roles/danger.tokens";
 import { BrandPurpleColorTokenConfig } from "./roles/brand-purple.tokens";
 import { PrimaryColorTokenConfig } from "./roles/primary.tokens";
 import { SecondaryColorTokenConfig } from "./roles/secondary.tokens";
+import { NeutralColorTokenConfig } from "./roles/neutral.tokens";
 
 export const ColorTokenRoleConfig: Record<
   Exclude<ColorRole, "background">,
   StyleDictionaryTokenConfig<"color">
 > = {
+  neutral: NeutralColorTokenConfig,
   primary: PrimaryColorTokenConfig,
   secondary: SecondaryColorTokenConfig,
   accent: AccentColorTokenConfig,

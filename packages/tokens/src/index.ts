@@ -79,6 +79,7 @@ async function buildDataColorTokens() {
   const rootSelector = `:root, [data-color=""], [data-color="primary"]`;
 
   const colors: ColorRole[] = [
+    "neutral",
     "primary",
     "secondary",
     "accent",

@@ -5,6 +5,11 @@ import { ColorRole } from "@/types/output.types";
 export type ColorConfig = Record<ColorRole, Record<ColorScale, ColorEntry>>;
 
 export const LightTokens: ColorConfig = {
+  neutral: {
+    base: { value: "#101028", type: "global-color" },
+    dark: { value: "#0E0E22", type: "global-color" },
+    light: { value: "#343448", type: "global-color" },
+  },
   primary: {
     base: { value: "#F2E7EA", type: "global-color" },
     dark: { value: "#DAD0D3", type: "global-color" },
@@ -43,6 +48,11 @@ export const LightTokens: ColorConfig = {
 } as const;
 
 export const DarkTokens: ColorConfig = {
+  neutral: {
+    base: { value: "#F1F0F4", type: "global-color" },
+    dark: { value: "#CDCCCE", type: "global-color" },
+    light: { value: "#F3F2F6", type: "global-color" },
+  },
   primary: {
     base: { value: "#1C181D", type: "global-color" },
     dark: { value: "#181419", type: "global-color" },

@@ -2,7 +2,7 @@
 type ColorTheme = "light" | "dark";
 
 /* --- Main colors --- */
-type MainColorRole = "primary" | "secondary" | "accent";
+type MainColorRole = "primary" | "secondary" | "accent" | "neutral";
 
 /* --- Status colors --- */
 type StatusColorRole = "success" | "warning" | "danger";
