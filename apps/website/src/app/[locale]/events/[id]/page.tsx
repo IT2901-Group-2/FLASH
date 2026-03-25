@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { QrCode, Upload } from "lucide-react";
+import { ChevronLeft, ChevronRight, QrCode, Upload, X } from "lucide-react";
 import styles from "./UploadImage.module.css";
 import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
@@ -11,6 +11,7 @@ import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 import { getAdminDashboardEventRoute, routes } from "@/lib/routes";
+import Image from "next/image";
 
 export default function Page() {
   const router = useRouter();
@@ -32,6 +33,8 @@ export default function Page() {
 
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+  const touchStartX = useRef<number | null>(null);
   const { mutateAsync: uploadImage } = useUploadImageMutation();
 
   // Join Code
@@ -93,6 +96,89 @@ export default function Page() {
     }
   }, [eventAuth, router]);
 
+  useEffect(() => {
+    if (previewIndex === null) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const previousOverscrollBehavior = document.body.style.overscrollBehavior;
+
+    document.body.style.overflow = "hidden";
+    document.body.style.overscrollBehavior = "none";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.body.style.overscrollBehavior = previousOverscrollBehavior;
+    };
+  }, [previewIndex]);
+
+  useEffect(() => {
+    if (previewIndex === null) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setPreviewIndex(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [previewIndex]);
+
+  useEffect(() => {
+    if (previewIndex === null) return;
+    if (images.length === 0) {
+      setPreviewIndex(null);
+      return;
+    }
+
+    if (previewIndex > images.length - 1) {
+      setPreviewIndex(images.length - 1);
+    }
+  }, [images.length, previewIndex]);
+
+  const handleImagePreview = (index: number) => setPreviewIndex(index);
+
+  const closePreview = () => setPreviewIndex(null);
+
+  const nextPreviewImage = () => {
+    if (previewIndex === null || images.length === 0) return;
+    setPreviewIndex((previewIndex + 1) % images.length);
+  };
+
+  const prevPreviewImage = () => {
+    if (previewIndex === null || images.length === 0) return;
+    setPreviewIndex((previewIndex - 1 + images.length) % images.length);
+  };
+
+  const handlePreviewTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    touchStartX.current = event.touches[0]?.clientX ?? null;
+  };
+
+  const handlePreviewTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (touchStartX.current === null) return;
+    const endX = event.changedTouches[0]?.clientX;
+    if (typeof endX !== "number") return;
+
+    const deltaX = endX - touchStartX.current;
+    touchStartX.current = null;
+
+    if (Math.abs(deltaX) < 40) return;
+
+    if (deltaX > 0) {
+      prevPreviewImage();
+    } else {
+      nextPreviewImage();
+    }
+  };
+
+  const previewImage =
+    previewIndex !== null && images[previewIndex]
+      ? {
+          src: `/api/events/${eventId}/images/${images[previewIndex].id}`,
+          alt: tUpload("imageAlt", { index: previewIndex + 1, total: images.length }),
+        }
+      : null;
+
   return (
     <>
       <FileInput />
@@ -116,6 +202,35 @@ export default function Page() {
           </Button>
         </div>
       </Dialog>
+
+      {previewImage && (
+        <div
+          className={styles.previewPage}
+          role="dialog"
+          aria-modal="true"
+          onTouchStart={handlePreviewTouchStart}
+          onTouchEnd={handlePreviewTouchEnd}
+        >
+          <X className={styles.previewClose} onClick={closePreview} />
+          {images.length > 1 && (
+            <button className={styles.previewNavButtonLeft} onClick={prevPreviewImage}>
+              <ChevronLeft />
+            </button>
+          )}
+          <Image
+            fill
+            src={previewImage.src}
+            alt={previewImage.alt}
+            className={styles.previewFullscreenImage}
+            sizes="100vw"
+          />
+          {images.length > 1 && (
+            <button className={styles.previewNavButtonRight} onClick={nextPreviewImage}>
+              <ChevronRight />
+            </button>
+          )}
+        </div>
+      )}
 
       <div className={styles.pageWrapper}>
         <PhoneHeader
@@ -179,6 +294,7 @@ export default function Page() {
               alt={tUpload("imageAlt", { index: index + 1, total: images.length })}
               title={tUpload("imageTitle", { index: index + 1 })}
               data-image-id={image.id}
+              onClick={() => handleImagePreview(index)}
             />
           ))}
         </div>
