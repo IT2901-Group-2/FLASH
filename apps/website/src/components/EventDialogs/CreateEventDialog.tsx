@@ -104,12 +104,16 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
             </Button>
           )}
           {!isOnReviewStep && !isOnLastFormStep && (
-            <Button variant="secondary" data-color="secondary" onClick={tryGoToNextStep}>
+            <Button
+              variant="secondary"
+              data-color="brand-purple"
+              onClick={tryGoToNextStep}
+            >
               {t("next")}
             </Button>
           )}
           {!isOnReviewStep && isOnLastFormStep && (
-            <Button variant="secondary" data-color="secondary" onClick={handleCreate}>
+            <Button variant="primary" data-color="brand-purple" onClick={handleCreate}>
               {t("create")}
             </Button>
           )}
