@@ -42,7 +42,7 @@ export class EventService {
     sortBy,
     order,
     cursor,
-    limit = 20,
+    pageSize = 20,
   }: GetEventsParams = {}): AsyncResult<GetEventsPage, Error> {
     const now = new Date();
     const offset = cursor ?? 0;
@@ -80,14 +80,14 @@ export class EventService {
       const rows = await baseQuery
         .orderBy(sortOrder(sortColumn), sortOrder(eventTable.id))
         .offset(offset)
-        .limit(limit + 1);
+        .limit(pageSize + 1);
 
-      const hasMore = rows.length > limit;
-      const items = hasMore ? rows.slice(0, limit) : rows;
+      const hasMore = rows.length > pageSize;
+      const items = hasMore ? rows.slice(0, pageSize) : rows;
 
       return {
         items,
-        nextCursor: hasMore ? String(offset + limit) : null,
+        nextCursor: hasMore ? String(offset + pageSize) : null,
       };
     });
   }

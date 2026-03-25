@@ -67,8 +67,8 @@ function toImagesSearchParams(params?: GetImagesParams): string {
   if (params.cursor !== undefined) {
     sp.append("cursor", params.cursor);
   }
-  if (params.limit !== undefined) {
-    sp.append("limit", String(params.limit));
+  if (params.pageSize !== undefined) {
+    sp.append("pageSize", String(params.pageSize));
   }
 
   const qs = sp.toString();
@@ -115,7 +115,7 @@ export function useImagesQuery(
  */
 export function useInfiniteImagesQuery(
   eventId?: string,
-  params?: Omit<GetImagesParams, "cursor" | "limit">,
+  params?: Omit<GetImagesParams, "cursor" | "pageSize">,
   pageSize: number = 20,
   refetchInterval?: number
 ) {
@@ -128,7 +128,7 @@ export function useInfiniteImagesQuery(
         `/api/events/${eventId}/images${toImagesSearchParams({
           ...params,
           cursor: pageParam,
-          limit: pageSize,
+          pageSize,
         })}`
       ).then(response => toImagesInfinitePage(response, pageSize, pageParam)),
     getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,

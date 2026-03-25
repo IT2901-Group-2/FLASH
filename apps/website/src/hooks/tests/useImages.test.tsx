@@ -207,7 +207,7 @@ describe("useInfiniteImagesQuery", () => {
     });
     expect(result.current.data?.pages[1]?.items.map(i => i.id)).toStrictEqual(["img-3"]);
 
-    expect(String(fetchMock.mock.calls[0]?.[0])).toContain("limit=2");
+    expect(String(fetchMock.mock.calls[0]?.[0])).toContain("pageSize=2");
     expect(fetchMock.mock.calls.some(call => String(call[0]).includes("cursor=2"))).toBe(
       true
     );

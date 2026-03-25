@@ -79,7 +79,7 @@ export const getEventsParamsSchema = z.object({
     .transform(([str]) => Number.parseInt(str, 10))
     .pipe(z.number().int().nonnegative())
     .optional(),
-  limit: z
+  pageSize: z
     .tuple([z.string()])
     .transform(([str]) => Number.parseInt(str, 10))
     .pipe(z.number().int().positive().max(100))

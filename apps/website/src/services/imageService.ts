@@ -52,7 +52,7 @@ export class ImageService {
    */
   getImages(
     eventId: string,
-    { id, approval, cursor, limit = 20 }: GetImagesParams = {}
+    { id, approval, cursor, pageSize = 20 }: GetImagesParams = {}
   ): AsyncResult<GetImagesPage, Error> {
     const offset =
       cursor !== undefined && Number.isFinite(Number.parseInt(cursor, 10))
@@ -75,14 +75,14 @@ export class ImageService {
         )
         .orderBy(desc(imageTable.createdAt), desc(imageTable.id))
         .offset(offset)
-        .limit(limit + 1);
+        .limit(pageSize + 1);
 
-      const hasMore = rows.length > limit;
-      const items = hasMore ? rows.slice(0, limit) : rows;
+      const hasMore = rows.length > pageSize;
+      const items = hasMore ? rows.slice(0, pageSize) : rows;
 
       return {
         items,
-        nextCursor: hasMore ? String(offset + limit) : null,
+        nextCursor: hasMore ? String(offset + pageSize) : null,
       };
     });
   }

@@ -43,7 +43,7 @@ function toEventsSearchParams(params?: GetEventsParams): string {
   if (params.sortBy !== undefined) sp.append("sortBy", params.sortBy);
   if (params.order !== undefined) sp.append("order", params.order);
   if (params.cursor !== undefined) sp.append("cursor", String(params.cursor));
-  if (params.limit !== undefined) sp.append("limit", String(params.limit));
+  if (params.pageSize !== undefined) sp.append("pageSize", String(params.pageSize));
 
   const qs = sp.toString();
   return qs ? `?${qs}` : "";
@@ -89,7 +89,7 @@ export function useEventsQuery(params?: GetEventsParams, enabled: boolean = true
  * Fetches events with cursor pagination for infinite scrolling/loading.
  */
 export function useInfiniteEventsQuery(
-  params?: Omit<GetEventsParams, "cursor" | "limit">,
+  params?: Omit<GetEventsParams, "cursor" | "pageSize">,
   enabled: boolean = true,
   pageSize: number = 20
 ) {
@@ -99,7 +99,7 @@ export function useInfiniteEventsQuery(
     queryFn: ({ pageParam }) =>
       makeRequest(
         eventsListResponseSchema,
-        `/api/events${toEventsSearchParams({ ...params, cursor: pageParam, limit: pageSize })}`
+        `/api/events${toEventsSearchParams({ ...params, cursor: pageParam, pageSize })}`
       ).then(toEventsPage),
     getNextPageParam: lastPage => {
       if (lastPage.nextCursor === null) return undefined;
