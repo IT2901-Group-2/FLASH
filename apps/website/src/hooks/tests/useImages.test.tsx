@@ -165,7 +165,7 @@ describe("useInfiniteImagesQuery", () => {
         { ...mockImage, id: "img-1" },
         { ...mockImage, id: "img-2" },
       ],
-      nextCursor: "2",
+      nextCursor: 2,
     };
     const secondPage = {
       items: [{ ...mockImage, id: "img-3" }],

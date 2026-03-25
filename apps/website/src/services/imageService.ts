@@ -54,10 +54,7 @@ export class ImageService {
     eventId: string,
     { id, approval, cursor, pageSize = 20 }: GetImagesParams = {}
   ): AsyncResult<GetImagesPage, Error> {
-    const offset =
-      cursor !== undefined && Number.isFinite(Number.parseInt(cursor, 10))
-        ? Math.max(0, Number.parseInt(cursor, 10))
-        : 0;
+    const offset = cursor ?? 0;
 
     return Result.try(async () => {
       const rows = await this.dbService.db
@@ -82,7 +79,7 @@ export class ImageService {
 
       return {
         items,
-        nextCursor: hasMore ? String(offset + pageSize) : null,
+        nextCursor: hasMore ? offset + pageSize : null,
       };
     });
   }

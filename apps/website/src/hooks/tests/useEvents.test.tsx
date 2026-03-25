@@ -139,7 +139,7 @@ describe("useInfiniteEventsQuery", () => {
         { ...mockEvent, id: "event-1" },
         { ...mockEvent, id: "event-2" },
       ],
-      nextCursor: "2",
+      nextCursor: 2,
     };
     const secondPage = {
       items: [{ ...mockEvent, id: "event-3" }],

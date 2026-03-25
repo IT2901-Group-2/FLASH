@@ -15,7 +15,6 @@ import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 const SURVEY_LINK = "https://nettskjema.no/a/610540";
 const SURVEY_UPLOAD_THRESHOLD = 3;
 const IMAGE_PAGE_SIZE = 12;
-const POLL_INTERVAL_MS = 15 * 1000;
 
 export default function Page() {
   const router = useRouter();
@@ -37,11 +36,22 @@ export default function Page() {
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
-    refetch: refetchImages,
     isLoading: isImagesLoading,
   } = useInfiniteImagesQuery(eventId, undefined, IMAGE_PAGE_SIZE);
   const images = imagesPages?.pages.flatMap(page => page.items) ?? [];
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const hasUserScrolledRef = useRef(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      if (window.scrollY > 0) {
+        hasUserScrolledRef.current = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Auto-fetch the next page when the user scrolls near the end of the current list.
   useEffect(() => {
@@ -54,6 +64,7 @@ export default function Page() {
       entries => {
         const entry = entries[0];
         if (!entry?.isIntersecting || isFetchingNextPage) return;
+        if (!hasUserScrolledRef.current) return;
         void fetchNextPage();
       },
       {
@@ -76,17 +87,6 @@ export default function Page() {
 
     void fetchNextPage();
   }, [fetchNextPage, hasNextPage, isFetchingNextPage, images.length]);
-
-  // After the final page is loaded, poll periodically for newly uploaded images.
-  useEffect(() => {
-    if (hasNextPage !== false) return;
-
-    const intervalId = window.setInterval(() => {
-      void refetchImages();
-    }, POLL_INTERVAL_MS);
-
-    return () => window.clearInterval(intervalId);
-  }, [hasNextPage, refetchImages]);
 
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);

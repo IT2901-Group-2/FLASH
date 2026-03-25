@@ -104,7 +104,7 @@ export function useInfiniteEventsQuery(
     getNextPageParam: lastPage => {
       if (lastPage.nextCursor === null) return undefined;
 
-      const parsed = Number.parseInt(lastPage.nextCursor, 10);
+      const parsed = Number.parseInt(lastPage.nextCursor.toString(), 10);
       return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined;
     },
     enabled,

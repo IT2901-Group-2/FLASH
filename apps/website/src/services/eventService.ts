@@ -87,7 +87,7 @@ export class EventService {
 
       return {
         items,
-        nextCursor: hasMore ? String(offset + pageSize) : null,
+        nextCursor: hasMore ? offset + pageSize : null,
       };
     });
   }

@@ -17,11 +17,8 @@ function toImagesPage(
   return Array.isArray(response) ? { items: response, nextCursor: null } : response;
 }
 
-function toOffsetCursor(cursor?: string): number {
-  if (cursor === undefined) return 0;
-
-  const parsed = Number.parseInt(cursor, 10);
-  return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
+function toOffsetCursor(cursor?: number): number {
+  return cursor ?? 0;
 }
 
 /**
@@ -30,14 +27,13 @@ function toOffsetCursor(cursor?: string): number {
 function toImagesInfinitePage(
   response: z.infer<typeof imagesListResponseSchema>,
   pageSize: number,
-  cursor?: string
+  cursor?: number
 ): z.infer<typeof getImagesPageSchema> {
   if (!Array.isArray(response)) return response;
 
   const offset = toOffsetCursor(cursor);
   const items = response.slice(offset, offset + pageSize);
-  const nextCursor =
-    offset + pageSize < response.length ? String(offset + pageSize) : null;
+  const nextCursor = offset + pageSize < response.length ? offset + pageSize : null;
 
   return { items, nextCursor };
 }
@@ -65,7 +61,7 @@ function toImagesSearchParams(params?: GetImagesParams): string {
     sp.append("approval", params.approval);
   }
   if (params.cursor !== undefined) {
-    sp.append("cursor", params.cursor);
+    sp.append("cursor", String(params.cursor));
   }
   if (params.pageSize !== undefined) {
     sp.append("pageSize", String(params.pageSize));
@@ -121,7 +117,7 @@ export function useInfiniteImagesQuery(
 ) {
   return useInfiniteQuery({
     queryKey: [...imagesKeys.list(eventId, params), "infinite", pageSize] as const,
-    initialPageParam: undefined as string | undefined,
+    initialPageParam: undefined as number | undefined,
     queryFn: ({ pageParam }) =>
       makeRequest(
         imagesListResponseSchema,
