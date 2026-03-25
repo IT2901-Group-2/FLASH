@@ -65,7 +65,7 @@ export const updateImagesSchema = z.object({
 
 export const getImagesPageSchema = z.object({
   items: z.array(getImageSchema),
-  nextCursor: z.string().nullable(),
+  nextCursor: z.number().nullable(),
 });
 
 export type Image = typeof imageTable.$inferSelect;

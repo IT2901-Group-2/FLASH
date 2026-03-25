@@ -133,7 +133,7 @@ export const updateEventSchema = z.object({
 
 export const getEventsPageSchema = z.object({
   items: z.array(getEventSchema),
-  nextCursor: z.string().nullable(),
+  nextCursor: z.number().nullable(),
 });
 
 export type Event = typeof eventTable.$inferSelect;
