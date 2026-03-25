@@ -12,7 +12,7 @@
   box-shadow: var(--shadow-dialog);
 
   border-radius: var(--radius-16);
-  background-color: var(--color-background-base);
+  background-color: var(--color-primary-light);
 
   &[data-size="small"] {
     font-size: 12px;

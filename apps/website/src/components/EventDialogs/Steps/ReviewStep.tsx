@@ -130,6 +130,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   helperText={tCommon("messages.scanToUploadPhotos")}
                 />
                 <Button
+                  data-color="secondary"
                   variant="secondary"
                   icon={<Download />}
                   onClick={handleDownloadQR}
@@ -138,7 +139,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                 </Button>
               </div>
 
-              <div className={styles.linkContainer} data-color="neutral">
+              <div className={styles.linkContainer}>
                 <Title size="medium" description={tReview("links.guest.description")}>
                   {tReview("links.guest.title")}
                 </Title>
@@ -172,6 +173,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   helperText={tCommon("messages.scanToUploadPhotos")}
                 />
                 <Button
+                  data-color="secondary"
                   variant="secondary"
                   icon={<Download />}
                   onClick={handleDownloadQR}
@@ -180,7 +182,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                 </Button>
               </div>
 
-              <div className={styles.linkContainer} data-color="neutral">
+              <div className={styles.linkContainer}>
                 <Title size="medium" description={tReview("links.moderator.description")}>
                   {tReview("links.moderator.title")}
                 </Title>
