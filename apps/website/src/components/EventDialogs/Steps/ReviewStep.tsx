@@ -131,7 +131,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   helperText={tCommon("messages.scanToUploadPhotos")}
                 />
                 <Button
-                  data-color="neutral"
+                  data-color="secondary"
                   variant="secondary"
                   icon={<Download />}
                   onClick={handleDownloadQR}
