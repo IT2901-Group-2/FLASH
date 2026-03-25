@@ -58,8 +58,8 @@ export class EventService {
       updatedAt: eventTable.updatedAt,
     };
 
-    return Result.try(async () => {
-      const rows = await this.dbService.db
+    return Result.try(async () =>
+      this.dbService.db
         .select()
         .from(eventTable)
         .where(
@@ -75,20 +75,17 @@ export class EventService {
           )
         )
         .orderBy(
-          sortBy !== undefined ? sortOrder(sortColumnMap[sortBy]) : sortOrder(eventTable.id),
+          sortBy !== undefined
+            ? sortOrder(sortColumnMap[sortBy])
+            : sortOrder(eventTable.id),
           sortOrder(eventTable.id)
         )
         .offset(offset)
-        .limit(pageSize + 1);
-
-      const hasMore = rows.length > pageSize;
-      const items = hasMore ? rows.slice(0, pageSize) : rows;
-
-      return {
-        items,
-        nextCursor: hasMore ? offset + pageSize : null,
-      };
-    });
+        .limit(pageSize + 1)
+    ).map(rows => ({
+      items: rows.slice(0, pageSize),
+      nextCursor: rows.length > pageSize ? offset + pageSize : null,
+    }));
   }
 
   /**
