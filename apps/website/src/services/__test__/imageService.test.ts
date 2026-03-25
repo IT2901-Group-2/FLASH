@@ -206,6 +206,28 @@ describe("ImageService getImages", () => {
         .getOrThrow()
     ).toStrictEqual(new Set(["image-5"]));
   });
+
+  it("Should return at most pageSize items and nextCursor when more rows exist", async () => {
+    const page = await imageService.getImages("wedding", { pageSize: 2 }).getOrThrow();
+
+    expect(page.items).toHaveLength(2);
+    expect(page.nextCursor).toBe(2);
+  });
+
+  it("Should return the correct next page using cursor offset", async () => {
+    const firstPage = await imageService
+      .getImages("wedding", { pageSize: 2 })
+      .getOrThrow();
+    const secondPage = await imageService
+      .getImages("wedding", { cursor: firstPage.nextCursor ?? 0, pageSize: 2 })
+      .getOrThrow();
+
+    expect(new Set(firstPage.items.map(i => i.id))).toStrictEqual(
+      new Set(["image-5", "image-4"])
+    );
+    expect(secondPage.items.map(i => i.id)).toStrictEqual(["image-3"]);
+    expect(secondPage.nextCursor).toBeNull();
+  });
 });
 
 describe("ImageService downloadImage", () => {

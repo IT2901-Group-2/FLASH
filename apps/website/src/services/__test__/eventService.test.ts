@@ -421,6 +421,33 @@ describe("EventService getEvents", () => {
         .reverse()
     );
   });
+
+  it("Should return at most pageSize items and nextCursor when more rows exist", async () => {
+    const page = await eventService.getEvents({ pageSize: 2 }).getOrThrow();
+
+    expect(page.items).toHaveLength(2);
+    expect(page.nextCursor).toBe(2);
+  });
+
+  it("Should return the correct second page using cursor offset", async () => {
+    const firstPage = await eventService
+      .getEvents({ sortBy: "createdAt", order: "descending", pageSize: 2 })
+      .getOrThrow();
+    const secondPage = await eventService
+      .getEvents({
+        sortBy: "createdAt",
+        order: "descending",
+        cursor: firstPage.nextCursor ?? 0,
+        pageSize: 2,
+      })
+      .getOrThrow();
+
+    expect(firstPage.items).toHaveLength(2);
+    expect(secondPage.items).toHaveLength(2);
+    expect(firstPage.items.map(e => e.id)).not.toStrictEqual(
+      secondPage.items.map(e => e.id)
+    );
+  });
 });
 
 describe("eventService getEventCode", () => {
