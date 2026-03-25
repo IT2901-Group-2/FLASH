@@ -94,12 +94,12 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
 
         <div className={styles.buttonGroup}>
           {!isOnReviewStep && (
-            <Button variant="tertiary" data-color="secondary" onClick={handleClose}>
+            <Button variant="tertiary" data-color="neutral" onClick={handleClose}>
               {t("cancel")}
             </Button>
           )}
           {!isOnReviewStep && !isOnFirstStep && (
-            <Button variant="secondary" data-color="secondary" onClick={goToPreviousStep}>
+            <Button variant="secondary" data-color="neutral" onClick={goToPreviousStep}>
               {t("previous")}
             </Button>
           )}

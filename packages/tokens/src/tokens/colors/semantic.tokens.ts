@@ -7,7 +7,6 @@ import { WarningColorTokenConfig } from "./roles/warning.tokens";
 import { DangerColorTokenConfig } from "./roles/danger.tokens";
 import { BrandPurpleColorTokenConfig } from "./roles/brand-purple.tokens";
 import { PrimaryColorTokenConfig } from "./roles/primary.tokens";
-import { SecondaryColorTokenConfig } from "./roles/secondary.tokens";
 import { NeutralColorTokenConfig } from "./roles/neutral.tokens";
 
 export const ColorTokenRoleConfig: Record<
@@ -16,7 +15,6 @@ export const ColorTokenRoleConfig: Record<
 > = {
   neutral: NeutralColorTokenConfig,
   primary: PrimaryColorTokenConfig,
-  secondary: SecondaryColorTokenConfig,
   accent: AccentColorTokenConfig,
   success: SuccessColorTokenConfig,
   warning: WarningColorTokenConfig,

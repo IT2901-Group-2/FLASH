@@ -62,7 +62,7 @@ export const Colors: Story = {
   render: () => (
     <>
       <Card data-color="primary">Primary</Card>
-      <Card data-color="secondary">Secondary</Card>
+      <Card data-color="neutral">Neutral</Card>
       <Card data-color="brand-purple">Brand Purple</Card>
       <Card data-color="accent">Accent</Card>
       <Card data-color="success">Success</Card>

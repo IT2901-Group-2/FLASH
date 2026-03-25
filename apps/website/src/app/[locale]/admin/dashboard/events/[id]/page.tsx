@@ -28,7 +28,7 @@ const Page = () => {
         <ReviewStep result={eventData} status={status} />
         <Button
           variant="secondary"
-          data-color="secondary"
+          data-color="neutral"
           className={styles.dialogCloseButton}
           onClick={() => qrCodeRef.current?.close()}
         >
