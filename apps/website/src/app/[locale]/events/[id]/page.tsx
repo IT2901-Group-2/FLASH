@@ -113,6 +113,19 @@ export default function Page() {
 
   useEffect(() => {
     if (previewIndex === null) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setPreviewIndex(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [previewIndex]);
+
+  useEffect(() => {
+    if (previewIndex === null) return;
     if (images.length === 0) {
       setPreviewIndex(null);
       return;
