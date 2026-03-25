@@ -161,11 +161,9 @@ describe("Guest Upload Page", () => {
 
   it("uses image query hook", () => {
     render(<Page />);
-    expect(useImagesModule.useInfiniteImagesQuery).toHaveBeenCalledWith(
-      "event-123",
-      undefined,
-      12
-    );
+    expect(useImagesModule.useInfiniteImagesQuery).toHaveBeenCalledWith("event-123", {
+      pageSize: 12,
+    });
   });
 
   it("shows upload error key when one or more files fail to upload", async () => {

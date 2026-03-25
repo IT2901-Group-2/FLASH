@@ -47,12 +47,20 @@ vi.mock("@/hooks/useImages", () => ({
     all: ["images"],
     event: (eventId?: string) => ["images", eventId],
   },
-  useImagesQuery: vi.fn(() => ({
-    data: [
-      { id: "img-1", eventId: "event-1", isApproved: null },
-      { id: "img-2", eventId: "event-1", isApproved: null },
-      { id: "img-3", eventId: "event-1", isApproved: null },
-    ],
+  useInfiniteImagesQuery: vi.fn(() => ({
+    data: {
+      pages: [
+        {
+          items: [
+            { id: "img-1", eventId: "event-1", isApproved: null },
+            { id: "img-2", eventId: "event-1", isApproved: null },
+            { id: "img-3", eventId: "event-1", isApproved: null },
+          ],
+          nextCursor: null,
+        },
+      ],
+      pageParams: [undefined],
+    },
     isLoading: false,
   })),
   useUpdateImageMutation: vi.fn(() => ({
@@ -180,19 +188,27 @@ vi.mock("@flash/ui", () => ({
 
 beforeEach(() => {
   vi.clearAllMocks();
-  // Reset useImagesQuery to the default data after each test, since some tests
+  // Reset useInfiniteImagesQuery to the default data after each test, since some tests
   // override it with mockReturnValue (e.g. the empty-state test) and
   // vi.clearAllMocks() does not reset mock return values / implementations.
-  vi.mocked(useImagesModule.useImagesQuery).mockImplementation(
+  vi.mocked(useImagesModule.useInfiniteImagesQuery).mockImplementation(
     () =>
       ({
-        data: [
-          { id: "img-1", eventId: "event-1", isApproved: null },
-          { id: "img-2", eventId: "event-1", isApproved: null },
-          { id: "img-3", eventId: "event-1", isApproved: null },
-        ],
+        data: {
+          pages: [
+            {
+              items: [
+                { id: "img-1", eventId: "event-1", isApproved: null },
+                { id: "img-2", eventId: "event-1", isApproved: null },
+                { id: "img-3", eventId: "event-1", isApproved: null },
+              ],
+              nextCursor: null,
+            },
+          ],
+          pageParams: [undefined],
+        },
         isLoading: false,
-      }) as unknown as ReturnType<typeof useImagesModule.useImagesQuery>
+      }) as unknown as ReturnType<typeof useImagesModule.useInfiniteImagesQuery>
   );
   vi.mocked(useImagesModule.useUpdateImageMutation).mockImplementation(
     () =>
@@ -223,16 +239,16 @@ describe("ModeratePage", () => {
   it("switching tabs updates the displayed images to match the selected status", () => {
     render(<ModeratePage />);
 
-    // Verify useImagesQuery is called with pending initially
-    expect(useImagesModule.useImagesQuery).toHaveBeenCalledWith("event-1", {
+    // Verify useInfiniteImagesQuery is called with pending initially
+    expect(useImagesModule.useInfiniteImagesQuery).toHaveBeenCalledWith("event-1", {
       approval: "pending",
     });
 
     // Click approved tab
     fireEvent.click(screen.getByTestId("tab-approved"));
 
-    // Verify useImagesQuery is called with approved
-    expect(useImagesModule.useImagesQuery).toHaveBeenCalledWith("event-1", {
+    // Verify useInfiniteImagesQuery is called with approved
+    expect(useImagesModule.useInfiniteImagesQuery).toHaveBeenCalledWith("event-1", {
       approval: "approved",
     });
   });
@@ -357,10 +373,10 @@ describe("ModeratePage", () => {
   });
 
   it("empty state renders when the active tab has zero images", () => {
-    vi.mocked(useImagesModule.useImagesQuery).mockReturnValue({
-      data: [],
+    vi.mocked(useImagesModule.useInfiniteImagesQuery).mockReturnValue({
+      data: { pages: [{ items: [], nextCursor: null }], pageParams: [undefined] },
       isLoading: false,
-    } as unknown as ReturnType<typeof useImagesModule.useImagesQuery>);
+    } as unknown as ReturnType<typeof useImagesModule.useInfiniteImagesQuery>);
 
     render(<ModeratePage />);
 

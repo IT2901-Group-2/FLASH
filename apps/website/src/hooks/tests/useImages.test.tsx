@@ -4,7 +4,6 @@ import { renderHook, waitFor } from "@testing-library/react";
 import {
   imagesKeys,
   useInfiniteImagesQuery,
-  useImagesQuery,
   useUploadImageMutation,
   useUpdateImageMutation,
   useDeleteImageMutation,
@@ -35,7 +34,7 @@ function createWrapper() {
   return { wrapper, queryClient };
 }
 
-describe("useImagesQuery", () => {
+describe("useInfiniteImagesQuery", () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -45,14 +44,14 @@ describe("useImagesQuery", () => {
       "fetch",
       vi.fn(
         async () =>
-          new Response(JSON.stringify([mockImage]), {
+          new Response(JSON.stringify({ items: [mockImage], nextCursor: null }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
           })
       ) as unknown as typeof fetch
     );
 
-    const { result } = renderHook(() => useImagesQuery("event-1"), {
+    const { result } = renderHook(() => useInfiniteImagesQuery("event-1"), {
       wrapper: createWrapper().wrapper,
     });
 
@@ -60,14 +59,14 @@ describe("useImagesQuery", () => {
       expect(result.current.isSuccess).toBe(true);
     });
 
-    expect(result.current.data).toStrictEqual([mockImage]);
+    expect(result.current.data?.pages[0]?.items).toStrictEqual([mockImage]);
   });
 
   it("does not fetch when eventId is empty", () => {
     const fetchMock = vi.fn<typeof fetch>();
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() => useImagesQuery(""), {
+    const { result } = renderHook(() => useInfiniteImagesQuery(""), {
       wrapper: createWrapper().wrapper,
     });
 
@@ -87,7 +86,7 @@ describe("useImagesQuery", () => {
       )
     );
 
-    const { result } = renderHook(() => useImagesQuery("event-1"), {
+    const { result } = renderHook(() => useInfiniteImagesQuery("event-1"), {
       wrapper: createWrapper().wrapper,
     });
 
@@ -100,12 +99,13 @@ describe("useImagesQuery", () => {
 
   it("passes approval query param to fetch", async () => {
     const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(JSON.stringify([]), { status: 200 })
+      async () =>
+        new Response(JSON.stringify({ items: [], nextCursor: null }), { status: 200 })
     );
 
     vi.stubGlobal("fetch", fetchMock);
 
-    renderHook(() => useImagesQuery("event-1", { approval: "pending" }), {
+    renderHook(() => useInfiniteImagesQuery("event-1", { approval: "pending" }), {
       wrapper: createWrapper().wrapper,
     });
 
@@ -116,12 +116,13 @@ describe("useImagesQuery", () => {
 
   it("passes id query params to fetch (sorted)", async () => {
     const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(JSON.stringify([]), { status: 200 })
+      async () =>
+        new Response(JSON.stringify({ items: [], nextCursor: null }), { status: 200 })
     );
 
     vi.stubGlobal("fetch", fetchMock);
 
-    renderHook(() => useImagesQuery("event-1", { id: ["img-b", "img-a"] }), {
+    renderHook(() => useInfiniteImagesQuery("event-1", { id: ["img-b", "img-a"] }), {
       wrapper: createWrapper().wrapper,
     });
 
@@ -144,7 +145,7 @@ describe("useImagesQuery", () => {
       )
     );
 
-    const { result } = renderHook(() => useImagesQuery("event-1"), {
+    const { result } = renderHook(() => useInfiniteImagesQuery("event-1"), {
       wrapper: createWrapper().wrapper,
     });
 
@@ -152,13 +153,6 @@ describe("useImagesQuery", () => {
 
     expect(result.current.error?.message).toBe("Testing custom error");
   });
-});
-
-describe("useInfiniteImagesQuery", () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
-
   it("fetches next page when API returns paginated objects", async () => {
     const firstPage = {
       items: [
@@ -190,9 +184,12 @@ describe("useInfiniteImagesQuery", () => {
 
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() => useInfiniteImagesQuery("event-1", undefined, 2), {
-      wrapper: createWrapper().wrapper,
-    });
+    const { result } = renderHook(
+      () => useInfiniteImagesQuery("event-1", { pageSize: 2 }),
+      {
+        wrapper: createWrapper().wrapper,
+      }
+    );
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data?.pages[0]?.items.map(i => i.id)).toStrictEqual([
@@ -213,16 +210,10 @@ describe("useInfiniteImagesQuery", () => {
     );
   });
 
-  it("slices legacy array responses into cursor pages", async () => {
-    const legacyRows = [
-      { ...mockImage, id: "img-1" },
-      { ...mockImage, id: "img-2" },
-      { ...mockImage, id: "img-3" },
-    ];
-
+  it("uses cursor from params as initial page param", async () => {
     const fetchMock = vi.fn<typeof fetch>(
       async () =>
-        new Response(JSON.stringify(legacyRows), {
+        new Response(JSON.stringify({ items: [], nextCursor: null }), {
           status: 200,
           headers: { "Content-Type": "application/json" },
         })
@@ -230,24 +221,15 @@ describe("useInfiniteImagesQuery", () => {
 
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() => useInfiniteImagesQuery("event-1", undefined, 2), {
+    renderHook(() => useInfiniteImagesQuery("event-1", { cursor: 4, pageSize: 3 }), {
       wrapper: createWrapper().wrapper,
     });
 
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(result.current.data?.pages[0]?.items.map(i => i.id)).toStrictEqual([
-      "img-1",
-      "img-2",
-    ]);
-    expect(result.current.hasNextPage).toBe(true);
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
 
-    await result.current.fetchNextPage();
-
-    await waitFor(() => {
-      expect(result.current.data?.pages).toHaveLength(2);
-    });
-    expect(result.current.data?.pages[1]?.items.map(i => i.id)).toStrictEqual(["img-3"]);
-    expect(result.current.hasNextPage).toBe(false);
+    const requestUrl = String(fetchMock.mock.calls[0]?.[0]);
+    expect(requestUrl).toContain("cursor=4");
+    expect(requestUrl).toContain("pageSize=3");
   });
 });
 

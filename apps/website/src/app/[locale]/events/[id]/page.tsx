@@ -37,7 +37,7 @@ export default function Page() {
     isFetchingNextPage,
     fetchNextPage,
     isLoading: isImagesLoading,
-  } = useInfiniteImagesQuery(eventId, undefined, IMAGE_PAGE_SIZE);
+  } = useInfiniteImagesQuery(eventId, { pageSize: IMAGE_PAGE_SIZE });
   const images = imagesPages?.pages.flatMap(page => page.items) ?? [];
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const hasUserScrolledRef = useRef(false);

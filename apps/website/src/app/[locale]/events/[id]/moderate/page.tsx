@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ActionCard, ImageCard, SegmentedControl } from "@flash/ui";
 import { ModerateHeader } from "@/components/ModerateHeader";
-import { useImagesQuery } from "@/hooks/useImages";
+import { useInfiniteImagesQuery } from "@/hooks/useImages";
 import { useImageSelection } from "./useImageSelection";
 import { useTranslations } from "next-intl";
 import styles from "./Moderate.module.css";
@@ -18,9 +18,10 @@ export default function ModeratePage() {
 
   const [activeTab, setActiveTab] = useState<Tab>("pending");
 
-  const { data: images = [], isLoading } = useImagesQuery(eventId, {
+  const { data: imagesPages, isLoading } = useInfiniteImagesQuery(eventId, {
     approval: activeTab,
   });
+  const images = imagesPages?.pages.flatMap(page => page.items) ?? [];
 
   // TODO: Replace with actual moderator check when JWT auth is implemented
   // const isModerator = checkModeratorAccess(token);

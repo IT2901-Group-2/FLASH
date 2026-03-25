@@ -3,10 +3,12 @@ import { cleanup, render, screen } from "@testing-library/react";
 import type { Event } from "@/db";
 import EventCard from "./EventCard";
 import { createQueryClientWrapper } from "@test-config";
-import { useImagesQuery } from "@/hooks/useImages";
+import { useInfiniteImagesQuery } from "@/hooks/useImages";
 
 vi.mock("@/hooks/useImages", () => ({
-  useImagesQuery: vi.fn(() => ({ data: [] })),
+  useInfiniteImagesQuery: vi.fn(() => ({
+    data: { pages: [{ items: [], nextCursor: null }], pageParams: [undefined] },
+  })),
 }));
 
 function getMockedEvent(data: Partial<Event> = {}): Event {
@@ -28,7 +30,9 @@ describe("EventCard", () => {
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
-    vi.mocked(useImagesQuery).mockReturnValue({ data: [] } as never);
+    vi.mocked(useInfiniteImagesQuery).mockReturnValue({
+      data: { pages: [{ items: [], nextCursor: null }], pageParams: [undefined] },
+    } as never);
   });
 
   test("renders event name and formatted date", () => {
@@ -90,33 +94,41 @@ describe("EventCard", () => {
   });
 
   test("renders image counters from fetched images", () => {
-    vi.mocked(useImagesQuery).mockReturnValue({
-      data: [
-        {
-          id: "img-1",
-          eventId: "id",
-          userId: "user-1",
-          isApproved: true,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          id: "img-2",
-          eventId: "id",
-          userId: "user-1",
-          isApproved: true,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          id: "img-3",
-          eventId: "id",
-          userId: "user-2",
-          isApproved: null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
+    vi.mocked(useInfiniteImagesQuery).mockReturnValue({
+      data: {
+        pages: [
+          {
+            items: [
+              {
+                id: "img-1",
+                eventId: "id",
+                userId: "user-1",
+                isApproved: true,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                id: "img-2",
+                eventId: "id",
+                userId: "user-1",
+                isApproved: true,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              {
+                id: "img-3",
+                eventId: "id",
+                userId: "user-2",
+                isApproved: null,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+            ],
+            nextCursor: null,
+          },
+        ],
+        pageParams: [undefined],
+      },
     } as never);
 
     const data = getMockedEvent();
