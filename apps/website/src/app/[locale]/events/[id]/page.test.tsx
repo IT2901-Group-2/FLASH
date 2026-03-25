@@ -182,6 +182,28 @@ describe("Guest Upload Page", () => {
     );
   });
 
+  it("prioritizes upload limit message when mixed failures include limit reached", async () => {
+    mockUploadImage
+      .mockRejectedValueOnce(new Error("Upload limit reached"))
+      .mockRejectedValueOnce(new Error("Network error"));
+    render(<Page />);
+
+    const { onFilesSelected } = vi.mocked(useFileUploadModule.useFileUpload).mock
+      .calls[0]![0]!;
+    const mockFileList = createMockFileList([
+      new File(["a"], "a.jpg", { type: "image/jpeg" }),
+      new File(["b"], "b.jpg", { type: "image/jpeg" }),
+    ]);
+
+    await act(async () => {
+      await onFilesSelected!(mockFileList);
+    });
+
+    await waitFor(() =>
+      expect(screen.getByRole("alert")).toHaveTextContent("errors.uploadLimitReached")
+    );
+  });
+
   it("shows no upload error when all files upload successfully", async () => {
     mockUploadImage.mockResolvedValue({});
     render(<Page />);
