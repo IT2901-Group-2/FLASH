@@ -23,9 +23,9 @@ export function semanticRootTokens(theme: ColorTheme) {
       light: { value: theme == "light" ? "#D9D1D3" : "#3D3B3E", type: "color" },
     },
     "color-text": {
-      base: { value: "{neutral.base.value}", type: "color" },
-      dark: { value: "{neutral.dark.value}", type: "color" },
-      light: { value: "{neutral.light.value}", type: "color" },
+      base: { value: theme == "light" ? "#101028" : "#F1F0F4", type: "color" },
+      dark: { value: theme == "light" ? "#0E0E22" : "#CDCCCE", type: "color" },
+      light: { value: theme == "light" ? "#343448" : "#F3F2F6", type: "color" },
       secondary: { value: theme == "light" ? "#828284" : "#8F8F90", type: "color" },
       tertiary: { value: theme == "light" ? "#474747" : "#C7C7C8", type: "color" },
       contrast: { value: theme == "light" ? "#fff" : "#000", type: "color" },

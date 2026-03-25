@@ -6,9 +6,9 @@ export type ColorConfig = Record<ColorRole, Record<ColorScale, ColorEntry>>;
 
 export const LightTokens: ColorConfig = {
   neutral: {
-    base: { value: "#101028", type: "global-color" },
-    dark: { value: "#0E0E22", type: "global-color" },
-    light: { value: "#343448", type: "global-color" },
+    base: { value: "#474747", type: "global-color" },
+    dark: { value: "#343448", type: "global-color" }, // This is blue, change this in the future
+    light: { value: "#828284", type: "global-color" },
   },
   primary: {
     base: { value: "#F2E7EA", type: "global-color" },
@@ -49,9 +49,9 @@ export const LightTokens: ColorConfig = {
 
 export const DarkTokens: ColorConfig = {
   neutral: {
-    base: { value: "#F1F0F4", type: "global-color" },
-    dark: { value: "#CDCCCE", type: "global-color" },
-    light: { value: "#F3F2F6", type: "global-color" },
+    base: { value: "#c7c7c8", type: "global-color" },
+    dark: { value: "#8f8f90", type: "global-color" },
+    light: { value: "#f3f2f6", type: "global-color" },
   },
   primary: {
     base: { value: "#1C181D", type: "global-color" },
