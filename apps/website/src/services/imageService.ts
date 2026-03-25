@@ -56,8 +56,8 @@ export class ImageService {
   ): AsyncResult<GetImagesPage, Error> {
     const offset = cursor ?? 0;
 
-    return Result.try(async () => {
-      const rows = await this.dbService.db
+    return Result.try(async () =>
+      this.dbService.db
         .select()
         .from(imageTable)
         .where(
@@ -72,16 +72,11 @@ export class ImageService {
         )
         .orderBy(imageTable.createdAt)
         .offset(offset)
-        .limit(pageSize + 1);
-
-      const hasMore = rows.length > pageSize;
-      const items = hasMore ? rows.slice(0, pageSize) : rows;
-
-      return {
-        items,
-        nextCursor: hasMore ? offset + pageSize : null,
-      };
-    });
+        .limit(pageSize + 1)
+    ).map(rows => ({
+      items: rows.slice(0, pageSize),
+      nextCursor: rows.length > pageSize ? offset + pageSize : null,
+    }));
   }
 
   /**
