@@ -57,11 +57,9 @@ export class EventService {
       createdAt: eventTable.createdAt,
       updatedAt: eventTable.updatedAt,
     };
-    const sortColumn =
-      sortBy !== undefined ? sortColumnMap[sortBy] : sortColumnMap.createdAt;
 
     return Result.try(async () => {
-      const baseQuery = this.dbService.db
+      const rows = await this.dbService.db
         .select()
         .from(eventTable)
         .where(
@@ -75,10 +73,11 @@ export class EventService {
               : undefined,
             status === "finished" ? lt(eventTable.endDate, now) : undefined
           )
-        );
-
-      const rows = await baseQuery
-        .orderBy(sortOrder(sortColumn), sortOrder(eventTable.id))
+        )
+        .orderBy(
+          sortBy !== undefined ? sortOrder(sortColumnMap[sortBy]) : sortOrder(eventTable.id),
+          sortOrder(eventTable.id)
+        )
         .offset(offset)
         .limit(pageSize + 1);
 
