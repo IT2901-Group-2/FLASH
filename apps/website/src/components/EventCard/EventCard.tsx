@@ -24,9 +24,9 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
   const deleteConfirmRef = useRef<HTMLDialogElement>(null);
   const { name, startDate, uploadLimit, id } = data;
   const { data: imagePages } = useInfiniteImagesQuery(id);
-  const images = imagePages?.pages.flatMap(page => page.items) ?? [];
 
   const { totalPhotos, approvedPhotos, pendingPhotos } = useMemo(() => {
+    const images = imagePages?.pages.flatMap(page => page.items) ?? [];
     const total = images.length;
     const approved = images.filter(image => image.isApproved === true).length;
     const pending = images.filter(image => image.isApproved === null).length;
@@ -36,7 +36,7 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
       approvedPhotos: approved,
       pendingPhotos: pending,
     };
-  }, [images]);
+  }, [imagePages]);
 
   const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();

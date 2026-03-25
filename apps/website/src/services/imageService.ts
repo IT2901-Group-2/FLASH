@@ -5,7 +5,7 @@ import { GetImagesPage, GetImagesParams, Image, imageTable, UpdateImage } from "
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
 import { getFirstRow } from "@/lib/utils/sql";
-import { and, desc, eq, inArray, isNull } from "drizzle-orm";
+import { and, eq, inArray, isNull } from "drizzle-orm";
 import { JWT_SECRET, storage } from "@/config";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { getEventCookie } from "@/lib/utils/eventCookie";
