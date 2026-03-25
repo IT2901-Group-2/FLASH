@@ -31,8 +31,20 @@ const mockImages = [
   { id: "img-2", url: "/img2.jpg" },
 ];
 
+const mockFetchNextPage = vi.fn();
+let mockHasNextPage = false;
+let mockIsFetchingNextPage = false;
+
 vi.mock("@/hooks/useImages", () => ({
-  useImagesQuery: () => ({ data: mockImages }),
+  useInfiniteImagesQuery: () => ({
+    data: {
+      pages: [{ items: mockImages, nextCursor: mockHasNextPage ? "2" : null }],
+      pageParams: [undefined],
+    },
+    hasNextPage: mockHasNextPage,
+    isFetchingNextPage: mockIsFetchingNextPage,
+    fetchNextPage: mockFetchNextPage,
+  }),
 }));
 
 vi.mock("@/hooks/useEvents", () => ({
@@ -70,6 +82,8 @@ describe("Slideshow Page", () => {
     mockIsIdle = false;
     mockPaused = false;
     mockViewIndex = 0;
+    mockHasNextPage = false;
+    mockIsFetchingNextPage = false;
     vi.clearAllMocks();
   });
 
@@ -141,6 +155,36 @@ describe("Slideshow Page", () => {
       render(<Page />);
       expect(screen.getByTestId("play")).toBeInTheDocument();
       expect(screen.queryByTestId("pause")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("infinite prefetch", () => {
+    it("prefetches the next page when approaching the end of loaded images", () => {
+      mockHasNextPage = true;
+      mockViewIndex = 1;
+
+      render(<Page />);
+
+      expect(mockFetchNextPage).toHaveBeenCalledTimes(1);
+    });
+
+    it("does not prefetch when there is no next page", () => {
+      mockHasNextPage = false;
+      mockViewIndex = 1;
+
+      render(<Page />);
+
+      expect(mockFetchNextPage).not.toHaveBeenCalled();
+    });
+
+    it("does not prefetch while already fetching next page", () => {
+      mockHasNextPage = true;
+      mockIsFetchingNextPage = true;
+      mockViewIndex = 1;
+
+      render(<Page />);
+
+      expect(mockFetchNextPage).not.toHaveBeenCalled();
     });
   });
 
