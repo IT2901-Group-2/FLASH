@@ -75,7 +75,7 @@ export const Colors: Story = {
 
     await step("All color variants render", async () => {
       const primary = canvas.getByText("Primary");
-      const neutral = canvas.getByText("neutral");
+      const neutral = canvas.getByText("Neutral");
       const brandPurple = canvas.getByText("Brand Purple");
       const accent = canvas.getByText("Accent");
       const success = canvas.getByText("Success");
