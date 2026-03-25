@@ -68,8 +68,8 @@
   .card {
     position: static;
     background-color: transparent !important;
-    border: none;
-    box-shadow: none;
+    border: none !important;
+    box-shadow: none !important;
     padding: 0;
     display: flex;
     flex-direction: row;
