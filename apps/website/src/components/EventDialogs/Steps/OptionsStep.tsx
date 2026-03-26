@@ -18,6 +18,7 @@ export const OptionsStep = () => {
   );
 
   useEffect(() => {
+    console.log("test");
     if (limitMode === "unlimited") setValue("uploadLimit", undefined);
   }, [limitMode, setValue]);
 
@@ -39,6 +40,7 @@ export const OptionsStep = () => {
                 label
                 hideLabel
                 {...register("uploadLimit", {
+                  valueAsNumber: true,
                   min: { value: 1, message: "This has to be at least 1" },
                 })}
                 error={errors.uploadLimit?.message}
