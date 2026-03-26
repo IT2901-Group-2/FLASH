@@ -20,7 +20,7 @@
   overflow-y: auto;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) {
   .infoContainer {
     flex-direction: column-reverse;
   }
@@ -40,8 +40,8 @@
 .linkContainer {
   display: flex;
   flex-direction: column;
-  align-items: start;
   justify-content: center;
+  flex: 1;
 }
 
 .timeContainer {

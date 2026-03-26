@@ -1,6 +1,6 @@
 import { Title, QRDisplay, Button, Loader, SegmentedControl, TextField } from "@flash/ui";
 import { useRef, useState } from "react";
-import { Check, Download } from "lucide-react";
+import { Check, Copy, Download } from "lucide-react";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 import { downloadQrSvg } from "@/utils/downloadqrcode";
@@ -73,8 +73,6 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
             aria-label="Guest Link"
             readOnly
             value={displayLink}
-            icon={<Check />}
-            iconPosition="left"
           />
         </div>
       </div>
