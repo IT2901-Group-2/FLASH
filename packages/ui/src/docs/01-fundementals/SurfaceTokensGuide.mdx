@@ -1,0 +1,377 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import styles from "@docs-components/Table.module.css";
+
+<Meta title="Fundementals/Styling/How to Use Surface Tokens" />
+
+# How to Use Surface Tokens
+
+A practical guide for applying surface tokens correctly. For the full token reference table see **Surface Tokens**.
+
+---
+
+## Variants
+
+Each concept (except `backdrop`) comes in three variants:
+
+<table className={styles.table}>
+  <thead>
+    <tr>
+      <th>Variant</th>
+      <th>When to use</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>base</code>
+      </td>
+      <td>
+        <strong>The default.</strong> Use this unless you have a specific reason not to.
+        This is the canonical Figma value for the role.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>dark</code>
+      </td>
+      <td>
+        <strong>Pressed and focus states only.</strong> A slightly darker shade, signals
+        that something is actively being interacted with.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>light</code>
+      </td>
+      <td>
+        <strong>Hover states only.</strong> A slightly lighter/elevated tint, signals that
+        something is reachable but not yet activated.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>secondary</code>
+      </td>
+      <td>
+        <strong>Mid-emphasis text only.</strong> Subtitles, secondary labels, muted gray
+        text. (<code>text</code> concept only)
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>tertiary</code>
+      </td>
+      <td>
+        <strong>Low-emphasis text only.</strong> Captions and the least prominent text
+        tier. When two gray text tiers are needed, use <code>tertiary</code> for the
+        higher hierarchy item and <code>secondary</code> below it. (<code>text</code>{" "}
+        concept only)
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+> **Rule:** Never use `dark` for a default background or `light` for a pressed state. The variant names map directly to interaction states. Treat them as part of your component contract, not just shade options.
+
+---
+
+## Concepts and When to Use Them
+
+### `background` — Page shell and canvas
+
+The outermost layer. Every page starts here.
+
+```css
+/* ✅ Correct */
+.page {
+  background-color: var(--color-background-base);
+}
+
+/* ❌ Wrong — primary is for cards, not the page shell */
+.page {
+  background-color: var(--color-primary-base);
+}
+```
+
+---
+
+### `primary` — First elevated surface
+
+Cards, panels, and containers that sit one layer above the page shell.
+
+```css
+.card {
+  background-color: var(--color-primary-base);
+  border: 1px solid var(--color-border-base);
+  border-radius: 8px;
+}
+
+/* Hover elevates to light */
+.card:hover {
+  background-color: var(--color-primary-light);
+}
+```
+
+---
+
+### `secondary` — Nested surfaces
+
+Inner panels, sidebars, and surfaces nested inside a `primary` surface.
+
+```css
+.sidebar {
+  background-color: var(--color-secondary-base);
+}
+
+.inner-panel {
+  background-color: var(--color-secondary-base);
+}
+```
+
+---
+
+### `accent` — Warm sand/terracotta highlight
+
+Decorative highlights, badges, and accent strips. Not for primary actions — use `brand` for those.
+
+```css
+/* ✅ Decorative badge */
+.badge-accent {
+  background-color: var(--color-accent-base);
+  color: var(--color-text-base);
+}
+
+/* ❌ Wrong — accent is not for CTA buttons */
+.btn-primary {
+  background-color: var(--color-accent-base);
+}
+```
+
+---
+
+### `brand` — Brand purple actions
+
+Primary call-to-action buttons, interactive highlights, and anything that drives the user toward a primary action.
+
+```css
+.btn-primary {
+  background-color: var(--color-brand-base);
+  color: var(--color-text-base);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-brand-light);
+}
+
+.btn-primary:active {
+  background-color: var(--color-brand-dark);
+}
+```
+
+---
+
+### `text` — Foreground text
+
+All readable text and icons. Use `base` for body copy, `secondary` for supporting labels, `tertiary` for captions.
+
+```css
+.body-text {
+  color: var(--color-text-base);
+}
+
+/* Supporting label — slightly muted */
+.label-secondary {
+  color: var(--color-text-secondary);
+}
+
+/* Caption — least prominent */
+.caption {
+  color: var(--color-text-tertiary);
+}
+```
+
+> **Hierarchy rule:** When stacking two gray text tiers, `tertiary` carries more visual weight and should sit higher in the hierarchy. Use `tertiary` for the dominant muted element and `secondary` for the subordinate one.
+
+---
+
+### `border` — Dividers and outlines
+
+Separates surfaces, wraps inputs and cards. Use `base` by default; `dark` for focus rings.
+
+```css
+.input {
+  border: 1px solid var(--color-border-base);
+}
+
+.input:focus {
+  border-color: var(--color-brand-base);
+  outline: 2px solid var(--color-brand-dark);
+}
+
+/* Subtle section divider */
+.divider {
+  border-top: 1px solid var(--color-border-light);
+}
+```
+
+---
+
+### `danger` — Error and delete actions
+
+Irreversible or dangerous interactions only. Do not use for warnings or informational states.
+
+```css
+.btn-delete {
+  background-color: var(--color-danger-base);
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: var(--color-danger-light);
+}
+
+.btn-delete:active {
+  background-color: var(--color-danger-dark);
+}
+
+.error-message {
+  color: var(--color-danger-base);
+}
+```
+
+---
+
+### `success` — Confirmation states
+
+Positive feedback, completed states, and confirmations.
+
+```css
+.status-success {
+  color: var(--color-success-base);
+}
+
+.toast-success {
+  background-color: var(--color-success-light);
+  border: 1px solid var(--color-success-base);
+}
+```
+
+---
+
+### `warning` — Caution states
+
+Non-danger alerts and advisory messages. The action is recoverable, use `danger` if it is not.
+
+```css
+.toast-warning {
+  background-color: var(--color-warning-light);
+  border: 1px solid var(--color-warning-base);
+}
+```
+
+---
+
+### `backdrop` — Modal overlay scrim
+
+Exclusively for the overlay behind modals, dialogs, drawers, and popups. No variant suffix, always use it as-is. Do not use it for any other purpose.
+
+```css
+/* ✅ Correct */
+.dialog-backdrop {
+  background-color: var(--color-backdrop);
+}
+
+/* ❌ Wrong — do not use backdrop as a general dark overlay */
+.dimmed-section {
+  background-color: var(--color-backdrop);
+}
+```
+
+---
+
+## Layering
+
+A typical UI stacks three surface layers. Always step through them in order. Skipping layers creates visual inconsistency.
+
+```
+┌──────────────────────────────┐  background-base   (page shell)
+│  ┌────────────────────────┐  │
+│  │  primary-base (card)   │  │
+│  │  ┌──────────────────┐  │  │
+│  │  │ secondary-base   │  │  │
+│  │  │ (nested panel)   │  │  │
+│  │  └──────────────────┘  │  │
+│  └────────────────────────┘  │
+└──────────────────────────────┘
+```
+
+```css
+body {
+  background: var(--color-background-base);
+}
+.card {
+  background: var(--color-primary-base);
+}
+.inner-panel {
+  background: var(--color-secondary-base);
+}
+```
+
+Dark mode is automatic — no media query or extra class needed. The `data-theme` attribute on `:root` handles resolution.
+
+---
+
+## Cross-Concept Mappings (Advanced)
+
+Sometimes Figma maps the **same element** to a **different concept** in dark mode, not just a different shade, but a completely different role. For example, a card that uses `background` in light mode but `secondary` in dark mode.
+
+If you write `var(--color-background-base)`, dark mode gives you the dark variant of `background`, not `secondary`. The Figma intent is lost.
+
+### Solution: Component-level bridge property
+
+Define a private CSS property at the component root. Set it to the light-mode token by default, then override it to the correct dark-mode token. Children only ever read the bridge.
+
+```css
+/* Component root: declare the bridge */
+.card {
+  --_bg: var(--color-background-base); /* light: background */
+}
+
+/* Dark mode: switch to a different concept */
+:root[data-theme="dark"] .card {
+  --_bg: var(--color-secondary-base); /* dark: secondary */
+}
+
+/* Children only read the bridge, never the token directly */
+.card__inner {
+  background-color: var(--_bg);
+}
+```
+
+### Multiple cross-mappings on one component
+
+```css
+.card-featured {
+  --_surface: var(--color-primary-base);
+  --_accent-strip: var(--color-accent-base);
+  --_heading: var(--color-text-base);
+}
+
+:root[data-theme="dark"] .card-featured {
+  --_surface: var(--color-secondary-base); /* primary → secondary */
+  --_accent-strip: var(--color-brand-base); /* accent  → brand    */
+  /* --_heading stays on the same concept, no override needed */
+}
+
+.card-featured {
+  background: var(--_surface);
+}
+.card-featured__strip {
+  background: var(--_accent-strip);
+}
+.card-featured__heading {
+  color: var(--_heading);
+}
+```
+
+> **When NOT to use the bridge:** Don't add a bridge just because a value looks different between modes. Surface tokens already handle shade changes automatically. Only reach for the bridge when the **color concept itself** changes between modes.

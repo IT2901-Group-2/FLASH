@@ -73,7 +73,7 @@ export const ProgressDots = ({
   maxValue,
   value = 0,
   lineThickness = "medium",
-  "data-color": color = "neutral",
+  "data-color": color = "brand-purple",
   ...rest
 }: ProgressDotsProps) => {
   return (

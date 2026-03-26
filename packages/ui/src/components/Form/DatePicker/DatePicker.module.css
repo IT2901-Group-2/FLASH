@@ -3,15 +3,15 @@
 }
 
 .calendar {
-  border: 0.1rem solid var(--border-focus);
+  border: 0.1rem solid var(--color-border-base);
   padding: 1rem;
   border-radius: var(--radius-8);
   position: absolute;
   position-anchor: --open-calendar-button;
   position-area: bottom span-right;
-  background-color: var(--bg-raised);
+  background-color: var(--color-background-base);
 
-  color: var(--text-neutral);
+  color: var(--color-text-base);
 }
 
 .monthNav {
@@ -27,9 +27,10 @@
   }
 
   .navButton {
-    border: none;
+    border: 0.1rem solid transparent;
     background-color: transparent;
     color: currentColor;
+    cursor: pointer;
 
     display: flex;
     align-items: center;
@@ -39,11 +40,12 @@
 
     &:hover,
     &:focus {
-      background-color: var(--bg-moderate-hover);
+      background-color: var(--color-background-light);
+      border-color: var(--color-border-base);
     }
 
     &:active {
-      background-color: var(--bg-moderate-pressed);
+      background-color: var(--color-background-light);
     }
   }
 }
@@ -54,7 +56,7 @@
   row-gap: 0.125rem;
   margin-bottom: 0.25rem;
   text-align: center;
-  color: var(--text-neutral-decoration);
+  color: var(--color-text-secondary);
 
   > .dateName {
     font-size: var(--font-size-small);
@@ -97,34 +99,34 @@
   &[data-start="true"],
   &[data-end="true"] {
     font-weight: var(--font-weight-bold);
-    color: var(--text-neutral);
+    color: var(--color-text-base);
     &::before {
-      background-color: var(--bg-moderate-pressed);
+      background-color: var(--color-dark);
     }
   }
 
   &[data-range="true"]::before {
-    background-color: var(--bg-moderate-hover);
+    background-color: color-mix(in srgb, var(--color-light) 50%, white);
     color: inherit;
   }
 
   &:hover,
   &:focus {
-    color: var(--text-neutral-contrast);
+    color: var(--color-text-contrast);
     &::before {
-      background-color: var(--bg-strong);
+      background-color: var(--color-base);
     }
   }
 
   &[data-today="true"] {
-    color: var(--text-danger-contrast);
+    color: var(--color-text-contrast);
     &::after {
       content: "";
       aspect-ratio: 1/1;
       border-radius: var(--radius-full);
       width: 90%;
       height: 90%;
-      background-color: var(--bg-danger-strong);
+      background-color: var(--color-danger-base);
       position: absolute;
       z-index: -1;
       top: 5%;

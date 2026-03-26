@@ -1,6 +1,7 @@
 .container {
   min-width: 1rem;
-  background-color: var(--bg-neutral-moderate);
+  background-color: var(--color-background-base);
+  border: 0.1rem solid var(--color-border-base);
   border-radius: var(--radius-16);
   width: clamp(1rem, 100%, 40rem);
   overflow: hidden;
@@ -8,7 +9,7 @@
 
 .filler {
   min-height: 0.75rem;
-  background-color: var(--bg-strong);
+  background-color: var(--color-dark);
   border-radius: var(--radius-16);
   width: 100%;
   transition: transform 0.3s ease-in-out;

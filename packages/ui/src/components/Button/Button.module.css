@@ -11,6 +11,8 @@
   border: none;
   font-size: var(--font-size-large);
 
+  cursor: pointer;
+
   &[data-fill="true"] {
     width: 100%;
   }
@@ -32,33 +34,29 @@
   }
 
   &[data-variant="primary"] {
-    background-color: var(--bg-strong);
+    background-color: var(--color-base);
     color: white;
 
-    &:hover {
-      background-color: var(--bg-strong-hover);
+    &:hover:not(:disabled, .disabled) {
+      background-color: var(--color-light);
     }
 
-    &:active {
-      background-color: var(--bg-strong-pressed);
-    }
-
-    &:is(:disabled, .disabled) {
-      background-color: var(--bg-strong);
+    &:active:not(:disabled, .disabled) {
+      background-color: var(--color-dark);
     }
   }
 
   &[data-variant="secondary"] {
     background-color: transparent;
-    color: var(--text-default);
-    border: 0.125rem solid var(--border-strong);
+    color: var(--color-text-base);
+    border: 0.125rem solid var(--color-base);
 
     &:hover {
-      background-color: var(--bg-moderate-hoverT);
+      background-color: color-mix(in srgb, var(--color-light) 50%, transparent);
     }
 
     &:active {
-      background-color: var(--bg-moderate-pressedT);
+      background-color: color-mix(in srgb, var(--color-dark) 50%, transparent);
     }
 
     &:is(:disabled, .disabled) {
@@ -68,14 +66,14 @@
 
   &[data-variant="tertiary"] {
     background-color: transparent;
-    color: var(--text-default);
+    color: var(--color-text-base);
 
     &:hover {
-      background-color: var(--bg-moderate-hoverT);
+      background-color: color-mix(in srgb, var(--color-light) 50%, transparent);
     }
 
     &:active {
-      background-color: var(--bg-moderate-pressedT);
+      background-color: color-mix(in srgb, var(--color-dark) 50%, transparent);
     }
 
     &:is(:disabled, .disabled) {

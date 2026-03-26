@@ -3,4 +3,13 @@
   flex-direction: column;
   gap: 1rem;
   box-shadow: var(--shadow-dialog);
+
+  /* to override default background color */
+  --input-bg: var(--color-background-base);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }

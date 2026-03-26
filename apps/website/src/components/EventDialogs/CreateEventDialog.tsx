@@ -101,22 +101,42 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
 
           <div className={styles.buttonGroup}>
             {!isOnReviewStep && (
-              <Button type="button" variant="tertiary" onClick={handleClose}>
+              <Button
+                type="button"
+                variant="tertiary"
+                data-color="neutral"
+                onClick={handleClose}
+              >
                 {t("cancel")}
               </Button>
             )}
             {!isOnReviewStep && !isOnFirstStep && (
-              <Button type="button" variant="secondary" onClick={goToPreviousStep}>
+              <Button
+                type="button"
+                variant="secondary"
+                data-color="neutral"
+                onClick={goToPreviousStep}
+              >
                 {t("previous")}
               </Button>
             )}
             {!isOnReviewStep && !isOnLastFormStep && (
-              <Button type="button" variant="secondary" onClick={tryGoToNextStep}>
+              <Button
+                type="button"
+                variant="secondary"
+                data-color="brand-purple"
+                onClick={tryGoToNextStep}
+              >
                 {t("next")}
               </Button>
             )}
             {!isOnReviewStep && isOnLastFormStep && (
-              <Button type="submit" variant="secondary" onClick={handleCreate}>
+              <Button
+                type="submit"
+                variant="primary"
+                data-color="brand-purple"
+                onClick={handleCreate}
+              >
                 {t("create")}
               </Button>
             )}

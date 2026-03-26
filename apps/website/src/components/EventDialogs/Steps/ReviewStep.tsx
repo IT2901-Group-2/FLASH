@@ -34,7 +34,7 @@ const CopyButton = ({ isCopied, onCopy, ariaLabel }: CopyButtonProps) => (
       cursor: isCopied ? "default" : "pointer",
       background: "none",
       border: "none",
-      color: "var(--text-neutral)",
+      color: "var(--color-text-secondary)",
       padding: 0,
       display: "flex",
       alignItems: "center",
@@ -131,6 +131,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   helperText={tCommon("messages.scanToUploadPhotos")}
                 />
                 <Button
+                  data-color="neutral"
                   variant="secondary"
                   icon={<Download />}
                   onClick={handleDownloadQR}
@@ -139,7 +140,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                 </Button>
               </div>
 
-              <div className={styles.linkContainer} data-color="neutral">
+              <div className={styles.linkContainer}>
                 <Title size="medium" description={tReview("links.guest.description")}>
                   {tReview("links.guest.title")}
                 </Title>
@@ -173,6 +174,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                   helperText={tCommon("messages.scanToUploadPhotos")}
                 />
                 <Button
+                  data-color="neutral"
                   variant="secondary"
                   icon={<Download />}
                   onClick={handleDownloadQR}
@@ -181,7 +183,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
                 </Button>
               </div>
 
-              <div className={styles.linkContainer} data-color="neutral">
+              <div className={styles.linkContainer}>
                 <Title size="medium" description={tReview("links.moderator.description")}>
                   {tReview("links.moderator.title")}
                 </Title>

@@ -6,7 +6,7 @@
   margin-top: 2.5vh;
 
   &::backdrop {
-    background-color: var(--bg-overlay);
+    background-color: var(--color-backdrop);
   }
 }
 
@@ -34,7 +34,7 @@
   justify-content: end;
   gap: 1rem;
 
-  border-top: 1px solid var(--border-focus);
+  border-top: 1px solid var(--color-border-base);
   margin-top: 0.5rem;
   padding-top: 0.5rem;
   flex-wrap: wrap;

@@ -1,0 +1,12 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import SurfaceTokenDocs from "@docs-components/TokenTables/SurfaceTokenDocs";
+
+<Meta title="Fundementals/Styling/Surface Tokens" />
+
+# Figma Surface Tokens
+
+Surface tokens are CSS custom properties that map 1-to-1 with the named color table in the Figma design file. Every token has an exact match in Figma by name, no translation needed between design and code. The color `background` in Figma would be `--color-background-base` in code.
+
+There are **33 tokens** in total: 10 semantic color concepts × 3 variants (30), plus `secondary` and `tertiary` variants exclusive to `text`, plus 1 single-value `backdrop` token.
+
+<SurfaceTokenDocs />
