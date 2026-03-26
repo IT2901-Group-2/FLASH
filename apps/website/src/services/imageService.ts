@@ -1,7 +1,7 @@
 import { FileStorage } from "@flash/file-storage";
 import { DatabaseService, dbService } from "./databaseService";
 import { AsyncResult, Result } from "typescript-result";
-import { GetImagesParams, Image, imageTable, UpdateImage } from "@/db";
+import { eventTable, GetImagesParams, Image, imageTable, UpdateImage } from "@/db";
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
 import { getFirstRow } from "@/lib/utils/sql";
@@ -147,25 +147,43 @@ export class ImageService {
           .map(() =>
             Result.try(() =>
               this.dbService.db
-                .insert(imageTable)
-                .values({ id: imageId, userId, eventId })
-                .returning()
+                .select()
+                .from(eventTable)
+                .where(eq(eventTable.id, eventId))
+                .limit(1)
             )
-              .map(rows => getFirstRow(rows, "Failed to upload image"))
-              .mapCatching(async image => {
-                this.dbService.flush();
-                const result = await this.addImageToZip(eventId, image.id);
-                if (!result.ok) {
-                  console.error(
-                    `Failed to add image ${image.id} to zip for event ${eventId}:`,
-                    result.error
-                  );
-                }
-                return image;
-              })
-              .onFailure(async () => {
-                await this.storage.rm(`${imageId}.webp`).getOrNull();
-              })
+              .map(rows => getFirstRow(rows, `Event with id ${eventId} does not exist`))
+              .map(event =>
+                Result.try(() =>
+                  this.dbService.db
+                    .insert(imageTable)
+                    .values({
+                      id: imageId,
+                      userId,
+                      eventId,
+                      isApproved: event.autoApprove ? true : null,
+                    })
+                    .returning()
+                )
+                  .map(rows => getFirstRow(rows, "Failed to upload image"))
+                  .mapCatching(async image => {
+                    this.dbService.flush();
+                    // Only add to zip if auto-approved
+                    if (event.autoApprove) {
+                      const result = await this.addImageToZip(eventId, image.id);
+                      if (!result.ok) {
+                        console.error(
+                          `Failed to add image ${image.id} to zip for event ${eventId}:`,
+                          result.error
+                        );
+                      }
+                    }
+                    return image;
+                  })
+                  .onFailure(async () => {
+                    await this.storage.rm(`${imageId}.webp`).getOrNull();
+                  })
+              )
           )
       );
   }
@@ -190,7 +208,17 @@ export class ImageService {
         .set(data)
         .where(and(eq(imageTable.eventId, eventId), inArray(imageTable.id, ids)))
         .returning()
-    ).onSuccess(() => this.dbService.flush());
+    )
+      .onSuccess(() => this.dbService.flush())
+      .mapCatching(async images => {
+        if (data.isApproved !== undefined) {
+          const result = await this.rebuildZip(eventId);
+          if (!result.ok) {
+            console.error(`Failed to rebuild zip for event ${eventId}:`, result.error);
+          }
+        }
+        return images;
+      });
   }
 
   /**
@@ -220,7 +248,21 @@ export class ImageService {
           `Image with id ${imageId} does not exist on event with id ${eventId}`
         )
       )
-      .onSuccess(() => this.dbService.flush());
+      .onSuccess(() => this.dbService.flush())
+      .mapCatching(async image => {
+        if (data.isApproved === true) {
+          const result = await this.addImageToZip(eventId, imageId);
+          if (!result.ok) {
+            console.error(`Failed to add image ${imageId} to zip:`, result.error);
+          }
+        } else if (data.isApproved === false) {
+          const result = await this.removeImageFromZip(eventId, imageId);
+          if (!result.ok) {
+            console.error(`Failed to remove image ${imageId} from zip:`, result.error);
+          }
+        }
+        return image;
+      });
   }
 
   /**
@@ -281,7 +323,9 @@ export class ImageService {
   rebuildZip(eventId: string): AsyncResult<void, Error> {
     return Result.fromAsyncCatching(
       this.withZipLock(eventId, async () => {
-        const images = await this.getImages(eventId).getOrThrow();
+        const images = await this.getImages(eventId, {
+          approval: "approved",
+        }).getOrThrow();
         const zip = new AdmZip();
         for (const image of images) {
           const buffer = await this.storage.read(`${image.id}.webp`).getOrThrow();
