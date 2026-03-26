@@ -39,7 +39,6 @@ const DatePicker = ({
   ...rest
 }: DatePickerProps) => {
   const [value, setValue] = useState<DateRange>(_value ?? DEFAULT_DATE_RANGE);
-  const buttonRef = useRef<HTMLButtonElement>(null);
   const providerRef = useRef<DateRangeProviderHandle>(null);
   const calendarRef = useRef<HTMLDivElement>(null);
   const popoverId = `calendar-${useId()}`;
@@ -80,13 +79,7 @@ const DatePicker = ({
           calendarRef.current?.showPopover();
         }}
         onChange={() => {}} // To stop error in console
-      />
-      <button
-        ref={buttonRef}
-        popoverTarget={popoverId}
-        className={styles.openCalendar}
-        type="button"
-        tabIndex={-1}
+        className={styles.inputField}
       />
       <DateRangeProvider ref={providerRef} onChange={handleChange} local={local}>
         <div
