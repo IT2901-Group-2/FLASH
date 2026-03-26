@@ -11,7 +11,7 @@ import {
   THEME_RESOLVED_COOKIE_KEY,
   THEME_PREF_COOKIE_KEY,
   THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
-} from "@/lib/theme-config";
+} from "@/config/theme";
 
 /* Helpers /*
 

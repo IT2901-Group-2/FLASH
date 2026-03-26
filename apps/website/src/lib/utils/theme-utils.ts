@@ -4,7 +4,7 @@ import {
   THEME_PREF_COOKIE_KEY,
   type ResolvedTheme,
   type Theme,
-} from "@/lib/theme-config";
+} from "@/config/theme";
 import { AsyncResult, Result } from "typescript-result";
 
 /**
@@ -16,7 +16,7 @@ import { AsyncResult, Result } from "typescript-result";
  * @param value - Cookie value.
  * @param maxAgeSeconds - Cookie lifetime in seconds.
  */
-export function setThemeCookie({
+export const setThemeCookie = ({
   name,
   value,
   maxAgeSeconds,
@@ -24,7 +24,7 @@ export function setThemeCookie({
   name: string;
   value: string;
   maxAgeSeconds: number;
-}): AsyncResult<void, Error> {
+}): AsyncResult<void, Error> => {
   if (typeof document !== "undefined") {
     const secure = window.location.protocol === "https:" ? "; Secure" : "";
     document.cookie = `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${maxAgeSeconds}; SameSite=Lax${secure}`;
@@ -39,7 +39,7 @@ export function setThemeCookie({
       maxAge: maxAgeSeconds,
     });
   });
-}
+};
 
 /**
  * Get the current system color scheme preference.

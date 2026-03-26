@@ -7,14 +7,14 @@ import {
   THEME_RESOLVED_COOKIE_KEY,
   type ResolvedTheme,
   type Theme,
-} from "@/lib/theme-config";
+} from "@/config/theme";
 import {
   applyTheme,
   getStoredThemePref,
   resolveThemePreference,
   setStoredTheme,
   systemThemeListener,
-} from "@/lib/theme-utils";
+} from "@/lib/utils/theme-utils";
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 
 const COOKIE_OPTIONS = {

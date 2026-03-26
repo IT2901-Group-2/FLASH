@@ -1,4 +1,4 @@
-import { THEME_RESOLVED_COOKIE_KEY } from "@/lib/theme-config";
+import { THEME_RESOLVED_COOKIE_KEY } from "@/config/theme";
 import { JoinedEventsProvider } from "@/providers/JoinedEventsProvider";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import ThemeProvider from "@/providers/ThemeProvider";
