@@ -1,17 +1,17 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, QrCode, Upload, X } from "lucide-react";
-import styles from "./UploadImage.module.css";
-import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
-import { QrCode, Upload } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useParams, useRouter } from "next/navigation";
+import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
-import { useEventAuth } from "@/providers/EventAuthContext";
-import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 import { getAdminDashboardEventRoute, routes } from "@/lib/routes";
+import { useEventAuth } from "@/providers/EventAuthContext";
+import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
+import { ChevronLeft, ChevronRight, QrCode, Upload, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import styles from "./UploadImage.module.css";
+import { useFileUpload } from "@/hooks/useFileUpload";
 
 export default function Page() {
   const router = useRouter();
