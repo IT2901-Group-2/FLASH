@@ -73,11 +73,12 @@ const DatePicker = ({
         ]
           .filter(Boolean)
           .join(" - ")}
+        readOnly
+        inputMode="none"
         onClick={e => {
           e.currentTarget.blur();
-          buttonRef.current?.click();
+          calendarRef.current?.showPopover();
         }}
-        onFocus={e => e.currentTarget.click()}
         onChange={() => {}} // To stop error in console
       />
       <button
