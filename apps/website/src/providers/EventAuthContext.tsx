@@ -5,11 +5,13 @@ import { createContext, use, useContext } from "react";
 
 export type EventAuth =
   | {
+      userId: undefined;
       isAuthenticated: false;
       nickname: undefined;
       isModerator: undefined;
     }
   | {
+      userId: string;
       isAuthenticated: true;
       nickname: string;
       isModerator: boolean;
