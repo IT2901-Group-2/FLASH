@@ -304,7 +304,7 @@ describe("ImageService uploadImage", () => {
       .getOrThrow();
 
     expect(image1.eventId).toBe("wedding");
-    expect(image1.isApproved).toBeNull();
+    expect(image1.isApproved).toBe(true);
     Result.assertOk(await imageService["storage"].read(`${image1.id}.webp`));
     expect(flush).toHaveBeenCalledOnce();
 

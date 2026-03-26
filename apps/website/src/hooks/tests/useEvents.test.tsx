@@ -19,6 +19,8 @@ const mockEvent: Event = {
   endDate: new Date(),
   uploadLimit: 5,
   isArchived: false,
+  autoApprove: true,
+  uploadsArePrivate: false,
   createdAt: new Date(),
   updatedAt: new Date(),
 };

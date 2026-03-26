@@ -168,7 +168,6 @@ export class ImageService {
                   .map(rows => getFirstRow(rows, "Failed to upload image"))
                   .mapCatching(async image => {
                     this.dbService.flush();
-                    // Only add to zip if auto-approved
                     if (event.autoApprove) {
                       const result = await this.addImageToZip(eventId, image.id);
                       if (!result.ok) {
