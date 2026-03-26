@@ -1,6 +1,6 @@
 "use client";
 
-import { RefAttributes, useRef, useState } from "react";
+import { RefAttributes, useState } from "react";
 import { Button, Dialog, ProgressDots } from "@flash/ui";
 import styles from "./CreateEventDialog.module.css";
 import { BasicInfoStep, OptionsStep, ReviewStep } from "./Steps";
@@ -45,7 +45,6 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
   const t = useTranslations("common.actions");
   const { mutateAsync, status } = useCreateEventMutation();
 
-  const formRef = useRef<HTMLFormElement>(null);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const [eventResult, setEventResult] = useState<Event | null>(null);
 
@@ -93,7 +92,7 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
         data-color="brand-purple"
       />
       <FormProvider {...methods}>
-        <form className={styles.form} ref={formRef} noValidate>
+        <form className={styles.form} noValidate>
           {isOnReviewStep ? (
             <ReviewStep status={status} result={eventResult} />
           ) : (

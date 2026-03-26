@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import { StepProps } from "./types";
-import { Title, DropdownControl, Input, Switch, TextField } from "@flash/ui";
+import { Title, DropdownControl, Switch, TextField } from "@flash/ui";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
-import { Controller, useFormContext } from "react-hook-form";
+import { useFormContext, useFormState } from "react-hook-form";
 import { FormValues } from "../types";
 
 export const OptionsStep = () => {
   const tStep = useTranslations("admin.dashboard.event.create.options");
   const tFields = useTranslations("common.fields");
 
-  const { control, register, setValue, watch } = useFormContext<FormValues>();
+  const { register, control, watch, setValue } = useFormContext<FormValues>();
+  const { errors } = useFormState({ control });
 
   const uploadLimit = watch("uploadLimit");
   const [limitMode, setLimitMode] = useState<"limited" | "unlimited">(
@@ -38,7 +38,10 @@ export const OptionsStep = () => {
               <TextField
                 label
                 hideLabel
-                {...register("uploadLimit")}
+                {...register("uploadLimit", {
+                  min: { value: 1, message: "This has to be at least 1" },
+                })}
+                error={errors.uploadLimit?.message}
                 aria-label={tFields("maxImages")}
                 type="number"
                 required={limitMode == "limited"}

@@ -1,4 +1,4 @@
-import { RefAttributes, useRef, useState } from "react";
+import { RefAttributes, useState } from "react";
 import { Button, Dialog, ProgressDots } from "@flash/ui";
 import { useTranslations } from "next-intl";
 import { useUpdateEventMutation } from "@/hooks/useEvents";
@@ -6,11 +6,15 @@ import { BasicInfoStep } from "./Steps/BasicInfoStep";
 import { OptionsStep } from "./Steps/OptionsStep";
 import { FormStepConfig } from "./Steps/types";
 import styles from "./CreateEventDialog.module.css";
-import { CreateEvent, Event, UpdateEvent } from "@/db";
+import { Event } from "@/db";
+import { FormProvider, useForm } from "react-hook-form";
+import { FormValues } from "./types";
+import { toCreateEvent } from "./helpers";
+import { formatTimeForInput } from "@/utils/date-utils";
 
-const EDIT_STEPS: FormStepConfig[] = [
-  { Component: BasicInfoStep },
-  { Component: OptionsStep },
+const FORM_STEPS: FormStepConfig[] = [
+  { Component: BasicInfoStep, fields: ["name", "dateRange", "eventTime"] },
+  { Component: OptionsStep, fields: ["uploadLimit"] },
 ];
 
 interface EditEventDialogProps extends RefAttributes<HTMLDialogElement> {
@@ -27,40 +31,44 @@ export const EditEventDialog = ({
   const t = useTranslations("common.actions");
   const { mutateAsync, status } = useUpdateEventMutation();
 
-  const formRef = useRef<HTMLFormElement>(null);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
 
-  const [formData, setFormData] = useState<CreateEvent>({
-    name: event.name,
-    description: event.description,
-    uploadLimit: event.uploadLimit ?? undefined,
-    // autoApprove: event.autoApprove,
-    startDate: new Date(event.startDate),
-    endDate: new Date(event.endDate),
+  const methods = useForm<FormValues>({
+    defaultValues: {
+      name: event.name,
+      description: event.description,
+      uploadLimit: event.uploadLimit ?? undefined,
+      // autoApprove: event.autoApprove,
+      dateRange: {
+        startDate: new Date(event.startDate),
+        endDate: new Date(event.endDate),
+      },
+      eventTime: {
+        startTime: formatTimeForInput(event.startDate),
+        endTime: formatTimeForInput(event.endDate),
+      },
+    },
+    mode: "onChange",
   });
 
-  const updateFormData = <K extends keyof CreateEvent>(field: K, value: CreateEvent[K]) =>
-    setFormData(prev => ({ ...prev, [field]: value }));
-
   const isOnFirstStep = currentStepIndex === 0;
-  const isOnLastStep = currentStepIndex === EDIT_STEPS.length - 1;
-  const currentStep = EDIT_STEPS[currentStepIndex];
+  const isOnLastStep = currentStepIndex === FORM_STEPS.length - 1;
+  const currentStep = FORM_STEPS[currentStepIndex]!;
 
-  const tryGoToNextStep = () => {
-    if (!formRef.current?.reportValidity()) return;
-    setCurrentStepIndex(i => i + 1);
+  const tryGoToNextStep = async () => {
+    if (await methods.trigger(currentStep.fields)) setCurrentStepIndex(i => i + 1);
   };
 
   const goToPreviousStep = () => setCurrentStepIndex(i => i - 1);
 
   const handleSave = async () => {
-    if (!formRef.current?.reportValidity()) return;
-    const payload: UpdateEvent = {
-      ...formData,
-      uploadLimit: formData.uploadLimit ?? null,
-    };
+    console.log(event.startDate.toTimeString());
+    if (!(await methods.trigger(currentStep.fields))) return;
     // Added as .then(), so its easy to add if there are error popups in the future
-    await mutateAsync({ eventId: event.id, data: payload }).then(handleClose);
+    await mutateAsync({
+      eventId: event.id,
+      data: toCreateEvent(methods.getValues()),
+    }).then(handleClose);
   };
 
   const handleClose = () => {
@@ -71,42 +79,42 @@ export const EditEventDialog = ({
   return (
     <Dialog ref={ref} closedby="none" {...rest}>
       <ProgressDots
-        maxValue={EDIT_STEPS.length}
+        maxValue={FORM_STEPS.length}
         value={currentStepIndex + 1}
         data-color="brand-purple"
       />
-      <form className={styles.form} ref={formRef} noValidate>
-        {/* {currentStep && (
-          <currentStep.Component formData={formData} updateFormData={updateFormData} />
-        )} */}
+      <FormProvider {...methods}>
+        <form className={styles.form} noValidate>
+          {currentStep && <currentStep.Component />}
 
-        <div className={styles.buttonGroup}>
-          <Button variant="tertiary" onClick={handleClose}>
-            {t("cancel")}
-          </Button>
+          <div className={styles.buttonGroup}>
+            <Button variant="tertiary" onClick={handleClose}>
+              {t("cancel")}
+            </Button>
 
-          {!isOnFirstStep && (
-            <Button variant="secondary" onClick={goToPreviousStep}>
-              {t("previous")}
-            </Button>
-          )}
+            {!isOnFirstStep && (
+              <Button variant="secondary" onClick={goToPreviousStep}>
+                {t("previous")}
+              </Button>
+            )}
 
-          {!isOnLastStep ? (
-            <Button variant="secondary" onClick={tryGoToNextStep}>
-              {t("next")}
-            </Button>
-          ) : (
-            <Button
-              variant="primary"
-              data-color="brand-purple"
-              onClick={handleSave}
-              disabled={status === "pending"}
-            >
-              {t("save")}
-            </Button>
-          )}
-        </div>
-      </form>
+            {!isOnLastStep ? (
+              <Button variant="secondary" onClick={tryGoToNextStep}>
+                {t("next")}
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                data-color="brand-purple"
+                onClick={handleSave}
+                disabled={status === "pending"}
+              >
+                {t("save")}
+              </Button>
+            )}
+          </div>
+        </form>
+      </FormProvider>
     </Dialog>
   );
 };
