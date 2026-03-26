@@ -1,0 +1,1 @@
+ALTER TABLE `events` ADD `autoApprove` integer DEFAULT true NOT NULL;

@@ -1,0 +1,1 @@
+ALTER TABLE `events` ADD `uploadsArePrivate` integer DEFAULT false NOT NULL;
