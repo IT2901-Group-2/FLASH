@@ -33,6 +33,6 @@
 }
 
 .error {
-  color: var(--bg-danger-strong);
+  color: var(--color-danger-base);
   margin: 0;
 }

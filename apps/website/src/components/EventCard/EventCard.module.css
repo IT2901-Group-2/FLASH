@@ -30,7 +30,7 @@
   cursor: pointer;
 
   background-color: transparent;
-  color: var(--text-decoration);
+  color: var(--color-text-secondary);
 
   &[data-color] {
     border: 0.1rem solid var(--color-base);
