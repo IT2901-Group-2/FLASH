@@ -1,6 +1,6 @@
 import { Title, QRDisplay, Button, Loader, SegmentedControl, TextField } from "@flash/ui";
 import { useRef, useState } from "react";
-import { Check, Copy, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 import { downloadQrSvg } from "@/utils/downloadqrcode";
