@@ -59,7 +59,7 @@ export async function signRefreshToken(): Promise<void> {
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     maxAge: REFRESH_TOKEN_EXPIRY,
-    path: "/api/auth/refresh",
+    // path: "/api/auth/refresh",
   });
 }
 
@@ -130,7 +130,7 @@ export async function clearRefreshToken(): Promise<void> {
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     maxAge: 0,
-    path: "/api/auth/refresh",
+    // path: "/api/auth/refresh",
   });
 }
 
