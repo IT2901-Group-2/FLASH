@@ -25,13 +25,6 @@ const DEFAULT_FORM_DATA: FormValues = {
   eventTime: { startTime: "00:00", endTime: "23:59" },
 };
 
-/**
- * Ordered form steps for event creation.
- * Each step declares its validity constraints via standard HTML attributes
- * (`required`, `min`, `type`, etc.) on its inputs. The card calls
- * `form.reportValidity()` before advancing, which triggers browser-native
- * error messages and blocks navigation if any constraint is violated.
- */
 const FORM_STEPS: FormStepConfig[] = [
   { Component: BasicInfoStep, fields: ["name", "dateRange", "eventTime"] },
   { Component: OptionsStep, fields: ["uploadLimit"] },
@@ -57,19 +50,19 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
   const isOnFirstStep = currentStepIndex === 0;
   const isOnLastFormStep = currentStepIndex === FORM_STEPS.length - 1;
 
-  const currentStep = FORM_STEPS[currentStepIndex]!;
+  const currentStep = FORM_STEPS[currentStepIndex];
 
   /** Validates the current step's inputs and advances if they all pass. */
   const tryGoToNextStep = async () => {
-    console.log(await methods.formState.errors);
+    if (!currentStep) return;
     if (await methods.trigger(currentStep.fields)) setCurrentStepIndex(i => i + 1);
   };
 
   const goToPreviousStep = () => setCurrentStepIndex(i => i - 1);
 
   const handleCreate = async () => {
+    if (!currentStep) return;
     if (!(await methods.trigger(currentStep.fields))) return;
-    // Advance immediately so the loader shows during the request.
     setCurrentStepIndex(i => i + 1);
     const result = await mutateAsync(toCreateEvent(methods.getValues()));
     setEventResult(result);
