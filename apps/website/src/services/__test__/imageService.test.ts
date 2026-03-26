@@ -30,7 +30,7 @@ const mockEvents: (typeof eventTable.$inferInsert)[] = [
     name: "Wedding",
     startDate: new Date(),
     endDate: new Date(),
-    autoApprove: false,
+    autoApprove: true,
   },
 ];
 
