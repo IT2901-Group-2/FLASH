@@ -12,7 +12,7 @@ export interface InfoBoxProps {
 export const InfoBox: React.FC<InfoBoxProps> = ({
   title,
   icon,
-  "data-color": color = "neutral",
+  "data-color": color = "primary",
   children,
 }) => {
   return (

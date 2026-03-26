@@ -137,7 +137,7 @@ export const Input = ({
         />
         {loading && (
           <span className={styles.loaderContainer}>
-            <Loader data-color="neutral" />
+            <Loader />
           </span>
         )}
         {icon && iconPosition === "right" && !loading && (

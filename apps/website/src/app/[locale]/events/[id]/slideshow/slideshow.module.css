@@ -21,7 +21,7 @@
   justify-content: center;
   align-items: center;
 
-  background-color: var(--bg-input);
+  background-color: var(--color-primary-base);
   padding: 0.5rem 1rem;
   border-radius: var(--radius-8);
   box-shadow: var(--shadow-dialog);
@@ -35,10 +35,10 @@
     cursor: pointer;
 
     &:hover {
-      background-color: var(--bg-raised);
+      background-color: var(--color-primary-light);
     }
     &:active {
-      background-color: var(--bg-sunken);
+      background-color: var(--color-primary-dark);
     }
   }
 
@@ -70,14 +70,14 @@
     border-radius: var(--radius-8);
     cursor: pointer;
     box-shadow: var(--shadow-dialog);
-    background-color: var(--bg-input);
+    background-color: var(--color-primary-base);
     color: inherit;
 
     &:hover {
-      background-color: var(--bg-raised);
+      background-color: var(--color-primary-light);
     }
     &:active {
-      background-color: var(--bg-sunken);
+      background-color: var(--color-primary-dark);
     }
   }
 }

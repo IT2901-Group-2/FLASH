@@ -7,7 +7,7 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .qrContainer {
@@ -21,18 +21,18 @@
 }
 
 .qrContainer svg {
-  color: var(--color-neutral-400);
+  color: var(--color-text-secondary);
 }
 
 .qrText {
   text-align: center;
   font-size: var(--font-size-small);
-  color: var(--color-neutral-600);
+  color: var(--color-text-tertiary);
   margin: 0;
   font-weight: var(--font-weight-bold);
 }
 
 .error {
-  color: var(--bg-danger-strong);
+  color: var(--color-danger-base);
   margin: 0;
 }
