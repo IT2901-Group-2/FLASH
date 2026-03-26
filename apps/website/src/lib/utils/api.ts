@@ -35,7 +35,7 @@ async function refreshAccessToken(): Promise<void> {
   if (!res.ok) {
     const locale = document.cookie.match(/NEXT_LOCALE=([^;]+)/)?.[1] ?? "en";
     window.location.href = `/${locale}/admin`;
-    throw new Error("Session expired");
+    throw new Error(await readResponseError(res));
   }
 }
 
