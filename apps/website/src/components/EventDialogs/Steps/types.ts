@@ -1,4 +1,6 @@
 import { CreateEvent, Event } from "@/db";
+import { Path } from "react-hook-form";
+import { FormValues } from "../types";
 
 /**
  * Props shared by all form steps (BasicInfo, Options).
@@ -26,5 +28,6 @@ export interface ReviewStepProps {
  * The card calls `form.reportValidity()` before advancing to the next step.
  */
 export interface FormStepConfig {
-  Component: React.ComponentType<StepProps>;
+  Component: () => React.JSX.Element;
+  fields: Path<FormValues>[];
 }

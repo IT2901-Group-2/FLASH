@@ -1,82 +1,77 @@
-import { Calendar } from "lucide-react";
-import { Title, Input } from "@flash/ui";
+import { Title, TextField, Textarea, DatePicker } from "@flash/ui";
 import { useTranslations } from "next-intl";
-import { StepProps } from "./types";
-import styles from "./Steps.module.css";
-import {
-  formatDateForInput,
-  formatTimeForInput,
-  makeDateTimeHandler,
-} from "@/utils/date-utils";
+import { Controller, useFormContext, useFormState } from "react-hook-form";
+import { FormValues } from "../types";
+import EventTimeField from "../TimeField";
 
-export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
+export const BasicInfoStep = () => {
   const tStep = useTranslations("admin.dashboard.event.create.basics");
   const tFields = useTranslations("common.fields");
 
-  const startDateValue = formData.startDate.toISOString().split("T")[0];
+  const { register, control, watch } = useFormContext<FormValues>();
+  const dateRange = watch("dateRange");
+  const { errors } = useFormState({ control });
 
   return (
     <>
       <Title description={tStep("description")}>{tStep("title")}</Title>
-      <Input
-        value={formData.name}
-        onChange={e => updateFormData("name", e.target.value)}
+      <TextField
+        {...register("name", {
+          required: "This is required",
+          minLength: { value: 3, message: "The title has to be at least 3 charachters." },
+        })}
+        error={errors.name?.message}
         label={tFields("eventName")}
         aria-label={tFields("eventName")}
-        minLength={3}
         required
         data-testid="name"
       />
-      <Input
-        value={formData.description}
-        onChange={e => updateFormData("description", e.target.value)}
+      <Textarea
+        {...register("description")}
+        error={errors.description?.message}
         label={tFields("eventDescription")}
         aria-label={tFields("eventDescription")}
         data-testid="description"
+        resize="vertical"
+        maxRows={10}
       />
-      <div className={styles.timeContainer}>
-        <Input
-          value={formatDateForInput(formData.startDate)}
-          onChange={makeDateTimeHandler("startDate", "date", formData, updateFormData)}
-          label={tFields("startDate")}
-          aria-label={tFields("startDate")}
-          type="date"
-          icon={<Calendar />}
-          required
-          data-testid="startDate"
-          fill
-        />
-        <Input
-          value={formatTimeForInput(formData.startDate)}
-          onChange={makeDateTimeHandler("startDate", "time", formData, updateFormData)}
-          label={tFields("startTime")}
-          aria-label={tFields("startTime")}
-          type="time"
-          icon={<Calendar />}
-          required
-        />
-        <Input
-          value={formatDateForInput(formData.endDate)}
-          onChange={makeDateTimeHandler("endDate", "date", formData, updateFormData)}
-          label={tFields("endDate")}
-          aria-label={tFields("endDate")}
-          min={startDateValue}
-          type="date"
-          icon={<Calendar />}
-          required
-          data-testid="endDate"
-          fill
-        />
-        <Input
-          value={formatTimeForInput(formData.endDate)}
-          onChange={makeDateTimeHandler("endDate", "time", formData, updateFormData)}
-          label={tFields("endTime")}
-          aria-label={tFields("endTime")}
-          type="time"
-          icon={<Calendar />}
-          required
-        />
-      </div>
+      <Controller
+        name="dateRange"
+        control={control}
+        rules={{
+          validate: v => !!(v.startDate && v.endDate) || "Both dates are required",
+        }}
+        render={({ field }) => (
+          <DatePicker
+            label="Date range"
+            data-color="accent"
+            value={field.value}
+            onChange={field.onChange}
+            error={errors.dateRange?.message}
+            required
+          />
+        )}
+      />
+      <Controller
+        name="eventTime"
+        control={control}
+        rules={{
+          validate: v => {
+            const sameDay =
+              dateRange.startDate?.toDateString() === dateRange.endDate?.toDateString();
+            if (sameDay && v.startTime >= v.endTime)
+              return "Start time must be before end time";
+            return true;
+          },
+        }}
+        render={({ field, fieldState }) => (
+          <EventTimeField
+            value={field.value}
+            onChange={field.onChange}
+            error={fieldState.error?.message}
+          />
+        )}
+      />
     </>
   );
 };

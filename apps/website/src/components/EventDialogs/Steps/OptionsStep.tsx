@@ -1,39 +1,46 @@
 import { useEffect, useState } from "react";
 import { StepProps } from "./types";
-import { Title, DropdownControl, Input, Switch } from "@flash/ui";
+import { Title, DropdownControl, Input, Switch, TextField } from "@flash/ui";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
+import { Controller, useFormContext } from "react-hook-form";
+import { FormValues } from "../types";
 
-export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
+export const OptionsStep = () => {
   const tStep = useTranslations("admin.dashboard.event.create.options");
   const tFields = useTranslations("common.fields");
 
-  const [limitMode, setLimitMode] = useState<string>(
-    formData.uploadLimit === undefined ? "unlimited" : "limited"
+  const { control, register, setValue, watch } = useFormContext<FormValues>();
+
+  const uploadLimit = watch("uploadLimit");
+  const [limitMode, setLimitMode] = useState<"limited" | "unlimited">(
+    uploadLimit === undefined ? "unlimited" : "limited"
   );
 
   useEffect(() => {
-    if (limitMode === "unlimited") updateFormData("uploadLimit", undefined);
-  }, [limitMode, updateFormData]);
+    if (limitMode === "unlimited") setValue("uploadLimit", undefined);
+  }, [limitMode, setValue]);
 
   return (
     <>
       <Title description={tStep("description")}>{tStep("title")}</Title>
-      <DropdownControl value={limitMode} onChange={setLimitMode} dropdownBorder>
+      <DropdownControl
+        value={limitMode}
+        onChange={v => setLimitMode(v as typeof limitMode)}
+        dropdownBorder
+      >
         <DropdownControl.Item
           value="limited"
           label={tStep("fields.uploadLimit.limited")}
           content={
             <div className={styles.maxImageContainer}>
               <span>{tStep("fields.uploadLimit.label")}</span>
-              <Input
+              <TextField
+                label
+                hideLabel
+                {...register("uploadLimit")}
                 aria-label={tFields("maxImages")}
                 type="number"
-                min={1}
-                value={formData.uploadLimit}
-                onChange={e =>
-                  updateFormData("uploadLimit", Math.max(1, Number(e.target.value)))
-                }
                 required={limitMode == "limited"}
               />
             </div>

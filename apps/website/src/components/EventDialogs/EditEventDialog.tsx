@@ -76,9 +76,9 @@ export const EditEventDialog = ({
         data-color="brand-purple"
       />
       <form className={styles.form} ref={formRef} noValidate>
-        {currentStep && (
+        {/* {currentStep && (
           <currentStep.Component formData={formData} updateFormData={updateFormData} />
-        )}
+        )} */}
 
         <div className={styles.buttonGroup}>
           <Button variant="tertiary" onClick={handleClose}>

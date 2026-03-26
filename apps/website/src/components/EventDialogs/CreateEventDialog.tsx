@@ -1,3 +1,5 @@
+"use client";
+
 import { RefAttributes, useRef, useState } from "react";
 import { Button, Dialog, ProgressDots } from "@flash/ui";
 import styles from "./CreateEventDialog.module.css";
@@ -5,16 +7,22 @@ import { BasicInfoStep, OptionsStep, ReviewStep } from "./Steps";
 import { useTranslations } from "next-intl";
 import { useCreateEventMutation } from "@/hooks/useEvents";
 import { FormStepConfig } from "./Steps/types";
-import { Event, CreateEvent } from "@/db";
+import { Event } from "@/db";
+import { useForm, FormProvider } from "react-hook-form";
+import { FormValues } from "./types";
+import { toCreateEvent } from "./helpers";
 
-const DEFAULT_FORM_DATA: CreateEvent = {
+const DEFAULT_FORM_DATA: FormValues = {
   name: "",
   description: "",
   uploadLimit: 1,
   // autoApprove: false,
   // seeAllPictures: false,
-  startDate: new Date(),
-  endDate: new Date(),
+  dateRange: {
+    startDate: new Date(),
+    endDate: new Date(),
+  },
+  eventTime: { startTime: "00:00", endTime: "23:59" },
 };
 
 /**
@@ -25,8 +33,8 @@ const DEFAULT_FORM_DATA: CreateEvent = {
  * error messages and blocks navigation if any constraint is violated.
  */
 const FORM_STEPS: FormStepConfig[] = [
-  { Component: BasicInfoStep },
-  { Component: OptionsStep },
+  { Component: BasicInfoStep, fields: ["name", "dateRange", "eventTime"] },
+  { Component: OptionsStep, fields: ["uploadLimit"] },
 ];
 
 interface CreateEventDialogProps extends RefAttributes<HTMLDialogElement> {
@@ -39,36 +47,37 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
 
   const formRef = useRef<HTMLFormElement>(null);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
-  const [formData, setFormData] = useState<CreateEvent>(DEFAULT_FORM_DATA);
   const [eventResult, setEventResult] = useState<Event | null>(null);
-  const updateFormData = <K extends keyof CreateEvent>(field: K, value: CreateEvent[K]) =>
-    setFormData(prev => ({ ...prev, [field]: value }));
+
+  const methods = useForm<FormValues>({
+    defaultValues: DEFAULT_FORM_DATA,
+    mode: "onChange",
+  });
 
   const isOnReviewStep = currentStepIndex >= FORM_STEPS.length;
   const isOnFirstStep = currentStepIndex === 0;
   const isOnLastFormStep = currentStepIndex === FORM_STEPS.length - 1;
 
-  const currentStep = FORM_STEPS[currentStepIndex];
+  const currentStep = FORM_STEPS[currentStepIndex]!;
 
   /** Validates the current step's inputs and advances if they all pass. */
-  const tryGoToNextStep = () => {
-    if (formRef.current?.reportValidity()) {
-      setCurrentStepIndex(i => i + 1);
-    }
+  const tryGoToNextStep = async () => {
+    console.log(await methods.formState.errors);
+    if (await methods.trigger(currentStep.fields)) setCurrentStepIndex(i => i + 1);
   };
 
   const goToPreviousStep = () => setCurrentStepIndex(i => i - 1);
 
   const handleCreate = async () => {
-    if (!formRef.current?.reportValidity()) return;
-    // Advance to review immediately so the loader is shown during the request.
+    if (!(await methods.trigger(currentStep.fields))) return;
+    // Advance immediately so the loader shows during the request.
     setCurrentStepIndex(i => i + 1);
-    const result = await mutateAsync(formData);
+    const result = await mutateAsync(toCreateEvent(methods.getValues()));
     setEventResult(result);
   };
 
   const handleClose = () => {
-    setFormData(DEFAULT_FORM_DATA);
+    methods.reset(DEFAULT_FORM_DATA);
     setCurrentStepIndex(0);
     setEventResult(null);
     onClose();
@@ -83,43 +92,48 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
         value={currentStepIndex + 1}
         data-color="brand-purple"
       />
-      <form className={styles.form} ref={formRef} noValidate>
-        {isOnReviewStep ? (
-          <ReviewStep status={status} result={eventResult} />
-        ) : (
-          currentStep && (
-            <currentStep.Component formData={formData} updateFormData={updateFormData} />
-          )
-        )}
+      <FormProvider {...methods}>
+        <form className={styles.form} ref={formRef} noValidate>
+          {isOnReviewStep ? (
+            <ReviewStep status={status} result={eventResult} />
+          ) : (
+            currentStep && <currentStep.Component />
+          )}
 
-        <div className={styles.buttonGroup}>
-          {!isOnReviewStep && (
-            <Button variant="tertiary" onClick={handleClose}>
-              {t("cancel")}
-            </Button>
-          )}
-          {!isOnReviewStep && !isOnFirstStep && (
-            <Button variant="secondary" onClick={goToPreviousStep}>
-              {t("previous")}
-            </Button>
-          )}
-          {!isOnReviewStep && !isOnLastFormStep && (
-            <Button variant="secondary" onClick={tryGoToNextStep}>
-              {t("next")}
-            </Button>
-          )}
-          {!isOnReviewStep && isOnLastFormStep && (
-            <Button variant="secondary" onClick={handleCreate}>
-              {t("create")}
-            </Button>
-          )}
-          {isOnReviewStep && (
-            <Button variant="primary" data-color="brand-purple" onClick={handleClose}>
-              {t("finish")}
-            </Button>
-          )}
-        </div>
-      </form>
+          <div className={styles.buttonGroup}>
+            {!isOnReviewStep && (
+              <Button type="button" variant="tertiary" onClick={handleClose}>
+                {t("cancel")}
+              </Button>
+            )}
+            {!isOnReviewStep && !isOnFirstStep && (
+              <Button type="button" variant="secondary" onClick={goToPreviousStep}>
+                {t("previous")}
+              </Button>
+            )}
+            {!isOnReviewStep && !isOnLastFormStep && (
+              <Button type="button" variant="secondary" onClick={tryGoToNextStep}>
+                {t("next")}
+              </Button>
+            )}
+            {!isOnReviewStep && isOnLastFormStep && (
+              <Button type="submit" variant="secondary" onClick={handleCreate}>
+                {t("create")}
+              </Button>
+            )}
+            {isOnReviewStep && (
+              <Button
+                type="button"
+                variant="primary"
+                data-color="brand-purple"
+                onClick={handleClose}
+              >
+                {t("finish")}
+              </Button>
+            )}
+          </div>
+        </form>
+      </FormProvider>
     </Dialog>
   );
 };
