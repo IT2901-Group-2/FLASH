@@ -50,7 +50,7 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
 
   const methods = useForm<FormValues>({
     defaultValues: DEFAULT_FORM_DATA,
-    mode: "onChange",
+    mode: "onTouched",
   });
 
   const isOnReviewStep = currentStepIndex >= FORM_STEPS.length;

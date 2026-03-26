@@ -1,6 +1,6 @@
 import { Title, TextField, Textarea, DatePicker } from "@flash/ui";
 import { useTranslations } from "next-intl";
-import { Controller, useFormContext, useFormState } from "react-hook-form";
+import { Controller, useFormContext, useFormState, useWatch } from "react-hook-form";
 import { FormValues } from "../types";
 import EventTimeField from "../TimeField";
 
@@ -8,8 +8,8 @@ export const BasicInfoStep = () => {
   const tStep = useTranslations("admin.dashboard.event.create.basics");
   const tFields = useTranslations("common.fields");
 
-  const { register, control, watch } = useFormContext<FormValues>();
-  const dateRange = watch("dateRange");
+  const { register, control } = useFormContext<FormValues>();
+  const dateRange = useWatch({ control, name: "dateRange" });
   const { errors } = useFormState({ control });
 
   return (
@@ -25,6 +25,7 @@ export const BasicInfoStep = () => {
         aria-label={tFields("eventName")}
         required
         data-testid="name"
+        autoFocus
       />
       <Textarea
         {...register("description")}
