@@ -11,11 +11,11 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
   const tReview = useTranslations("admin.dashboard.event.create.review");
   const tCommon = useTranslations("common");
 
-  const [shareRole, setShareRole] = useState<"guest" | "moderator">("guest");
+  const [role, setRole] = useState<"guest" | "moderator">("guest");
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
   const { data: displayCode } = useEventCodeQuery(
     result?.id,
-    shareRole as "guest" | "moderator"
+    role as "guest" | "moderator"
   );
 
   const displayLink = displayCode ? `${window.location.origin}/join/${displayCode}` : "";
@@ -34,8 +34,8 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
       </Title>
 
       <SegmentedControl
-        onChange={role => setShareRole(role as "guest" | "moderator")}
-        value={shareRole}
+        onChange={role => setRole(role as "guest" | "moderator")}
+        value={role}
         className={styles.scroll}
         fill
       >
@@ -61,11 +61,8 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
         </div>
 
         <div className={styles.linkContainer}>
-          <Title
-            size="medium"
-            description={tReview("links.description", { role: shareRole })}
-          >
-            {tReview("links.title", { role: shareRole })}
+          <Title size="medium" description={tReview("links.description", { role })}>
+            {tReview("links.title", { role })}
           </Title>
           <TextField
             label="Link"
