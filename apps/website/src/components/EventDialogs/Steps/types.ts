@@ -1,6 +1,5 @@
 import { CreateEvent, Event } from "@/db";
 import { Path } from "react-hook-form";
-import { FormValues } from "../types";
 
 /**
  * Props shared by all form steps (BasicInfo, Options).
@@ -29,5 +28,5 @@ export interface ReviewStepProps {
  */
 export interface FormStepConfig {
   Component: () => React.JSX.Element;
-  fields: Path<FormValues>[];
+  fields: Path<CreateEvent>[];
 }

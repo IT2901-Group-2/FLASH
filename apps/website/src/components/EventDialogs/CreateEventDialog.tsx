@@ -7,43 +7,41 @@ import { BasicInfoStep, OptionsStep, ReviewStep } from "./Steps";
 import { useTranslations } from "next-intl";
 import { useCreateEventMutation } from "@/hooks/useEvents";
 import { FormStepConfig } from "./Steps/types";
-import { Event } from "@/db";
+import { CreateEvent, Event } from "@/db";
 import { useForm, FormProvider } from "react-hook-form";
-import { FormValues } from "./types";
-import { toCreateEvent } from "./helpers";
+import { TIME_PRESETS } from "./types";
+import { parseTimeOrDate } from "@/utils/date-utils";
 
-const DEFAULT_FORM_DATA: FormValues = {
+const DEFAULT_FORM_DATA: CreateEvent = {
   name: "",
   description: "",
   uploadLimit: 1,
   // autoApprove: false,
   // seeAllPictures: false,
-  dateRange: {
-    startDate: new Date(),
-    endDate: new Date(),
-  },
-  eventTime: { startTime: "00:00", endTime: "23:59" },
+  startDate: parseTimeOrDate(TIME_PRESETS.full.startTime),
+  endDate: parseTimeOrDate(TIME_PRESETS.full.endTime),
 };
 
 const FORM_STEPS: FormStepConfig[] = [
-  { Component: BasicInfoStep, fields: ["name", "dateRange", "eventTime"] },
+  { Component: BasicInfoStep, fields: ["name", "startDate", "endDate"] },
   { Component: OptionsStep, fields: ["uploadLimit"] },
 ];
 
 interface CreateEventDialogProps extends RefAttributes<HTMLDialogElement> {
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogProps) => {
   const t = useTranslations("common.actions");
   const { mutateAsync, status } = useCreateEventMutation();
 
+  const [formKey, setFormKey] = useState<number>(0);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const [eventResult, setEventResult] = useState<Event | null>(null);
 
-  const methods = useForm<FormValues>({
+  const methods = useForm<CreateEvent>({
     defaultValues: DEFAULT_FORM_DATA,
-    mode: "onTouched",
+    mode: "onBlur",
   });
 
   const isOnReviewStep = currentStepIndex >= FORM_STEPS.length;
@@ -64,7 +62,7 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
     if (!currentStep) return;
     if (!(await methods.trigger(currentStep.fields))) return;
     setCurrentStepIndex(i => i + 1);
-    const result = await mutateAsync(toCreateEvent(methods.getValues()));
+    const result = await mutateAsync(methods.getValues());
     setEventResult(result);
   };
 
@@ -72,7 +70,9 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
     methods.reset(DEFAULT_FORM_DATA);
     setCurrentStepIndex(0);
     setEventResult(null);
-    onClose();
+    setFormKey(i => i + 1);
+    onClose?.();
+    if (ref && typeof ref !== "function") ref.current?.close();
   };
 
   const totalSteps = FORM_STEPS.length + 1;
@@ -85,7 +85,7 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
         data-color="brand-purple"
       />
       <FormProvider {...methods}>
-        <form className={styles.form} noValidate>
+        <form key={formKey} className={styles.form} noValidate>
           {isOnReviewStep ? (
             <ReviewStep status={status} result={eventResult} />
           ) : (

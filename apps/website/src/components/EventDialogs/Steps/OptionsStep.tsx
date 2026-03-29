@@ -3,13 +3,13 @@ import { Title, DropdownControl, Switch, TextField } from "@flash/ui";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 import { useFormContext, useFormState } from "react-hook-form";
-import { FormValues } from "../types";
+import { CreateEvent } from "@/db";
 
 export const OptionsStep = () => {
   const tStep = useTranslations("admin.dashboard.event.create.options");
   const tFields = useTranslations("common.fields");
 
-  const { register, control, watch, setValue } = useFormContext<FormValues>();
+  const { register, control, watch, setValue } = useFormContext<CreateEvent>();
   const { errors } = useFormState({ control });
 
   const uploadLimit = watch("uploadLimit");

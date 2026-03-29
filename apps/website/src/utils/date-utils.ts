@@ -30,47 +30,31 @@ export const formatTimeForInput = (date: Date) => {
   return `${pad(date.getHours())}:${pad(date.getMinutes())}`; // include seconds if you need them
 };
 
-/**
- * Creates a typed date/time change handler for any form object.
- *
- * Only allows fields whose value type is Date.
- *
- * @template TForm - The form data type
- * @template TKey - A key of TForm whose value is Date
- *
- * @param field - The field name to update
- * @param kind - Whether updating the "date" or "time" portion
- * @param formData - The full form data object
- * @param updateFormData - State updater function
- *
- * @returns React change handler for <input type="date" | "time">
- */
-export function makeDateTimeHandler<TForm, TKey extends keyof TForm>(
-  field: TKey & (TForm[TKey] extends Date ? TKey : never),
-  kind: "date" | "time",
-  formData: TForm,
-  updateFormData: (field: TKey, value: Date) => void
-): React.ChangeEventHandler<HTMLInputElement> {
-  return e => {
-    const value = e.target.value;
-    const currentValue = formData[field];
-    const base = currentValue instanceof Date ? new Date(currentValue) : new Date();
-    const next = new Date(base);
-
-    if (kind === "date") {
-      const [year, month, day] = value.split("-").map(Number);
-
-      next.setFullYear(
-        year ?? new Date(Date.now()).getFullYear(),
-        (month ?? 1) - 1,
-        day ?? 1
-      );
-    } else {
-      const [hours, minutes, seconds] = value.split(":").map(Number);
-
-      next.setHours(hours ?? 0, minutes ?? 0, seconds ?? 0, 0);
+type DateWithTimeInput =
+  | {
+      /** Optional base date */
+      date?: Date;
+      /** Optional hours */
+      hours?: number; //
+      /** Optional minutes */
+      minutes?: number;
     }
+  /** Allow "HH:mm" string for convenience */
+  | string;
 
-    updateFormData(field, next);
-  };
-}
+export const createDate = ({
+  date,
+  hours = 0,
+  minutes = 0,
+}: { date?: Date; hours?: number; minutes?: number } = {}): Date => {
+  const base = date ? new Date(date) : new Date();
+  base.setHours(hours, minutes, 0, 0);
+  return base;
+};
+
+export const parseTimeOrDate = (input: DateWithTimeInput): Date => {
+  if (typeof input === "string") {
+    const [h, m] = input.split(":").map(Number);
+    return createDate({ hours: h, minutes: m });
+  } else return createDate(input);
+};

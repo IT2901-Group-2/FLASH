@@ -1,5 +1,4 @@
 import { DropdownControl, TextField } from "@flash/ui";
-import { isFullDay } from "./helpers";
 import { EventTime, TIME_PRESETS, TimePreset } from "./types";
 
 interface EventTimeFieldProps {
@@ -7,6 +6,9 @@ interface EventTimeFieldProps {
   onChange: (v: EventTime) => void;
   error?: string;
 }
+
+const isFullDay = (v: EventTime) =>
+  v.startTime === TIME_PRESETS.full.startTime && v.endTime === TIME_PRESETS.full.endTime;
 
 function EventTimeField({ value, onChange, error }: EventTimeFieldProps) {
   const preset = isFullDay(value) ? "full" : "specific";

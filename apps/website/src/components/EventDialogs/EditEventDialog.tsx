@@ -6,14 +6,12 @@ import { BasicInfoStep } from "./Steps/BasicInfoStep";
 import { OptionsStep } from "./Steps/OptionsStep";
 import { FormStepConfig } from "./Steps/types";
 import styles from "./CreateEventDialog.module.css";
-import { Event } from "@/db";
+import { CreateEvent, Event, UpdateEvent } from "@/db";
 import { FormProvider, useForm } from "react-hook-form";
-import { FormValues } from "./types";
-import { toCreateEvent } from "./helpers";
 import { formatTimeForInput } from "@/utils/date-utils";
 
 const FORM_STEPS: FormStepConfig[] = [
-  { Component: BasicInfoStep, fields: ["name", "dateRange", "eventTime"] },
+  { Component: BasicInfoStep, fields: ["name", "startDate", "endDate"] },
   { Component: OptionsStep, fields: ["uploadLimit"] },
 ];
 
@@ -33,21 +31,8 @@ export const EditEventDialog = ({
 
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
 
-  const methods = useForm<FormValues>({
-    defaultValues: {
-      name: event.name,
-      description: event.description,
-      uploadLimit: event.uploadLimit ?? undefined,
-      // autoApprove: event.autoApprove,
-      dateRange: {
-        startDate: new Date(event.startDate),
-        endDate: new Date(event.endDate),
-      },
-      eventTime: {
-        startTime: formatTimeForInput(event.startDate),
-        endTime: formatTimeForInput(event.endDate),
-      },
-    },
+  const methods = useForm<UpdateEvent>({
+    defaultValues: event,
     mode: "onChange",
   });
 
@@ -61,15 +46,15 @@ export const EditEventDialog = ({
 
   const goToPreviousStep = () => setCurrentStepIndex(i => i - 1);
 
-  const handleSave = async () => {
-    console.log(event.startDate.toTimeString());
-    if (!(await methods.trigger(currentStep.fields))) return;
-    // Added as .then(), so its easy to add if there are error popups in the future
-    await mutateAsync({
-      eventId: event.id,
-      data: toCreateEvent(methods.getValues()),
-    }).then(handleClose);
-  };
+  // const handleSave = async () => {
+  //   console.log(event.startDate.toTimeString());
+  //   if (!(await methods.trigger(currentStep.fields))) return;
+  //   // Added as .then(), so its easy to add if there are error popups in the future
+  //   await mutateAsync({
+  //     eventId: event.id,
+  //     data: toCreateEvent(methods.getValues()),
+  //   }).then(handleClose);
+  // };
 
   const handleClose = () => {
     setCurrentStepIndex(0);
@@ -106,7 +91,7 @@ export const EditEventDialog = ({
               <Button
                 variant="primary"
                 data-color="brand-purple"
-                onClick={handleSave}
+                // onClick={handleSave}
                 disabled={status === "pending"}
               >
                 {t("save")}
