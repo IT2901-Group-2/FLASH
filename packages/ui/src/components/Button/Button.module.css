@@ -139,4 +139,12 @@
       color: var(--color-text-base);
     }
   }
+
+  /* 8 is default */
+  &[data-radius="16"] {
+    border-radius: var(--radius-16);
+  }
+  &[data-radius="full"] {
+    border-radius: var(--radius-full);
+  }
 }
