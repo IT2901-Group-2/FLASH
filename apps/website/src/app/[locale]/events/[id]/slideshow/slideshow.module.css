@@ -58,28 +58,6 @@
   > :last-child {
     grid-column: 3;
   }
-
-  > button {
-    outline: none;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 3rem;
-    height: 3rem;
-    border-radius: var(--radius-8);
-    cursor: pointer;
-    box-shadow: var(--shadow-dialog);
-    background-color: var(--color-primary-base);
-    color: inherit;
-
-    &:hover {
-      background-color: var(--color-primary-light);
-    }
-    &:active {
-      background-color: var(--color-primary-dark);
-    }
-  }
 }
 
 .qrCode {
