@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import styles from "./slideshow.module.css";
 import Page from "./page";
 import { mockRouter } from "@test-config";
+import { ButtonProps } from "@flash/ui";
 
 // --- mocks ---
 
@@ -77,6 +78,7 @@ vi.mock("@flash/ui", () => ({
       <p>{description}</p>
     </div>
   ),
+  Button: ({ children, ...props }: ButtonProps) => <button {...props}>{children}</button>,
 }));
 
 describe("Slideshow Page", () => {
