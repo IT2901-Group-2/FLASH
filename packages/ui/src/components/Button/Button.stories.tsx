@@ -64,7 +64,7 @@ export const Variants: Story = {
     const canvas = within(canvasElement);
     const buttons = canvas.getAllByRole("button");
 
-    await expect(buttons).toHaveLength(3);
+    await expect(buttons).toHaveLength(4);
     await expect(canvas.getByRole("button", { name: /primary/i })).toBeInTheDocument();
     await expect(canvas.getByRole("button", { name: /secondary/i })).toBeInTheDocument();
     await expect(canvas.getByRole("button", { name: /tertiary/i })).toBeInTheDocument();
