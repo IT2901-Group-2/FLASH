@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "./Button";
 import { expect, fn, userEvent, within } from "storybook/test";
-import { GamepadDirectional } from "lucide-react";
+import { GamepadDirectional, Star } from "lucide-react";
 
 const TestIcon = <GamepadDirectional data-testid="test-icon" />;
 
@@ -55,6 +55,9 @@ export const Variants: Story = {
       <Button variant="primary">Primary</Button>
       <Button variant="secondary">Secondary</Button>
       <Button variant="tertiary">Tertiary</Button>
+      <Button variant="icon" data-color="primary">
+        <Star />
+      </Button>
     </>
   ),
   play: async ({ canvasElement }) => {

@@ -11,7 +11,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
    * Changes design and interaction-visuals.
    * @default "primary"
    */
-  variant?: "primary" | "secondary" | "tertiary";
+  variant?: "primary" | "secondary" | "tertiary" | "icon";
   /**
    * Changes padding, height and font-size
    * @default "medium"
