@@ -4,7 +4,7 @@ A TypeScript-first CSS design token system with light/dark theme support, semant
 
 Built on [Style Dictionary](https://styledictionary.com/) and compiled with [Lightning CSS](https://lightningcss.dev/).
 
-Inspired by the implementation in [aksel.nav.no](https://github.com/navikt/aksel/tree/main/%40navikt/core/tokens) (GitHub)
+This package is inspired by the implementation in [aksel.nav.no](https://github.com/navikt/aksel/tree/main/%40navikt/core/tokens) (GitHub).
 
 ---
 
