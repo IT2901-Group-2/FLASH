@@ -140,20 +140,20 @@ export class ImageService {
         () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
       )
       .map(({ userId }) =>
-        Result.try(() => sharp(image))
-          .map(sharpImage => this.validateImage(sharpImage))
-          .mapCatching(sharpImage => sharpImage.clone().rotate().webp().toBuffer())
-          .map(buff => this.storage.write(`${imageId}.webp`, buff))
-          .map(() =>
-            Result.try(() =>
-              this.dbService.db
-                .select()
-                .from(eventTable)
-                .where(eq(eventTable.id, eventId))
-                .limit(1)
-            )
-              .map(rows => getFirstRow(rows, `Event with id ${eventId} does not exist`))
-              .map(event =>
+        Result.try(() =>
+          this.dbService.db
+            .select()
+            .from(eventTable)
+            .where(eq(eventTable.id, eventId))
+            .limit(1)
+        )
+          .map(rows => getFirstRow(rows, `Event with id ${eventId} does not exist`))
+          .map(event =>
+            Result.try(() => sharp(image))
+              .map(sharpImage => this.validateImage(sharpImage))
+              .mapCatching(sharpImage => sharpImage.clone().rotate().webp().toBuffer())
+              .map(buff => this.storage.write(`${imageId}.webp`, buff))
+              .map(() =>
                 Result.try(() =>
                   this.dbService.db
                     .insert(imageTable)
