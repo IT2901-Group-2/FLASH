@@ -1,6 +1,6 @@
 import { Title, QRDisplay, Button, Loader, SegmentedControl, TextField } from "@flash/ui";
 import { useRef, useState } from "react";
-import { Copy, Download } from "lucide-react";
+import { Copy, CopyCheck, CopyX, Download } from "lucide-react";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 import { downloadQrSvg } from "@/utils/downloadqrcode";
@@ -12,6 +12,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
   const tCommon = useTranslations("common");
 
   const [role, setRole] = useState<"guest" | "moderator">("guest");
+  const [iconState, setIconState] = useState<React.ReactElement>(<Copy />);
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
   const { data: displayCode } = useEventCodeQuery(
     result?.id,
@@ -23,6 +24,14 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
   const handleDownloadQR = () => {
     const svg = qrContainerRef.current?.querySelector("svg");
     if (svg && displayCode) downloadQrSvg(svg, `qr-${displayCode.toLowerCase()}.svg`);
+  };
+
+  const handleCopyLink = async () => {
+    await navigator.clipboard
+      .writeText(displayLink)
+      .then(() => setIconState(<CopyCheck />))
+      .catch(() => setIconState(<CopyX />))
+      .then(() => setTimeout(() => setIconState(<Copy />), 1000));
   };
 
   if (status === "pending") return <Loader />;
@@ -72,7 +81,12 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
               readOnly
               value={displayLink}
             />
-            <Button variant="icon" icon={<Copy />} radius="16" />
+            <Button
+              variant="icon"
+              icon={iconState}
+              radius="16"
+              onClick={handleCopyLink}
+            />
           </div>
         </div>
       </div>
