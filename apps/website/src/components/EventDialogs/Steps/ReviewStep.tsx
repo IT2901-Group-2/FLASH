@@ -64,6 +64,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
             variant="secondary"
             icon={<Download />}
             onClick={handleDownloadQR}
+            fill
           >
             {tCommon("actions.download")}
           </Button>
