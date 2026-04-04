@@ -18,7 +18,6 @@ export const OptionsStep = () => {
   );
 
   useEffect(() => {
-    console.log("test");
     if (limitMode === "unlimited") setValue("uploadLimit", undefined);
   }, [limitMode, setValue]);
 
