@@ -1,6 +1,6 @@
 import { Title, QRDisplay, Button, Loader, SegmentedControl, TextField } from "@flash/ui";
 import { useRef, useState } from "react";
-import { Download } from "lucide-react";
+import { Copy, Download } from "lucide-react";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 import { downloadQrSvg } from "@/utils/downloadqrcode";
@@ -64,13 +64,16 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
           <Title size="medium" description={tReview("links.description", { role })}>
             {tReview("links.title", { role })}
           </Title>
-          <TextField
-            label="Link"
-            hideLabel
-            aria-label="Guest Link"
-            readOnly
-            value={displayLink}
-          />
+          <div className={styles.copyContainer}>
+            <TextField
+              label="Link"
+              hideLabel
+              aria-label="Guest Link"
+              readOnly
+              value={displayLink}
+            />
+            <Button variant="icon" icon={<Copy />} radius="16" />
+          </div>
         </div>
       </div>
     </>
