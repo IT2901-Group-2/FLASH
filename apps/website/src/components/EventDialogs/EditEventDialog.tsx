@@ -6,9 +6,8 @@ import { BasicInfoStep } from "./Steps/BasicInfoStep";
 import { OptionsStep } from "./Steps/OptionsStep";
 import { FormStepConfig } from "./Steps/types";
 import styles from "./CreateEventDialog.module.css";
-import { CreateEvent, Event, UpdateEvent } from "@/db";
+import { Event, UpdateEvent } from "@/db";
 import { FormProvider, useForm } from "react-hook-form";
-import { formatTimeForInput } from "@/utils/date-utils";
 
 const FORM_STEPS: FormStepConfig[] = [
   { Component: BasicInfoStep, fields: ["name", "startDate", "endDate"] },
@@ -46,15 +45,16 @@ export const EditEventDialog = ({
 
   const goToPreviousStep = () => setCurrentStepIndex(i => i - 1);
 
-  // const handleSave = async () => {
-  //   console.log(event.startDate.toTimeString());
-  //   if (!(await methods.trigger(currentStep.fields))) return;
-  //   // Added as .then(), so its easy to add if there are error popups in the future
-  //   await mutateAsync({
-  //     eventId: event.id,
-  //     data: toCreateEvent(methods.getValues()),
-  //   }).then(handleClose);
-  // };
+  const handleSave = async () => {
+    if (!(await methods.trigger(currentStep.fields))) return;
+    await mutateAsync({
+      eventId: event.id,
+      data: {
+        ...methods.getValues(),
+        uploadLimit: methods.getValues("uploadLimit") ?? null,
+      },
+    }).then(handleClose);
+  };
 
   const handleClose = () => {
     setCurrentStepIndex(0);
@@ -91,7 +91,7 @@ export const EditEventDialog = ({
               <Button
                 variant="primary"
                 data-color="brand-purple"
-                // onClick={handleSave}
+                onClick={handleSave}
                 disabled={status === "pending"}
               >
                 {t("save")}
