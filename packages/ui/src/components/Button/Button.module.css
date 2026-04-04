@@ -117,12 +117,13 @@
   height: 3rem;
   border-radius: var(--radius-8);
   cursor: pointer;
-  box-shadow: var(--shadow-dialog);
   background-color: var(--color-primary-base);
   color: inherit;
 
   transform: none;
   position: relative;
+
+  aspect-ratio: 1/1;
 
   &:hover {
     background-color: var(--color-primary-light);
