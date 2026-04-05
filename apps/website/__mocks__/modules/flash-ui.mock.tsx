@@ -3,11 +3,18 @@ import {
   CardProps,
   DialogProps,
   InputProps,
+  LoaderProps,
+  LogoProps,
+  ProgressBarProps,
   QRDisplayProps,
+  SwitchProps,
+  TextareaProps,
+  TextFieldProps,
   TitleProps,
 } from "@flash/ui";
-import React from "react";
+import React, { useId } from "react";
 import { vi } from "vitest";
+import rest from "../next-intl.mock";
 
 /**
  * @module flash-ui.mock
@@ -64,21 +71,47 @@ export const flashUiMock = async () => {
   // DropdownControls
   // SegmentedControls
   // Select
-  // Textarea
-  // Textfield
+
+  const Textarea = vi.fn(({ label, ...props }: TextareaProps) => {
+    const id = useId();
+    return (
+      <div>
+        <label htmlFor={id}>{label}</label>
+        <textarea id={id} data-testid="textarea" {...props} />
+      </div>
+    );
+  });
+
+  const TextField = vi.fn(({ label, size, ...rest }: TextFieldProps) => {
+    const id = useId();
+    return (
+      <div>
+        <label htmlFor={id}>{label}</label>
+        <input id={id} data-testid="text-field" data-size={size} {...rest} />
+      </div>
+    );
+  });
 
   // ImageCard
 
   const Input = vi.fn(({ children, ...props }: InputProps) => {
-    <input data-testid="input" {...props}>
-      {children}
-    </input>;
+    const id = useId();
+    return (
+      <input id={id} data-testid="input" {...props}>
+        {children}
+      </input>
+    );
   });
 
-  // Loader
-  // Logo
+  const Loader = vi.fn(({ ...rest }: LoaderProps) => (
+    <svg data-testid="loader" {...rest} />
+  ));
 
-  // Progressbar
+  const Logo = vi.fn(({ ...rest }: LogoProps) => <svg data-testid="logo" {...rest} />);
+
+  const ProgressBar = vi.fn(({ value = 0, maxValue = 100 }: ProgressBarProps) => (
+    <div data-testid="progress-bar" data-value={value} data-max={maxValue} />
+  ));
 
   const ProgressDots = vi.fn(() => <div data-testid="progress-dots" />);
 
@@ -86,7 +119,11 @@ export const flashUiMock = async () => {
     <div data-testid="qr-display" data-value={value} data-code={code} {...rest} />
   ));
 
-  // Switch
+  const Switch = vi.fn(({ children, size, ...rest }: SwitchProps) => (
+    <input data-testid="switch" data-size={size} {...rest}>
+      {children}
+    </input>
+  ));
 
   const Title = vi.fn(({ children, description, ...props }: TitleProps) => (
     <div>
@@ -100,11 +137,17 @@ export const flashUiMock = async () => {
   return {
     ...actual,
     Button,
-    ProgressDots,
     Card,
     Dialog,
+    Textarea,
+    TextField,
     Input,
+    Loader,
+    Logo,
+    ProgressBar,
+    ProgressDots,
     QRDisplay,
+    Switch,
     Title,
   };
 };
