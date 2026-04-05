@@ -30,15 +30,10 @@ export const flashUiMock = () => ({
   Button: vi.fn(
     ({
       children,
-      onClick,
       ...props
     }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
       children?: React.ReactNode;
-    }) => (
-      <button onClick={onClick} {...props}>
-        {children}
-      </button>
-    )
+    }) => <button {...props}>{children}</button>
   ),
 
   ProgressDots: vi.fn(() => <div data-testid="progress-dots" />),
