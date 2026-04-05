@@ -33,11 +33,11 @@ export const BasicInfoStep = () => {
     const [endH, endM] = time.endTime.split(":").map(Number);
 
     const newStart = new Date(startDate);
-    newStart.setHours(startH, startM, 0, 0);
+    newStart.setHours(startH!, startM, 0, 0);
     setValue("startDate", newStart, { shouldValidate: true });
 
     const newEnd = new Date(endDate);
-    newEnd.setHours(endH, endM, 0, 0);
+    newEnd.setHours(endH!, endM, 0, 0);
     setValue("endDate", newEnd, { shouldValidate: true });
   };
 
