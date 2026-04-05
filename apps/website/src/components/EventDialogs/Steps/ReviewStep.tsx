@@ -9,7 +9,7 @@ import { Event } from "@/db";
 
 export interface ReviewStepProps {
   status: "idle" | "pending" | "success" | "error";
-  result: Event | null | undefined;
+  result: Event | null;
 }
 
 const ReviewStep = ({ status, result }: ReviewStepProps) => {
