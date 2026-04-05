@@ -4,8 +4,13 @@ import { Copy, CopyCheck, CopyX, Download } from "lucide-react";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 import { downloadQrSvg } from "@/utils/downloadqrcode";
-import { ReviewStepProps } from "./types";
 import { useEventCodeQuery } from "@/hooks/useEvents";
+import { Event } from "@/db";
+
+export interface ReviewStepProps {
+  status: "idle" | "pending" | "success" | "error";
+  result: Event | null | undefined;
+}
 
 const ReviewStep = ({ status, result }: ReviewStepProps) => {
   const tReview = useTranslations("admin.dashboard.event.create.review");
