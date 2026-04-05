@@ -6,7 +6,7 @@ import styles from "./CreateEventDialog.module.css";
 import { ReviewStep } from "./Steps";
 import { useTranslations } from "next-intl";
 import { useCreateEventMutation } from "@/hooks/useEvents";
-import { FORM_STEPS } from "./Steps/types";
+import { FORM_STEPS } from "./types";
 import { CreateEvent, Event } from "@/db";
 import { useForm, FormProvider } from "react-hook-form";
 import { TIME_PRESETS } from "./types";
