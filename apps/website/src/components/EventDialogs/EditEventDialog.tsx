@@ -16,7 +16,7 @@ const FORM_STEPS: FormStepConfig[] = [
 
 interface EditEventDialogProps extends RefAttributes<HTMLDialogElement> {
   event: Event;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 export const EditEventDialog = ({
@@ -29,9 +29,10 @@ export const EditEventDialog = ({
   const { mutateAsync, status } = useUpdateEventMutation();
 
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
+  const [formKey, setFormKey] = useState<number>(0);
 
   const methods = useForm<UpdateEvent>({
-    defaultValues: event,
+    defaultValues: { ...event, uploadLimit: event.uploadLimit ?? undefined },
     mode: "onChange",
   });
 
@@ -57,8 +58,11 @@ export const EditEventDialog = ({
   };
 
   const handleClose = () => {
+    methods.reset();
     setCurrentStepIndex(0);
-    onClose();
+    setFormKey(i => i + 1);
+    onClose?.();
+    if (ref && typeof ref !== "function") ref.current?.close();
   };
 
   return (
@@ -69,7 +73,7 @@ export const EditEventDialog = ({
         data-color="brand-purple"
       />
       <FormProvider {...methods}>
-        <form className={styles.form} noValidate>
+        <form key={formKey} className={styles.form} noValidate>
           {currentStep && <currentStep.Component />}
 
           <div className={styles.buttonGroup}>
