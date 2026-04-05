@@ -2,7 +2,7 @@ import { RefAttributes, useState } from "react";
 import { Button, Dialog, ProgressDots } from "@flash/ui";
 import { useTranslations } from "next-intl";
 import { useUpdateEventMutation } from "@/hooks/useEvents";
-import { FORM_STEPS } from "./defaults";
+import { FORM_STEPS } from "./formSteps";
 import styles from "./CreateEventDialog.module.css";
 import { Event, UpdateEvent } from "@/db";
 import { FormProvider, useForm } from "react-hook-form";

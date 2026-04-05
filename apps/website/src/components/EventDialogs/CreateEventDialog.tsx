@@ -6,10 +6,10 @@ import styles from "./CreateEventDialog.module.css";
 import { ReviewStep } from "./Steps";
 import { useTranslations } from "next-intl";
 import { useCreateEventMutation } from "@/hooks/useEvents";
-import { FORM_STEPS } from "./defaults";
+import { FORM_STEPS } from "./formSteps";
 import { CreateEvent, Event } from "@/db";
 import { useForm, FormProvider } from "react-hook-form";
-import { TIME_PRESETS } from "./defaults";
+import { TIME_PRESETS } from "./types";
 import { parseTimeOrDate } from "@/utils/date-utils";
 
 const DEFAULT_FORM_DATA: CreateEvent = {
