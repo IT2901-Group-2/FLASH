@@ -49,7 +49,7 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
 
   const handleEdit = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    dialogRef?.current?.showModal();
+    dialogRef.current?.showModal();
   };
 
   return (
