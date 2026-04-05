@@ -1,14 +1,7 @@
 import { CreateEvent, Event } from "@/db";
 import { Path } from "react-hook-form";
-
-/**
- * Props shared by all form steps (BasicInfo, Options).
- * ReviewStep intentionally does NOT use these since it has no editable form data.
- */
-export interface StepProps {
-  formData: CreateEvent;
-  updateFormData: <K extends keyof CreateEvent>(field: K, value: CreateEvent[K]) => void;
-}
+import BasicInfoStep from "./BasicInfoStep";
+import OptionsStep from "./OptionsStep";
 
 /**
  * Props for the ReviewStep, which displays the result of a newly created event.
@@ -30,3 +23,8 @@ export interface FormStepConfig {
   Component: () => React.JSX.Element;
   fields: Path<CreateEvent>[];
 }
+
+export const FORM_STEPS: FormStepConfig[] = [
+  { Component: BasicInfoStep, fields: ["name", "startDate", "endDate"] },
+  { Component: OptionsStep, fields: ["uploadLimit"] },
+];

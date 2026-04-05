@@ -2,17 +2,10 @@ import { RefAttributes, useState } from "react";
 import { Button, Dialog, ProgressDots } from "@flash/ui";
 import { useTranslations } from "next-intl";
 import { useUpdateEventMutation } from "@/hooks/useEvents";
-import { BasicInfoStep } from "./Steps/BasicInfoStep";
-import { OptionsStep } from "./Steps/OptionsStep";
-import { FormStepConfig } from "./Steps/types";
+import { FORM_STEPS } from "./Steps/types";
 import styles from "./CreateEventDialog.module.css";
 import { Event, UpdateEvent } from "@/db";
 import { FormProvider, useForm } from "react-hook-form";
-
-const FORM_STEPS: FormStepConfig[] = [
-  { Component: BasicInfoStep, fields: ["name", "startDate", "endDate"] },
-  { Component: OptionsStep, fields: ["uploadLimit"] },
-];
 
 interface EditEventDialogProps extends RefAttributes<HTMLDialogElement> {
   event: Event;

@@ -3,10 +3,10 @@
 import { RefAttributes, useState } from "react";
 import { Button, Dialog, ProgressDots } from "@flash/ui";
 import styles from "./CreateEventDialog.module.css";
-import { BasicInfoStep, OptionsStep, ReviewStep } from "./Steps";
+import { ReviewStep } from "./Steps";
 import { useTranslations } from "next-intl";
 import { useCreateEventMutation } from "@/hooks/useEvents";
-import { FormStepConfig } from "./Steps/types";
+import { FORM_STEPS } from "./Steps/types";
 import { CreateEvent, Event } from "@/db";
 import { useForm, FormProvider } from "react-hook-form";
 import { TIME_PRESETS } from "./types";
@@ -21,11 +21,6 @@ const DEFAULT_FORM_DATA: CreateEvent = {
   startDate: parseTimeOrDate(TIME_PRESETS.full.startTime),
   endDate: parseTimeOrDate(TIME_PRESETS.full.endTime),
 };
-
-const FORM_STEPS: FormStepConfig[] = [
-  { Component: BasicInfoStep, fields: ["name", "startDate", "endDate"] },
-  { Component: OptionsStep, fields: ["uploadLimit"] },
-];
 
 interface CreateEventDialogProps extends RefAttributes<HTMLDialogElement> {
   onClose?: () => void;
