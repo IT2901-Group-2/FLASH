@@ -19,10 +19,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
   const [role, setRole] = useState<"guest" | "moderator">("guest");
   const [iconState, setIconState] = useState<React.ReactElement>(<Copy />);
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
-  const { data: displayCode } = useEventCodeQuery(
-    result?.id,
-    role as "guest" | "moderator"
-  );
+  const { data: displayCode } = useEventCodeQuery(result?.id, role);
 
   const displayLink = displayCode ? `${window.location.origin}/join/${displayCode}` : "";
 
