@@ -124,6 +124,7 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
           </div>
           <div className={styles.row}>
             <button
+              data-testid="edit-button"
               className={styles.actionButton}
               data-color="neutral"
               onClick={handleEdit}
