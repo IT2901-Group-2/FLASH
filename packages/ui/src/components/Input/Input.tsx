@@ -1,10 +1,10 @@
-import React from "react";
+import { InputHTMLAttributes } from "react";
 import { Loader } from "../Loader";
 import styles from "./Input.module.css";
 import { cl } from "@/util/helpers";
 import { ColorName } from "../types";
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   /**
    * Changes design and interaction-visuals.
    * As of now their only exists styling for the primary variant
