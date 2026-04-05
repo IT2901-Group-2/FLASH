@@ -8,8 +8,8 @@
  *     imported variables.  Vitest hoists vi.mock() calls above every import
  *     statement, so any imported variable inside a factory is undefined.
  *  2. Only modules that every test benefits from are mocked globally:
- *       • next-intl        — translate key → key
- *       • next/navigation  — stub fns; connected to mockRouter in beforeEach
+ *       - next-intl        -- translate key → key
+ *       - next/navigation  -- stub fns; connected to mockRouter in beforeEach
  *     Everything else (hooks, @flash/ui, contexts) is mocked per-test file.
  *  3. mockRouter wiring happens in beforeEach, not in the factory, because
  *     imports are fully live by then.
