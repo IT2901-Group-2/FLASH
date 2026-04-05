@@ -14,7 +14,6 @@ import {
 } from "@flash/ui";
 import React, { useId } from "react";
 import { vi } from "vitest";
-import rest from "../next-intl.mock";
 
 /**
  * @module flash-ui.mock
