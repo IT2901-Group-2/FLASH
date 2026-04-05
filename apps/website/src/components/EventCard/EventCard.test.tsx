@@ -82,7 +82,7 @@ describe("EventCard", () => {
     const data = makeEvent();
     renderWithQuery(<EventCard data={data} />);
     await userEvent.click(screen.getByTestId("edit-button"));
-    expect(screen.getByTestId("dialog")).toBeInTheDocument();
+    expect(screen.getByTestId("edit-event-dialog")).toBeInTheDocument();
   });
 
   test("delets the event", async () => {

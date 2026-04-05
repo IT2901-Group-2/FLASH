@@ -49,7 +49,7 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
 
   const handleEdit = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    dialogRef.current?.showModal();
+    dialogRef?.current?.showModal();
   };
 
   return (
@@ -78,6 +78,7 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
         </div>
       </Dialog>
       <EditEventCard
+        data-testid="edit-event-dialog"
         ref={dialogRef}
         event={data}
         onClose={() => dialogRef.current?.close()}
