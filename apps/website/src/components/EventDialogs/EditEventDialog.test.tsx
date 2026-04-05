@@ -65,7 +65,7 @@ describe("EditEventDialog — dialog behavior", () => {
   });
 });
 
-describe("EditEventDialog — pre-population", () => {
+describe("EditEventDialog - pre-population", () => {
   it("pre-populates the name field with the existing event name", () => {
     renderCard();
     expect(screen.getByLabelText("eventName")).toHaveValue("Existing Event");
