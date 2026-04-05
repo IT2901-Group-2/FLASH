@@ -1,6 +1,6 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { QrCode, Upload } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, QrCode, Upload, X } from "lucide-react";
 import styles from "./UploadImage.module.css";
 import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
@@ -10,10 +10,8 @@ import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
-
-// Used for pilot feedback collection. Should be removed after pilot is finished
-const SURVEY_LINK = "https://nettskjema.no/a/610540";
-const SURVEY_UPLOAD_THRESHOLD = 3;
+import { getAdminDashboardEventRoute, routes } from "@/lib/routes";
+import Image from "next/image";
 
 export default function Page() {
   const router = useRouter();
@@ -23,7 +21,7 @@ export default function Page() {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   // Event Data
-  const eventId = useParams<{ id: string }>().id;
+  const { id: eventId } = useParams<{ id: string }>();
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );
@@ -35,6 +33,8 @@ export default function Page() {
 
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+  const touchStartX = useRef<number | null>(null);
   const { mutateAsync: uploadImage } = useUploadImageMutation();
 
   // Join Code
@@ -52,50 +52,14 @@ export default function Page() {
   const uploadsRemaining =
     typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
 
-  // Start of survey popup logic
-  // TODO: For pilot release. Should be removed after pilot is finished
-  const surveyDialogRef = useRef<HTMLDialogElement>(null);
-
-  const userStorageId = eventAuth.isAuthenticated
-    ? `${eventAuth.nickname}:${eventAuth.isModerator ? "moderator" : "guest"}`
-    : "anonymous";
-  const uploadCountStorageKey = `uploaded-photo-count:${userStorageId}`;
-  const surveyShownStorageKey = `uploaded-photo-survey-shown:${userStorageId}`;
-
-  // Helpers for survey popup logic
-  const getStoredUploadCount = useCallback(() => {
-    const raw = window.localStorage.getItem(uploadCountStorageKey);
-    const value = raw ? Number.parseInt(raw, 10) : 0;
-    return Number.isFinite(value) && value >= 0 ? value : 0;
-  }, [uploadCountStorageKey]);
-
-  const hasShownSurveyPopup = useCallback(
-    () => window.localStorage.getItem(surveyShownStorageKey) === "true",
-    [surveyShownStorageKey]
-  );
-
-  const maybeShowSurveyPopup = useCallback(
-    (uploadedPhotoCount: number) => {
-      if (uploadedPhotoCount < SURVEY_UPLOAD_THRESHOLD || hasShownSurveyPopup()) {
-        return;
-      }
-
-      window.localStorage.setItem(surveyShownStorageKey, "true");
-      surveyDialogRef.current?.showModal();
-    },
-    [hasShownSurveyPopup, surveyShownStorageKey]
-  );
-
-  useEffect(() => {
-    if (!eventAuth.isAuthenticated) return;
-    maybeShowSurveyPopup(getStoredUploadCount());
-  }, [eventAuth.isAuthenticated, getStoredUploadCount, maybeShowSurveyPopup]);
-  // End of survey popup logic
-
   const uploadDescription = tUpload("description", {
     uploadsRemaining:
       typeof uploadsRemaining === "number" ? uploadsRemaining : tUpload("unlimited"),
   });
+
+  const backHref = eventAuth.isModerator
+    ? getAdminDashboardEventRoute(eventId)
+    : routes.root;
 
   const { openFilePicker, FileInput } = useFileUpload({
     multiple: false,
@@ -120,11 +84,6 @@ export default function Page() {
         if (failureCount > 0) {
           setUploadError(tUpload("errors.uploadFailed", { count: failureCount }));
         }
-        if (successfulUploads > 0) {
-          const nextUploadCount = getStoredUploadCount() + successfulUploads;
-          window.localStorage.setItem(uploadCountStorageKey, String(nextUploadCount));
-          maybeShowSurveyPopup(nextUploadCount);
-        }
       } finally {
         setIsUploading(false);
       }
@@ -137,10 +96,93 @@ export default function Page() {
     }
   }, [eventAuth, router]);
 
+  useEffect(() => {
+    if (previewIndex === null) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const previousOverscrollBehavior = document.body.style.overscrollBehavior;
+
+    document.body.style.overflow = "hidden";
+    document.body.style.overscrollBehavior = "none";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.body.style.overscrollBehavior = previousOverscrollBehavior;
+    };
+  }, [previewIndex]);
+
+  useEffect(() => {
+    if (previewIndex === null) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setPreviewIndex(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [previewIndex]);
+
+  useEffect(() => {
+    if (previewIndex === null) return;
+    if (images.length === 0) {
+      setPreviewIndex(null);
+      return;
+    }
+
+    if (previewIndex > images.length - 1) {
+      setPreviewIndex(images.length - 1);
+    }
+  }, [images.length, previewIndex]);
+
+  const handleImagePreview = (index: number) => setPreviewIndex(index);
+
+  const closePreview = () => setPreviewIndex(null);
+
+  const nextPreviewImage = () => {
+    if (previewIndex === null || images.length === 0) return;
+    setPreviewIndex((previewIndex + 1) % images.length);
+  };
+
+  const prevPreviewImage = () => {
+    if (previewIndex === null || images.length === 0) return;
+    setPreviewIndex((previewIndex - 1 + images.length) % images.length);
+  };
+
+  const handlePreviewTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    touchStartX.current = event.touches[0]?.clientX ?? null;
+  };
+
+  const handlePreviewTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (touchStartX.current === null) return;
+    const endX = event.changedTouches[0]?.clientX;
+    if (typeof endX !== "number") return;
+
+    const deltaX = endX - touchStartX.current;
+    touchStartX.current = null;
+
+    if (Math.abs(deltaX) < 40) return;
+
+    if (deltaX > 0) {
+      prevPreviewImage();
+    } else {
+      nextPreviewImage();
+    }
+  };
+
+  const previewImage =
+    previewIndex !== null && images[previewIndex]
+      ? {
+          src: `/api/events/${eventId}/images/${images[previewIndex].id}`,
+          alt: tUpload("imageAlt", { index: previewIndex + 1, total: images.length }),
+        }
+      : null;
+
   return (
     <>
       <FileInput />
-      <Dialog ref={dialogRef} className={styles.qrCodeContainer}>
+      <Dialog ref={dialogRef} closedby="any" className={styles.qrCodeContainer}>
         <div className={styles.qrCodeContainer}>
           {joinLink !== null && (
             <QRDisplay
@@ -161,37 +203,41 @@ export default function Page() {
         </div>
       </Dialog>
 
-      {/* Start of survey popup logic. Should be removed after pilot */}
-      <Dialog ref={surveyDialogRef} className={styles.surveyDialog}>
-        <div className={styles.surveyDialog}>
-          <h2 className={styles.surveyTitle}>{tUpload("survey.title")}</h2>
-          <p className={styles.surveyText}>{tUpload("survey.descriptionLead")}</p>
-          <p className={styles.surveyText}>{tUpload("survey.descriptionDetails")}</p>
-          <Button
-            variant="primary"
-            data-color="brand-purple"
-            onClick={() => window.open(SURVEY_LINK, "_blank", "noopener,noreferrer")}
+      {previewImage && (
+        <div
+          className={styles.previewPage}
+          role="dialog"
+          aria-modal="true"
+          onTouchStart={handlePreviewTouchStart}
+          onTouchEnd={handlePreviewTouchEnd}
+        >
+          <X className={styles.previewClose} onClick={closePreview} />
+          {images.length > 1 && (
+            <button className={styles.previewNavButtonLeft} onClick={prevPreviewImage}>
+              <ChevronLeft />
+            </button>
+          )}
+          <Image
             fill
-          >
-            {tUpload("survey.cta")}
-          </Button>
-          <Button
-            variant="secondary"
-            data-color="neutral"
-            onClick={() => surveyDialogRef.current?.close()}
-            fill
-          >
-            {tCommon("actions.close")}
-          </Button>
+            src={previewImage.src}
+            alt={previewImage.alt}
+            className={styles.previewFullscreenImage}
+            sizes="100vw"
+          />
+          {images.length > 1 && (
+            <button className={styles.previewNavButtonRight} onClick={nextPreviewImage}>
+              <ChevronRight />
+            </button>
+          )}
         </div>
-      </Dialog>
-      {/* End of survey popup logic */}
+      )}
 
       <div className={styles.pageWrapper}>
         <PhoneHeader
           title={eventName}
           username={eventAuth?.nickname ?? ""}
           description={uploadDescription}
+          backHref={backHref}
         >
           <Button
             icon={<QrCode />}
@@ -248,6 +294,7 @@ export default function Page() {
               alt={tUpload("imageAlt", { index: index + 1, total: images.length })}
               title={tUpload("imageTitle", { index: index + 1 })}
               data-image-id={image.id}
+              onClick={() => handleImagePreview(index)}
             />
           ))}
         </div>

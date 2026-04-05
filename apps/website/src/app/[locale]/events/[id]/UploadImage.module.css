@@ -15,32 +15,78 @@
   gap: 2rem;
 }
 
-/* Styles for the upload dialog. Remove after pilot */
-.surveyDialog {
+.previewPage {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background-color: #000;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  text-align: center;
-  gap: 1rem;
-  width: 100%;
+  align-items: center;
 }
 
-.surveyTitle {
-  margin: 0;
+.previewFullscreenImage {
+  object-fit: contain;
 }
 
-.surveyText {
-  margin: 0;
-  color: var(--color-neutral-700);
+.previewClose {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.25rem;
+  border-radius: var(--radius-8);
+  color: inherit;
+  background-color: var(--bg-input);
+  box-shadow: var(--shadow-dialog);
+  cursor: pointer;
+  z-index: 1;
+
+  &:hover {
+    background-color: var(--bg-raised);
+  }
+
+  &:active {
+    background-color: var(--bg-sunken);
+  }
 }
 
-.surveyLink {
-  color: var(--color-brand-purple-600);
-  font-weight: 600;
-  text-decoration: underline;
-  word-break: break-all;
+.previewNavButtonLeft,
+.previewNavButtonRight {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  outline: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-8);
+  cursor: pointer;
+  background-color: var(--bg-input);
+  color: inherit;
+  box-shadow: var(--shadow-dialog);
+  z-index: 1;
+
+  &:hover {
+    background-color: var(--bg-raised);
+  }
+
+  &:active {
+    background-color: var(--bg-sunken);
+  }
 }
-/* End of styles for the upload dialog. Remove after pilot */
+
+.previewNavButtonLeft {
+  left: 1rem;
+}
+
+.previewNavButtonRight {
+  right: 1rem;
+}
 
 .mobileOnly {
   display: flex;
@@ -90,6 +136,28 @@
 }
 
 @media (width < 768px) {
+  .previewClose {
+    right: 0.75rem;
+    top: 0.75rem;
+    width: 3rem;
+    height: 3rem;
+    padding: 0.4rem;
+  }
+
+  .previewNavButtonLeft,
+  .previewNavButtonRight {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .previewNavButtonLeft {
+    left: 0.5rem;
+  }
+
+  .previewNavButtonRight {
+    right: 0.5rem;
+  }
+
   .desktopOnly {
     display: none !important;
   }

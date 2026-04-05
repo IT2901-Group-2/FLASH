@@ -24,7 +24,7 @@
   font-size: var(--font-size-heading-medium);
   font-weight: 700;
   line-height: 1;
-  color: var(--color-neutral-1000);
+  color: var(--color-text-base);
 }
 
 .grid {
@@ -64,7 +64,7 @@
   align-items: center;
   justify-content: center;
   padding: 4rem 1rem;
-  color: var(--color-neutral-600);
+  color: var(--color-text-secondary);
   font-size: var(--font-size-medium);
   text-align: center;
 }
@@ -85,7 +85,7 @@
 .errorBanner {
   margin: 0 0.6em 0.5rem;
   padding: 0.75rem 1rem;
-  color: var(--color-neutral-1000);
+  color: var(--color-text-tertiary);
   background: rgba(220, 38, 38, 0.08);
   border-left: 3px solid rgb(185, 28, 28, 0.8);
   border-radius: 0.25rem;

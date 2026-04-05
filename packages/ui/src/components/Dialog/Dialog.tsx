@@ -14,24 +14,33 @@ export type DialogProps = RefAttributes<HTMLDialogElement> &
      */
     // onOpen?: () => void;
     /**
-     * If clicking outside closes the dialog
-     * @default false
+     * Native dialog close behavior.
+     * - 'none': cannot be closed by platform interactions
+     * - 'closerequest': can close via Escape/back
+     * - 'any': can also close by clicking outside
      */
-    // closeOnBackdrop?: boolean;
-    /**
-     * If pressing Escape closes the dialog
-     *
-     */
-    // closeOnEscape?: boolean;
+    closedby?: "none" | "closerequest" | "any";
     /**
      * Body content
      */
     children?: React.ReactNode;
   };
 
-const Dialog = ({ ref, children, className, ...rest }: DialogProps) => {
+const Dialog = ({
+  ref,
+  children,
+  className,
+  closedby = "none",
+  ...rest
+}: DialogProps) => {
   return (
-    <dialog ref={ref} className={styles.container} autoFocus {...rest}>
+    <dialog
+      ref={ref}
+      className={styles.container}
+      autoFocus
+      closedby={closedby}
+      {...rest}
+    >
       <Card className={cl(styles.card, className)}>{children}</Card>
     </dialog>
   );

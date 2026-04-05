@@ -1,10 +1,6 @@
 import { StyleDictionaryToken } from "@/tokens.utils";
-import {
-  ColorTheme,
-  RootBackgroundToken,
-  RootBorderToken,
-  RootTextToken,
-} from "@/types/output.types";
+import { ColorScale, TextColorScale } from "@/types/internal.types";
+import { ColorTheme } from "@/types/output.types";
 
 /**
  * Static root-layer for semantic tokens.
@@ -12,47 +8,37 @@ import {
  */
 export function semanticRootTokens(theme: ColorTheme) {
   return {
-    text: {
-      "logo-primary": {
-        value: theme == "light" ? "#D6AD5B" : "#D6AD5B",
-        type: "color",
-      },
-      "logo-secondary": {
-        value: theme == "light" ? "#E5D295" : "#F3EACE",
-        type: "color",
-      },
+    "color-background": {
+      base: { value: theme == "light" ? "#F8F2F5" : "#0D0D11", type: "color" },
+      dark: { value: theme == "light" ? "#F0EAED" : "#09090C", type: "color" },
+      light: { value: theme == "light" ? "#F9F5F7" : "#111115", type: "color" },
     },
-    bg: {
-      default: {
-        value: theme === "light" ? "#f8f2f5" : "#0d0d11",
-        type: "color",
-      },
-      input: {
-        value: theme === "light" ? "#fffbfe" : "#29252b",
-        type: "color",
-      },
-      raised: {
-        value: theme === "light" ? "#f0e9ec" : "#1c181d",
-        type: "color",
-      },
-      sunken: {
-        value: theme === "light" ? "#e2dadd" : "#000",
-        type: "color",
-      },
-      overlay: {
-        value: "rgba(12, 22, 39, 0.66)",
-        type: "color",
-      },
+    "color-logo": {
+      primary: { value: theme == "light" ? "#D6AD5B" : "#D6AD5B", type: "color" },
+      secondary: { value: theme == "light" ? "#E5D295" : "#F3EACE", type: "color" },
     },
-    border: {
-      focus: {
-        value: theme === "light" ? "{neutral.1000.value}" : "#272529",
-        type: "color",
-      },
+    "color-border": {
+      base: { value: theme == "light" ? "#C9BDC0" : "#272529", type: "color" },
+      dark: { value: theme == "light" ? "#797173" : "#1B1A1D", type: "color" },
+      light: { value: theme == "light" ? "#D9D1D3" : "#3D3B3E", type: "color" },
+    },
+    "color-text": {
+      base: { value: theme == "light" ? "#101028" : "#F1F0F4", type: "color" },
+      dark: { value: theme == "light" ? "#0E0E22" : "#CDCCCE", type: "color" },
+      light: { value: theme == "light" ? "#343448" : "#F3F2F6", type: "color" },
+      secondary: { value: theme == "light" ? "#828284" : "#8F8F90", type: "color" },
+      tertiary: { value: theme == "light" ? "#474747" : "#C7C7C8", type: "color" },
+      contrast: { value: theme == "light" ? "#fff" : "#000", type: "color" },
+    },
+    "color-backdrop": {
+      value: theme == "light" ? "#474747A8" : "#242424A8",
+      type: "color",
     },
   } satisfies {
-    bg: Record<RootBackgroundToken, StyleDictionaryToken<"color">>;
-    border: Record<RootBorderToken, StyleDictionaryToken<"color">>;
-    text: Record<RootTextToken, StyleDictionaryToken<"color">>;
+    "color-background": Record<ColorScale, StyleDictionaryToken<"color">>;
+    "color-logo": Record<"primary" | "secondary", StyleDictionaryToken<"color">>;
+    "color-border": Record<ColorScale, StyleDictionaryToken<"color">>;
+    "color-text": Record<TextColorScale, StyleDictionaryToken<"color">>;
+    "color-backdrop": StyleDictionaryToken<"color">;
   };
 }

@@ -77,7 +77,7 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
   const totalSteps = FORM_STEPS.length + 1;
 
   return (
-    <Dialog ref={ref} {...rest}>
+    <Dialog ref={ref} closedby="none" {...rest}>
       <ProgressDots
         maxValue={totalSteps}
         value={currentStepIndex + 1}
@@ -94,22 +94,26 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
 
         <div className={styles.buttonGroup}>
           {!isOnReviewStep && (
-            <Button variant="tertiary" onClick={handleClose}>
+            <Button variant="tertiary" data-color="neutral" onClick={handleClose}>
               {t("cancel")}
             </Button>
           )}
           {!isOnReviewStep && !isOnFirstStep && (
-            <Button variant="secondary" onClick={goToPreviousStep}>
+            <Button variant="secondary" data-color="neutral" onClick={goToPreviousStep}>
               {t("previous")}
             </Button>
           )}
           {!isOnReviewStep && !isOnLastFormStep && (
-            <Button variant="secondary" onClick={tryGoToNextStep}>
+            <Button
+              variant="secondary"
+              data-color="brand-purple"
+              onClick={tryGoToNextStep}
+            >
               {t("next")}
             </Button>
           )}
           {!isOnReviewStep && isOnLastFormStep && (
-            <Button variant="secondary" onClick={handleCreate}>
+            <Button variant="primary" data-color="brand-purple" onClick={handleCreate}>
               {t("create")}
             </Button>
           )}

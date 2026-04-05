@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { ReviewStep } from "@/components/EventDialogs/Steps";
 import { useRef } from "react";
 import { useTranslations } from "next-intl";
+import { getAdminDashboardEventsRoute } from "@/lib/routes";
 
 const Page = () => {
   const qrCodeRef = useRef<HTMLDialogElement>(null);
@@ -23,7 +24,7 @@ const Page = () => {
 
   return (
     <>
-      <Dialog ref={qrCodeRef}>
+      <Dialog ref={qrCodeRef} closedby="any">
         <ReviewStep result={eventData} status={status} />
         <Button
           variant="secondary"
@@ -37,7 +38,10 @@ const Page = () => {
 
       <div className={styles.header}>
         <div className={styles.headerItem}>
-          <ArrowLeft className={styles.back} onClick={navigation.back} />
+          <ArrowLeft
+            className={styles.back}
+            onClick={() => navigation.push(getAdminDashboardEventsRoute())}
+          />
           <Title description={eventData?.description}>{eventData?.name}</Title>
         </div>
         <Card className={styles.card}>

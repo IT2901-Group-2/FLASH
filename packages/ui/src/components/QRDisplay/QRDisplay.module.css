@@ -9,10 +9,10 @@
   align-items: center;
   gap: 1em;
 
-  border-radius: var(--radius-16);
-  background-color: var(--bg-input);
   box-shadow: var(--shadow-dialog);
-  color: var(--neutral-1000);
+
+  border-radius: var(--radius-16);
+  background-color: var(--color-primary-light);
 
   &[data-size="small"] {
     font-size: 12px;
@@ -44,6 +44,6 @@
   }
 
   .helperText {
-    color: var(--text-subtle);
+    color: var(--color-text-secondary);
   }
 }

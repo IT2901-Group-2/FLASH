@@ -30,6 +30,7 @@ export const Demo: Story = {
         numberOfPhotos: undefined,
         dateRange: { startDate: null, endDate: null },
         eventTime: TIME_PRESETS.full,
+        sortOrder: "",
       },
     });
 
@@ -37,13 +38,14 @@ export const Demo: Story = {
       <form
         style={{ display: "flex", flexDirection: "column", gap: "1rem", width: "25rem" }}
         onSubmit={handleSubmit(
-          ({ name, description, numberOfPhotos, dateRange, eventTime }) =>
+          ({ name, description, numberOfPhotos, dateRange, eventTime, sortOrder }) =>
             console.log({
               name,
               description,
               uploadLimit: numberOfPhotos,
               startTime: combineDateAndTime(dateRange.startDate!, eventTime.startTime),
               endTime: combineDateAndTime(dateRange.endDate!, eventTime.endTime),
+              sortOrder,
             })
         )}
         onReset={() => reset()}
