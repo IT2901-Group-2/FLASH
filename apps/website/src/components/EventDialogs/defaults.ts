@@ -7,6 +7,10 @@ export interface EventTime {
   endTime: string;
 }
 
+/**
+ * Presets for the event time field. "Full Day" is represented by 00:00 to
+ * 23:59, while "Specific Time" defaults to 08:00 to 17:00.
+ */
 export const TIME_PRESETS: Record<TimePreset, EventTime> = {
   full: { startTime: "00:00", endTime: "23:59" },
   specific: { startTime: "08:00", endTime: "17:00" },
