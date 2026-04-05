@@ -1,5 +1,5 @@
 import { DropdownControl, TextField } from "@flash/ui";
-import { EventTime, TIME_PRESETS, TimePreset } from "./types";
+import { EventTime, TIME_PRESETS, TimePreset } from "./defaults";
 
 interface EventTimeFieldProps {
   value: EventTime;

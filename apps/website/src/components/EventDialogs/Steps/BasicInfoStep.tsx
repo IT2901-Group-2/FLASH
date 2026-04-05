@@ -4,7 +4,7 @@ import { Controller, useFormContext, useFormState, useWatch } from "react-hook-f
 import EventTimeField from "../TimeField";
 import { CreateEvent } from "@/db";
 import { formatTimeForInput } from "@/utils/date-utils";
-import { EventTime } from "../types";
+import { EventTime } from "../defaults";
 
 export const BasicInfoStep = () => {
   const tStep = useTranslations("admin.dashboard.event.create.basics");
