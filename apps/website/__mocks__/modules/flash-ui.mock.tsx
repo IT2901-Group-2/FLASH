@@ -1,4 +1,11 @@
-import { InputProps } from "@flash/ui";
+import {
+  ButtonProps,
+  CardProps,
+  DialogProps,
+  InputProps,
+  QRDisplayProps,
+  TitleProps,
+} from "@flash/ui";
 import React from "react";
 import { vi } from "vitest";
 
@@ -26,145 +33,78 @@ import { vi } from "vitest";
  *   ImageCard: vi.fn(({ title }) => <div data-testid="image-card">{title}</div>),
  * }));
  */
-export const flashUiMock = () => ({
-  Button: vi.fn(
+export const flashUiMock = async () => {
+  const actual = await vi.importActual<typeof import("@flash/ui")>("@flash/ui");
+
+  // ActionCard
+  // Breadcrumb
+
+  const Button = vi.fn(
     ({
       children,
       ...props
-    }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+    }: ButtonProps & {
       children?: React.ReactNode;
     }) => <button {...props}>{children}</button>
-  ),
+  );
 
-  ProgressDots: vi.fn(() => <div data-testid="progress-dots" />),
+  const Card = vi.fn(({ children, ...rest }: CardProps) => (
+    <div data-testid="card" {...rest}>
+      {children}
+    </div>
+  ));
 
-  Card: vi.fn(({ children }: { children?: React.ReactNode }) => (
-    <div data-testid="card">{children}</div>
-  )),
+  const Dialog = vi.fn(({ children, ...rest }: DialogProps) => (
+    <dialog data-testid="dialog" {...rest}>
+      {children}
+    </dialog>
+  ));
 
-  Dialog: vi.fn(({ children }: { children?: React.ReactNode }) => (
-    <div data-testid="dialog">{children}</div>
-  )),
+  // DatePicker
+  // DropdownControls
+  // SegmentedControls
+  // Select
+  // Textarea
+  // Textfield
 
-  Input: vi.fn(({ children, ...props }: InputProps) => {
+  // ImageCard
+
+  const Input = vi.fn(({ children, ...props }: InputProps) => {
     <input data-testid="input" {...props}>
       {children}
     </input>;
-  }),
+  });
 
-  QRDisplay: vi.fn(({ value, code }: { value: string; code: string }) => (
-    <div data-testid="qr-display" data-value={value} data-code={code} />
-  )),
+  // Loader
+  // Logo
 
-  Title: vi.fn(
-    ({
-      children,
-      description,
-      ...props
-    }: {
-      children: React.ReactNode;
-      description?: string;
-      [key: string]: unknown;
-    }) => (
-      <div>
-        <h1 data-testid="title" {...props}>
-          {children}
-        </h1>
-        {description && <p>{description}</p>}
-      </div>
-    )
-  ),
+  // Progressbar
 
-  ImageCard: vi.fn(
-    ({
-      state,
-      onClick,
-      title,
-      ...rest
-    }: {
-      state?: string;
-      onClick?: () => void;
-      title?: string;
-      [key: string]: unknown;
-    }) => (
-      <div
-        data-testid={`image-card-${rest["data-image-id"] ?? rest["id"]}`}
-        data-state={state}
-        data-image-id={rest["data-image-id"] ?? rest["id"]}
-        onClick={onClick}
-      >
-        {title && <span>{title}</span>}
-      </div>
-    )
-  ),
+  const ProgressDots = vi.fn(() => <div data-testid="progress-dots" />);
 
-  ActionCard: vi.fn(
-    ({
-      description,
-      primaryButton,
-      secondaryButton,
-    }: {
-      description?: string;
-      primaryButton?: { text: string; onClick: () => void };
-      secondaryButton?: { text: string; onClick: () => void };
-    }) => (
-      <div data-testid="action-card">
-        {description && <span data-testid="action-card-description">{description}</span>}
-        {primaryButton && (
-          <button data-testid="primary-action" onClick={primaryButton.onClick}>
-            {primaryButton.text}
-          </button>
-        )}
-        {secondaryButton && (
-          <button data-testid="secondary-action" onClick={secondaryButton.onClick}>
-            {secondaryButton.text}
-          </button>
-        )}
-      </div>
-    )
-  ),
+  const QRDisplay = vi.fn(({ value, code, ...rest }: QRDisplayProps) => (
+    <div data-testid="qr-display" data-value={value} data-code={code} {...rest} />
+  ));
 
-  SegmentedControl: Object.assign(
-    ({
-      children,
-      value,
-      onChange,
-      ...props
-    }: {
-      children: React.ReactNode;
-      value: string;
-      onChange: (v: string) => void;
-      [key: string]: unknown;
-    }) => (
-      <div data-testid="segmented-control" data-value={value} {...props}>
-        {Array.isArray(children)
-          ? children.map(
-              (child: React.ReactElement<{ _onChange?: (v: string) => void }>) =>
-                child ? React.cloneElement(child, { _onChange: onChange }) : child
-            )
-          : children}
-      </div>
-    ),
-    {
-      Item: ({
-        value,
-        label,
-        disabled,
-        _onChange,
-      }: {
-        value: string;
-        label: string;
-        disabled?: boolean;
-        _onChange?: (v: string) => void;
-      }) => (
-        <button
-          data-testid={`tab-${value}`}
-          disabled={disabled}
-          onClick={() => _onChange?.(value)}
-        >
-          {label}
-        </button>
-      ),
-    }
-  ),
-});
+  // Switch
+
+  const Title = vi.fn(({ children, description, ...props }: TitleProps) => (
+    <div>
+      <h1 data-testid="title" {...props}>
+        {children}
+      </h1>
+      {description && <p>{description}</p>}
+    </div>
+  ));
+
+  return {
+    ...actual,
+    Button,
+    ProgressDots,
+    Card,
+    Dialog,
+    Input,
+    QRDisplay,
+    Title,
+  };
+};
