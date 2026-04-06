@@ -110,6 +110,7 @@ const SegmentedControl = ({
           data-size={size}
           data-error={!!rest.error}
           style={cssVars}
+          {...rest}
         >
           {label && (
             <label htmlFor={inputProps.id} className={styles.label}>
