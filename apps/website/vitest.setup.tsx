@@ -18,7 +18,7 @@
 import { cleanup } from "@testing-library/react";
 import { afterEach, beforeEach, vi } from "vitest";
 import { mockRouter, resetMockRouter } from "./__mocks__/router.mock";
-import { flashUiMock } from "@test-config";
+import { flashUiMock, resetEventCounter, resetImageCounter } from "@test-config";
 import {
   redirect,
   useParams,
@@ -98,6 +98,10 @@ beforeEach(async () => {
 
   // Reset fetch so each test controls its own responses.
   mockFetch.mockReset();
+
+  // Reset counters
+  resetEventCounter();
+  resetImageCounter();
 
   // Reset all mocks
   vi.resetAllMocks();
