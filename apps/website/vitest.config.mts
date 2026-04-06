@@ -6,7 +6,7 @@ import path from "path";
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
-    environment: "happy-dom",
+    environment: "jsdom",
     clearMocks: true,
     restoreMocks: true,
     setupFiles: ["@testing-library/jest-dom/vitest", "./vitest.setup.tsx"],
