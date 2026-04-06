@@ -93,13 +93,9 @@ export const flashUiMock = async () => {
 
   // ImageCard
 
-  const Input = vi.fn(({ children, ...props }: InputProps) => {
+  const Input = vi.fn(({ ...props }: InputProps) => {
     const id = useId();
-    return (
-      <input id={id} data-testid="input" {...props}>
-        {children}
-      </input>
-    );
+    return <input id={id} data-testid="input" {...props} />;
   });
 
   const Loader = vi.fn(({ ...rest }: LoaderProps) => (
@@ -119,9 +115,10 @@ export const flashUiMock = async () => {
   ));
 
   const Switch = vi.fn(({ children, size, ...rest }: SwitchProps) => (
-    <input data-testid="switch" data-size={size} {...rest}>
-      {children}
-    </input>
+    <div data-testid="switch" data-size={size}>
+      <label>{children}</label>
+      <input {...rest} />
+    </div>
   ));
 
   const Title = vi.fn(({ children, description, ...props }: TitleProps) => (
