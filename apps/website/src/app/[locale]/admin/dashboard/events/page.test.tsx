@@ -21,10 +21,10 @@ describe("Page", () => {
     expect(screen.getByTestId("loading-spinner")).toBeTruthy();
   });
 
-  it("shows events when loaded", () => {
+  it("shows events when loaded", async () => {
     renderWithQuery(<Page />);
 
-    expect(screen.queryByTestId("loading-spinner")).toBeNull();
+    await expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument();
     expect(screen.getByTestId("dialog")).toBeInTheDocument();
   });
 
