@@ -1,4 +1,4 @@
-import { InputHTMLAttributes } from "react";
+import { InputHTMLAttributes, useId } from "react";
 import { Loader } from "../Loader";
 import styles from "./Input.module.css";
 import { cl } from "@/util/helpers";
@@ -99,7 +99,7 @@ export const Input = ({
   ...props
 }: InputProps) => {
   // Generate a unique ID if not provided (needed for label association)
-  const inputId = id || `input-${React.useId()}`;
+  const inputId = id || `input-${useId()}`;
   return (
     <div
       className={cl(styles.inputWrapper, className)}
