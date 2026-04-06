@@ -98,6 +98,9 @@ beforeEach(async () => {
 
   // Reset fetch so each test controls its own responses.
   mockFetch.mockReset();
+
+  // Reset all mocks
+  vi.resetAllMocks();
 });
 
 // ─── afterEach: unmount React trees ─────────────────────────────────────────
