@@ -1,7 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 import {
   ButtonProps,
   CardProps,
   DialogProps,
+  ImageCardProps,
   InputProps,
   LoaderProps,
   LogoProps,
@@ -91,7 +93,14 @@ export const flashUiMock = async () => {
     );
   });
 
-  // ImageCard
+  const ImageCard = vi.fn(
+    ({ src, alt, title, state = "default", ...props }: ImageCardProps) => (
+      <div data-testid="image-card" data-state={state} {...props}>
+        <img src={src} alt={alt} />
+        <span>{title}</span>
+      </div>
+    )
+  );
 
   const Input = vi.fn(({ ...props }: InputProps) => {
     const id = useId();
@@ -137,6 +146,7 @@ export const flashUiMock = async () => {
     Dialog,
     Textarea,
     TextField,
+    ImageCard,
     Input,
     Loader,
     Logo,
