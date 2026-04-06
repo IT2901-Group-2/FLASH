@@ -26,6 +26,8 @@ import {
   useRouter,
   useSearchParams,
   notFound,
+  Image,
+  Link,
 } from "./__mocks__/next";
 
 /**
@@ -43,6 +45,24 @@ vi.mock("next-intl", async importOriginal => {
     useLocale: vi.fn(() => "en"),
   };
 });
+
+/**
+ * Mocks next/image with minimal passthrough components.
+ *
+ * This is necessary because the real next/image relies on browser APIs that
+ * are not available in the test environment, and without this mock it throws
+ * errors when rendered in tests.
+ */
+vi.mock("next/image", () => ({ default: Image }));
+
+/**
+ * Mocks next/link with a minimal passthrough component.
+ *
+ * This is necessary because some components (e.g. Button) use next/link
+ * internally, and without this mock they throw an error about missing
+ * context when rendered in tests.
+ */
+vi.mock("next/link", () => ({ default: Link }));
 
 /**
  * Mocks all the components in the @flash/ui package. They are replaced
