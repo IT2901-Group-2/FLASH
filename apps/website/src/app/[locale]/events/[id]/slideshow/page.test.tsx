@@ -54,31 +54,6 @@ vi.mock("@/hooks/useEvents", () => ({
   useEventCodeQuery: () => ({ data: "ABC123" }),
 }));
 
-vi.mock("next/image", () => ({
-  default: ({ src, alt, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt} {...props} />
-  ),
-}));
-
-vi.mock("@flash/ui", () => ({
-  QRDisplay: ({ value, code }: { value: string; code: string }) => (
-    <div data-testid="qr-display" data-value={value} data-code={code} />
-  ),
-  Title: ({
-    children,
-    description,
-  }: {
-    children: React.ReactNode;
-    description: string;
-  }) => (
-    <div>
-      <h1>{children}</h1>
-      <p>{description}</p>
-    </div>
-  ),
-}));
-
 describe("Slideshow Page", () => {
   beforeEach(() => {
     mockIsIdle = false;
