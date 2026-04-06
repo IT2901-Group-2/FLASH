@@ -101,12 +101,21 @@ export const GroupLabel: Story = {
 export const Size: Story = {
   render: () => (
     <>
-      <SegmentedControl defaultValue="center" onChange={console.log}>
+      <SegmentedControl
+        defaultValue="center"
+        onChange={console.log}
+        data-testid="segmentedControl"
+      >
         <SegmentedControl.Item value="left" label="Left" icon={<TextAlignStart />} />
         <SegmentedControl.Item value="center" label="Center" icon={<TextAlignCenter />} />
         <SegmentedControl.Item value="right" label="Right" icon={<TextAlignEnd />} />
       </SegmentedControl>
-      <SegmentedControl size="small" defaultValue="center" onChange={console.log}>
+      <SegmentedControl
+        size="small"
+        defaultValue="center"
+        onChange={console.log}
+        data-testid="segmentedControl"
+      >
         <SegmentedControl.Item value="left" label="Left" icon={<TextAlignStart />} />
         <SegmentedControl.Item value="center" label="Center" icon={<TextAlignCenter />} />
         <SegmentedControl.Item value="right" label="Right" icon={<TextAlignEnd />} />
@@ -127,6 +136,7 @@ export const Colors: Story = {
       defaultValue="center"
       onChange={console.log}
       data-color="brand-purple"
+      data-testid="segmentedControl"
     >
       <SegmentedControl.Item value="left" label="Left" icon={<TextAlignStart />} />
       <SegmentedControl.Item value="center" label="Center" icon={<TextAlignCenter />} />
