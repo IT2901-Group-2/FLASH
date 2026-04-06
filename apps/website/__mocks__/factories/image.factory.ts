@@ -12,8 +12,8 @@ const nextId = () => `image-${_counter++}`;
 export const makeImage = (overrides: Partial<Image> = {}): Image => {
   return {
     id: nextId(),
-    eventId: "event-123",
-    userId: "user-123",
+    eventId: "event-1",
+    userId: "user-1",
     isApproved: null,
     createdAt: new Date(),
     updatedAt: new Date(),
