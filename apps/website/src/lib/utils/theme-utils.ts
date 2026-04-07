@@ -77,6 +77,7 @@ export const resolveThemePreference = (theme: Theme): ResolvedTheme =>
 export const applyTheme = (resolvedTheme: ResolvedTheme): void => {
   if (typeof document === "undefined") return;
   document.documentElement.setAttribute("data-theme", resolvedTheme);
+  document.documentElement.style.colorScheme = resolvedTheme;
 };
 
 /**
@@ -175,5 +176,6 @@ export const systemThemeListener = (
   };
 
   mediaQuery.addEventListener("change", handler);
+  handler();
   return () => mediaQuery.removeEventListener("change", handler);
 };
