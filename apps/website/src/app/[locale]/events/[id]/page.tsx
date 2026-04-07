@@ -266,6 +266,7 @@ export default function Page() {
         </p>
         <div className={styles.mobileOnly}>
           <ActionCard
+            data-testid="action-card"
             description={uploadError ?? uploadDescription}
             descriptionColor={uploadError ? "danger" : undefined}
             primaryButton={{
