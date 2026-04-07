@@ -284,6 +284,9 @@ describe("systemThemeListener", () => {
 
     systemThemeListener("system", { ...listenerOptions, onChange });
 
+    onChange.mockClear();
+    callOrder.length = 0;
+
     const { matchMedia: darkMatchMedia } = makeMatchMedia(true);
     vi.stubGlobal("matchMedia", darkMatchMedia);
 
