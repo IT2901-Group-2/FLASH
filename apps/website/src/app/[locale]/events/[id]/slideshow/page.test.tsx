@@ -4,7 +4,6 @@ import {
   makeEvent,
   makeImages,
   mockEventsLoaded,
-  mockImagesLoaded,
   mockImagesQueryResult,
   mockRouter,
 } from "@test-config";

@@ -3,7 +3,6 @@ import type {
   InfiniteData,
   UseInfiniteQueryResult,
   UseMutationResult,
-  UseQueryResult,
 } from "@tanstack/react-query";
 import type { Image } from "@/db";
 import { makeImage, makeImages } from "../factories/image.factory";
