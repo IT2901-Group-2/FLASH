@@ -52,29 +52,19 @@ const Page = () => {
     imageData.length,
     INTERVAL
   );
-  const normalizedViewIndex =
-    imageData.length > 0
-      ? ((viewIndex % imageData.length) + imageData.length) % imageData.length
-      : 0;
-  const image = imageData[normalizedViewIndex];
+  const image = imageData[viewIndex];
   const prefetchedForLengthRef = useRef<number>(-1);
 
   useEffect(() => {
     if (!hasNextPage || isFetchingNextPage || imageData.length === 0) return;
 
-    const remaining = imageData.length - (normalizedViewIndex + 1);
+    const remaining = imageData.length - (viewIndex + 1);
     if (remaining > PREFETCH_THRESHOLD) return;
     if (prefetchedForLengthRef.current === imageData.length) return;
 
     prefetchedForLengthRef.current = imageData.length;
     void fetchNextPage();
-  }, [
-    fetchNextPage,
-    hasNextPage,
-    imageData.length,
-    isFetchingNextPage,
-    normalizedViewIndex,
-  ]);
+  }, [fetchNextPage, hasNextPage, imageData.length, isFetchingNextPage, viewIndex]);
 
   const [joinLink, setJoinLink] = useState<string | null>(null);
   useEffect(() => {
