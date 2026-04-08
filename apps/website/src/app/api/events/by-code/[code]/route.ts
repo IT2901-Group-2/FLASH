@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { eventService } from "@/services/eventService";
 import { errorResponse } from "@/lib/utils/error";
+import { withAuth } from "@/lib/utils/withAuth";
 
 export async function GET(
   _: NextRequest,
@@ -10,5 +11,12 @@ export async function GET(
 
   return eventService
     .getEventByCode(code)
-    .fold(events => NextResponse.json(events), errorResponse);
+    .fold(
+      event =>
+        withAuth(async () => NextResponse.json(event), {
+          level: "moderator",
+          eventId: event.eventId,
+        }),
+      errorResponse
+    );
 }
