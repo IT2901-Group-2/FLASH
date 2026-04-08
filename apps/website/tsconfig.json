@@ -22,7 +22,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@test-config": ["./vitest.setup"]
+      "@test-setup": ["./vitest.setup"],
+      "@test-config": ["./__mocks__"]
     }
   },
   "include": [

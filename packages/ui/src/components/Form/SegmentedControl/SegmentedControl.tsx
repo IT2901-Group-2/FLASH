@@ -109,8 +109,8 @@ const SegmentedControl = ({
           data-fill={fill}
           data-size={size}
           data-error={!!rest.error}
-          data-testid="segmentedControl"
           style={cssVars}
+          {...rest}
         >
           {label && (
             <label htmlFor={inputProps.id} className={styles.label}>
