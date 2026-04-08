@@ -128,6 +128,7 @@ export default function ModeratePage() {
                 onClick={() => handleImageClick(image.id)}
                 data-image-id={image.id}
                 data-testid={image.id}
+                placeholder={image.previewImage}
               />
             ))}
           </div>

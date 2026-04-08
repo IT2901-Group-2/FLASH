@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { Loader } from "../Loader/Loader";
 import styles from "./ImageCard.module.css";
 import { cl } from "@/util/helpers/";
@@ -57,6 +57,11 @@ export interface ImageCardProps extends React.HTMLAttributes<HTMLDivElement> {
    * Ref to the div element
    */
   ref?: React.Ref<HTMLDivElement>;
+
+  /*
+   * Image to display while `src` is loading.
+   */
+  placeholder?: string;
 }
 
 /**
@@ -67,7 +72,7 @@ export interface ImageCardProps extends React.HTMLAttributes<HTMLDivElement> {
  */
 export const ImageCard = ({
   variant = "primary",
-  src,
+  src: _src,
   alt,
   title,
   size = "medium",
@@ -76,8 +81,17 @@ export const ImageCard = ({
   "data-color": color = "brand-purple",
   onClick,
   ref,
+  placeholder,
   ...rest
 }: ImageCardProps) => {
+  const [src, setSrc] = useState<string>(placeholder ?? _src);
+
+  useLayoutEffect(() => {
+    const image = new Image();
+    image.src = _src;
+    image.addEventListener("load", () => setSrc(_src), { once: true });
+  }, [_src, setSrc]);
+
   return (
     <div
       data-color={color}

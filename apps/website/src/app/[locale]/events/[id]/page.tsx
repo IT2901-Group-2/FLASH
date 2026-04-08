@@ -309,6 +309,7 @@ export default function Page() {
               alt={tUpload("imageAlt", { index: index + 1, total: images.length })}
               title={tUpload("imageTitle", { index: index + 1 })}
               data-image-id={image.id}
+              placeholder={image.previewImage}
               onClick={() => handleImagePreview(index)}
             />
           ))}
