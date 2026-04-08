@@ -30,7 +30,7 @@ export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
                 aria-label={tFields("maxImages")}
                 type="number"
                 min={1}
-                value={formData.uploadLimit}
+                value={formData.uploadLimit ?? undefined}
                 onChange={e =>
                   updateFormData("uploadLimit", Math.max(1, Number(e.target.value)))
                 }

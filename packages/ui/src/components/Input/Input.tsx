@@ -1,10 +1,10 @@
-import React from "react";
+import { InputHTMLAttributes, useId } from "react";
 import { Loader } from "../Loader";
 import styles from "./Input.module.css";
 import { cl } from "@/util/helpers";
 import { ColorName } from "../types";
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   /**
    * Changes design and interaction-visuals.
    * As of now their only exists styling for the primary variant
@@ -99,7 +99,7 @@ export const Input = ({
   ...props
 }: InputProps) => {
   // Generate a unique ID if not provided (needed for label association)
-  const inputId = id || `input-${React.useId()}`;
+  const inputId = id || `input-${useId()}`;
   return (
     <div
       className={cl(styles.inputWrapper, className)}

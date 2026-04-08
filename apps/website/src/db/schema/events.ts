@@ -124,7 +124,7 @@ export const createEventSchema = z.object({
   description: z.string().optional(),
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
-  uploadLimit: z.number().positive().optional(),
+  uploadLimit: z.number().positive().nullable().optional(),
   isArchived: z.boolean().optional(),
 });
 
@@ -133,7 +133,7 @@ export const updateEventSchema = z.object({
   description: z.string().optional(),
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
-  uploadLimit: z.number().nullable().optional(),
+  uploadLimit: z.number().positive().nullable().optional(),
   isArchived: z.boolean().optional(),
 });
 
