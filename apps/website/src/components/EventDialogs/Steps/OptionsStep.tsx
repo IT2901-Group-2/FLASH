@@ -6,8 +6,7 @@ import { useFormContext, useFormState } from "react-hook-form";
 import { CreateEvent } from "@/db";
 
 export const OptionsStep = () => {
-  const tStep = useTranslations("admin.dashboard.event.create.options");
-  const tFields = useTranslations("common.fields");
+  const t = useTranslations("admin.dashboard.event.options");
 
   const { register, control, watch, setValue } = useFormContext<CreateEvent>();
   const { errors } = useFormState({ control });
@@ -23,29 +22,32 @@ export const OptionsStep = () => {
 
   return (
     <>
-      <Title description={tStep("description")}>{tStep("title")}</Title>
+      <Title description={t("description")}>{t("title")}</Title>
       <DropdownControl
+        label={t("fields.uploadLimit.title")}
+        description={t("fields.uploadLimit.description")}
         value={limitMode}
         onChange={v => setLimitMode(v as typeof limitMode)}
         dropdownBorder
       >
         <DropdownControl.Item
           value="limited"
-          label={tStep("fields.uploadLimit.limited")}
+          label={t("fields.uploadLimit.value.limited")}
           content={
             <div className={styles.maxImageContainer}>
-              <span>{tStep("fields.uploadLimit.label")}</span>
+              <span>{t("fields.uploadLimit.value.maxUploads")}</span>
               <TextField
                 label
                 hideLabel
                 {...register("uploadLimit", {
                   valueAsNumber: true,
-                  min: { value: 1, message: "This has to be at least 1" },
+                  min: { value: 1, message: t("fields.uploadLimit.error.min") },
                   required:
-                    limitMode === "limited" ? "Please specify the upload limit" : false,
+                    limitMode === "limited"
+                      ? t("fields.uploadLimit.error.required")
+                      : false,
                 })}
                 error={errors.uploadLimit?.message}
-                aria-label={tFields("maxImages")}
                 type="number"
                 required={limitMode == "limited"}
               />
@@ -54,23 +56,25 @@ export const OptionsStep = () => {
         />
         <DropdownControl.Item
           value="unlimited"
-          label={tStep("fields.uploadLimit.unlimited")}
+          label={t("fields.uploadLimit.value.unlimited")}
         />
       </DropdownControl>
       {/* // TODO: When database is updated, uncomment these */}
       <Switch
         position="right"
+        description={t("fields.autoApprovePhotos.description")}
         // checked={formData.autoApprove}
         // onChange={(checked: boolean) => updateFormData("autoApprove", checked)}
       >
-        <b>{tStep("fields.autoApprovePhotos")}</b>
+        <b>{t("fields.autoApprovePhotos.title")}</b>
       </Switch>
       <Switch
         position="right"
+        description={t("fields.guestCanViewAll.description")}
         // checked={formData.seeAllPictures}
         // onChange={(checked: boolean) => updateFormData("seeAllPictures", checked)}
       >
-        <b>{tStep("fields.guestCanViewAll")}</b>
+        <b>{t("fields.guestCanViewAll.title")}</b>
       </Switch>
     </>
   );

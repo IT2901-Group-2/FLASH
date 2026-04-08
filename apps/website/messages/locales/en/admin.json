@@ -45,12 +45,26 @@
         "description": "Configure event options for your event.",
         "fields": {
           "uploadLimit": {
-            "label": "Maximum uploads",
-            "limited": "Limited",
-            "unlimited": "Unlimited"
+            "title": "Upload Limit",
+            "description": "Choose a upload limit or unlimited uploads.",
+            "value": {
+              "maxUploads": "Maximum uploads",
+              "limited": "Limited",
+              "unlimited": "Unlimited"
+            },
+            "error": {
+              "required": "Please specify the upload limit",
+              "min": "This has to be at least 1"
+            }
           },
-          "autoApprovePhotos": "Automatically approve uploaded photos",
-          "guestCanViewAll": "Allow guests to view all uploaded photos"
+          "autoApprovePhotos": {
+            "title": "Automatically approve uploaded photos",
+            "description": "Don't require moderation by letting all images be approved."
+          },
+          "guestCanViewAll": {
+            "title": "Allow guests to view all uploaded photos",
+            "description": "Guests can only see their own images if off."
+          }
         }
       },
       "review": {

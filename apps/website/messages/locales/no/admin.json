@@ -45,12 +45,26 @@
         "description": "Konfigurer innstillingene for arrangementet.",
         "fields": {
           "uploadLimit": {
-            "label": "Maks antall opplastinger",
-            "limited": "Begrenset",
-            "unlimited": "Ubegrenset"
+            "title": "Opplastningsgrense",
+            "description": "Velg en opplastningsgrense eller uendelig antall opplastninger.",
+            "value": {
+              "maxUploads": "Maks opplastninger",
+              "limited": "Begrenset",
+              "unlimited": "uendelig"
+            },
+            "error": {
+              "required": "Velg en opplasningsgrense",
+              "min": "Nedre grense er 1"
+            }
           },
-          "autoApprovePhotos": "Godkjenn bilder automatisk",
-          "guestCanViewAll": "La gjester se alle opplastede bilder"
+          "autoApprovePhotos": {
+            "title": "Godkjenn bilder automatisk",
+            "description": "Slipp å ha moderatorer ved å la alle bilder bli godkjente."
+          },
+          "guestCanViewAll": {
+            "title": "La gjester se alle bilder",
+            "description": "Hvis på vil gjester se all bilder. Hvis av vil de bare se sine egne."
+          }
         }
       },
       "review": {
