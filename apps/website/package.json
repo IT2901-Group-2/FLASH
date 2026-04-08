@@ -54,7 +54,7 @@
     "date-fns": "^4.1.0",
     "eslint": "^9.39.4",
     "eslint-config-next": "16.1.4",
-    "jsdom": "^28.1.0",
+    "happy-dom": "^20.8.9",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3",
     "vite-tsconfig-paths": "^6.1.1",

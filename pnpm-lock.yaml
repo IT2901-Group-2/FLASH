@@ -128,9 +128,9 @@ importers:
       eslint-config-next:
         specifier: 16.1.4
         version: 16.1.4(eslint@9.39.4)(typescript@5.9.3)
-      jsdom:
-        specifier: ^28.1.0
-        version: 28.1.0
+      happy-dom:
+        specifier: ^20.8.9
+        version: 20.8.9
       prettier:
         specifier: ^3.8.1
         version: 3.8.1
@@ -142,7 +142,7 @@ importers:
         version: 6.1.1(typescript@5.9.3)(vite@8.0.7(@types/node@20.19.39)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
       vitest:
         specifier: ^4.1.3
-        version: 4.1.3(@types/node@20.19.39)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(jsdom@28.1.0)(vite@8.0.7(@types/node@20.19.39)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
+        version: 4.1.3(@types/node@20.19.39)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(happy-dom@20.8.9)(jsdom@28.1.0)(vite@8.0.7(@types/node@20.19.39)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/file-storage:
     dependencies:
@@ -227,7 +227,7 @@ importers:
         version: 8.58.1(eslint@9.39.4)(typescript@5.9.3)
       vitest:
         specifier: ^4.1.3
-        version: 4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(jsdom@28.1.0)(vite@8.0.7(@types/node@25.5.2)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
+        version: 4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(happy-dom@20.8.9)(jsdom@28.1.0)(vite@8.0.7(@types/node@25.5.2)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/ui:
     dependencies:
@@ -293,7 +293,7 @@ importers:
         version: 4.5.4(@types/node@25.5.2)(rollup@4.60.1)(typescript@5.9.3)(vite@7.3.2(@types/node@25.5.2)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.3))
       vitest:
         specifier: ^4.1.3
-        version: 4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(jsdom@28.1.0)(vite@7.3.2(@types/node@25.5.2)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.3))
+        version: 4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(happy-dom@20.8.9)(jsdom@28.1.0)(vite@7.3.2(@types/node@25.5.2)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.3))
     devDependencies:
       '@eslint/js':
         specifier: ^9.39.4
@@ -2448,6 +2448,12 @@ packages:
   '@types/tough-cookie@4.0.5':
     resolution: {integrity: sha512-/Ad8+nIOV7Rl++6f1BdKxFSMgmoqEoYbHRpPcx3JEfv8VRsQe9Z4mCXeJBzxs7mbHY/XOZZuXlRNfhpVPbs6ZA==}
 
+  '@types/whatwg-mimetype@3.0.2':
+    resolution: {integrity: sha512-c2AKvDT8ToxLIOUlN51gTiHXflsfIFisS4pO7pDPoKouJCESkhZnEy623gwP9laCy5lnLDAw1vAzu2vM2YLOrA==}
+
+  '@types/ws@8.18.1':
+    resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
+
   '@types/yargs-parser@21.0.3':
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
 
@@ -4019,6 +4025,10 @@ packages:
     resolution: {integrity: sha512-4E71E0rpOaQuJR2A3xDZ+GM1HyWYv1clR58tC8emQNeQe3RH7MAzSbat+V0wG78LQBo6m6bzSG/L4pBuCsgnUQ==}
     engines: {node: '>=0.4.7'}
     hasBin: true
+
+  happy-dom@20.8.9:
+    resolution: {integrity: sha512-Tz23LR9T9jOGVZm2x1EPdXqwA37G/owYMxRwU0E4miurAtFsPMQ1d2Jc2okUaSjZqAFz2oEn3FLXC5a0a+siyA==}
+    engines: {node: '>=20.0.0'}
 
   has-bigints@1.1.0:
     resolution: {integrity: sha512-R3pbpkcIqv2Pm3dUwgjclDRVmWpTJW2DcMzcIhEXEx1oh/CEMObMm3KLmRJOdvhM7o4uQBnwr8pzRK2sJWIqfg==}
@@ -6174,6 +6184,10 @@ packages:
     resolution: {integrity: sha512-5fALBcroIl31OeXAdd1YUntxiZl1eHlZZWzNg3U4Fn+J9/cGL3eT80YlrsWGvj2ojuz1rZr2OXkgCzIxAZ7vRQ==}
     engines: {node: '>=6.0.0', npm: '>=3.10.0'}
 
+  whatwg-mimetype@3.0.0:
+    resolution: {integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==}
+    engines: {node: '>=12'}
+
   whatwg-mimetype@5.0.0:
     resolution: {integrity: sha512-sXcNcHOC51uPGF0P/D4NVtrkjSU2fNsm9iog4ZvZJsL3rjoDAzXZhkm2MWt1y+PUdggKAYVoMAIYcs78wJ51Cw==}
     engines: {node: '>=20'}
@@ -6315,7 +6329,8 @@ packages:
 
 snapshots:
 
-  '@acemir/cssom@0.9.31': {}
+  '@acemir/cssom@0.9.31':
+    optional: true
 
   '@adobe/css-tools@4.4.4': {}
 
@@ -6325,6 +6340,7 @@ snapshots:
       '@csstools/css-color-parser': 4.0.2(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-tokenizer': 4.0.0
+    optional: true
 
   '@asamuzakjp/dom-selector@6.8.1':
     dependencies:
@@ -6333,8 +6349,10 @@ snapshots:
       css-tree: 3.2.1
       is-potential-custom-element-name: 1.0.1
       lru-cache: 11.3.2
+    optional: true
 
-  '@asamuzakjp/nwsapi@2.3.9': {}
+  '@asamuzakjp/nwsapi@2.3.9':
+    optional: true
 
   '@babel/code-frame@7.29.0':
     dependencies:
@@ -6544,6 +6562,7 @@ snapshots:
   '@bramus/specificity@2.4.2':
     dependencies:
       css-tree: 3.2.1
+    optional: true
 
   '@bundled-es-modules/deepmerge@4.3.1':
     dependencies:
@@ -6584,12 +6603,14 @@ snapshots:
       - '@chromatic-com/cypress'
       - '@chromatic-com/playwright'
 
-  '@csstools/color-helpers@6.0.2': {}
+  '@csstools/color-helpers@6.0.2':
+    optional: true
 
   '@csstools/css-calc@3.1.1(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)':
     dependencies:
       '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-tokenizer': 4.0.0
+    optional: true
 
   '@csstools/css-color-parser@4.0.2(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)':
     dependencies:
@@ -6597,16 +6618,20 @@ snapshots:
       '@csstools/css-calc': 3.1.1(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-tokenizer': 4.0.0
+    optional: true
 
   '@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0)':
     dependencies:
       '@csstools/css-tokenizer': 4.0.0
+    optional: true
 
   '@csstools/css-syntax-patches-for-csstree@1.1.2(css-tree@3.2.1)':
     optionalDependencies:
       css-tree: 3.2.1
+    optional: true
 
-  '@csstools/css-tokenizer@4.0.0': {}
+  '@csstools/css-tokenizer@4.0.0':
+    optional: true
 
   '@drizzle-team/brocli@0.10.2': {}
 
@@ -6920,7 +6945,8 @@ snapshots:
       '@eslint/core': 0.17.0
       levn: 0.4.1
 
-  '@exodus/bytes@1.15.0': {}
+  '@exodus/bytes@1.15.0':
+    optional: true
 
   '@formatjs/bigdecimal@0.2.0': {}
 
@@ -7876,7 +7902,7 @@ snapshots:
       '@vitest/browser': 4.1.3(vite@7.3.2(@types/node@25.5.2)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.3)
       '@vitest/browser-playwright': 4.1.3(playwright@1.59.1)(vite@7.3.2(@types/node@25.5.2)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.3)
       '@vitest/runner': 4.1.3
-      vitest: 4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(jsdom@28.1.0)(vite@7.3.2(@types/node@25.5.2)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.3))
+      vitest: 4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(happy-dom@20.8.9)(jsdom@28.1.0)(vite@7.3.2(@types/node@25.5.2)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.3))
     transitivePeerDependencies:
       - react
       - react-dom
@@ -8199,6 +8225,12 @@ snapshots:
 
   '@types/tough-cookie@4.0.5': {}
 
+  '@types/whatwg-mimetype@3.0.2': {}
+
+  '@types/ws@8.18.1':
+    dependencies:
+      '@types/node': 25.5.2
+
   '@types/yargs-parser@21.0.3': {}
 
   '@types/yargs@17.0.35':
@@ -8387,7 +8419,7 @@ snapshots:
       '@vitest/mocker': 4.1.3(vite@7.3.2(@types/node@25.5.2)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.3))
       playwright: 1.59.1
       tinyrainbow: 3.1.0
-      vitest: 4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(jsdom@28.1.0)(vite@7.3.2(@types/node@25.5.2)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.3))
+      vitest: 4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(happy-dom@20.8.9)(jsdom@28.1.0)(vite@7.3.2(@types/node@25.5.2)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.3))
     transitivePeerDependencies:
       - bufferutil
       - msw
@@ -8400,7 +8432,7 @@ snapshots:
       '@vitest/mocker': 4.1.3(vite@8.0.7(@types/node@20.19.39)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
       playwright: 1.59.1
       tinyrainbow: 3.1.0
-      vitest: 4.1.3(@types/node@20.19.39)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(jsdom@28.1.0)(vite@8.0.7(@types/node@20.19.39)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
+      vitest: 4.1.3(@types/node@20.19.39)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(happy-dom@20.8.9)(jsdom@28.1.0)(vite@8.0.7(@types/node@20.19.39)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
     transitivePeerDependencies:
       - bufferutil
       - msw
@@ -8414,7 +8446,7 @@ snapshots:
       '@vitest/mocker': 4.1.3(vite@8.0.7(@types/node@25.5.2)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
       playwright: 1.59.1
       tinyrainbow: 3.1.0
-      vitest: 4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(jsdom@28.1.0)(vite@8.0.7(@types/node@25.5.2)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
+      vitest: 4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(happy-dom@20.8.9)(jsdom@28.1.0)(vite@8.0.7(@types/node@25.5.2)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
     transitivePeerDependencies:
       - bufferutil
       - msw
@@ -8431,7 +8463,7 @@ snapshots:
       pngjs: 7.0.0
       sirv: 3.0.2
       tinyrainbow: 3.1.0
-      vitest: 4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(jsdom@28.1.0)(vite@7.3.2(@types/node@25.5.2)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.3))
+      vitest: 4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(happy-dom@20.8.9)(jsdom@28.1.0)(vite@7.3.2(@types/node@25.5.2)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.3))
       ws: 8.20.0
     transitivePeerDependencies:
       - bufferutil
@@ -8448,7 +8480,7 @@ snapshots:
       pngjs: 7.0.0
       sirv: 3.0.2
       tinyrainbow: 3.1.0
-      vitest: 4.1.3(@types/node@20.19.39)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(jsdom@28.1.0)(vite@8.0.7(@types/node@20.19.39)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
+      vitest: 4.1.3(@types/node@20.19.39)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(happy-dom@20.8.9)(jsdom@28.1.0)(vite@8.0.7(@types/node@20.19.39)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
       ws: 8.20.0
     transitivePeerDependencies:
       - bufferutil
@@ -8466,7 +8498,7 @@ snapshots:
       pngjs: 7.0.0
       sirv: 3.0.2
       tinyrainbow: 3.1.0
-      vitest: 4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(jsdom@28.1.0)(vite@8.0.7(@types/node@25.5.2)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
+      vitest: 4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(happy-dom@20.8.9)(jsdom@28.1.0)(vite@8.0.7(@types/node@25.5.2)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
       ws: 8.20.0
     transitivePeerDependencies:
       - bufferutil
@@ -8487,7 +8519,7 @@ snapshots:
       magicast: 0.5.2
       obug: 2.1.1
       tinyrainbow: 3.1.0
-      vitest: 4.1.3(@types/node@20.19.39)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(jsdom@28.1.0)(vite@8.0.7(@types/node@20.19.39)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
+      vitest: 4.1.3(@types/node@20.19.39)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(happy-dom@20.8.9)(jsdom@28.1.0)(vite@8.0.7(@types/node@20.19.39)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
     transitivePeerDependencies:
       - supports-color
 
@@ -8965,6 +8997,7 @@ snapshots:
   bidi-js@1.0.3:
     dependencies:
       require-from-string: 2.0.2
+    optional: true
 
   bignumber.js@9.3.1: {}
 
@@ -9181,6 +9214,7 @@ snapshots:
     dependencies:
       mdn-data: 2.27.1
       source-map-js: 1.2.1
+    optional: true
 
   css.escape@1.5.1: {}
 
@@ -9190,6 +9224,7 @@ snapshots:
       '@csstools/css-syntax-patches-for-csstree': 1.1.2(css-tree@3.2.1)
       css-tree: 3.2.1
       lru-cache: 11.3.2
+    optional: true
 
   csstype@3.2.3: {}
 
@@ -9201,6 +9236,7 @@ snapshots:
       whatwg-url: 16.0.1
     transitivePeerDependencies:
       - '@noble/hashes'
+    optional: true
 
   data-view-buffer@1.0.2:
     dependencies:
@@ -9232,7 +9268,8 @@ snapshots:
     dependencies:
       ms: 2.1.3
 
-  decimal.js@10.6.0: {}
+  decimal.js@10.6.0:
+    optional: true
 
   decompress-response@6.0.0:
     dependencies:
@@ -9361,7 +9398,8 @@ snapshots:
     dependencies:
       once: 1.4.0
 
-  entities@6.0.1: {}
+  entities@6.0.1:
+    optional: true
 
   entities@7.0.1: {}
 
@@ -9576,7 +9614,7 @@ snapshots:
       eslint: 9.39.4
       eslint-import-resolver-node: 0.3.10
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(eslint@9.39.4))(eslint@9.39.4)
-      eslint-plugin-import: 2.32.0(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.4)
+      eslint-plugin-import: 2.32.0(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(eslint@9.39.4))(eslint@9.39.4))(eslint@9.39.4)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.4)
       eslint-plugin-react: 7.37.5(eslint@9.39.4)
       eslint-plugin-react-hooks: 7.0.1(eslint@9.39.4)
@@ -9609,7 +9647,7 @@ snapshots:
       tinyglobby: 0.2.16
       unrs-resolver: 1.11.1
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.4)
+      eslint-plugin-import: 2.32.0(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(eslint@9.39.4))(eslint@9.39.4))(eslint@9.39.4)
     transitivePeerDependencies:
       - supports-color
 
@@ -9623,7 +9661,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.32.0(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.4):
+  eslint-plugin-import@2.32.0(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(eslint@9.39.4))(eslint@9.39.4))(eslint@9.39.4):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -10102,6 +10140,18 @@ snapshots:
     optionalDependencies:
       uglify-js: 3.19.3
 
+  happy-dom@20.8.9:
+    dependencies:
+      '@types/node': 25.5.2
+      '@types/whatwg-mimetype': 3.0.2
+      '@types/ws': 8.18.1
+      entities: 7.0.1
+      whatwg-mimetype: 3.0.0
+      ws: 8.20.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   has-bigints@1.1.0: {}
 
   has-flag@4.0.0: {}
@@ -10137,6 +10187,7 @@ snapshots:
       '@exodus/bytes': 1.15.0
     transitivePeerDependencies:
       - '@noble/hashes'
+    optional: true
 
   html-entities@2.6.0: {}
 
@@ -10156,6 +10207,7 @@ snapshots:
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   https-proxy-agent@5.0.1:
     dependencies:
@@ -10323,7 +10375,8 @@ snapshots:
 
   is-plain-obj@4.1.0: {}
 
-  is-potential-custom-element-name@1.0.1: {}
+  is-potential-custom-element-name@1.0.1:
+    optional: true
 
   is-regex@1.2.1:
     dependencies:
@@ -10778,6 +10831,7 @@ snapshots:
     transitivePeerDependencies:
       - '@noble/hashes'
       - supports-color
+    optional: true
 
   jsesc@3.1.0: {}
 
@@ -11014,7 +11068,8 @@ snapshots:
 
   math-intrinsics@1.1.0: {}
 
-  mdn-data@2.27.1: {}
+  mdn-data@2.27.1:
+    optional: true
 
   memfs@4.57.1(tslib@2.8.1):
     dependencies:
@@ -11308,6 +11363,7 @@ snapshots:
   parse5@8.0.0:
     dependencies:
       entities: 6.0.1
+    optional: true
 
   patch-package@8.0.1:
     dependencies:
@@ -11762,6 +11818,7 @@ snapshots:
   saxes@6.0.0:
     dependencies:
       xmlchars: 2.2.0
+    optional: true
 
   scheduler@0.27.0: {}
 
@@ -12119,7 +12176,8 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  symbol-tree@3.2.4: {}
+  symbol-tree@3.2.4:
+    optional: true
 
   synckit@0.11.12:
     dependencies:
@@ -12246,11 +12304,13 @@ snapshots:
 
   tinyspy@4.0.4: {}
 
-  tldts-core@7.0.28: {}
+  tldts-core@7.0.28:
+    optional: true
 
   tldts@7.0.28:
     dependencies:
       tldts-core: 7.0.28
+    optional: true
 
   tmp@0.2.5: {}
 
@@ -12265,12 +12325,14 @@ snapshots:
   tough-cookie@6.0.1:
     dependencies:
       tldts: 7.0.28
+    optional: true
 
   tr46@0.0.3: {}
 
   tr46@6.0.0:
     dependencies:
       punycode: 2.3.1
+    optional: true
 
   tree-dump@1.1.0(tslib@2.8.1):
     dependencies:
@@ -12584,7 +12646,7 @@ snapshots:
       tsx: 4.21.0
       yaml: 2.8.3
 
-  vitest@4.1.3(@types/node@20.19.39)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(jsdom@28.1.0)(vite@8.0.7(@types/node@20.19.39)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3)):
+  vitest@4.1.3(@types/node@20.19.39)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(happy-dom@20.8.9)(jsdom@28.1.0)(vite@8.0.7(@types/node@20.19.39)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3)):
     dependencies:
       '@vitest/expect': 4.1.3
       '@vitest/mocker': 4.1.3(vite@8.0.7(@types/node@20.19.39)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
@@ -12610,11 +12672,12 @@ snapshots:
       '@types/node': 20.19.39
       '@vitest/browser-playwright': 4.1.3(playwright@1.59.1)(vite@8.0.7(@types/node@20.19.39)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.3)
       '@vitest/coverage-istanbul': 4.1.3(vitest@4.1.3)
+      happy-dom: 20.8.9
       jsdom: 28.1.0
     transitivePeerDependencies:
       - msw
 
-  vitest@4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(jsdom@28.1.0)(vite@7.3.2(@types/node@25.5.2)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.3)):
+  vitest@4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(happy-dom@20.8.9)(jsdom@28.1.0)(vite@7.3.2(@types/node@25.5.2)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.3)):
     dependencies:
       '@vitest/expect': 4.1.3
       '@vitest/mocker': 4.1.3(vite@7.3.2(@types/node@25.5.2)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.3))
@@ -12640,11 +12703,12 @@ snapshots:
       '@types/node': 25.5.2
       '@vitest/browser-playwright': 4.1.3(playwright@1.59.1)(vite@7.3.2(@types/node@25.5.2)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.3)
       '@vitest/coverage-istanbul': 4.1.3(vitest@4.1.3)
+      happy-dom: 20.8.9
       jsdom: 28.1.0
     transitivePeerDependencies:
       - msw
 
-  vitest@4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(jsdom@28.1.0)(vite@8.0.7(@types/node@25.5.2)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3)):
+  vitest@4.1.3(@types/node@25.5.2)(@vitest/browser-playwright@4.1.3)(@vitest/coverage-istanbul@4.1.3)(happy-dom@20.8.9)(jsdom@28.1.0)(vite@8.0.7(@types/node@25.5.2)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3)):
     dependencies:
       '@vitest/expect': 4.1.3
       '@vitest/mocker': 4.1.3(vite@8.0.7(@types/node@25.5.2)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))
@@ -12670,6 +12734,7 @@ snapshots:
       '@types/node': 25.5.2
       '@vitest/browser-playwright': 4.1.3(playwright@1.59.1)(vite@8.0.7(@types/node@25.5.2)(esbuild@0.27.7)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.3)
       '@vitest/coverage-istanbul': 4.1.3(vitest@4.1.3)
+      happy-dom: 20.8.9
       jsdom: 28.1.0
     transitivePeerDependencies:
       - msw
@@ -12679,6 +12744,7 @@ snapshots:
   w3c-xmlserializer@5.0.0:
     dependencies:
       xml-name-validator: 5.0.0
+    optional: true
 
   walker@1.0.8:
     dependencies:
@@ -12686,7 +12752,8 @@ snapshots:
 
   webidl-conversions@3.0.1: {}
 
-  webidl-conversions@8.0.1: {}
+  webidl-conversions@8.0.1:
+    optional: true
 
   webpack-virtual-modules@0.6.2: {}
 
@@ -12694,7 +12761,10 @@ snapshots:
     dependencies:
       sdp: 3.2.2
 
-  whatwg-mimetype@5.0.0: {}
+  whatwg-mimetype@3.0.0: {}
+
+  whatwg-mimetype@5.0.0:
+    optional: true
 
   whatwg-url@16.0.1:
     dependencies:
@@ -12703,6 +12773,7 @@ snapshots:
       webidl-conversions: 8.0.1
     transitivePeerDependencies:
       - '@noble/hashes'
+    optional: true
 
   whatwg-url@5.0.0:
     dependencies:
@@ -12788,9 +12859,11 @@ snapshots:
     dependencies:
       is-wsl: 3.1.1
 
-  xml-name-validator@5.0.0: {}
+  xml-name-validator@5.0.0:
+    optional: true
 
-  xmlchars@2.2.0: {}
+  xmlchars@2.2.0:
+    optional: true
 
   xtend@4.0.2: {}
 
