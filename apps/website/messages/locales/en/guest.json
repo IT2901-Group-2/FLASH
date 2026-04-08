@@ -94,13 +94,7 @@
       "imageTitle": "Photo {index}",
       "errors": {
         "uploadUnavailable": "Unable to upload images for this event.",
-        "uploadPartialFailure": "One or more images failed to upload. Please try again."
-      },
-      "survey": {
-        "title": "Thanks for uploading photos!",
-        "descriptionLead": "Would you share your feedback with us?",
-        "descriptionDetails": "We are a student bachelor project at NTNU that would love to hear your thoughts on the experience of the application.",
-        "cta": "Go to survey"
+        "uploadFailed": "{count, plural, one {Could not upload photo} other {Some photos could not be uploaded}}"
       }
     }
   }

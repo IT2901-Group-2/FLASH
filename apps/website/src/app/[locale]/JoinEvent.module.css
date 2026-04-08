@@ -6,5 +6,12 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: min-content;
+  width: 100%;
+}
+
+.wrapper {
+  width: clamp(20rem, 50vw, 27rem);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }

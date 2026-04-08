@@ -1,4 +1,4 @@
-.button {
+.button:not([data-variant="icon"]) {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,8 +11,14 @@
   border: none;
   font-size: var(--font-size-large);
 
+  cursor: pointer;
+
   &[data-fill="true"] {
     width: 100%;
+  }
+
+  &.loading {
+    position: relative;
   }
 
   &:hover:not(:active, .loading, .disabled) {
@@ -28,33 +34,29 @@
   }
 
   &[data-variant="primary"] {
-    background-color: var(--bg-strong);
+    background-color: var(--color-base);
     color: white;
 
-    &:hover {
-      background-color: var(--bg-strong-hover);
+    &:hover:not(:disabled, .disabled) {
+      background-color: var(--color-light);
     }
 
-    &:active {
-      background-color: var(--bg-strong-pressed);
-    }
-
-    &:is(:disabled, .disabled) {
-      background-color: var(--bg-strong);
+    &:active:not(:disabled, .disabled) {
+      background-color: var(--color-dark);
     }
   }
 
   &[data-variant="secondary"] {
     background-color: transparent;
-    color: var(--text-default);
-    border: 0.125rem solid var(--border-strong);
+    color: var(--color-text-base);
+    border: 0.125rem solid var(--color-base);
 
     &:hover {
-      background-color: var(--bg-moderate-hoverT);
+      background-color: color-mix(in srgb, var(--color-light) 50%, transparent);
     }
 
     &:active {
-      background-color: var(--bg-moderate-pressedT);
+      background-color: color-mix(in srgb, var(--color-dark) 50%, transparent);
     }
 
     &:is(:disabled, .disabled) {
@@ -64,14 +66,14 @@
 
   &[data-variant="tertiary"] {
     background-color: transparent;
-    color: var(--text-default);
+    color: var(--color-text-base);
 
     &:hover {
-      background-color: var(--bg-moderate-hoverT);
+      background-color: color-mix(in srgb, var(--color-light) 50%, transparent);
     }
 
     &:active {
-      background-color: var(--bg-moderate-pressedT);
+      background-color: color-mix(in srgb, var(--color-dark) 50%, transparent);
     }
 
     &:is(:disabled, .disabled) {
@@ -86,5 +88,63 @@
   &[data-size="xsmall"] {
     height: 2rem;
     font-size: var(--font-size-small);
+  }
+}
+
+.loaderOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  display: inline-flex;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.button[data-variant="icon"] {
+  outline: none;
+  border: 0.1rem solid var(--color-border-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-8);
+  cursor: pointer;
+  background-color: var(--color-primary-base);
+  color: inherit;
+
+  transform: none;
+
+  aspect-ratio: 1/1;
+
+  &:hover {
+    background-color: var(--color-primary-light);
+  }
+  &:active {
+    background-color: var(--color-primary-dark);
+  }
+
+  > span:not(.loaderOverlay) {
+    width: 1.5rem;
+    height: 1.5rem;
+    aspect-ratio: 1/1;
+    > svg {
+      color: var(--color-text-base);
+    }
+  }
+
+  /* 8 is default */
+  &[data-radius="16"] {
+    border-radius: var(--radius-16);
+  }
+  &[data-radius="full"] {
+    border-radius: var(--radius-full);
   }
 }

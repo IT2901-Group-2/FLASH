@@ -11,7 +11,14 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
    * Changes design and interaction-visuals.
    * @default "primary"
    */
-  variant?: "primary" | "secondary" | "tertiary";
+  variant?: "primary" | "secondary" | "tertiary" | "icon";
+  /**
+   * The border-radius of the button.
+   *
+   * **IS ONLY AVAILABLE WHEN `variant="icon"`**
+   * @default "8"
+   */
+  radius?: "8" | "16" | "full";
   /**
    * Changes padding, height and font-size
    * @default "medium"
@@ -64,10 +71,11 @@ export const Button = ({
   size = "medium",
   loading = false,
   disabled,
-  "data-color": data = "neutral",
+  "data-color": color = "brand-purple",
   icon,
   iconPosition = "left",
   className,
+  radius,
   type = "button",
   fill = false,
   ...rest
@@ -78,14 +86,26 @@ export const Button = ({
   const handleKeyUp = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === " " && !disabled && !loading) e.currentTarget.click();
   };
+
+  const iconNode = icon ? (
+    <span
+      aria-hidden={loading ? true : undefined}
+      className={cl(styles.icon, loading && styles.hidden)}
+    >
+      {icon}
+    </span>
+  ) : null;
+
   return (
     <button
-      data-color={data}
+      data-color={color}
       data-variant={variant}
       data-size={size}
       data-fill={fill}
+      data-radius={radius}
       onKeyUp={handleKeyUp}
       {...filterProps}
+      aria-busy={loading || undefined}
       className={cl(
         styles.button,
         loading && styles.loading,
@@ -95,10 +115,16 @@ export const Button = ({
       disabled={disabled || loading}
       type={type}
     >
-      {icon && iconPosition === "left" && icon}
-      {loading && <Loader size={size} variant="inverted" />}
-      {children && !loading && <span>{children}</span>}
-      {icon && iconPosition === "right" && icon}
+      {icon && iconPosition === "left" && iconNode}
+      {loading && (
+        <span className={styles.loaderOverlay}>
+          <Loader size={size} variant="inverted" />
+        </span>
+      )}
+      {children && (
+        <span className={loading ? styles.hidden : undefined}>{children}</span>
+      )}
+      {icon && iconPosition === "right" && iconNode}
     </button>
   );
 };

@@ -6,31 +6,34 @@
   width: 100%;
   padding: 1rem 2rem;
 
-  background-color: var(--bg-raised);
-  border-bottom: 1px solid var(--border-focus);
+  background-color: var(--color-primary-base);
+  border-bottom: 1px solid var(--color-border-base);
 }
 
 .infoSection {
   display: flex;
   flex-direction: row;
-  justify-content: center;
   align-items: center;
   gap: 1rem;
+  min-width: 0;
 
   .backButton {
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
     aspect-ratio: 1/1;
     padding: 0.25rem;
     border-radius: var(--radius-8);
     cursor: pointer;
+    flex-shrink: 0;
+    border: 0.1rem solid transparent;
 
     &:hover {
-      background-color: var(--bg-moderate);
+      background-color: var(--color-primary-light);
+      border-color: var(--color-border-base);
     }
 
     &:active {
-      background-color: var(--bg-moderate-pressed);
+      background-color: var(--color-primary-dark);
     }
   }
 }
@@ -41,6 +44,8 @@
   justify-content: center;
   align-items: start;
   gap: 0.25rem;
+  min-width: 0;
+  width: clamp(15rem, 70%, 100dvw);
 
   > *:not(:first-child) {
     display: flex;
@@ -48,9 +53,10 @@
     align-items: center;
     gap: 0.5rem;
     justify-content: start;
+    min-width: 0;
 
     font-size: var(--font-size-small);
-    color: var(--text-subtle);
+    color: var(--color-text-tertiary);
 
     &:not(:last-child) {
       font-weight: var(--font-weight-bold);
@@ -64,6 +70,26 @@
   flex-direction: row;
   width: min-content;
   gap: 0.5rem;
+}
+
+.user {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  width: 100%;
+
+  > svg {
+    flex-shrink: 0;
+  }
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 @media screen and (max-width: 768px) {

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button } from "./Button";
 import { expect, fn, userEvent, within } from "storybook/test";
-import { GamepadDirectional } from "lucide-react";
+import { GamepadDirectional, Star } from "lucide-react";
 
 const TestIcon = <GamepadDirectional data-testid="test-icon" />;
 
@@ -55,13 +55,16 @@ export const Variants: Story = {
       <Button variant="primary">Primary</Button>
       <Button variant="secondary">Secondary</Button>
       <Button variant="tertiary">Tertiary</Button>
+      <Button variant="icon" data-color="primary">
+        <Star />
+      </Button>
     </>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const buttons = canvas.getAllByRole("button");
 
-    await expect(buttons).toHaveLength(3);
+    await expect(buttons).toHaveLength(4);
     await expect(canvas.getByRole("button", { name: /primary/i })).toBeInTheDocument();
     await expect(canvas.getByRole("button", { name: /secondary/i })).toBeInTheDocument();
     await expect(canvas.getByRole("button", { name: /tertiary/i })).toBeInTheDocument();
@@ -184,16 +187,52 @@ export const Loading: Story = {
     children: "Loading Button",
     onClick: fn(),
   },
-  play: async ({ canvasElement, step }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
     const button = canvas.getByRole("button");
 
-    await step("Button shows loading state", async () => {
-      await expect(button).toBeInTheDocument();
+    await step("Button is disabled during loading", async () => {
+      await expect(button).toBeDisabled();
     });
 
-    await step("Loading button may prevent interaction", async () => {
+    await step("Button has aria-busy set", async () => {
+      await expect(button).toHaveAttribute("aria-busy", "true");
+    });
+
+    await step("Button renders a loader", async () => {
+      await expect(canvas.getByTitle("Waiting...")).toBeInTheDocument();
+    });
+
+    await step("Button content is present in DOM but visually hidden", async () => {
+      await expect(canvas.getByText("Loading Button")).toBeInTheDocument();
+    });
+
+    await step("Clicking a loading button does not fire onClick", async () => {
       await userEvent.click(button);
+      await expect(args.onClick).not.toHaveBeenCalled();
+    });
+  },
+};
+
+export const LoadingWithIcon: Story = {
+  args: {
+    variant: "primary",
+    loading: true,
+    icon: TestIcon,
+    iconPosition: "right",
+    children: "Uploading",
+    onClick: fn(),
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Loader is shown", async () => {
+      await expect(canvas.getByTitle("Waiting...")).toBeInTheDocument();
+    });
+
+    await step("Icon is present in DOM but aria-hidden during loading", async () => {
+      const iconWrapper = canvas.getByTestId("test-icon").closest("span");
+      await expect(iconWrapper).toHaveAttribute("aria-hidden", "true");
     });
   },
 };

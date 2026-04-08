@@ -69,7 +69,7 @@ export const EditEventDialog = ({
   };
 
   return (
-    <Dialog ref={ref} {...rest}>
+    <Dialog ref={ref} closedby="none" {...rest}>
       <ProgressDots
         maxValue={EDIT_STEPS.length}
         value={currentStepIndex + 1}
@@ -81,18 +81,18 @@ export const EditEventDialog = ({
         )}
 
         <div className={styles.buttonGroup}>
-          <Button variant="tertiary" onClick={handleClose}>
+          <Button variant="tertiary" data-color="neutral" onClick={handleClose}>
             {t("cancel")}
           </Button>
 
           {!isOnFirstStep && (
-            <Button variant="secondary" onClick={goToPreviousStep}>
+            <Button variant="secondary" data-color="neutral" onClick={goToPreviousStep}>
               {t("previous")}
             </Button>
           )}
 
           {!isOnLastStep ? (
-            <Button variant="secondary" onClick={tryGoToNextStep}>
+            <Button variant="secondary" data-color="neutral" onClick={tryGoToNextStep}>
               {t("next")}
             </Button>
           ) : (

@@ -3,6 +3,7 @@
     "back": "Tilbake",
     "close": "Lukk",
     "cancel": "Avbryt",
+    "delete": "Slett",
     "previous": "Forrige",
     "next": "Neste",
     "create": "Opprett",
@@ -16,7 +17,7 @@
     "uploadImage": "Last opp bilde",
     "slideshow": "Lysbildefremvisning",
     "createNewEvent": "Lag nytt arrangement",
-    "downloadQrCode": "Last ned QR-kode",
+    "shareEvent": "Del arrangement",
     "copyLink": "Kopier lenke"
   },
   "roles": {

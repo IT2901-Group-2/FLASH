@@ -1,14 +1,16 @@
 .switch {
-  --color-text: var(--text-neutral);
-  --color-description: var(--text-neutral-decoration);
-  --color-unchecked: var(--border-neutral);
-  --color-unchecked-readonly: var(--border-neutral-subtleT);
-  --color-unchecked-bg: var(--bg-input);
-  --color-unchecked-bg-hover: var(--bg-neutral-moderate-hover);
+  --color-text: var(--color-text-base);
+  --color-description: var(--color-text-secondary);
 
-  --color-checked: var(--bg-strong);
-  --color-checked-thumb: var(--bg-raised);
-  --color-checked-hover: var(--bg-strong-hover);
+  --color-unchecked: var(--color-border-light);
+  --color-unchecked-readonly: var(--color-border-light);
+
+  --color-unchecked-bg: var(--color-border-base);
+  --color-unchecked-bg-hover: var(--color-border-dark);
+
+  --color-checked: var(--color-dark);
+  --color-checked-thumb: var(--color-background-base);
+  --color-checked-hover: var(--color-base);
 
   width: fit-content;
   min-height: 3rem;
@@ -32,10 +34,6 @@
   .switch--small > & {
     height: 2rem;
     width: 2.5rem;
-  }
-
-  &:focus {
-    border: 2px solid red;
   }
 }
 
@@ -100,23 +98,20 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .input:hover:not(:disabled) ~ .track,
-  .input:focus:not(:disabled) ~ .track {
+  .input:hover:not(:disabled) ~ .track {
     background-color: var(--color-unchecked-bg-hover);
     > .thumb {
       transform: translateX(0.15rem);
     }
   }
-  .input:checked:hover:not(:disabled) ~ .track,
-  .input:checked:focus:not(:disabled) ~ .track {
+  .input:checked:hover:not(:disabled) ~ .track {
     background-color: var(--color-checked-hover);
     border-color: var(--color-checked-hover);
     > .thumb {
       transform: translateX(1.1rem);
     }
   }
-  .switch--small > .input:checked:hover:not(:disabled) ~ .track > .thumb,
-  .switch--small > .input:checked:focus:not(:disabled) ~ .track > .thumb {
+  .switch--small > .input:checked:hover:not(:disabled) ~ .track > .thumb {
     transform: translateX(0.875rem);
   }
 

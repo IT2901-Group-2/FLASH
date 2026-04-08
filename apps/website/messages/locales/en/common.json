@@ -3,6 +3,7 @@
     "back": "Back",
     "close": "Close",
     "cancel": "Cancel",
+    "delete": "Delete",
     "previous": "Previous",
     "next": "Next",
     "create": "Create",
@@ -16,7 +17,7 @@
     "uploadImage": "Upload Image",
     "slideshow": "Slideshow",
     "createNewEvent": "Create New Event",
-    "downloadQrCode": "Download QR Code",
+    "shareEvent": "Share Event",
     "copyLink": "Copy Link"
   },
   "roles": {

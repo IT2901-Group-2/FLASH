@@ -29,7 +29,7 @@ export default function SignInCard() {
       >
         {t("heading")}
       </Title>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className={styles.content}>
         <Input
           className={styles.inputComponent}
           aria-label={c("fields.password")}
