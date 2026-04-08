@@ -211,12 +211,6 @@ export default function Page() {
           onTouchStart={handlePreviewTouchStart}
           onTouchEnd={handlePreviewTouchEnd}
         >
-          <X className={styles.previewClose} onClick={closePreview} />
-          {images.length > 1 && (
-            <button className={styles.previewNavButtonLeft} onClick={prevPreviewImage}>
-              <ChevronLeft />
-            </button>
-          )}
           <Image
             fill
             src={previewImage.src}
@@ -224,10 +218,30 @@ export default function Page() {
             className={styles.previewFullscreenImage}
             sizes="100vw"
           />
+          <Button
+            className={styles.previewClose}
+            onClick={closePreview}
+            variant="icon"
+            icon={<X />}
+          />
           {images.length > 1 && (
-            <button className={styles.previewNavButtonRight} onClick={nextPreviewImage}>
-              <ChevronRight />
-            </button>
+            <>
+              <button>
+                <ChevronLeft />
+              </button>
+              <Button
+                className={styles.previewNavButtonLeft}
+                onClick={prevPreviewImage}
+                variant="icon"
+                icon={<ChevronLeft />}
+              />
+              <Button
+                className={styles.previewNavButtonRight}
+                onClick={nextPreviewImage}
+                variant="icon"
+                icon={<ChevronRight />}
+              />
+            </>
           )}
         </div>
       )}

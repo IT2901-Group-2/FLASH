@@ -11,7 +11,14 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
    * Changes design and interaction-visuals.
    * @default "primary"
    */
-  variant?: "primary" | "secondary" | "tertiary";
+  variant?: "primary" | "secondary" | "tertiary" | "icon";
+  /**
+   * The border-radius of the button.
+   *
+   * **IS ONLY AVAILABLE WHEN `variant="icon"`**
+   * @default "8"
+   */
+  radius?: "8" | "16" | "full";
   /**
    * Changes padding, height and font-size
    * @default "medium"
@@ -68,6 +75,7 @@ export const Button = ({
   icon,
   iconPosition = "left",
   className,
+  radius,
   type = "button",
   fill = false,
   ...rest
@@ -94,6 +102,7 @@ export const Button = ({
       data-variant={variant}
       data-size={size}
       data-fill={fill}
+      data-radius={radius}
       onKeyUp={handleKeyUp}
       {...filterProps}
       aria-busy={loading || undefined}

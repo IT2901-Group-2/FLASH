@@ -33,23 +33,6 @@
   position: absolute;
   right: 1rem;
   top: 1rem;
-  width: 2.5rem;
-  height: 2.5rem;
-  padding: 0.25rem;
-  border-radius: var(--radius-8);
-  color: inherit;
-  background-color: var(--bg-input);
-  box-shadow: var(--shadow-dialog);
-  cursor: pointer;
-  z-index: 1;
-
-  &:hover {
-    background-color: var(--bg-raised);
-  }
-
-  &:active {
-    background-color: var(--bg-sunken);
-  }
 }
 
 .previewNavButtonLeft,
@@ -57,27 +40,6 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  outline: none;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: var(--radius-8);
-  cursor: pointer;
-  background-color: var(--bg-input);
-  color: inherit;
-  box-shadow: var(--shadow-dialog);
-  z-index: 1;
-
-  &:hover {
-    background-color: var(--bg-raised);
-  }
-
-  &:active {
-    background-color: var(--bg-sunken);
-  }
 }
 
 .previewNavButtonLeft {
