@@ -1,4 +1,5 @@
 import { CreateEvent } from "@/db";
+import { parseTimeOrDate } from "@/utils/date-utils";
 import { Path } from "react-hook-form";
 
 export type TimePreset = "full" | "specific";
@@ -26,3 +27,13 @@ export interface FormStepConfig {
   Component: React.ComponentType;
   fields: Path<CreateEvent>[];
 }
+
+export const DEFAULT_FORM_DATA: CreateEvent = {
+  name: "",
+  description: "",
+  uploadLimit: 1,
+  // autoApprove: false,
+  // seeAllPictures: false,
+  startDate: parseTimeOrDate(TIME_PRESETS.full.startTime),
+  endDate: parseTimeOrDate(TIME_PRESETS.full.endTime),
+};

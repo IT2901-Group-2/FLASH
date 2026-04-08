@@ -14,11 +14,11 @@ export const OptionsStep = () => {
 
   const uploadLimit = watch("uploadLimit");
   const [limitMode, setLimitMode] = useState<"limited" | "unlimited">(
-    uploadLimit === undefined ? "unlimited" : "limited"
+    uploadLimit === null ? "unlimited" : "limited"
   );
 
   useEffect(() => {
-    if (limitMode === "unlimited") setValue("uploadLimit", undefined);
+    if (limitMode === "unlimited") setValue("uploadLimit", null);
   }, [limitMode, setValue]);
 
   return (
@@ -41,6 +41,8 @@ export const OptionsStep = () => {
                 {...register("uploadLimit", {
                   valueAsNumber: true,
                   min: { value: 1, message: "This has to be at least 1" },
+                  required:
+                    limitMode === "limited" ? "Please specify the upload limit" : false,
                 })}
                 error={errors.uploadLimit?.message}
                 aria-label={tFields("maxImages")}

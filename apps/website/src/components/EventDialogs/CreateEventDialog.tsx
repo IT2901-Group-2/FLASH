@@ -9,18 +9,7 @@ import { useCreateEventMutation } from "@/hooks/useEvents";
 import { FORM_STEPS } from "./formSteps";
 import { CreateEvent, Event } from "@/db";
 import { useForm, FormProvider } from "react-hook-form";
-import { TIME_PRESETS } from "./defaults";
-import { parseTimeOrDate } from "@/utils/date-utils";
-
-const DEFAULT_FORM_DATA: CreateEvent = {
-  name: "",
-  description: "",
-  uploadLimit: 1,
-  // autoApprove: false,
-  // seeAllPictures: false,
-  startDate: parseTimeOrDate(TIME_PRESETS.full.startTime),
-  endDate: parseTimeOrDate(TIME_PRESETS.full.endTime),
-};
+import { DEFAULT_FORM_DATA } from "./defaults";
 
 interface CreateEventDialogProps extends RefAttributes<HTMLDialogElement> {
   onClose?: () => void;
