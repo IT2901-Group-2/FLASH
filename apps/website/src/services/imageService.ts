@@ -117,29 +117,35 @@ export class ImageService {
   uploadImage(eventId: string, image: SharpInput): AsyncResult<Image, Error> {
     const imageId = uid.rnd();
 
-    return getEventCookie(eventId, JWT_SECRET)
-      .mapError(
+    return Result.genCatching(this, function* () {
+      const { userId } = yield* getEventCookie(eventId, JWT_SECRET).mapError(
         () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
-      )
-      .map(({ userId }) =>
-        Result.try(() => sharp(image))
-          .map(sharpImage => this.validateImage(sharpImage))
-          .mapCatching(sharpImage => sharpImage.clone().rotate().webp().toBuffer())
-          .map(buff => this.storage.write(`${imageId}.webp`, buff))
-          .map(() =>
-            Result.try(() =>
-              this.dbService.db
-                .insert(imageTable)
-                .values({ id: imageId, userId, eventId })
-                .returning()
-            )
-              .map(rows => getFirstRow(rows, "Failed to upload image"))
-              .onSuccess(() => this.dbService.flush())
-              .onFailure(async () => {
-                await this.storage.rm(`${imageId}.webp`).getOrNull();
-              })
-          )
       );
+
+      const sharpImage = yield* this.validateImage(sharp(image)).map(sharpImage =>
+        sharpImage.rotate().webp()
+      );
+
+      yield* Result.try(() => sharpImage.clone().toBuffer()).map(buff =>
+        this.storage.write(`${imageId}.webp`, buff)
+      );
+
+      const previewImage = yield* Result.try(() =>
+        sharpImage.clone().resize({ width: 32, height: 32 }).blur().toBuffer()
+      ).map(buff => `data:image/webp;base64,${buff.toString("base64")}`);
+
+      return Result.try(() =>
+        this.dbService.db
+          .insert(imageTable)
+          .values({ id: imageId, userId, eventId, previewImage })
+          .returning()
+      )
+        .map(rows => getFirstRow(rows, "Failed to upload image"))
+        .onSuccess(() => this.dbService.flush())
+        .onFailure(async () => {
+          await this.storage.rm(`${imageId}.webp`).getOrNull();
+        });
+    });
   }
 
   /**

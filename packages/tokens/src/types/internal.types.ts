@@ -1,29 +1,6 @@
-import { ColorRole } from "./output.types";
-
-/* --- Color Scale --- */
-
-type ColorScale =
-  | "100"
-  | "200"
-  | "300"
-  | "400"
-  | "500"
-  | "600"
-  | "700"
-  | "800"
-  | "900"
-  | "1000"
-  | "000"
-  | "100T"
-  | "200T"
-  | "300T"
-  | "400T";
-
-type GlobalColorKeys =
-  | `${Extract<ColorRole, "neutral">}-${Extract<ColorScale, "000">}`
-  | `${ColorRole}-${Exclude<ColorScale, "000">}`;
-
-export type { ColorScale, GlobalColorKeys };
+/* --- Color Scale ---*/
+export type ColorScale = "base" | "dark" | "light";
+export type TextColorScale = ColorScale | "secondary" | "tertiary" | "contrast";
 
 /* --- Font Family --- */
 

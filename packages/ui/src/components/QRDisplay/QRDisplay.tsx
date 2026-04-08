@@ -1,7 +1,6 @@
 import styles from "./QRDisplay.module.css";
 import QRCode from "react-qr-code";
 import { cl } from "@//util/helpers/className";
-import { BgInput, Neutral1000 } from "@flash/tokens/js";
 
 export interface QRDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
@@ -44,8 +43,8 @@ const QRDisplay = ({
         value={value}
         level="H"
         className={styles.qrCode}
-        bgColor={BgInput}
-        fgColor={Neutral1000}
+        bgColor="transparent"
+        fgColor="currentColor"
       />
       <div className={styles.text}>
         {code && <span className={styles.code}>{code}</span>}

@@ -16,6 +16,8 @@ const mockImage: Image = {
   eventId: "event-id",
   createdAt: new Date(),
   updatedAt: new Date(),
+  previewImage:
+    "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAABQBQCdASogACAAPm00lUgkIyIhKAgAgA2JaQAA7MJS5IHjB4zLDA3J/kcpw0UNvpizMgAA/v1gU0XW/gLycFAkFtvekNcR3uBZWSxKpCS/DRKoYDyfFd4K1aODamUYMds9wossRPwW7bY0CxN7V+npngAAAA==",
   isApproved: true,
 };
 

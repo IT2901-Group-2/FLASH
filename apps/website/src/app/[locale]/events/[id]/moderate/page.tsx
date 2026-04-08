@@ -68,8 +68,6 @@ export default function ModeratePage() {
         }
       : undefined;
 
-  const selectionDescription = t("selectionDescription", { count: selectedIds.size });
-
   return (
     <div className={styles.pageWrapper}>
       <ModerateHeader
@@ -92,6 +90,7 @@ export default function ModeratePage() {
               data-color="accent"
               value={activeTab}
               onChange={val => setActiveTab(val as Tab)}
+              data-testid="segmented-control"
             >
               <SegmentedControl.Item
                 value="pending"
@@ -128,7 +127,8 @@ export default function ModeratePage() {
                 title={t("imageTitle", { index: index + 1 })}
                 state={selectMode && selectedIds.has(image.id) ? "selected" : "default"}
                 onClick={() => handleImageClick(image.id)}
-                data-image-id={image.id}
+                data-testid={image.id}
+                placeholder={image.previewImage}
               />
             ))}
           </div>
@@ -142,15 +142,11 @@ export default function ModeratePage() {
         </div>
       )}
 
-      {/* Announces selection count to screen readers when it changes */}
-      <div aria-live="polite" aria-atomic="true" className={styles.srOnly}>
-        {selectedIds.size > 0 ? selectionDescription : ""}
-      </div>
-
       {selectedIds.size > 0 && (
         <div className={styles.actionCardContainer}>
           <ActionCard
-            description={selectionDescription}
+            data-testid="action-card"
+            description={t("selectionDescription", { count: selectedIds.size })}
             primaryButton={primaryButton}
             secondaryButton={secondaryButton}
           />

@@ -1,5 +1,4 @@
 import { ColorRole } from "@/types/output.types";
-import { NeutralColorTokenConfig } from "./roles/neutral.tokens";
 import { StyleDictionaryTokenConfig } from "@/tokens.utils";
 import { merge } from "@/utils/merge";
 import { AccentColorTokenConfig } from "./roles/accent.tokens";
@@ -7,12 +6,15 @@ import { SuccessColorTokenConfig } from "./roles/success.tokens";
 import { WarningColorTokenConfig } from "./roles/warning.tokens";
 import { DangerColorTokenConfig } from "./roles/danger.tokens";
 import { BrandPurpleColorTokenConfig } from "./roles/brand-purple.tokens";
+import { PrimaryColorTokenConfig } from "./roles/primary.tokens";
+import { NeutralColorTokenConfig } from "./roles/neutral.tokens";
 
 export const ColorTokenRoleConfig: Record<
-  ColorRole,
+  Exclude<ColorRole, "background">,
   StyleDictionaryTokenConfig<"color">
 > = {
   neutral: NeutralColorTokenConfig,
+  primary: PrimaryColorTokenConfig,
   accent: AccentColorTokenConfig,
   success: SuccessColorTokenConfig,
   warning: WarningColorTokenConfig,

@@ -23,7 +23,7 @@
 
 p {
   font-family: "Nunito Sans", sans-serif;
-  color: var(--color-neutral-1000);
+  color: var(--color-text-base);
 }
 
 .innerZoomElementWrapper > * {

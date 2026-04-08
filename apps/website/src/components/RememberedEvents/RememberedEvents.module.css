@@ -28,6 +28,6 @@
   overflow: hidden;
 
   &:hover {
-    background-color: var(--bg-default);
+    background-color: var(--color-primary-light);
   }
 }

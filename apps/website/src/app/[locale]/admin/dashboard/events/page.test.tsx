@@ -1,81 +1,47 @@
-import { render, screen } from "@testing-library/react";
-import { expect, vi, describe, it, beforeEach } from "vitest";
 import {
-  useCreateEventMutation,
-  useDeleteEventMutation,
-  useEventsQuery,
-  useUpdateEventMutation,
-} from "@/hooks/useEvents";
-import { UseMutationResult } from "@tanstack/react-query";
+  eventHooksMock,
+  makeEvent,
+  mockEventsLoaded,
+  mockEventsLoading,
+  mockRouter,
+  renderWithQuery,
+} from "@test-config";
+import { screen } from "@testing-library/react";
+import { expect, vi, describe, it } from "vitest";
+import { useEventsQuery } from "@/hooks/useEvents";
 import Page from "./page";
-import { CreateEvent, Event, UpdateEvent } from "@/db";
-import { createQueryClientWrapper } from "@test-config";
+import userEvent from "@testing-library/user-event";
 
-vi.mock("@/hooks/useEvents", () => ({
-  useEventsQuery: vi.fn(),
-  useCreateEventMutation: vi.fn(),
-  useUpdateEventMutation: vi.fn(),
-  useDeleteEventMutation: vi.fn(),
-}));
-
-vi.mock("@/components/CreateEventCard/CreateEventCard", () => ({
-  default: vi.fn(() => null),
-}));
-
-vi.mock("@/components/EventCard/EventCard", () => ({
-  default: vi.fn(({ data }) => <div data-testid="event-card">{data.name}</div>),
-}));
-
-const renderWithProviders = (ui: React.ReactNode) =>
-  render(ui, { wrapper: createQueryClientWrapper() });
+vi.mock("@/hooks/useEvents", () => eventHooksMock());
 
 describe("Page", () => {
-  beforeEach(() => {
-    vi.mocked(useEventsQuery).mockReturnValue({
-      data: undefined,
-      isLoading: false,
-    } as ReturnType<typeof useEventsQuery>);
-    vi.mocked(useCreateEventMutation).mockReturnValue({
-      mutateAsync: vi.fn(),
-      status: "idle",
-    } as unknown as UseMutationResult<Event, Error, CreateEvent>);
-    vi.mocked(useUpdateEventMutation).mockReturnValue({
-      mutateAsync: vi.fn(),
-      status: "idle",
-    } as unknown as UseMutationResult<
-      Event,
-      Error,
-      { eventId: string; data: UpdateEvent }
-    >);
-    vi.mocked(useDeleteEventMutation).mockReturnValue({
-      mutateAsync: vi.fn(),
-      status: "idle",
-    } as unknown as UseMutationResult<Event, Error, { eventId: string }>);
-  });
-
   it("shows the spinner when loading", () => {
-    vi.mocked(useEventsQuery).mockReturnValue({
-      data: undefined,
-      isLoading: true,
-    } as ReturnType<typeof useEventsQuery>);
-
-    renderWithProviders(<Page />);
-
+    vi.mocked(useEventsQuery).mockReturnValue(mockEventsLoading());
+    renderWithQuery(<Page />);
     expect(screen.getByTestId("loading-spinner")).toBeTruthy();
   });
 
-  it("shows events when loaded", () => {
-    vi.mocked(useEventsQuery).mockReturnValue({
-      data: {
-        pages: [{ items: [{ id: "1", name: "Test Event" }], nextCursor: null }],
-        pageParams: [undefined],
-      },
-      isLoading: false,
-    } as ReturnType<typeof useEventsQuery>);
+  it("shows events when loaded", async () => {
+    renderWithQuery(<Page />);
 
-    renderWithProviders(<Page />);
+    await expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument();
+    expect(screen.getByTestId("dialog")).toBeInTheDocument();
+  });
 
-    expect(screen.queryByTestId("loading-spinner")).toBeNull();
-    expect(screen.getAllByTestId("event-card")).toHaveLength(1);
+  it("opens the create dialog when clicked", async () => {
+    renderWithQuery(<Page />);
+
+    await userEvent.click(screen.getByText("createNewEvent"));
+    expect(screen.getByTestId("dialog")).toBeVisible();
+  });
+
+  it("navigates to an event page when clicked", async () => {
+    vi.mocked(useEventsQuery).mockReturnValue(
+      mockEventsLoaded([makeEvent({ id: "1", name: "Event 1" })])
+    );
+    renderWithQuery(<Page />);
+
+    await userEvent.click(screen.getByText("Event 1"));
+    expect(mockRouter.push).toHaveBeenCalledWith("./events/1");
   });
 });
