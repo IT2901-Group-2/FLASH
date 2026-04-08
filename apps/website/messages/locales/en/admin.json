@@ -33,7 +33,7 @@
               "full": "Full Day",
               "specific": "Specific Time",
               "startTime": "Start Time",
-              "endTime": "End Time "
+              "endTime": "End Time"
             },
             "description": "Choose a start and end time for your event.",
             "error": { "timeOrder": "Start time must be before end time" }
