@@ -78,6 +78,7 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
         </div>
       </Dialog>
       <EditEventCard
+        data-testid="edit-event-dialog"
         ref={dialogRef}
         event={data}
         onClose={() => dialogRef.current?.close()}
@@ -124,6 +125,7 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
           </div>
           <div className={styles.row}>
             <button
+              data-testid="edit-button"
               className={styles.actionButton}
               data-color="neutral"
               onClick={handleEdit}
@@ -131,6 +133,7 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
               <EditIcon size={20} />
             </button>
             <button
+              data-testid="delete-button"
               className={styles.actionButton}
               data-color="danger"
               onClick={handleDelete}
