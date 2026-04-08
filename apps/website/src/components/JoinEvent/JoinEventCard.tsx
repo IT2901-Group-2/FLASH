@@ -66,6 +66,7 @@ const JoinEventCard = () => {
           content={
             <form className={styles.content} onSubmit={handleSubmit}>
               <Input
+                data-color="brand-purple"
                 label={c("fields.eventCode")}
                 placeholder={t("fields.eventCode.placeholder")}
                 icon={<TextAlignStart />}

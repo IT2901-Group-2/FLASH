@@ -50,7 +50,7 @@ export const Transparent: Story = {
 export const Color: Story = {
   render: () => (
     <>
-      <Loader size="2xlarge" title="Waiting..." data-color="neutral" />
+      <Loader size="2xlarge" title="Waiting..." />
       <Loader size="2xlarge" title="Waiting..." data-color="accent" />
       <Loader size="2xlarge" title="Waiting..." data-color="brand-purple" />
       <Loader size="2xlarge" title="Waiting..." data-color="success" />

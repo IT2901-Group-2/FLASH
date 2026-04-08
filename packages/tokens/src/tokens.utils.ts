@@ -1,4 +1,3 @@
-import { ColorRole } from "@/types/output.types";
 import { merge } from "./utils/merge";
 
 export type ColorEntry = {
@@ -17,25 +16,6 @@ export type TokenTypes =
   | "global-font"
   | "data-color";
 
-export type SemanticTokenGroups = "background" | "border" | "text";
-
-export type FontGroups =
-  | "family"
-  | "line-height"
-  | "line-height-heading"
-  | "size"
-  | "size-heading"
-  | "weight";
-
-export type BreakpointGroups = "mobile first" | "desktop first";
-
-export type TokenGroup =
-  | ColorRole
-  | SemanticTokenGroups
-  | `${SemanticTokenGroups}.${ColorRole}`
-  | FontGroups
-  | BreakpointGroups;
-
 export type StyleDictionaryToken<T extends TokenTypes> = {
   /**
    * Token value
@@ -48,10 +28,6 @@ export type StyleDictionaryToken<T extends TokenTypes> = {
    * Token type
    */
   type: T;
-  /**
-   * Optional comment.
-   */
-  comment?: string;
 };
 
 export type StyleDictionaryTokenConfig<T extends TokenTypes> = {

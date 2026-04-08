@@ -3,7 +3,7 @@
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { QRDisplay, Title } from "@flash/ui";
+import { Button, QRDisplay, Title } from "@flash/ui";
 import styles from "./slideshow.module.css";
 import {
   ChevronLeft,
@@ -29,7 +29,7 @@ const Page = () => {
   const router = useRouter();
   const t = useTranslations("common.slideshow");
   const isIdle = useIdle(2000);
-  const fullScreenHandle = useFullScreenHandle();
+  const fullScreen = useFullScreenHandle();
 
   const [showQRCode, setShowQRCode] = useState<boolean>(true);
 
@@ -56,7 +56,7 @@ const Page = () => {
   const nextImage = () => setViewIndex(i => i + 1);
 
   return (
-    <FullScreen handle={fullScreenHandle}>
+    <FullScreen handle={fullScreen}>
       <div className={cl(styles.page, isIdle && styles.hideCursor)} data-testid="page">
         {!image && <p>{t("noApproved")}</p>}
         {image && (
@@ -88,26 +88,29 @@ const Page = () => {
           className={cl(styles.buttonArray, isIdle && styles.hidden)}
           data-testid="controls"
         >
-          <button onClick={prevImage}>
+          <Button variant="icon" onClick={prevImage}>
             <ChevronLeft />
-          </button>
-          <button onClick={toggle} data-testid="toggle-button">
+          </Button>
+          <Button variant="icon" onClick={toggle} data-testid="toggle-button">
             {paused ? <Play data-testid="play" /> : <Pause data-testid="pause" />}
-          </button>
-          <button onClick={nextImage}>
+          </Button>
+          <Button variant="icon" onClick={nextImage}>
             <ChevronRight />
-          </button>
-          <button onClick={() => setShowQRCode(v => !v)} data-testid="qr-button">
+          </Button>
+          <Button
+            variant="icon"
+            onClick={() => setShowQRCode(v => !v)}
+            data-testid="qr-button"
+          >
             <QrCode />
-          </button>
-          <button
-            onClick={() =>
-              fullScreenHandle.active ? fullScreenHandle.exit() : fullScreenHandle.enter()
-            }
+          </Button>
+          <Button
+            variant="icon"
+            onClick={fullScreen.active ? fullScreen.exit : fullScreen.enter}
             data-testid="fullscreen-button"
           >
-            {fullScreenHandle.active ? <Shrink /> : <Expand />}
-          </button>
+            {fullScreen.active ? <Shrink /> : <Expand />}
+          </Button>
         </div>
         {showQRCode && joinLink && (
           <QRDisplay value={joinLink} code={joinCode} className={styles.qrCode} />

@@ -2,7 +2,7 @@
 type ColorTheme = "light" | "dark";
 
 /* --- Main colors --- */
-type MainColorRole = "neutral" | "accent";
+type MainColorRole = "primary" | "accent" | "neutral";
 
 /* --- Status colors --- */
 type StatusColorRole = "success" | "warning" | "danger";
@@ -14,55 +14,6 @@ type BrandColorRole = "brand-purple";
 type ColorRole = MainColorRole | StatusColorRole | BrandColorRole;
 
 export type { ColorTheme, ColorRole, MainColorRole, StatusColorRole, BrandColorRole };
-
-/* --- Backgrounds tokens --- */
-
-type RootBackgroundToken = "default" | "input" | "raised" | "sunken" | "overlay";
-
-type StatelessBackgroundToken = "soft" | "softT" | "moderate" | "moderateT" | "strong";
-
-type StatefulBackgroundToken =
-  | "moderate-hover"
-  | "moderate-hoverT"
-  | "moderate-pressed"
-  | "moderate-pressedT"
-  | "strong-hover"
-  | "strong-pressed";
-
-type ColoredStatelessBackgroundToken = `${ColorRole}-${StatelessBackgroundToken}`;
-
-type ColoredStatefulBackgroundToken = `${ColorRole}-${StatefulBackgroundToken}`;
-
-export type {
-  RootBackgroundToken,
-  ColoredStatelessBackgroundToken,
-  ColoredStatefulBackgroundToken,
-  StatelessBackgroundToken,
-  StatefulBackgroundToken,
-};
-
-/* --- Text tokens --- */
-type LogoColorToken = "logo";
-type RootTextToken = `${LogoColorToken}-primary` | `${LogoColorToken}-secondary`;
-
-type ColoredTextToken =
-  | ColoredStatefulBackgroundToken
-  | `${ColoredStatefulBackgroundToken}-subtle`
-  | `${ColoredStatefulBackgroundToken}-decoration`
-  | `${ColoredStatefulBackgroundToken}-contrast`;
-
-export type { RootTextToken, ColoredTextToken };
-
-/* --- Border tokens --- */
-type RootBorderToken = "focus";
-
-type ColoredBorderToken =
-  | ColorRole
-  | `${ColorRole}-subtle`
-  | `${ColorRole}-subtleT`
-  | `${ColorRole}-strong`;
-
-export type { RootBorderToken, ColoredBorderToken };
 
 /* --- Shadow tokens --- */
 export type ShadowToken = "dialog";

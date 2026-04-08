@@ -3,11 +3,11 @@ import { DesignTokens, Filter } from "style-dictionary/types";
 import { formatDOCS, formatES6, transformCSS } from "./style-dictionary.formats";
 import {
   allTokens,
-  lightModeTokens,
   darkModeTokens,
-  rootTokens,
-  roleTokens,
   dataColorTokens,
+  lightModeTokens,
+  roleTokens,
+  rootTokens,
 } from "./tokens.config";
 import { DarkTokens, LightTokens } from "./tokens/colors/color.tokens";
 import { ColorRole } from "./types/output.types";
@@ -76,10 +76,11 @@ async function main() {
 }
 
 async function buildDataColorTokens() {
-  const rootSelector = `:root, [data-color=""], [data-color="neutral"]`;
+  const rootSelector = `:root, [data-color=""], [data-color="primary"]`;
 
   const colors: ColorRole[] = [
     "neutral",
+    "primary",
     "accent",
     "success",
     "warning",
@@ -103,7 +104,7 @@ async function buildDataColorTokens() {
     await buildCSSBundleForTokens({
       tokens: dataColorTokens(color),
       filename: `data-color-${color}.css`,
-      selector: color === "neutral" ? rootSelector : `[data-color=${color}]`,
+      selector: color === "primary" ? rootSelector : `[data-color=${color}]`,
       filter: async token => token.type === "data-color",
     });
   }

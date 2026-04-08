@@ -165,6 +165,7 @@ export const Colors: Story = {
   render: () => (
     <>
       <Title>Default</Title>
+      <Title data-color="primary">Primary</Title>
       <Title data-color="neutral">Neutral</Title>
       <Title data-color="accent">Accent</Title>
       <Title data-color="brand-purple">Brand Purple</Title>
@@ -177,6 +178,7 @@ export const Colors: Story = {
     const canvas = within(canvasElement);
 
     await step("All colors render with correct data attributes", async () => {
+      const primary = canvas.getByText("Primary").closest("[data-color]");
       const neutral = canvas.getByText("Neutral").closest("[data-color]");
       const accent = canvas.getByText("Accent").closest("[data-color]");
       const brandPurple = canvas.getByText("Brand Purple").closest("[data-color]");
@@ -184,6 +186,7 @@ export const Colors: Story = {
       const warning = canvas.getByText("Warning").closest("[data-color]");
       const danger = canvas.getByText("Danger").closest("[data-color]");
 
+      await expect(primary).toHaveAttribute("data-color", "primary");
       await expect(neutral).toHaveAttribute("data-color", "neutral");
       await expect(accent).toHaveAttribute("data-color", "accent");
       await expect(brandPurple).toHaveAttribute("data-color", "brand-purple");

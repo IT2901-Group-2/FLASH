@@ -106,63 +106,75 @@ export class ImageService {
    * @param image The image to upload.
    * @returns A result containing the newly inserted `Image` object or an error.
    */
-  uploadImage(eventId: string, image: SharpInput): AsyncResult<Image, Error> {
-    const imageId = uid.rnd();
+  /**
+ * Uploads the given image blob to the specified event.
+ *
+ * @param eventId The id of the event to upload the image into.
+ * @param image The image to upload.
+ * @returns A result containing the newly inserted `Image` object or an error.
+ */
+uploadImage(eventId: string, image: SharpInput): AsyncResult<Image, Error> {
+  const imageId = uid.rnd();
 
-    return getEventCookie(eventId, JWT_SECRET)
-      .mapError(
-        () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
-      )
-      .map(({ userId }) =>
-        Result.try(async () => {
-          const [event] = await this.dbService.db
-            .select({ uploadLimit: eventTable.uploadLimit })
-            .from(eventTable)
-            .where(eq(eventTable.id, eventId))
-            .limit(1);
+  return Result.genCatching(this, function* () {
+    const { userId } = yield* getEventCookie(eventId, JWT_SECRET).mapError(
+      () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
+    );
 
-          /** This should never happen since we check for the existence of the event before allowing uploads.
-           *  Was added to avoid "possibly 'undefined'" error on `event.uploadLimit`.
-           *  Can be removed if the warning message is deemed acceptable.
-           **/
-          if (!event) {
-            throw new HTTPError(`Event with id ${eventId} not found`, 404);
-          }
+    const [event] = yield* Result.try(() =>
+      this.dbService.db
+        .select({ uploadLimit: eventTable.uploadLimit })
+        .from(eventTable)
+        .where(eq(eventTable.id, eventId))
+        .limit(1)
+    );
 
-          const countRow = await this.dbService.db
-            .select({ count: sql<number>`count(*)` })
-            .from(imageTable)
-            .where(and(eq(imageTable.eventId, eventId), eq(imageTable.userId, userId)));
+    /** This should never happen since we check for the existence of the event before allowing uploads.
+     *  Was added to avoid "possibly 'undefined'" error on `event.uploadLimit`.
+     *  Can be removed if the warning message is deemed acceptable.
+     **/
+    if (!event) {
+      throw new HTTPError(`Event with id ${eventId} not found`, 404);
+    }
 
-          const uploadCount = Number(countRow[0]?.count ?? 0);
-          const uploadLimit = event.uploadLimit ?? Infinity;
+    const countRow = yield* Result.try(() =>
+      this.dbService.db
+        .select({ count: sql<number>`count(*)` })
+        .from(imageTable)
+        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.userId, userId)))
+    );
 
-          if (uploadCount >= uploadLimit) {
-            throw new HTTPError("Upload limit reached", 403);
-          }
+    const uploadCount = Number(countRow[0]?.count ?? 0);
+    const uploadLimit = event.uploadLimit ?? Infinity;
 
-          return userId;
-        }).map(userId =>
-          Result.try(() => sharp(image))
-            .map(sharpImage => this.validateImage(sharpImage))
-            .mapCatching(sharpImage => sharpImage.clone().rotate().webp().toBuffer())
-            .map(buff => this.storage.write(`${imageId}.webp`, buff))
-            .map(() =>
-              Result.try(() =>
-                this.dbService.db
-                  .insert(imageTable)
-                  .values({ id: imageId, userId, eventId })
-                  .returning()
-              )
-                .map(rows => getFirstRow(rows, "Failed to upload image"))
-                .onSuccess(() => this.dbService.flush())
-                .onFailure(async () => {
-                  await this.storage.rm(`${imageId}.webp`).getOrNull();
-                })
-            )
-        )
-      );
-  }
+    if (uploadCount >= uploadLimit) {
+      throw new HTTPError("Upload limit reached", 403);
+    }
+
+    const sharpImage = yield* this.validateImage(sharp(image)).map(sharpImage =>
+      sharpImage.rotate().webp()
+    );
+
+    yield* Result.try(() => sharpImage.clone().toBuffer()).map(buff =>
+      this.storage.write(`${imageId}.webp`, buff)
+    );
+
+    const previewImage = yield* Result.try(() =>
+      sharpImage.clone().resize({ width: 32, height: 32 }).blur().toBuffer()
+    ).map(buff => `data:image/webp;base64,${buff.toString("base64")}`);
+
+    return Result.try(() =>
+      this.dbService.db
+        .insert(imageTable)
+        .values({ id: imageId, userId, eventId, previewImage })
+        .returning()
+    )
+      .map(rows => getFirstRow(rows, "Failed to upload image"))
+      .onSuccess(() => this.dbService.flush())
+      .onFailure(async () => {
+        await this.storage.rm(`${imageId}.webp`).getOrNull();
+      });
+  });
 
   /**
    * Updates multiple images in a single query.
