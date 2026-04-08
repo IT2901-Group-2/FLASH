@@ -22,6 +22,5 @@ export const mockFileUploadReady = (
   overrides: Partial<UseFileUploadReturn> = {}
 ): UseFileUploadReturn => ({
   ...defaultFileUploadReturn,
-  openFilePicker: vi.fn(),
   ...overrides,
 });
