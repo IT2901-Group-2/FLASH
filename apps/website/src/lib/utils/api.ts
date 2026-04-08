@@ -27,6 +27,39 @@ export default async function readResponseError(res: Response): Promise<string> 
   return `Request failed with status ${res.status} ${res.statusText}`;
 }
 
+let isRefreshing = false;
+let refreshPromise: Promise<void> | null = null;
+
+async function refreshAccessToken(): Promise<void> {
+  const res = await fetch("/api/auth/refresh", { method: "POST" });
+  if (!res.ok) {
+    const locale = document.cookie.match(/NEXT_LOCALE=([^;]+)/)?.[1] ?? "en";
+    window.location.href = `/${locale}/admin`;
+    throw new Error(await readResponseError(res));
+  }
+}
+
+async function buildRequest(
+  method: HTTPMethod,
+  data?: JSONObject | Blob
+): Promise<RequestInit> {
+  const body =
+    data === undefined
+      ? null
+      : data instanceof Blob
+        ? await data.arrayBuffer()
+        : JSON.stringify(parseAsJSON(data));
+
+  const contentType =
+    data === undefined ? null : data instanceof Blob ? data.type : "application/json";
+
+  return {
+    method,
+    body,
+    headers: contentType !== null ? { "Content-Type": contentType } : {},
+  };
+}
+
 /**
  * Helper function that fetches from the specified endpoint and parses
  * the response with the provided schema.
@@ -44,21 +77,29 @@ export async function makeRequest<T>(
   method: HTTPMethod = "GET",
   data?: JSONObject | Blob
 ): Promise<T> {
-  const body =
-    data === undefined
-      ? null
-      : data instanceof Blob
-        ? await data.arrayBuffer()
-        : JSON.stringify(parseAsJSON(data));
+  const requestInit = await buildRequest(method, data);
+  const response = await fetch(endpoint, requestInit);
 
-  const contentType =
-    data === undefined ? null : data instanceof Blob ? data.type : "application/json";
+  // On 401, attempt a single token refresh then retry
+  if (response.status === 401) {
+    // If a refresh isn't already in flight, start one
+    if (!isRefreshing) {
+      isRefreshing = true;
+      refreshPromise = refreshAccessToken().finally(() => {
+        isRefreshing = false;
+        refreshPromise = null;
+      });
+    }
 
-  const response = await fetch(endpoint, {
-    method,
-    body,
-    headers: contentType !== null ? { "Content-Type": contentType } : {},
-  });
+    // All concurrent 401s wait for the same refresh
+    await refreshPromise;
+
+    const retryResponse = await fetch(endpoint, requestInit);
+    if (!retryResponse.ok) {
+      throw new Error(await readResponseError(retryResponse));
+    }
+    return z.parseAsync(schema, await retryResponse.json().catch(() => undefined));
+  }
 
   if (!response.ok) {
     throw new Error(await readResponseError(response));
