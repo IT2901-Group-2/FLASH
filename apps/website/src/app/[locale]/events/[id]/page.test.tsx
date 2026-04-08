@@ -65,7 +65,7 @@ vi.mock("@/hooks/useImages", () => ({
   useUploadImageMutation: vi.fn(() => ({
     mutateAsync: mockUploadImage,
   })),
-  useInfiniteImagesQuery: vi.fn(() => ({
+  useImagesQuery: vi.fn(() => ({
     data: {
       pages: [
         {
@@ -183,7 +183,7 @@ describe("Guest Upload Page", () => {
 
   it("uses image query hook", () => {
     render(<Page />);
-    expect(useImagesModule.useInfiniteImagesQuery).toHaveBeenCalledWith("event-123", {
+    expect(useImagesModule.useImagesQuery).toHaveBeenCalledWith("event-123", {
       pageSize: 12,
     });
   });

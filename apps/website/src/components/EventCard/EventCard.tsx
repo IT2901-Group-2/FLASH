@@ -4,7 +4,7 @@ import styles from "./EventCard.module.css";
 import { cl } from "@/utils/className";
 import { Event } from "@/db";
 import { useDeleteEventMutation } from "@/hooks/useEvents";
-import { useInfiniteImagesQuery } from "@/hooks/useImages";
+import { useImagesQuery } from "@/hooks/useImages";
 import { MouseEvent, useMemo, useRef } from "react";
 import EditEventCard from "../EventDialogs/EditEventDialog";
 import { useTranslations } from "next-intl";
@@ -23,7 +23,7 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const deleteConfirmRef = useRef<HTMLDialogElement>(null);
   const { name, startDate, uploadLimit, id } = data;
-  const { data: imagePages } = useInfiniteImagesQuery(id);
+  const { data: imagePages } = useImagesQuery(id);
 
   const { totalPhotos, approvedPhotos, pendingPhotos } = useMemo(() => {
     const images = imagePages?.pages.flatMap(page => page.items) ?? [];

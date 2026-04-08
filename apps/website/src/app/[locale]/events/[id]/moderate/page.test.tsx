@@ -47,7 +47,7 @@ vi.mock("@/hooks/useImages", () => ({
     all: ["images"],
     event: (eventId?: string) => ["images", eventId],
   },
-  useInfiniteImagesQuery: vi.fn(() => ({
+  useImagesQuery: vi.fn(() => ({
     data: {
       pages: [
         {
@@ -188,10 +188,10 @@ vi.mock("@flash/ui", () => ({
 
 beforeEach(() => {
   vi.clearAllMocks();
-  // Reset useInfiniteImagesQuery to the default data after each test, since some tests
+  // Reset useImagesQuery to the default data after each test, since some tests
   // override it with mockReturnValue (e.g. the empty-state test) and
   // vi.clearAllMocks() does not reset mock return values / implementations.
-  vi.mocked(useImagesModule.useInfiniteImagesQuery).mockImplementation(
+  vi.mocked(useImagesModule.useImagesQuery).mockImplementation(
     () =>
       ({
         data: {
@@ -208,7 +208,7 @@ beforeEach(() => {
           pageParams: [undefined],
         },
         isLoading: false,
-      }) as unknown as ReturnType<typeof useImagesModule.useInfiniteImagesQuery>
+      }) as unknown as ReturnType<typeof useImagesModule.useImagesQuery>
   );
   vi.mocked(useImagesModule.useUpdateImageMutation).mockImplementation(
     () =>
@@ -239,16 +239,16 @@ describe("ModeratePage", () => {
   it("switching tabs updates the displayed images to match the selected status", () => {
     render(<ModeratePage />);
 
-    // Verify useInfiniteImagesQuery is called with pending initially
-    expect(useImagesModule.useInfiniteImagesQuery).toHaveBeenCalledWith("event-1", {
+    // Verify useImagesQuery is called with pending initially
+    expect(useImagesModule.useImagesQuery).toHaveBeenCalledWith("event-1", {
       approval: "pending",
     });
 
     // Click approved tab
     fireEvent.click(screen.getByTestId("tab-approved"));
 
-    // Verify useInfiniteImagesQuery is called with approved
-    expect(useImagesModule.useInfiniteImagesQuery).toHaveBeenCalledWith("event-1", {
+    // Verify useImagesQuery is called with approved
+    expect(useImagesModule.useImagesQuery).toHaveBeenCalledWith("event-1", {
       approval: "approved",
     });
   });
@@ -373,10 +373,10 @@ describe("ModeratePage", () => {
   });
 
   it("empty state renders when the active tab has zero images", () => {
-    vi.mocked(useImagesModule.useInfiniteImagesQuery).mockReturnValue({
+    vi.mocked(useImagesModule.useImagesQuery).mockReturnValue({
       data: { pages: [{ items: [], nextCursor: null }], pageParams: [undefined] },
       isLoading: false,
-    } as unknown as ReturnType<typeof useImagesModule.useInfiniteImagesQuery>);
+    } as unknown as ReturnType<typeof useImagesModule.useImagesQuery>);
 
     render(<ModeratePage />);
 

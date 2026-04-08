@@ -16,7 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { cl } from "@/utils/className";
-import { useInfiniteImagesQuery } from "@/hooks/useImages";
+import { useImagesQuery } from "@/hooks/useImages";
 import Image from "next/image";
 import { useIdle } from "@/hooks/useIdle";
 import { useInterval } from "@/hooks/useInterval";
@@ -46,7 +46,7 @@ const Page = () => {
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
-  } = useInfiniteImagesQuery(id, { approval: "pending", pageSize: IMAGE_PAGE_SIZE });
+  } = useImagesQuery(id, { approval: "pending", pageSize: IMAGE_PAGE_SIZE });
   const imageData = imagePages?.pages.flatMap(page => page.items) ?? [];
   const [viewIndex, setViewIndex, { paused, toggle }] = useInterval(
     imageData.length,

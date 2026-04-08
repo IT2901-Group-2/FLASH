@@ -58,7 +58,7 @@ export class EventService {
       updatedAt: eventTable.updatedAt,
     };
 
-    return Result.try(async () =>
+    return Result.try(() =>
       this.dbService.db
         .select()
         .from(eventTable)
@@ -74,12 +74,7 @@ export class EventService {
             status === "finished" ? lt(eventTable.endDate, now) : undefined
           )
         )
-        .orderBy(
-          sortBy !== undefined
-            ? sortOrder(sortColumnMap[sortBy])
-            : sortOrder(eventTable.id),
-          sortOrder(eventTable.id)
-        )
+        .orderBy(sortBy !== undefined ? sortOrder(sortColumnMap[sortBy]) : eventTable.id)
         .offset(offset)
         .limit(pageSize + 1)
     ).map(rows => ({

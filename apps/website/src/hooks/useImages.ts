@@ -75,7 +75,7 @@ export const imagesKeys = {
 /**
  * Fetches event images with cursor pagination for infinite loading.
  */
-export function useInfiniteImagesQuery(
+export function useImagesQuery(
   eventId?: string,
   params?: GetImagesParams,
   refetchInterval?: number

@@ -7,13 +7,12 @@ import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
-import { useInfiniteImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
+import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 import { getAdminDashboardEventRoute, routes } from "@/lib/routes";
 import Image from "next/image";
 
-// Used for pilot feedback collection. Should be removed after pilot is finished
 const IMAGE_PAGE_SIZE = 12;
 
 export default function Page() {
@@ -37,7 +36,7 @@ export default function Page() {
     isFetchingNextPage,
     fetchNextPage,
     isLoading: isImagesLoading,
-  } = useInfiniteImagesQuery(eventId, { pageSize: IMAGE_PAGE_SIZE });
+  } = useImagesQuery(eventId, { pageSize: IMAGE_PAGE_SIZE });
   const images = imagesPages?.pages.flatMap(page => page.items) ?? [];
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const hasUserScrolledRef = useRef(false);
@@ -119,7 +118,7 @@ export default function Page() {
     : routes.root;
 
   const { openFilePicker, FileInput } = useFileUpload({
-    multiple: true,
+    multiple: false,
     onFilesSelected: async files => {
       if (!eventId) {
         setUploadError(tUpload("errors.uploadUnavailable"));

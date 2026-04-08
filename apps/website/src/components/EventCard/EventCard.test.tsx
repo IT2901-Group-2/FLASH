@@ -3,11 +3,11 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import type { Event } from "@/db";
 import EventCard from "./EventCard";
 import { createQueryClientWrapper } from "@test-config";
-import { useInfiniteImagesQuery } from "@/hooks/useImages";
+import { useImagesQuery } from "@/hooks/useImages";
 import { useDeleteEventMutation } from "@/hooks/useEvents";
 
 vi.mock("@/hooks/useImages", () => ({
-  useInfiniteImagesQuery: vi.fn(() => ({
+  useImagesQuery: vi.fn(() => ({
     data: { pages: [{ items: [], nextCursor: null }], pageParams: [undefined] },
   })),
 }));
@@ -40,7 +40,7 @@ describe("EventCard", () => {
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
-    vi.mocked(useInfiniteImagesQuery).mockReturnValue({
+    vi.mocked(useImagesQuery).mockReturnValue({
       data: { pages: [{ items: [], nextCursor: null }], pageParams: [undefined] },
     } as never);
     vi.mocked(useDeleteEventMutation).mockReturnValue({ mutate: vi.fn() } as never);
@@ -105,7 +105,7 @@ describe("EventCard", () => {
   });
 
   test("renders image counters from fetched images", () => {
-    vi.mocked(useInfiniteImagesQuery).mockReturnValue({
+    vi.mocked(useImagesQuery).mockReturnValue({
       data: {
         pages: [
           {

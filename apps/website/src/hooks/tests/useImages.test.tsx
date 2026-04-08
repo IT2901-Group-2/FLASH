@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import {
   imagesKeys,
-  useInfiniteImagesQuery,
+  useImagesQuery,
   useUploadImageMutation,
   useUpdateImageMutation,
   useDeleteImageMutation,
@@ -34,7 +34,7 @@ function createWrapper() {
   return { wrapper, queryClient };
 }
 
-describe("useInfiniteImagesQuery", () => {
+describe("useImagesQuery", () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -51,7 +51,7 @@ describe("useInfiniteImagesQuery", () => {
       ) as unknown as typeof fetch
     );
 
-    const { result } = renderHook(() => useInfiniteImagesQuery("event-1"), {
+    const { result } = renderHook(() => useImagesQuery("event-1"), {
       wrapper: createWrapper().wrapper,
     });
 
@@ -66,7 +66,7 @@ describe("useInfiniteImagesQuery", () => {
     const fetchMock = vi.fn<typeof fetch>();
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() => useInfiniteImagesQuery(""), {
+    const { result } = renderHook(() => useImagesQuery(""), {
       wrapper: createWrapper().wrapper,
     });
 
@@ -86,7 +86,7 @@ describe("useInfiniteImagesQuery", () => {
       )
     );
 
-    const { result } = renderHook(() => useInfiniteImagesQuery("event-1"), {
+    const { result } = renderHook(() => useImagesQuery("event-1"), {
       wrapper: createWrapper().wrapper,
     });
 
@@ -105,7 +105,7 @@ describe("useInfiniteImagesQuery", () => {
 
     vi.stubGlobal("fetch", fetchMock);
 
-    renderHook(() => useInfiniteImagesQuery("event-1", { approval: "pending" }), {
+    renderHook(() => useImagesQuery("event-1", { approval: "pending" }), {
       wrapper: createWrapper().wrapper,
     });
 
@@ -122,7 +122,7 @@ describe("useInfiniteImagesQuery", () => {
 
     vi.stubGlobal("fetch", fetchMock);
 
-    renderHook(() => useInfiniteImagesQuery("event-1", { id: ["img-b", "img-a"] }), {
+    renderHook(() => useImagesQuery("event-1", { id: ["img-b", "img-a"] }), {
       wrapper: createWrapper().wrapper,
     });
 
@@ -145,7 +145,7 @@ describe("useInfiniteImagesQuery", () => {
       )
     );
 
-    const { result } = renderHook(() => useInfiniteImagesQuery("event-1"), {
+    const { result } = renderHook(() => useImagesQuery("event-1"), {
       wrapper: createWrapper().wrapper,
     });
 
@@ -184,12 +184,9 @@ describe("useInfiniteImagesQuery", () => {
 
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(
-      () => useInfiniteImagesQuery("event-1", { pageSize: 2 }),
-      {
-        wrapper: createWrapper().wrapper,
-      }
-    );
+    const { result } = renderHook(() => useImagesQuery("event-1", { pageSize: 2 }), {
+      wrapper: createWrapper().wrapper,
+    });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data?.pages[0]?.items.map(i => i.id)).toStrictEqual([
@@ -221,7 +218,7 @@ describe("useInfiniteImagesQuery", () => {
 
     vi.stubGlobal("fetch", fetchMock);
 
-    renderHook(() => useInfiniteImagesQuery("event-1", { cursor: 4, pageSize: 3 }), {
+    renderHook(() => useImagesQuery("event-1", { cursor: 4, pageSize: 3 }), {
       wrapper: createWrapper().wrapper,
     });
 

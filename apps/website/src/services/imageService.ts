@@ -56,7 +56,7 @@ export class ImageService {
   ): AsyncResult<GetImagesPage, Error> {
     const offset = cursor ?? 0;
 
-    return Result.try(async () =>
+    return Result.try(() =>
       this.dbService.db
         .select()
         .from(imageTable)

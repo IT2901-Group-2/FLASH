@@ -50,7 +50,7 @@ let mockHasNextPage = false;
 let mockIsFetchingNextPage = false;
 
 vi.mock("@/hooks/useImages", () => ({
-  useInfiniteImagesQuery: () => ({
+  useImagesQuery: () => ({
     data: {
       pages: [{ items: mockImages, nextCursor: mockHasNextPage ? 2 : null }],
       pageParams: [undefined],
