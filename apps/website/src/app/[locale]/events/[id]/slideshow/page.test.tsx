@@ -27,6 +27,7 @@ let mockPaused = false;
 let mockViewIndex = 0;
 let mockHasNextPage = false;
 let mockIsFetchingNextPage = false;
+let mockImageData = makeImages(3);
 
 vi.mock("@/hooks/useInterval", () => ({
   useInterval: () => [
@@ -63,12 +64,13 @@ describe("Slideshow Page", () => {
     mockHasNextPage = false;
     mockIsFetchingNextPage = false;
     mockFullscreenActive = false;
+    mockImageData = makeImages(3);
     vi.clearAllMocks();
 
     vi.mocked(useEventsQuery).mockReturnValue(mockEventsLoaded([makeEvent()]));
-    vi.mocked(useImagesQuery).mockReturnValue(
+    vi.mocked(useImagesQuery).mockImplementation(() =>
       mockImagesQueryResult({
-        data: makeImages(3),
+        data: mockImageData,
         hasNextPage: mockHasNextPage,
         isFetchingNextPage: mockIsFetchingNextPage,
         fetchNextPage: mockFetchNextPage,
@@ -178,7 +180,7 @@ describe("Slideshow Page", () => {
   describe("infinite prefetch", () => {
     it("prefetches the next page when approaching the end of loaded images", () => {
       mockHasNextPage = true;
-      mockViewIndex = 1;
+      mockViewIndex = 2;
 
       render(<Page />);
 
