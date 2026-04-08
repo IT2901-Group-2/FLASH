@@ -25,7 +25,7 @@ export const EditEventDialog = ({
   const [formKey, setFormKey] = useState<number>(0);
 
   const methods = useForm<UpdateEvent>({
-    defaultValues: { ...event, uploadLimit: event.uploadLimit ?? undefined },
+    defaultValues: event,
     mode: "onChange",
   });
 
