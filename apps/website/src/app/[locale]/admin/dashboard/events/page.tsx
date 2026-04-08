@@ -9,7 +9,7 @@ import { useEventsQuery } from "@/hooks/useEvents";
 import EventCard from "@/components/EventCard/EventCard";
 import { useRouter } from "next/navigation";
 
-const EVENTS_PAGE_SIZE = 25;
+const EVENTS_PAGE_SIZE = 12;
 
 const Page = () => {
   const t = useTranslations("pages.adminEvents");
