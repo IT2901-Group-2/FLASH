@@ -29,11 +29,11 @@ const COOKIE_OPTIONS = {
  * Returns `null` when running on the server or when the attribute is absent /
  * invalid, so callers can fall back to the configured default.
  */
-function getSSRResolvedTheme(): ResolvedTheme | null {
+export const getSSRResolvedTheme = (): ResolvedTheme | null => {
   if (typeof document === "undefined") return null;
   const attr = document.documentElement.getAttribute("data-theme");
   return isResolvedTheme(attr) ? attr : null;
-}
+};
 
 /**
  * Get the initial theme state on first render.
@@ -42,14 +42,11 @@ function getSSRResolvedTheme(): ResolvedTheme | null {
  * provided default theme. The returned object contains both the raw preference and
  * the resolved theme to avoid redundant work in the initial effects.
  */
-function getInitialState(defaultTheme: Theme): {
-  theme: Theme;
-  resolvedTheme: ResolvedTheme;
-} {
+export const getInitialState = (defaultTheme: Theme) => {
   const theme = getStoredThemePref() ?? defaultTheme;
   const resolvedTheme = getSSRResolvedTheme() ?? resolveThemePreference(theme);
   return { theme, resolvedTheme };
-}
+};
 
 export interface ThemeContextType {
   /**
