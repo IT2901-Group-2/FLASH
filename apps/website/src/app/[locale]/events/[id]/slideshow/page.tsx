@@ -46,7 +46,7 @@ const Page = () => {
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
-  } = useImagesQuery(id, { approval: "pending", pageSize: IMAGE_PAGE_SIZE });
+  } = useImagesQuery(id, { approval: "pending", pageSize: IMAGE_PAGE_SIZE }, INTERVAL);
   const imageData = imagePages?.pages.flatMap(page => page.items) ?? [];
   const [viewIndex, setViewIndex, { paused, toggle }] = useInterval(
     imageData.length,
