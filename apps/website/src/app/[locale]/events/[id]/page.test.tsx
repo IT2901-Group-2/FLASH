@@ -51,7 +51,7 @@ describe("Guest Upload Page", () => {
 
     it("uses image query hook", () => {
       render(<Page />);
-      expect(useImagesQuery).toHaveBeenCalledWith("event-123");
+      expect(useImagesQuery).toHaveBeenCalledWith("event-123", { pageSize: 12 });
     });
   });
 
