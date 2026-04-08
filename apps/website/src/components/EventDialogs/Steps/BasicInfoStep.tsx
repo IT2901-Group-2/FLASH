@@ -7,8 +7,7 @@ import { formatTimeForInput } from "@/utils/date-utils";
 import { EventTime } from "../defaults";
 
 export const BasicInfoStep = () => {
-  const tStep = useTranslations("admin.dashboard.event.create.basics");
-  const tFields = useTranslations("common.fields");
+  const t = useTranslations("admin.dashboard.event.basics");
 
   const { register, control, setValue } = useFormContext<CreateEvent>();
   const startDate = useWatch({ control, name: "startDate" });
@@ -43,15 +42,16 @@ export const BasicInfoStep = () => {
 
   return (
     <>
-      <Title description={tStep("description")}>{tStep("title")}</Title>
+      <Title description={t("description")}>{t("title")}</Title>
       <TextField
         {...register("name", {
-          required: "This is required",
-          minLength: { value: 3, message: "The title has to be at least 3 charachters." },
+          required: t("field.name.error.required"),
+          minLength: { value: 3, message: t("field.name.error.minLength", { min: 3 }) },
         })}
         error={errors.name?.message}
-        label={tFields("eventName")}
-        aria-label={tFields("eventName")}
+        label={t("field.name.title")}
+        description={t("field.name.description")}
+        aria-label={t("field.name")}
         required
         data-testid="name"
         autoFocus
@@ -59,8 +59,9 @@ export const BasicInfoStep = () => {
       <Textarea
         {...register("description")}
         error={errors.description?.message}
-        label={tFields("eventDescription")}
-        aria-label={tFields("eventDescription")}
+        label={t("field.description.title")}
+        description={t("field.description.description")}
+        aria-label={t("field.description.title")}
         data-testid="description"
         resize="vertical"
         maxRows={10}
@@ -68,10 +69,11 @@ export const BasicInfoStep = () => {
       <Controller
         name="startDate"
         control={control}
-        rules={{ required: "Both dates are required" }}
+        rules={{ required: t("field.dateRange.error.required") }}
         render={({ fieldState }) => (
           <DatePicker
-            label="Date range"
+            label={t("field.dateRange.title")}
+            description={t("field.dateRange.description")}
             data-color="accent"
             value={{ startDate, endDate }}
             onChange={handleDateRangeChange}
@@ -84,11 +86,10 @@ export const BasicInfoStep = () => {
         name="endDate"
         control={control}
         rules={{
-          required: "Both dates are required",
+          required: t("field.dateRange.error.required"),
           validate: v => {
-            if (startDate?.toDateString() === v?.toDateString()) {
-              return startDate < v || "Start time must be before end time";
-            }
+            if (startDate?.toDateString() === v?.toDateString())
+              return startDate < v || t("field.timeRange.error.timeOrder");
             return true;
           },
         }}
