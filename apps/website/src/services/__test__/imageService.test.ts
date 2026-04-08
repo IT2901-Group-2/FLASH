@@ -49,6 +49,9 @@ const mockImageData: Buffer[] = [
   "UklGRrIAAABXRUJQVlA4IKYAAACQAgCdASoPAA8AAUAmJYgCdDiMxykHTy50HtO8AAD++8G1B580sjDGPpDh93uU+bgfxCEm/3+2tc7RN22rSG4FqMYjjOvIZWgD/ZNezv/KyS2YaqxgJpl7uLr86Vw++V5DT9NfCapWpDoYoXSzivpGlEzsbSZS0xeHmlyxvl+v7f5jrsiEb7/gtD//YKU0VttwVoSyG47/Pe7ix8jv8BKs7gHbIAwA",
 ].map(data => Buffer.from(data, "base64"));
 
+const mockPreviewImage =
+  "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAABQBQCdASogACAAPm00lUgkIyIhKAgAgA2JaQAA7MJS5IHjB4zLDA3J/kcpw0UNvpizMgAA/v1gU0XW/gLycFAkFtvekNcR3uBZWSxKpCS/DRKoYDyfFd4K1aODamUYMds9wossRPwW7bY0CxN7V+npngAAAA==";
+
 type MockImage = typeof imageTable.$inferInsert & { imageData: Buffer };
 const mockImages: MockImage[] = [
   {
@@ -57,6 +60,7 @@ const mockImages: MockImage[] = [
     eventId: "birthday",
     isApproved: null,
     imageData: mockImageData[0]!,
+    previewImage: mockPreviewImage,
   },
   {
     id: "image-2",
@@ -64,6 +68,7 @@ const mockImages: MockImage[] = [
     eventId: "birthday",
     isApproved: true,
     imageData: mockImageData[1]!,
+    previewImage: mockPreviewImage,
   },
   {
     id: "image-3",
@@ -71,6 +76,7 @@ const mockImages: MockImage[] = [
     eventId: "wedding",
     isApproved: true,
     imageData: mockImageData[2]!,
+    previewImage: mockPreviewImage,
   },
   {
     id: "image-4",
@@ -78,6 +84,7 @@ const mockImages: MockImage[] = [
     eventId: "wedding",
     isApproved: false,
     imageData: mockImageData[3]!,
+    previewImage: mockPreviewImage,
   },
   {
     id: "image-5",
@@ -85,6 +92,7 @@ const mockImages: MockImage[] = [
     eventId: "wedding",
     isApproved: true,
     imageData: mockImageData[3]!,
+    previewImage: mockPreviewImage,
   },
 ];
 

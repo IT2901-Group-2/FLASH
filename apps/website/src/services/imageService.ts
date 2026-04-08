@@ -135,56 +135,60 @@ export class ImageService {
   uploadImage(eventId: string, image: SharpInput): AsyncResult<Image, Error> {
     const imageId = uid.rnd();
 
-    return getEventCookie(eventId, JWT_SECRET)
-      .mapError(
+    return Result.genCatching(this, function* () {
+      const { userId } = yield* getEventCookie(eventId, JWT_SECRET).mapError(
         () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
-      )
-      .map(({ userId }) =>
-        Result.try(() =>
-          this.dbService.db
-            .select()
-            .from(eventTable)
-            .where(eq(eventTable.id, eventId))
-            .limit(1)
-        )
-          .map(rows => getFirstRow(rows, `Event with id ${eventId} does not exist`))
-          .map(event =>
-            Result.try(() => sharp(image))
-              .map(sharpImage => this.validateImage(sharpImage))
-              .mapCatching(sharpImage => sharpImage.clone().rotate().webp().toBuffer())
-              .map(buff => this.storage.write(`${imageId}.webp`, buff))
-              .map(() =>
-                Result.try(() =>
-                  this.dbService.db
-                    .insert(imageTable)
-                    .values({
-                      id: imageId,
-                      userId,
-                      eventId,
-                      isApproved: event.autoApprove ? true : null,
-                    })
-                    .returning()
-                )
-                  .map(rows => getFirstRow(rows, "Failed to upload image"))
-                  .mapCatching(async image => {
-                    this.dbService.flush();
-                    if (event.autoApprove) {
-                      const result = await this.addImageToZip(eventId, image.id);
-                      if (!result.ok) {
-                        console.error(
-                          `Failed to add image ${image.id} to zip for event ${eventId}:`,
-                          result.error
-                        );
-                      }
-                    }
-                    return image;
-                  })
-                  .onFailure(async () => {
-                    await this.storage.rm(`${imageId}.webp`).getOrNull();
-                  })
-              )
-          )
       );
+
+      const event = yield* Result.try(() =>
+        this.dbService.db
+          .select()
+          .from(eventTable)
+          .where(eq(eventTable.id, eventId))
+          .limit(1)
+      ).map(rows => getFirstRow(rows, `Event with id ${eventId} does not exist`));
+
+      const sharpImage = yield* this.validateImage(sharp(image)).map(sharpImage =>
+        sharpImage.rotate().webp()
+      );
+
+      yield* Result.try(() => sharpImage.clone().toBuffer()).map(buff =>
+        this.storage.write(`${imageId}.webp`, buff)
+      );
+
+      const previewImage = yield* Result.try(() =>
+        sharpImage.clone().resize({ width: 32, height: 32 }).blur().toBuffer()
+      ).map(buff => `data:image/webp;base64,${buff.toString("base64")}`);
+
+      return Result.try(() =>
+        this.dbService.db
+          .insert(imageTable)
+          .values({
+            id: imageId,
+            userId,
+            eventId,
+            previewImage,
+            isApproved: event.autoApprove ? true : null,
+          })
+          .returning()
+      )
+        .map(rows => getFirstRow(rows, "Failed to upload image"))
+        .onSuccess(async image => {
+          this.dbService.flush();
+          if (event.autoApprove) {
+            const result = await this.addImageToZip(eventId, image.id);
+            if (!result.ok) {
+              console.error(
+                `Failed to add image ${image.id} to zip for event ${eventId}:`,
+                result.error
+              );
+            }
+          }
+        })
+        .onFailure(async () => {
+          await this.storage.rm(`${imageId}.webp`).getOrNull();
+        });
+    });
   }
 
   /**

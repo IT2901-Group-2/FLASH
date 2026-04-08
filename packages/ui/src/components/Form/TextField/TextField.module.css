@@ -4,23 +4,24 @@
   align-items: center;
   height: 3rem;
   border-radius: var(--radius-16);
-  border: 0.1rem solid var(--border-subtle);
-  background-color: var(--bg-input);
+  border: 0.1rem solid var(--color-border-base);
+  background-color: var(--color-primary-base);
+  color: var(--color-text-secondary);
 
-  [data-color] & {
-    border-color: var(--border-default);
+  [data-color] > & {
+    border-color: var(--color-base);
   }
   &:focus-within {
-    border-color: var(--border-focus);
+    border-color: var(--color-border-light);
   }
 
   [data-error="true"] & {
-    border: 0.1rem solid var(--border-danger);
+    border: 0.1rem solid var(--color-danger-base);
   }
 
   > svg {
     margin-inline: 0.5rem;
-    color: var(--text-decoration);
+    color: var(--color-text-secondary);
   }
 
   [data-size="small"] & {
@@ -36,5 +37,5 @@
   height: 100%;
   width: 100%;
   padding: 0 0.5rem;
-  color: var(--text-neutral);
+  color: var(--color-text-base);
 }

@@ -1,7 +1,5 @@
 /* ImageCard.module.css */
 .imageCard {
-  --color-base: var(--bg-strong);
-  --color-text: var(--text-neutral);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -37,7 +35,7 @@
 
 .imageCard[role="button"]:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-dialog);
 }
 
 .imageWrapper {
@@ -180,23 +178,22 @@
 
 .moderateCheckBadge {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
-  width: 24px;
-  height: 24px;
-  border-radius: 12px;
-  background: var(--color-neutral-1000);
+  bottom: 0.5rem;
+  right: 0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-background-light);
   /* TODO: Implement with variable when shadow color is added */
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-dialog);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  z-index: 2;
 
   svg {
     width: 14px;
     height: 14px;
-    color: var(--color-foreground-100);
+    color: var(--color-text-base);
   }
 }

@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import styles from "./slideshow.module.css";
 import Page from "./page";
 import { mockRouter } from "@test-config";
+import { ButtonProps } from "@flash/ui";
 
 // --- mocks ---
 
@@ -24,6 +25,20 @@ vi.mock("@/hooks/useInterval", () => ({
 let mockIsIdle = false;
 vi.mock("@/hooks/useIdle", () => ({
   useIdle: () => mockIsIdle,
+}));
+
+const mockEnterFullscreen = vi.fn();
+const mockExitFullscreen = vi.fn();
+let mockFullscreenActive = false;
+
+vi.mock("react-full-screen", () => ({
+  FullScreen: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useFullScreenHandle: () => ({
+    active: mockFullscreenActive,
+    enter: mockEnterFullscreen,
+    exit: mockExitFullscreen,
+    node: { current: null },
+  }),
 }));
 
 const mockImages = [
@@ -63,6 +78,7 @@ vi.mock("@flash/ui", () => ({
       <p>{description}</p>
     </div>
   ),
+  Button: ({ children, ...props }: ButtonProps) => <button {...props}>{children}</button>,
 }));
 
 describe("Slideshow Page", () => {
@@ -70,6 +86,7 @@ describe("Slideshow Page", () => {
     mockIsIdle = false;
     mockPaused = false;
     mockViewIndex = 0;
+    mockFullscreenActive = false;
     vi.clearAllMocks();
   });
 
@@ -141,6 +158,34 @@ describe("Slideshow Page", () => {
       render(<Page />);
       expect(screen.getByTestId("play")).toBeInTheDocument();
       expect(screen.queryByTestId("pause")).not.toBeInTheDocument();
+    });
+
+    it("enters fullscreen when fullscreen button is clicked and inactive", () => {
+      render(<Page />);
+
+      fireEvent.click(screen.getByTestId("fullscreen-button"));
+
+      expect(mockEnterFullscreen).toHaveBeenCalledTimes(1);
+      expect(mockExitFullscreen).not.toHaveBeenCalled();
+    });
+
+    it("exits fullscreen when fullscreen button is clicked and active", () => {
+      mockFullscreenActive = true;
+      render(<Page />);
+
+      fireEvent.click(screen.getByTestId("fullscreen-button"));
+
+      expect(mockExitFullscreen).toHaveBeenCalledTimes(1);
+      expect(mockEnterFullscreen).not.toHaveBeenCalled();
+    });
+
+    it("shows Shrink icon when fullscreen is active", () => {
+      mockFullscreenActive = true;
+      render(<Page />);
+
+      const fullScreenButton = screen.getByTestId("fullscreen-button");
+      expect(fullScreenButton.querySelector(".lucide-shrink")).toBeTruthy();
+      expect(fullScreenButton.querySelector(".lucide-expand")).toBeNull();
     });
   });
 

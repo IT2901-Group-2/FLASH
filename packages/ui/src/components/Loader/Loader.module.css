@@ -45,21 +45,29 @@
   animation: loader-dasharray 1.5s ease-in-out infinite;
   stroke-dasharray: 80px, 200px;
   stroke-dashoffset: 0;
-  stroke: var(--border-strong);
+  stroke: var(--color-text-secondary);
   stroke-linecap: round;
   stroke-width: 4.8px;
 
+  [data-color] & {
+    stroke: var(--color-light);
+  }
+
   .loader[data-variant="inverted"] & {
-    stroke: var(--border-subtle);
+    stroke: var(--color-border-light);
   }
 }
 
 .background {
-  stroke: var(--border-subtleT);
+  stroke: var(--color-border-light);
   stroke-width: 4.8px;
 
+  [data-color] & {
+    stroke: color-mix(in srgb, var(--color-dark) 70%, black);
+  }
+
   .loader[data-variant="inverted"] & {
-    stroke: var(--border-strong);
+    stroke: var(--color-text-secondary);
   }
 }
 

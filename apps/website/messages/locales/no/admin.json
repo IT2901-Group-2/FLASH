@@ -45,6 +45,10 @@
         "uploadLimit": {
           "perPerson": "{count, plural, one {# bilde per person} other {# bilder per person}}",
           "none": "Ingen bildegrense"
+        },
+        "deleteConfirmation": {
+          "title": "Slett arrangement",
+          "message": "Er du sikker på at du vil slette dette arrangementet?"
         }
       }
     }

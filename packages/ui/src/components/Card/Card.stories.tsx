@@ -61,6 +61,7 @@ export const WithContent: Story = {
 export const Colors: Story = {
   render: () => (
     <>
+      <Card data-color="primary">Primary</Card>
       <Card data-color="neutral">Neutral</Card>
       <Card data-color="brand-purple">Brand Purple</Card>
       <Card data-color="accent">Accent</Card>
@@ -73,6 +74,7 @@ export const Colors: Story = {
     const canvas = within(canvasElement);
 
     await step("All color variants render", async () => {
+      const primary = canvas.getByText("Primary");
       const neutral = canvas.getByText("Neutral");
       const brandPurple = canvas.getByText("Brand Purple");
       const accent = canvas.getByText("Accent");
@@ -80,6 +82,7 @@ export const Colors: Story = {
       const warning = canvas.getByText("Warning");
       const danger = canvas.getByText("Danger");
 
+      await expect(primary).toBeInTheDocument();
       await expect(neutral).toBeInTheDocument();
       await expect(brandPurple).toBeInTheDocument();
       await expect(accent).toBeInTheDocument();
@@ -89,10 +92,10 @@ export const Colors: Story = {
     });
 
     await step("Cards have correct data-color attributes", async () => {
-      const neutralCard = canvas.getByText("Neutral").closest("div");
+      const primaryCard = canvas.getByText("Primary").closest("div");
       const brandPurpleCard = canvas.getByText("Brand Purple").closest("div");
 
-      await expect(neutralCard).toHaveAttribute("data-color", "neutral");
+      await expect(primaryCard).toHaveAttribute("data-color", "primary");
       await expect(brandPurpleCard).toHaveAttribute("data-color", "brand-purple");
     });
   },

@@ -58,7 +58,6 @@ export default function Page() {
             align="center"
             size="large"
             as="h1"
-            data-color="brand-purple"
             description={tNickname("description")}
           >
             {eventName ? `${tNickname("title")} ${eventName}` : tNickname("title")}

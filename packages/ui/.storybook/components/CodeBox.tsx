@@ -19,14 +19,13 @@ export const CodeBox = ({ title, language, children }: CodeBoxProps) => {
   };
 
   return (
-    <div className={styles.container} data-color="neutral">
+    <div className={styles.container} data-color="primary">
       <div className={styles.titleContainer}>
         <h4 className={styles.title}>{title}</h4>
         <button className={styles.copyButton} onClick={handleCopy}>
           {copied ? <CopyCheck /> : <Copy />}
         </button>
       </div>
-
       {/* Code Content */}
       <pre className={styles.content}>
         <code lang={language}>{children}</code>

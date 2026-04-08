@@ -29,11 +29,11 @@
 }
 
 .primary {
-  fill: var(--text-logo-primary);
+  fill: var(--color-logo-primary);
 }
 
 .secondary {
-  fill: var(--text-logo-secondary);
+  fill: var(--color-logo-secondary);
 }
 
 @keyframes spin-cw {
