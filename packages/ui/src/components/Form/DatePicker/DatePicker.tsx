@@ -78,6 +78,10 @@ const DatePicker = ({
           e.currentTarget.blur();
           calendarRef.current?.showPopover();
         }}
+        onFocus={e => {
+          e.currentTarget.blur();
+          calendarRef.current?.showPopover();
+        }}
         onChange={() => {}} // To stop error in console
         className={styles.inputField}
       />
