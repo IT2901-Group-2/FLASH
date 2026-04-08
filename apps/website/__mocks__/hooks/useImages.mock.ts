@@ -1,5 +1,10 @@
 import { vi } from "vitest";
-import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
+import type {
+  InfiniteData,
+  UseInfiniteQueryResult,
+  UseMutationResult,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import type { Image } from "@/db";
 import { makeImage, makeImages } from "../factories/image.factory";
 import {
@@ -8,6 +13,16 @@ import {
   DeleteImageInput,
   UpdateImageInput,
 } from "@/hooks/useImages";
+
+type ImagesPage = {
+  items: Image[];
+  nextCursor: number | null;
+};
+
+type ImagesInfiniteQueryResult = UseInfiniteQueryResult<
+  InfiniteData<ImagesPage, unknown>,
+  Error
+>;
 
 // ---------------------------------------------------------------------------
 // Default return values
@@ -18,10 +33,13 @@ import {
  * In tests, prefer `mockImagesLoaded` / `mockImagesLoading` / `mockImagesError`.
  */
 export const defaultImagesQueryReturn = {
-  data: undefined as Image[] | undefined,
+  data: undefined,
   isLoading: false,
   isError: false,
-} as UseQueryResult<Image[]>;
+  hasNextPage: false,
+  isFetchingNextPage: false,
+  fetchNextPage: vi.fn(),
+} as unknown as ImagesInfiniteQueryResult;
 
 /**
  * Idle default for `useUploadImageMutation`. `mutateAsync` resolves with `makeImage()`.
@@ -101,27 +119,47 @@ export const defaultDeleteImageMutationReturn = {
 // ---------------------------------------------------------------------------
 
 /**
- * Creates a mock `UseQueryResult` for an images query, suitable for use in tests.
- * Automatically sets `data` and `error` to `undefined`/`null` based on the provided state flags.
+ * Creates a mock infinite-query result for images, suitable for use in tests.
  *
  * @example
- * mockImagesQuery([makeImage(), makeImage()]); // { data: [<Image1>, <Image2>], isLoading: false, isError: false, error: null }
- * mockImagesQuery([], { isLoading: true }); // { data: undefined, isLoading: true, isError: false, error: null }
- * mockImagesQuery([], { isError: true }); // { data: undefined, isLoading: false, isError: true, error: Error("Failed to load Images") }
- * mockImagesQuery([], { isError: true, error: new Error("custom") }); // { data: undefined, isLoading: false, isError: true, error: Error("custom") }
+ * mockImagesQueryResult({ data: [makeImage(), makeImage()] });
+ * mockImagesQueryResult({ isLoading: true });
+ * mockImagesQueryResult({ isError: true });
  */
 export const mockImagesQueryResult = ({
   data,
   isLoading = false,
   isError = false,
+  hasNextPage = false,
+  isFetchingNextPage = false,
+  nextCursor = null,
+  fetchNextPage = vi.fn(),
   error = new Error("Failed to load Images"),
-}: Partial<UseQueryResult<Image[]>>): UseQueryResult<Image[]> => {
+}: {
+  data?: Image[];
+  isLoading?: boolean;
+  isError?: boolean;
+  hasNextPage?: boolean;
+  isFetchingNextPage?: boolean;
+  nextCursor?: number | null;
+  fetchNextPage?: ReturnType<typeof vi.fn>;
+  error?: Error;
+}): ImagesInfiniteQueryResult => {
   return {
-    data: isLoading || isError ? undefined : data,
+    data:
+      isLoading || isError
+        ? undefined
+        : {
+            pages: [{ items: data ?? [], nextCursor }],
+            pageParams: [undefined],
+          },
     error: isLoading || !isError ? null : error,
     isLoading,
     isError,
-  } as UseQueryResult<Image[]>;
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } as unknown as ImagesInfiniteQueryResult;
 };
 
 /**
@@ -131,7 +169,7 @@ export const mockImagesQueryResult = ({
  *   vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoaded(makePendingImagesForEvent("event-1")));
  * });
  */
-export const mockImagesLoaded = (images: Image[]): UseQueryResult<Image[]> =>
+export const mockImagesLoaded = (images: Image[]): ImagesInfiniteQueryResult =>
   mockImagesQueryResult({ data: images });
 
 /**
@@ -141,7 +179,7 @@ export const mockImagesLoaded = (images: Image[]): UseQueryResult<Image[]> =>
  * @example
  * vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoading());
  */
-export const mockImagesLoading = (): UseQueryResult<Image[]> =>
+export const mockImagesLoading = (): ImagesInfiniteQueryResult =>
   mockImagesQueryResult({ isLoading: true });
 
 /**
@@ -151,7 +189,7 @@ export const mockImagesLoading = (): UseQueryResult<Image[]> =>
  * @example
  * vi.mocked(useImagesQuery).mockReturnValue(mockImagesError(new Error("403 Forbidden")));
  */
-export const mockImagesError = (error?: Error): UseQueryResult<Image[]> =>
+export const mockImagesError = (error?: Error): ImagesInfiniteQueryResult =>
   mockImagesQueryResult({ error, isError: true });
 
 /**
