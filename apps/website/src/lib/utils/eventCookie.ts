@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { EventCookie, eventCookieSchema, User } from "@/db";
 import z from "zod";
+import { JWT_SECRET } from "@/config";
 
 /**
  * Fetches a list of all available `EventCookies`, ignoring any invalid or malformed cookies.
@@ -67,5 +68,13 @@ export function setEventCookie(
         maxAge: 10 * 24 * 60 * 60,
       });
     })
+  );
+}
+
+export async function verifyModerator(eventId: string): Promise<boolean> {
+  const result = await getEventCookie(eventId, JWT_SECRET);
+  return result.fold(
+    cookie => cookie.isModerator === true,
+    () => false
   );
 }
