@@ -5,7 +5,7 @@ import { Title } from "@flash/ui";
 import { ArrowLeft, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-interface PhoneHeaderProps extends HTMLAttributes<HTMLHeadingElement> {
+export interface PhoneHeaderProps extends HTMLAttributes<HTMLHeadingElement> {
   /**
    * The title of the event.
    */

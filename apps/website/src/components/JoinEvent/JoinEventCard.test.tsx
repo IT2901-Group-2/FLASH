@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, test } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import JoinEventCard from "./JoinEventCard";
-import { createQueryClientWrapper } from "@test-config";
+import { renderWithQuery } from "@test-config";
 
 describe("JoinEventCard", () => {
   beforeEach(() => {
-    render(<JoinEventCard />, { wrapper: createQueryClientWrapper() });
+    renderWithQuery(<JoinEventCard />);
   });
 
   test("without crashing", () => {
@@ -23,7 +23,7 @@ describe("JoinEventCard", () => {
   });
 
   test("renders input field with correct label", () => {
-    expect(screen.getByText("fields.eventCode")).toBeDefined();
+    expect(screen.getByPlaceholderText("fields.eventCode.placeholder")).toBeDefined();
   });
 
   test("renders Join button", () => {
