@@ -99,12 +99,16 @@ describe("Guest Upload Page", () => {
     it("clears previous upload error when a new upload starts", async ({ skip }) => {
       skip();
     });
-    
-    it("shows upload limit reached key when upload fails due to event upload limit", async () => {
+
+    it("shows upload limit reached key when upload fails due to event upload limit", async ({
+      skip,
+    }) => {
       skip();
     });
-    
-    it("prioritizes upload limit message when mixed failures include limit reached", async () => {
+
+    it("prioritizes upload limit message when mixed failures include limit reached", async ({
+      skip,
+    }) => {
       skip();
     });
   });
