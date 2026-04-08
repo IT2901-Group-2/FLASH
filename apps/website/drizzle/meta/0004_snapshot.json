@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "bba27cc2-17fa-4ce5-aaac-b74f5d9bd91f",
-  "prevId": "33c42ffc-6494-4ccb-877b-e2829c832da8",
+  "id": "ff2e9152-b6f6-41a9-b352-67811628f10e",
+  "prevId": "7801d76d-9b56-4a0c-a950-56dcb2737ee0",
   "tables": {
     "eventCodes": {
       "name": "eventCodes",
@@ -184,6 +184,13 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false
+        },
+        "previewImage": {
+          "name": "previewImage",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
           "autoincrement": false
         },
         "createdAt": {
