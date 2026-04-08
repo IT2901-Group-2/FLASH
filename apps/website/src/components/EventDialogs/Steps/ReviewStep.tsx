@@ -13,7 +13,7 @@ export interface ReviewStepProps {
 }
 
 const ReviewStep = ({ status, result }: ReviewStepProps) => {
-  const tReview = useTranslations("admin.dashboard.event.create.review");
+  const tReview = useTranslations("admin.dashboard.event.review");
   const tCommon = useTranslations("common");
 
   const [role, setRole] = useState<"guest" | "moderator">("guest");
