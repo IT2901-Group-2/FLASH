@@ -47,7 +47,6 @@ export async function signAccessToken(): Promise<{ expiresIn: number }> {
 
 /**
  * Signs a new refresh token and writes it as an httpOnly cookie on the response.
- * Scoped to /api/auth/refresh so it isn't sent on every request.
  */
 export async function signRefreshToken(): Promise<void> {
   const cookieStore = await cookies();
@@ -59,7 +58,6 @@ export async function signRefreshToken(): Promise<void> {
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     maxAge: REFRESH_TOKEN_EXPIRY,
-    path: "/api/auth/refresh",
   });
 }
 
@@ -97,7 +95,6 @@ export async function verifyAccessToken(): Promise<TokenPayload> {
 /**
  * Extracts and verifies the refresh token from the incoming request's cookies.
  * Throws error if the token is missing, expired, or has an invalid payload.
- * Called by the /api/auth/refresh endpoint to issue a new access token.
  */
 export async function verifyRefreshToken(): Promise<TokenPayload | null> {
   const cookieStore = await cookies();
@@ -130,7 +127,6 @@ export async function clearRefreshToken(): Promise<void> {
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     maxAge: 0,
-    path: "/api/auth/refresh",
   });
 }
 

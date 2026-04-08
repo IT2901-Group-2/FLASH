@@ -1,7 +1,12 @@
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 import { NextRequest, NextResponse } from "next/server";
-import { verifyAccessToken } from "@/lib/utils/auth";
+import {
+  signAccessToken,
+  signRefreshToken,
+  verifyAccessToken,
+  verifyRefreshToken,
+} from "@/lib/utils/auth";
 import {
   isEventRoute,
   getEventId,
@@ -26,6 +31,18 @@ function isAdminLogin(req: NextRequest): boolean {
 function isProtected(req: NextRequest): boolean {
   const withoutLocale = req.nextUrl.pathname.replace(/^\/[a-z]{2}(-[A-Z]{2})?/, "");
   return PROTECTED_ROUTES.some(route => withoutLocale.startsWith(route));
+}
+
+async function tryRefreshInMiddleware(): Promise<boolean> {
+  try {
+    await verifyRefreshToken();
+    await signAccessToken();
+    await signRefreshToken();
+
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export default async function proxy(request: NextRequest): Promise<NextResponse> {
@@ -75,21 +92,29 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
   }
 
   if (isProtected(request)) {
-    const redirectRes = NextResponse.redirect(new URL("/admin", request.url));
     try {
       await verifyAccessToken();
     } catch {
-      return redirectRes;
+      const refreshed = await tryRefreshInMiddleware();
+      if (!refreshed) {
+        return NextResponse.redirect(new URL("/admin", request.url));
+      }
+      return NextResponse.next();
     }
   }
 
   if (isAdminLogin(request)) {
-    try {
-      await verifyAccessToken();
-      const locale =
-        request.nextUrl.pathname.match(/^\/([a-z]{2}(-[A-Z]{2})?)/)?.[1] ?? "en";
+    const locale =
+      request.nextUrl.pathname.match(/^\/([a-z]{2}(-[A-Z]{2})?)/)?.[1] ?? "en";
+
+    const isValidToken = await verifyAccessToken()
+      .then(() => true)
+      .catch(() => false);
+    const hasAccess = isValidToken || (await tryRefreshInMiddleware());
+
+    if (hasAccess) {
       return NextResponse.redirect(new URL(`/${locale}/admin/dashboard`, request.url));
-    } catch {}
+    }
   }
 
   return handleI18nRouting(request);

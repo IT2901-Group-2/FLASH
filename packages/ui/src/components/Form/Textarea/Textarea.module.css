@@ -8,16 +8,15 @@
   outline: none;
 
   border-radius: var(--radius-16);
-  border: 0.1rem solid var(--border-subtle);
-  background-color: var(--bg-input);
-  color: var(--text-neutral);
+  border: 0.1rem solid var(--color-border-base);
+  background-color: var(--color-primary-base);
+  color: var(--color-text-base);
 
-  [data-color] & {
-    border-color: var(--border-default);
+  [data-color] > & {
+    border-color: var(--color-base);
   }
-
   &:focus-within {
-    border-color: var(--border-focus);
+    border-color: var(--color-border-light);
   }
 
   [data-size="small"] & {
@@ -25,7 +24,7 @@
   }
 
   [data-error="true"] & {
-    border: 2px solid var(--border-danger);
+    border: 0.1rem solid var(--color-danger-base);
   }
 
   &[data-resize] {

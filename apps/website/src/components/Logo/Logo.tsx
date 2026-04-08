@@ -22,7 +22,7 @@ export default function Logo({
 
   return (
     <div
-      className={styles.cameraWrapper}
+      className={styles.logoWrapper}
       onClick={handleRedirect}
       {...rest}
       data-redirect={!!redirectTo}

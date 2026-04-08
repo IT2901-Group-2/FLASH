@@ -1,10 +1,10 @@
 .container {
-  --color-bg: var(--bg-raised);
-  --color-boder: var(--border-focus);
-  --color-bg-active: var(--bg-moderate-pressed);
-  --color-bg-hover: var(--bg-moderate-hover);
+  --color-bg: var(--color-primary-base);
+  --color-boder: var(--color-border-base);
+  --color-bg-active: var(--color-accent-dark);
+  --color-bg-hover: var(--color-accent-light);
 
-  --color-text: var(--text-default);
+  --color-text: var(--color-text-base);
 
   /* Base layout values */
   --inset-distance: 0.25rem;
@@ -30,7 +30,7 @@
   color: var(--color-text);
 
   &[data-error="true"] {
-    border-color: var(--border-danger);
+    border-color: var(--color-danger-base);
   }
 
   &[data-fill="true"] {
@@ -47,7 +47,7 @@
   }
 
   .description {
-    color: var(--text-neutral-subtle);
+    color: var(--color-text-secondary);
     font-size: var(--font-size-medium);
     margin-top: -0.375rem;
 

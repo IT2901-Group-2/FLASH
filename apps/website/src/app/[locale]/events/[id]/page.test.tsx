@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from "vitest";
-import { render, screen, cleanup, waitFor, act } from "@testing-library/react";
+import { render, screen, cleanup, waitFor, act, fireEvent } from "@testing-library/react";
 import type { ReactNode } from "react";
 import Page from "./page";
 import * as useFileUploadModule from "@/hooks/useFileUpload";
@@ -9,8 +9,10 @@ import { Event, Image } from "@/db";
 
 vi.mock("@flash/ui", () => ({
   ActionCard: vi.fn(() => <div data-testid="action-card">ActionCard</div>),
-  ImageCard: vi.fn(({ title }: { title: string }) => (
-    <div data-testid="image-card">{title}</div>
+  ImageCard: vi.fn(({ title, onClick }: { title: string; onClick?: () => void }) => (
+    <button data-testid="image-card" onClick={onClick}>
+      {title}
+    </button>
   )),
   Dialog: vi.fn(() => <div data-testid="dialog">Dialog</div>),
   QRDisplay: vi.fn(() => <div data-testid="qr-display">QRDisplay</div>),
@@ -138,6 +140,26 @@ describe("Guest Upload Page", () => {
     expect(screen.getByText("imageTitle")).toBeDefined();
   });
 
+  it("opens fullscreen preview when an image is clicked", () => {
+    render(<Page />);
+
+    expect(screen.queryByRole("dialog")).toBeNull();
+    fireEvent.click(screen.getByTestId("image-card"));
+
+    expect(screen.getByRole("dialog")).toBeDefined();
+  });
+
+  it("closes fullscreen preview when pressing Escape", async () => {
+    render(<Page />);
+
+    fireEvent.click(screen.getByTestId("image-card"));
+    expect(screen.getByRole("dialog")).toBeDefined();
+
+    fireEvent.keyDown(window, { key: "Escape" });
+
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+  });
+
   it("uses image query hook", () => {
     render(<Page />);
     expect(useImagesModule.useImagesQuery).toHaveBeenCalledWith("event-123");
@@ -148,7 +170,7 @@ describe("Guest Upload Page", () => {
     render(<Page />);
 
     const { onFilesSelected } = vi.mocked(useFileUploadModule.useFileUpload).mock
-      .calls[0][0];
+      .calls[0]![0]!;
     const mockFileList = createMockFileList([
       new File(["a"], "a.jpg", { type: "image/jpeg" }),
       new File(["b"], "b.jpg", { type: "image/jpeg" }),
@@ -168,7 +190,7 @@ describe("Guest Upload Page", () => {
     render(<Page />);
 
     const { onFilesSelected } = vi.mocked(useFileUploadModule.useFileUpload).mock
-      .calls[0][0];
+      .calls[0]![0]!;
     const mockFileList = createMockFileList([
       new File(["a"], "a.jpg", { type: "image/jpeg" }),
     ]);
@@ -185,7 +207,7 @@ describe("Guest Upload Page", () => {
     render(<Page />);
 
     const { onFilesSelected } = vi.mocked(useFileUploadModule.useFileUpload).mock
-      .calls[0][0];
+      .calls[0]![0]!;
     const mockFileList = createMockFileList([
       new File(["a"], "a.jpg", { type: "image/jpeg" }),
     ]);
@@ -208,9 +230,10 @@ describe("Guest Upload Page", () => {
     skip(); // SKIP for no. All tests need to be redone with better mocks.
     render(<Page />);
 
-    const useFileUploadCall = vi.mocked(useFileUploadModule.useFileUpload).mock.calls[0];
-    const options = useFileUploadCall?.[0];
-    const onFilesSelected = options?.onFilesSelected;
+    const onFilesSelected = vi.mocked(useFileUploadModule.useFileUpload).mock
+      .calls[0]![0]!.onFilesSelected;
+
+    if (!onFilesSelected) throw new Error("Expected onFilesSelected");
 
     const mockFile = new File(["content"], "test.jpg", { type: "image/jpeg" });
     const mockFileList = {
@@ -222,9 +245,7 @@ describe("Guest Upload Page", () => {
       },
     } as FileList;
 
-    if (onFilesSelected) {
-      await onFilesSelected(mockFileList);
-    }
+    await onFilesSelected!(mockFileList);
 
     expect(await screen.findByText("errors.uploadUnavailable")).toBeDefined();
     expect(mockUploadImage).not.toHaveBeenCalled();

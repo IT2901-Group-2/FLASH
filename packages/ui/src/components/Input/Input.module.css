@@ -1,16 +1,17 @@
 .inputWrapper {
-  --color-warning: var(--text-danger-decoration);
-  --color-success: var(--text-success-decoration);
-  --color-text-primary: var(--text-neutral);
+  --color-warning: var(--color-danger-base);
+  --color-warning-active: var(--color-destructive-dark);
+  --color-success: var(--color-success-base);
+  --color-success-active: var(--color-success-dark);
+  --color-text-primary: var(--color-text-base);
 
   &[data-fill="true"] {
     width: 100%;
   }
 }
 .inputContainer {
-  --color-base: var(--border-default);
-  --color-active: var(--border-subtle);
-  --color-disabled: var(--border-strong);
+  --color-active: var(--color-border-dark);
+  --color-disabled: var(--color-border-light);
 
   display: flex;
   align-items: center;
@@ -24,31 +25,22 @@
   position: relative;
 
   &[data-variant="primary"] {
-    background-color: var(--bg-input);
-    border: 0.1rem solid var(--color-base);
+    background-color: var(--color-primary-light);
+    border: 0.1rem solid var(--color-border-base);
 
     &:focus-within:not(:has(input:disabled), .disabled).error {
-      border-color: var(--color-warning);
+      border-color: var(--color-warning-active);
       border-width: 0.1rem;
-      opacity: var(--opacity-disabled);
     }
 
     &:focus-within:not(:has(input:disabled), .disabled).success {
-      border-color: var(--color-success);
+      border-color: var(--color-success-active);
       border-width: 0.1rem;
-      opacity: var(--opacity-disabled);
     }
 
     &:focus-within:not(:has(input:disabled), .disabled) {
-      border-color: var(--color-active);
+      border-color: var(--color-base);
       border-width: 0.1rem;
-    }
-
-    &:is(.disabled, :has(input:disabled)) {
-      background-color: var(--color-neutral-50);
-      border-color: var(--color-disabled);
-      cursor: not-allowed;
-      opacity: var(--opacity-disabled);
     }
 
     &.error {
@@ -57,6 +49,11 @@
 
     &.success {
       border-color: var(--color-success);
+    }
+
+    &:is(.disabled, :has(input:disabled)) {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
   }
 }
@@ -67,16 +64,11 @@
   outline: none;
   border: none;
   font-size: inherit;
-  color: var(--color-neutral-1000);
+  color: var(--color-text-base);
   width: 100%;
 
   &::placeholder {
-    color: var(--color-neutral-600);
-  }
-
-  &:disabled {
-    color: var(--color-neutral-800);
-    cursor: not-allowed;
+    color: var(--color-text-secondary);
   }
 }
 
@@ -87,10 +79,6 @@
   color: var(--color-base);
   flex-shrink: 0;
 
-  .disabled &,
-  .inputContainer:has(input:disabled) & {
-    color: var(--color-neutral-500);
-  }
   .error & {
     color: var(--color-warning);
   }
@@ -111,7 +99,7 @@
 .message {
   display: block;
   font-size: 0.875rem;
-  color: var(--color-neutral-700);
+  color: var(--color-text-secondary);
   margin-top: 0.25rem;
   padding: 0 0.25rem;
 
@@ -146,9 +134,4 @@
 
 .required {
   color: var(--color-warning);
-}
-
-.disabled .label {
-  opacity: 0.5;
-  cursor: not-allowed;
 }

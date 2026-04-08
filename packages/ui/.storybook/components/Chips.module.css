@@ -4,7 +4,7 @@
   background-color: transparent;
   color: var(--docs-color-text);
   border-radius: var(--radius-16);
-  border: 1px solid var(--neutral-900);
+  border: 1px solid var(--color-border-dark);
 
   &:hover {
     /* background-color: color-mix(in srgb, #222325 80%, white); */

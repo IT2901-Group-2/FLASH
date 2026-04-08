@@ -1,12 +1,12 @@
 .breadcrumb {
-  --breadcrumb-home-color: var(--text-default);
-  --breadcrumb-home-hover: var(--text-subtle);
-  --breadcrumb-middle-color: var(--color-neutral-800);
-  --breadcrumb-middle-hover: var(--color-neutral-900);
-  --breadcrumb-current-color: var(--color-neutral-800);
-  --breadcrumb-separator-color: var(--color-neutral-600);
+  --breadcrumb-home-color: var(--color-text-base);
+  --breadcrumb-home-hover: var(--color-text-light);
+  --breadcrumb-middle-color: var(--color-text-tertiary);
+  --breadcrumb-middle-hover: var(--color-text-light);
+  --breadcrumb-current-color: var(--color-text-secondary);
+  --breadcrumb-separator-color: var(--color-text-tertiary);
 
-  color: var(--text-default);
+  color: var(--color-text-secondary);
 }
 
 .list {
@@ -63,7 +63,7 @@
 
 .current {
   color: var(--breadcrumb-current-color);
-  font-weight: 400;
+  font-weight: var(--font-weight-bold);
 }
 
 .separator {
