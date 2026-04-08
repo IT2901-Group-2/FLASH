@@ -18,9 +18,9 @@ const Page = () => {
 
   const { id, locale } = useParams<{ id: string; locale: string }>();
   const { data: joinCode } = useEventCodeQuery(id, "moderator");
-  const { data, status } = useEventsQuery({ id: [id?.toString() || ""] });
-  if (data === undefined) return;
+  const { data = [], status } = useEventsQuery({ id: [id?.toString() || ""] });
   const eventData = data[0];
+  if (!eventData) return;
 
   return (
     <>
