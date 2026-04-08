@@ -51,7 +51,7 @@ export const BasicInfoStep = () => {
         error={errors.name?.message}
         label={t("field.name.title")}
         description={t("field.name.description")}
-        aria-label={t("field.name")}
+        aria-label={t("field.name.title")}
         required
         data-testid="name"
         autoFocus
