@@ -3,6 +3,7 @@ packages:
   - packages/*
 
 ignoredBuiltDependencies:
+  - '@bundled-es-modules/glob'
   - '@parcel/watcher'
   - '@swc/core'
   - cpu-features
@@ -10,6 +11,7 @@ ignoredBuiltDependencies:
   - protobufjs
   - sharp
   - ssh2
+  - style-dictionary
   - unrs-resolver
 
 onlyBuiltDependencies:
