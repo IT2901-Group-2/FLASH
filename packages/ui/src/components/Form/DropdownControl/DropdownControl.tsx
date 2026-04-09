@@ -88,6 +88,7 @@ const DropdownControl = ({
         value={selectedValue}
         onChange={handleChange}
         fill
+        data-testid="dropdown-control-segmented"
       >
         {items.map(item => (
           <SegmentedControl.Item
