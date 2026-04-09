@@ -1,5 +1,5 @@
 import { vi } from "vitest";
-import { makeUser } from "../factories/eventAuth.factory";
+import { makeEventAuth } from "../factories/eventAuth.factory";
 import { EventAuth } from "@/providers/EventAuthContext";
 
 /**
@@ -14,7 +14,7 @@ import { EventAuth } from "@/providers/EventAuthContext";
  * vi.mocked(useEventAuth).mockReturnValue(makeUser({ isModerator: true }));
  */
 export const eventAuthMock = (user: Partial<EventAuth> = {}) => ({
-  useEventAuth: vi.fn(() => makeUser(user)),
+  useEventAuth: vi.fn(() => makeEventAuth(user)),
 });
 
 /**

@@ -1,11 +1,21 @@
+import {
+  eventHooksMock,
+  imageHooksMock,
+  makeEvent,
+  makeImages,
+  mockEventsLoaded,
+  mockImagesLoaded,
+  mockRouter,
+} from "@test-config";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import styles from "./slideshow.module.css";
 import Page from "./page";
-import { mockRouter } from "@test-config";
-import { ButtonProps } from "@flash/ui";
+import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+import { useImagesQuery } from "@/hooks/useImages";
 
-// --- mocks ---
+vi.mock("@/hooks/useEvents", () => eventHooksMock());
+vi.mock("@/hooks/useImages", () => imageHooksMock());
 
 const mockToggle = vi.fn();
 const mockSetViewIndex = vi.fn();
@@ -41,46 +51,6 @@ vi.mock("react-full-screen", () => ({
   }),
 }));
 
-const mockImages = [
-  { id: "img-1", url: "/img1.jpg" },
-  { id: "img-2", url: "/img2.jpg" },
-];
-
-vi.mock("@/hooks/useImages", () => ({
-  useImagesQuery: () => ({ data: mockImages }),
-}));
-
-vi.mock("@/hooks/useEvents", () => ({
-  useEventsQuery: () => ({ data: [{ id: "event-123", name: "Test Event" }] }),
-  useEventCodeQuery: () => ({ data: "ABC123" }),
-}));
-
-vi.mock("next/image", () => ({
-  default: ({ src, alt, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt} {...props} />
-  ),
-}));
-
-vi.mock("@flash/ui", () => ({
-  QRDisplay: ({ value, code }: { value: string; code: string }) => (
-    <div data-testid="qr-display" data-value={value} data-code={code} />
-  ),
-  Title: ({
-    children,
-    description,
-  }: {
-    children: React.ReactNode;
-    description: string;
-  }) => (
-    <div>
-      <h1>{children}</h1>
-      <p>{description}</p>
-    </div>
-  ),
-  Button: ({ children, ...props }: ButtonProps) => <button {...props}>{children}</button>,
-}));
-
 describe("Slideshow Page", () => {
   beforeEach(() => {
     mockIsIdle = false;
@@ -88,13 +58,16 @@ describe("Slideshow Page", () => {
     mockViewIndex = 0;
     mockFullscreenActive = false;
     vi.clearAllMocks();
+
+    vi.mocked(useEventsQuery).mockReturnValue(mockEventsLoaded([makeEvent()]));
+    vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoaded(makeImages(3)));
   });
 
   describe("image display", () => {
     it("renders the current image", () => {
       render(<Page />);
       const img = screen.getByRole("img");
-      expect(img).toHaveAttribute("src", "/api/events/event-123/images/img-1");
+      expect(img).toHaveAttribute("src", "/api/events/event-123/images/image-1");
     });
 
     it("shows the no-images message when there are no images", ({ skip }) => {
@@ -110,7 +83,7 @@ describe("Slideshow Page", () => {
       mockViewIndex = 1;
       render(<Page />);
       const img = screen.getByRole("img");
-      expect(img).toHaveAttribute("src", "/api/events/event-123/images/img-2");
+      expect(img).toHaveAttribute("src", "/api/events/event-123/images/image-2");
     });
   });
 
@@ -213,6 +186,10 @@ describe("Slideshow Page", () => {
     });
 
     it("passes the join link and code to QRDisplay", () => {
+      vi.mocked(useEventCodeQuery).mockReturnValue({
+        data: "ABC123",
+      } as unknown as ReturnType<typeof useEventCodeQuery>);
+
       render(<Page />);
       const qr = screen.getByTestId("qr-display");
       expect(qr).toHaveAttribute("data-code", "ABC123");

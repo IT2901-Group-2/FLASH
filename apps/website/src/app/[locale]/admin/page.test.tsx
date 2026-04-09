@@ -1,26 +1,19 @@
 import { describe, it, expect, afterEach, vi } from "vitest";
-import { render, screen, cleanup } from "@testing-library/react";
+import { screen, cleanup } from "@testing-library/react";
 import Page from "./page";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { renderWithQuery } from "@test-config";
 
 vi.mock("@/components/ConfigButtons/LanguageToggleButton", () => ({
-  default: () => <div data-testid="language-toggle-button">Language Toggle</div>,
+  default: () => <button data-testid="language-toggle-button">Language Toggle</button>,
 }));
 
 vi.mock("@/components/ConfigButtons/ThemeToggleButton", () => ({
-  default: () => <div data-testid="theme-toggle-button">Theme Toggle</div>,
+  default: () => <button data-testid="theme-toggle-button">Theme Toggle</button>,
 }));
 
-const createWrapper = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  });
-  const Wrapper = ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-  Wrapper.displayName = "TestQueryWrapper";
-  return Wrapper;
-};
+vi.mock("@/components/SignInCard/SignInCard", () => ({
+  default: () => <div data-testid="sign-in-card"></div>,
+}));
 
 describe("AdminLogin Page", () => {
   afterEach(() => {
@@ -28,7 +21,7 @@ describe("AdminLogin Page", () => {
   });
 
   it("renders all components together", () => {
-    const { container } = render(<Page />, { wrapper: createWrapper() });
+    const { container } = renderWithQuery(<Page />);
     const pageWrapper = container.querySelector('[class*="pageWrapper"]');
 
     expect(pageWrapper).not.toBeNull();
@@ -36,7 +29,7 @@ describe("AdminLogin Page", () => {
   });
 
   it("displays translated content", () => {
-    render(<Page />, { wrapper: createWrapper() });
+    renderWithQuery(<Page />);
 
     expect(screen.getByText("title")).toBeTruthy();
     expect(screen.getAllByText("description").length).toBeGreaterThan(0);
@@ -44,10 +37,9 @@ describe("AdminLogin Page", () => {
   });
 
   it("renders all required components", () => {
-    const { container } = render(<Page />, { wrapper: createWrapper() });
+    renderWithQuery(<Page />);
 
     expect(screen.getByTestId("title")).toBeTruthy();
-    const signInCard = container.querySelector('[class*="card"]');
-    expect(signInCard).toBeTruthy();
+    expect(screen.getByTestId("sign-in-card")).toBeTruthy();
   });
 });
