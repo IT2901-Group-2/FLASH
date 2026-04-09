@@ -29,6 +29,7 @@ export const OptionsStep = () => {
         value={limitMode}
         onChange={v => setLimitMode(v as typeof limitMode)}
         dropdownBorder
+        data-testid="dropdown-control"
       >
         <DropdownControl.Item
           value="limited"

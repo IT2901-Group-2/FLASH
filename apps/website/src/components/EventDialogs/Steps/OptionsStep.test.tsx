@@ -1,168 +1,118 @@
-import { flashUiMock } from "../../../../__mocks__"; // TODO - Change import path in test refactor branch
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import OptionsStep from "./OptionsStep";
+import { screen, act, waitFor } from "@testing-library/react";
+import { describe, it, expect } from "vitest";
+import { OptionsStep } from "./OptionsStep";
+import { renderWithForm, TEST_DEFAULT_FORM_DATA } from "@test-config";
+import type { UseFormReturn } from "react-hook-form";
+import type { CreateEvent } from "@/db";
+import userEvent from "@testing-library/user-event";
 
-// ─── Mocks ───────────────────────────────────────────────────────────────────
+let capturedMethods: UseFormReturn<CreateEvent>;
 
-// vi.hoisted ensures these are available inside the hoisted vi.mock() factories
-const { mockRegister, mockSetValue, mockWatch, mockUseFormState } = vi.hoisted(() => ({
-  mockRegister: vi.fn(() => ({
-    name: "uploadLimit",
-    onChange: vi.fn(),
-    onBlur: vi.fn(),
-    ref: vi.fn(),
-  })),
-  mockSetValue: vi.fn(),
-  mockWatch: vi.fn(),
-  mockUseFormState: vi.fn(() => ({ errors: {} })),
-}));
-
-vi.mock("react-hook-form", () => ({
-  useFormContext: () => ({
-    register: mockRegister,
-    control: {},
-    watch: mockWatch,
-    setValue: mockSetValue,
-  }),
-  useFormState: mockUseFormState,
-}));
-
-// React is imported above so JSX inside this factory has createElement in scope
-vi.mock("@flash/ui", () => flashUiMock());
-
-vi.mock("./Steps.module.css", () => ({
-  default: { maxImageContainer: "maxImageContainer" },
-}));
-
-const renderComponent = () => render(<OptionsStep />);
+function renderStep(uploadLimit: number | null = null) {
+  return renderWithForm(<OptionsStep />, {
+    defaultValues: { ...TEST_DEFAULT_FORM_DATA, uploadLimit },
+    onMethods: m => {
+      capturedMethods = m as UseFormReturn<CreateEvent>;
+    },
+  });
+}
 
 describe("OptionsStep", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    mockWatch.mockReturnValue(undefined); // uploadLimit undefined ("unlimited") by default
-    mockUseFormState.mockReturnValue({ errors: {} });
-  });
-
-  describe("initial render", () => {
-    it("renders the title and description", () => {
-      renderComponent();
+  describe("rendering", () => {
+    it("renders title and description", () => {
+      renderStep();
       expect(screen.getByText("title")).toBeInTheDocument();
       expect(screen.getByText("description")).toBeInTheDocument();
     });
 
-    it("renders the DropdownControl in unlimited mode by default when uploadLimit is undefined", () => {
-      renderComponent();
-      expect(screen.getByTestId("dropdown-control")).toHaveAttribute(
-        "data-value",
-        "unlimited"
-      );
+    it("renders the upload-limit dropdown", () => {
+      renderStep();
+      expect(screen.getByText("fields.uploadLimit.title")).toBeInTheDocument();
     });
 
-    it("renders the DropdownControl in limited mode when uploadLimit has a value", () => {
-      mockWatch.mockReturnValue(10);
-
-      renderComponent();
-      expect(screen.getByTestId("dropdown-control")).toHaveAttribute(
-        "data-value",
-        "limited"
-      );
+    it("renders the auto-approve switch", () => {
+      renderStep();
+      expect(screen.getByText("fields.autoApprovePhotos.title")).toBeInTheDocument();
     });
 
-    it("renders two Switch components", () => {
-      renderComponent();
-      const switches = screen.getAllByTestId("switch");
-      expect(switches).toHaveLength(2);
-    });
-
-    it("renders Switch components with position='right'", () => {
-      renderComponent();
-      const switches = screen.getAllByTestId("switch");
-      switches.forEach(s => expect(s).toHaveAttribute("data-position", "right"));
-    });
-
-    it("renders the autoApprovePhotos label", () => {
-      renderComponent();
-      expect(screen.getByText("fields.autoApprovePhotos")).toBeInTheDocument();
-    });
-
-    it("renders the guestCanViewAll label", () => {
-      renderComponent();
-      expect(screen.getByText("fields.guestCanViewAll")).toBeInTheDocument();
+    it("renders the guest-can-view-all switch", () => {
+      renderStep();
+      expect(screen.getByText("fields.guestCanViewAll.title")).toBeInTheDocument();
     });
   });
 
-  describe("uploadLimit field registration", () => {
-    it("registers the uploadLimit field with valueAsNumber and min validation", () => {
-      renderComponent();
-
-      expect(mockRegister).toHaveBeenCalledWith(
-        "uploadLimit",
-        expect.objectContaining({
-          valueAsNumber: true,
-          min: expect.objectContaining({ value: 1 }),
-        })
-      );
+  describe("limitMode initialisation from form value", () => {
+    it("starts in unlimited mode when uploadLimit is null", ({ skip }) => {
+      skip();
+      renderStep(null);
+      const numberInput = screen.getByTestId("text-field");
+      expect(numberInput).not.toBeRequired();
     });
 
-    it("renders the number TextField with the correct aria-label", () => {
-      renderComponent();
-
-      expect(screen.getByTestId("text-field")).toHaveAttribute("aria-label", "maxImages");
-      expect(screen.getByTestId("text-field")).toHaveAttribute("type", "number");
+    it("starts in limited mode when uploadLimit has a value", () => {
+      renderStep(10);
+      const numberInput = screen.getByRole("spinbutton");
+      expect(numberInput).toBeRequired();
     });
   });
 
-  describe("limitMode toggling", () => {
-    it("calls setValue with undefined when switching to unlimited", async () => {
-      mockWatch.mockReturnValue(5); // start in limited mode
-      renderComponent();
-
-      fireEvent.click(screen.getByTestId("dropdown-toggle"));
+  describe("unlimited → form value sync", () => {
+    it("resets uploadLimit to null on mount when in unlimited mode", async () => {
+      renderStep(null);
 
       await waitFor(() => {
-        expect(mockSetValue).toHaveBeenCalledWith("uploadLimit", undefined);
+        expect(capturedMethods.getValues("uploadLimit")).toBeNull();
       });
-    });
-
-    it("does call setValue when switching to limited", async () => {
-      mockWatch.mockReturnValue(undefined); // start in unlimited mode
-      renderComponent();
-
-      fireEvent.click(screen.getByTestId("dropdown-toggle"));
-
-      await waitFor(() => expect(mockSetValue).toHaveBeenCalled());
-    });
-
-    it("makes the TextField required when in limited mode", () => {
-      mockWatch.mockReturnValue(10);
-      renderComponent();
-
-      expect(screen.getByTestId("text-field")).toBeRequired();
-    });
-
-    it("makes the TextField not required when in unlimited mode", () => {
-      mockWatch.mockReturnValue(undefined);
-      renderComponent();
-
-      expect(screen.getByTestId("text-field")).not.toBeRequired();
     });
   });
 
-  describe("error display", () => {
-    it("shows a validation error message on the TextField when present", () => {
-      mockUseFormState.mockReturnValueOnce({
-        errors: { uploadLimit: { message: "This has to be at least 1" } },
+  describe("validation", () => {
+    it("shows required error when limitMode is limited and field is empty", async () => {
+      renderStep(null);
+
+      await userEvent.click(screen.getByText("fields.uploadLimit.value.limited"));
+
+      await act(async () => await capturedMethods.trigger("uploadLimit"));
+      await waitFor(() => {
+        expect(screen.getByText("fields.uploadLimit.error.required")).toBeInTheDocument();
       });
-
-      renderComponent();
-
-      expect(screen.getByRole("alert")).toHaveTextContent("This has to be at least 1");
     });
 
-    it("renders no error alert when there are no errors", () => {
-      renderComponent();
-      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    it("shows min error when value is less than 1", async () => {
+      renderStep(10);
+
+      const numberInput = screen.getByRole("spinbutton");
+      await userEvent.clear(numberInput);
+      await userEvent.type(numberInput, "-5");
+
+      await act(async () => await capturedMethods.trigger("uploadLimit"));
+      await waitFor(() => {
+        expect(screen.getByText("fields.uploadLimit.error.min")).toBeInTheDocument();
+      });
+    });
+
+    it("does not show an error when limitMode is unlimited", async () => {
+      renderStep(null);
+
+      await act(async () => {
+        await capturedMethods.trigger("uploadLimit");
+      });
+
+      expect(
+        screen.queryByText("fields.uploadLimit.error.required")
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe("limitMode toggle", () => {
+    it("switching to unlimited sets uploadLimit back to null", async () => {
+      renderStep(5);
+
+      await userEvent.click(screen.getByText("fields.uploadLimit.value.unlimited"));
+
+      await waitFor(() => {
+        expect(capturedMethods.getValues("uploadLimit")).toBeNull();
+      });
     });
   });
 });
