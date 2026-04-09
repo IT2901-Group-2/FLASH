@@ -73,22 +73,24 @@ export const flashUiMock = async () => {
   // SegmentedControls
   // Select
 
-  const Textarea = vi.fn(({ label, ...props }: TextareaProps) => {
+  const Textarea = vi.fn(({ label, error, ...props }: TextareaProps) => {
     const id = useId();
     return (
       <div>
         <label htmlFor={id}>{label}</label>
         <textarea id={id} data-testid="textarea" {...props} />
+        {error && <p data-testid="textarea-error">{error}</p>}
       </div>
     );
   });
 
-  const TextField = vi.fn(({ label, size, ...rest }: TextFieldProps) => {
+  const TextField = vi.fn(({ label, size, error, ...rest }: TextFieldProps) => {
     const id = useId();
     return (
       <div>
         <label htmlFor={id}>{label}</label>
         <input id={id} data-testid="text-field" data-size={size} {...rest} />
+        {error && <p data-testid="text-field-error">{error}</p>}
       </div>
     );
   });
