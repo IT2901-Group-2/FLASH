@@ -25,18 +25,6 @@ export class EventService {
     this.dbService = dbService;
   }
 
-  getEvent(eventId: string): AsyncResult<Event, Error> {
-    return Result.try(() =>
-      this.dbService.db
-        .select()
-        .from(eventTable)
-        .where(eq(eventTable.id, eventId))
-        .limit(1)
-    )
-      .map(rows => getFirstRow(rows, `Event with id ${eventId} does not exist`))
-      .mapError(err => new HTTPError(err.message, 404));
-  }
-
   /**
    * Fetches all events in the database that match the given filters.
    * All combinations of filters are supported.

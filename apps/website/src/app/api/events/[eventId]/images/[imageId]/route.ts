@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { imageService } from "@/services/imageService";
 import { parseRequestBody } from "@/lib/utils/validation";
 import { updateImageSchema } from "@/db";
-import { errorResponse } from "@/lib/utils/error";
+import { errorResponse, HTTPError } from "@/lib/utils/error";
 import { withAuth } from "@/lib/utils/withAuth";
 import { eventService } from "@/services/eventService";
 import { verifyAccessToken } from "@/lib/utils/auth";
@@ -27,13 +27,21 @@ export async function GET(
     .catch(() => false);
   const isPrivileged = isAdmin || isModerator;
 
-  return eventService.getEvent(eventId).fold(async event => {
-    const visibleToUserId = event.uploadsArePrivate && !isPrivileged ? userId : undefined;
+  return eventService
+    .getEvents({ id: [eventId] })
+    .map(events => {
+      const event = events[0];
+      if (!event) throw new HTTPError("Event not found", 404);
+      return event;
+    })
+    .fold(async event => {
+      const visibleToUserId =
+        event.uploadsArePrivate && !isPrivileged ? userId : undefined;
 
-    return imageService
-      .downloadImage(eventId, imageId, { visibleToUserId })
-      .fold(buffer => new NextResponse(new Uint8Array(buffer)), errorResponse);
-  }, errorResponse);
+      return imageService
+        .downloadImage(eventId, imageId, { visibleToUserId })
+        .fold(buffer => new NextResponse(new Uint8Array(buffer)), errorResponse);
+    }, errorResponse);
 }
 
 export async function PATCH(
