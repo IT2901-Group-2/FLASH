@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { eventService } from "@/services/eventService";
 import { errorResponse } from "@/lib/utils/error";
-import { withAuth } from "@/lib/utils/withAuth";
 
 export async function GET(
   _: NextRequest,
