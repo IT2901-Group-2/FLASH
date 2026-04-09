@@ -18,12 +18,7 @@
 import { cleanup } from "@testing-library/react";
 import { afterEach, beforeEach, vi } from "vitest";
 import { mockRouter, resetMockRouter } from "./__mocks__/router.mock";
-import {
-  flashUiMock,
-  resetEventCounter,
-  resetImageCounter,
-  reactHookFormMock,
-} from "@test-config";
+import { flashUiMock, resetEventCounter, resetImageCounter } from "@test-config";
 import {
   redirect,
   useParams,
@@ -77,8 +72,6 @@ vi.mock("next/link", () => ({ default: Link }));
  * own package.
  */
 vi.mock("@flash/ui", () => flashUiMock());
-
-vi.mock("react-hook-form", () => reactHookFormMock());
 
 /**
  * Factory contains ONLY vi.fn() calls - no reference to any imported variable.
