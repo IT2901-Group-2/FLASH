@@ -11,6 +11,8 @@ import {
   isEventRoute,
   getEventId,
   checkEventCookie,
+  isModerateRoute,
+  isModerator,
   isJoinRoute,
   getJoinCode,
   getEventByCode,
@@ -62,6 +64,12 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
     const isAuthenticated = await checkEventCookie(eventId);
     if (!isAuthenticated) {
       return NextResponse.redirect(new URL(`/`, request.url));
+    }
+
+    if (isModerateRoute(request) && !(await isModerator(eventId))) {
+      const locale =
+        request.nextUrl.pathname.match(/^\/([a-z]{2}(-[A-Z]{2})?)/)?.[1] ?? "en";
+      return NextResponse.redirect(new URL(`/${locale}/events/${eventId}`, request.url));
     }
   }
 
