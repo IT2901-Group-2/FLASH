@@ -3,15 +3,7 @@ import { describe, it, beforeEach, expect, vi, afterEach } from "vitest";
 import { DatabaseService } from "../databaseService";
 import { Result } from "typescript-result";
 import { EventService } from "../eventService";
-import {
-  Event,
-  eventCodeTable,
-  eventTable,
-  Image,
-  imageTable,
-  User,
-  userTable,
-} from "@/db";
+import { Event, eventCodeTable, eventTable, Image, imageTable, userTable } from "@/db";
 import { subDays, addDays, subHours, addHours, setMilliseconds } from "date-fns";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { eq } from "drizzle-orm";
