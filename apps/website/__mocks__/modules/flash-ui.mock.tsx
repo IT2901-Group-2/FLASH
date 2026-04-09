@@ -8,6 +8,7 @@ import {
   LoaderProps,
   LogoProps,
   ProgressBarProps,
+  ProgressDotsProps,
   QRDisplayProps,
   SwitchProps,
   TextareaProps,
@@ -119,7 +120,9 @@ export const flashUiMock = async () => {
     <div data-testid="progress-bar" data-value={value} data-max={maxValue} />
   ));
 
-  const ProgressDots = vi.fn(() => <div data-testid="progress-dots" />);
+  const ProgressDots = vi.fn(({ maxValue, value }: ProgressDotsProps) => (
+    <div data-testid="progress-dots" data-value={value} data-max-value={maxValue} />
+  ));
 
   const QRDisplay = vi.fn(({ value, code, ...rest }: QRDisplayProps) => (
     <div data-testid="qr-display" data-value={value} data-code={code} {...rest}>
