@@ -5,7 +5,12 @@ CREATE TABLE `eventStats` (
 	`rejectedImages` integer DEFAULT 0 NOT NULL,
 	FOREIGN KEY (`eventId`) REFERENCES `events`(`id`) ON UPDATE no action ON DELETE cascade
 );--> statement-breakpoint
-INSERT INTO `eventStats` SELECT `id`, 0, 0, 0 FROM `events`;--> statement-breakpoint
+INSERT INTO `eventStats` SELECT
+  `id`,
+  (SELECT COUNT(*) FROM `images` WHERE `images`.`eventId` = `events`.`id` AND `images`.`isApproved` IS NULL),
+  (SELECT COUNT(*) FROM `images` WHERE `images`.`eventId` = `events`.`id` AND `images`.`isApproved` = TRUE),
+  (SELECT COUNT(*) FROM `images` WHERE `images`.`eventId` = `events`.`id` AND `images`.`isApproved` = FALSE)
+FROM `events`;--> statement-breakpoint
 CREATE TRIGGER `eventCreated`
 AFTER INSERT ON `events`
 FOR EACH ROW
