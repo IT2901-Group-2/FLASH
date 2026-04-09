@@ -51,9 +51,9 @@ export const eventStatsTable = sqliteTable("eventStats", {
 
 export const getEventStatsSchema = z.object({
   eventId: z.string(),
-  pendingImages: z.number().positive(),
-  approvedImages: z.number().positive(),
-  rejectedImages: z.number().positive(),
+  pendingImages: z.number().nonnegative(),
+  approvedImages: z.number().nonnegative(),
+  rejectedImages: z.number().nonnegative(),
 });
 void assertEqual<EventStats, z.infer<typeof getEventStatsSchema>>;
 
