@@ -89,6 +89,7 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
               icon={iconState}
               radius="16"
               onClick={handleCopyLink}
+              data-testid="copy-button"
             />
           </div>
         </div>

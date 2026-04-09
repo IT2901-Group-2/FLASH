@@ -122,7 +122,9 @@ export const flashUiMock = async () => {
   const ProgressDots = vi.fn(() => <div data-testid="progress-dots" />);
 
   const QRDisplay = vi.fn(({ value, code, ...rest }: QRDisplayProps) => (
-    <div data-testid="qr-display" data-value={value} data-code={code} {...rest} />
+    <div data-testid="qr-display" data-value={value} data-code={code} {...rest}>
+      <svg />
+    </div>
   ));
 
   const Switch = vi.fn(({ children, size, ...rest }: SwitchProps) => (
