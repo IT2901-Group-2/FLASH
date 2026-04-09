@@ -96,7 +96,7 @@ export function useEventByCodeQuery(code?: string) {
 export function useEventStatsQuery(eventId?: string) {
   return useQuery({
     queryKey: eventsKeys.stats(eventId),
-    queryFn: () => makeRequest(getEventStatsSchema, `/api/events/stats/${eventId}`),
+    queryFn: () => makeRequest(getEventStatsSchema, `/api/events/${eventId}/stats`),
     enabled: !!eventId,
   });
 }
