@@ -11,12 +11,5 @@ export async function GET(
 
   return eventService
     .getEventByCode(code)
-    .fold(
-      event =>
-        withAuth(async () => NextResponse.json(event), {
-          level: "moderator",
-          eventId: event.eventId,
-        }),
-      errorResponse
-    );
+    .fold(events => NextResponse.json(events), errorResponse);
 }

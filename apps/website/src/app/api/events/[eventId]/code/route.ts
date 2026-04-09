@@ -11,11 +11,22 @@ export async function GET(
 ): Promise<NextResponse> {
   const { eventId } = await params;
 
-  return withAuth(
-    () =>
-      parseSearchParams(req.nextUrl.searchParams, getEventCodeParamsSchema)
-        .map(data => eventService.getEventCode(eventId, data))
-        .fold(events => NextResponse.json(events), errorResponse),
-    { level: "moderator", eventId }
+  return parseSearchParams(req.nextUrl.searchParams, getEventCodeParamsSchema).fold(
+    async data => {
+      if (data.role === "moderator") {
+        return withAuth(
+          async () =>
+            eventService
+              .getEventCode(eventId, data)
+              .fold(code => NextResponse.json(code), errorResponse),
+          { level: "moderator", eventId }
+        );
+      }
+
+      return eventService
+        .getEventCode(eventId, data)
+        .fold(code => NextResponse.json(code), errorResponse);
+    },
+    errorResponse
   );
 }
