@@ -1,7 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { Result } from "typescript-result";
-import { checkEventCookie, getEventId, isEventRoute } from "../eventRoute";
+import {
+  checkEventCookie,
+  isModerator,
+  getEventId,
+  isEventRoute,
+  isModerateRoute,
+} from "../eventRoute";
 import { getEventCookie } from "@/lib/utils/eventCookie";
 
 const deleteCookieMock = vi.fn();
@@ -51,6 +57,58 @@ describe("getEventId", () => {
     expect(
       getEventId(new NextRequest("http://www.test.com/no/events/eventId/moderate"))
     ).toBe("eventId");
+  });
+});
+
+describe("isModerateRoute", () => {
+  it("Should correctly match moderate routes", () => {
+    expect(
+      isModerateRoute(new NextRequest("http://www.test.com/en/events/abc/moderate"))
+    ).toBe(true);
+    expect(
+      isModerateRoute(new NextRequest("http://www.test.com/no/events/eventId/moderate"))
+    ).toBe(true);
+  });
+
+  it("Should not match non-moderate routes", () => {
+    expect(isModerateRoute(new NextRequest("http://www.test.com/en/events/abc"))).toBe(false);
+    expect(
+      isModerateRoute(new NextRequest("http://www.test.com/en/events/abc/moderate/extra"))
+    ).toBe(false);
+    expect(
+      isModerateRoute(new NextRequest("http://www.test.com/en/events/abc/slideshow"))
+    ).toBe(false);
+    expect(
+      isModerateRoute(new NextRequest("http://www.test.com/en/not-events/abc/moderate"))
+    ).toBe(false);
+  });
+});
+
+describe("isModerator", () => {
+  it("Should return true when cookie has isModerator true", async () => {
+    getEventCookieMock.mockImplementationOnce(() =>
+      Result.fromAsync(async () => ({ isModerator: true }) as never)
+    );
+
+    expect(await isModerator("eventId")).toBe(true);
+  });
+
+  it("Should return false when cookie has isModerator false", async () => {
+    getEventCookieMock.mockImplementationOnce(() =>
+      Result.fromAsync(async () => ({ isModerator: false }) as never)
+    );
+
+    expect(await isModerator("eventId")).toBe(false);
+  });
+
+  it("Should return false when cookie is invalid or missing", async () => {
+    getEventCookieMock.mockImplementationOnce(() =>
+      Result.fromAsyncCatching(async () => {
+        throw new Error();
+      })
+    );
+
+    expect(await isModerator("eventId")).toBe(false);
   });
 });
 
