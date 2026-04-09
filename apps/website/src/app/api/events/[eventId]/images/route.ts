@@ -5,6 +5,10 @@ import { parseRequestBody, parseSearchParams } from "@/lib/utils/validation";
 import { getImagesParamsSchema, updateImagesSchema } from "@/db";
 import { errorResponse } from "@/lib/utils/error";
 import { withAuth } from "@/lib/utils/withAuth";
+import { verifyAccessToken } from "@/lib/utils/auth";
+import { getEventCookie } from "@/lib/utils/eventCookie";
+import { JWT_SECRET } from "@/config";
+import { eventService } from "@/services/eventService";
 
 export async function GET(
   req: NextRequest,
@@ -12,9 +16,32 @@ export async function GET(
 ): Promise<NextResponse> {
   const { eventId } = await params;
 
-  return parseSearchParams(req.nextUrl.searchParams, getImagesParamsSchema)
-    .map(filters => imageService.getImages(eventId, filters))
-    .fold(images => NextResponse.json(images), errorResponse);
+  const cookie = await getEventCookie(eventId, JWT_SECRET);
+  if (!cookie.ok) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { userId, isModerator } = cookie.value;
+  const isAdmin = await verifyAccessToken()
+    .then(() => true)
+    .catch(() => false);
+  const isPrivileged = isAdmin || isModerator;
+
+  return eventService.getEvent(eventId).fold(
+    async event =>
+      parseSearchParams(req.nextUrl.searchParams, getImagesParamsSchema).fold(
+        async queryParams => {
+          const visibleToUserId =
+            event.uploadsArePrivate && !isPrivileged ? userId : undefined;
+
+          return imageService
+            .getImages(eventId, { ...queryParams, visibleToUserId })
+            .fold(images => NextResponse.json(images), errorResponse);
+        },
+        errorResponse
+      ),
+    errorResponse
+  );
 }
 
 export async function PATCH(

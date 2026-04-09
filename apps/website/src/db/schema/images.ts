@@ -56,6 +56,8 @@ export const updateImagesSchema = z.object({
 });
 
 export type Image = typeof imageTable.$inferSelect;
-export type GetImagesParams = z.infer<typeof getImagesParamsSchema>;
+export type GetImagesParams = z.infer<typeof getImagesParamsSchema> & {
+  visibleToUserId?: string;
+};
 export type UpdateImage = z.infer<typeof updateImageSchema>;
 export type UpdateImages = z.infer<typeof updateImagesSchema>;

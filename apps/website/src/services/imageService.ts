@@ -52,7 +52,7 @@ export class ImageService {
    */
   getImages(
     eventId: string,
-    { id, approval }: GetImagesParams = {}
+    { id, approval, visibleToUserId }: GetImagesParams = {}
   ): AsyncResult<Image[], Error> {
     return Result.try(() =>
       this.dbService.db
@@ -65,7 +65,10 @@ export class ImageService {
             approval !== undefined && approval !== "pending"
               ? eq(imageTable.isApproved, approval === "approved")
               : undefined,
-            approval === "pending" ? isNull(imageTable.isApproved) : undefined
+            approval === "pending" ? isNull(imageTable.isApproved) : undefined,
+            visibleToUserId !== undefined
+              ? eq(imageTable.userId, visibleToUserId)
+              : undefined
           )
         )
     );
@@ -81,13 +84,22 @@ export class ImageService {
    */
   downloadImage(
     eventId: string,
-    imageId: string
+    imageId: string,
+    { visibleToUserId }: { visibleToUserId?: string } = {}
   ): AsyncResult<Buffer<ArrayBufferLike>, Error> {
     return Result.try(() =>
       this.dbService.db
         .select()
         .from(imageTable)
-        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
+        .where(
+          and(
+            eq(imageTable.eventId, eventId),
+            eq(imageTable.id, imageId),
+            visibleToUserId !== undefined
+              ? eq(imageTable.userId, visibleToUserId)
+              : undefined
+          )
+        )
         .limit(1)
     )
       .map(rows =>
