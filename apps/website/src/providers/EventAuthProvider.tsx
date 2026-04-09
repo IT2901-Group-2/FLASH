@@ -7,14 +7,12 @@ import { JWT_SECRET } from "@/config";
 
 export async function getEventAuth(eventId: string): Promise<EventAuth> {
   return getEventCookie(eventId, JWT_SECRET).fold(
-    ({ userId, name, isModerator }) => ({
-      userId,
+    ({ name, isModerator }) => ({
       isAuthenticated: true,
       nickname: name,
       isModerator,
     }),
     () => ({
-      userId: undefined,
       isAuthenticated: false,
       nickname: undefined,
       isModerator: undefined,

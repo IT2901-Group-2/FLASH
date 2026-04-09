@@ -1,6 +1,7 @@
 import { vi } from "vitest";
 import {
   defaultImagesQueryReturn,
+  defaultUploadedImageCountQueryReturn,
   defaultUploadImageMutationReturn,
   defaultUpdateImageMutationReturn,
   defaultBatchUpdateImageMutationReturn,
@@ -29,8 +30,10 @@ export const imageHooksMock = () => ({
   imagesKeys: {
     all: ["images"],
     event: (eventId?: string) => ["images", eventId],
+    uploaded: (eventId?: string) => ["images", eventId, "uploaded"],
   },
   useImagesQuery: vi.fn(() => ({ ...defaultImagesQueryReturn })),
+  useUploadedImageCountQuery: vi.fn(() => ({ ...defaultUploadedImageCountQueryReturn })),
   useUploadImageMutation: vi.fn(() => ({ ...defaultUploadImageMutationReturn })),
   useUpdateImageMutation: vi.fn(() => ({ ...defaultUpdateImageMutationReturn })),
   useBatchUpdateImageMutation: vi.fn(() => ({

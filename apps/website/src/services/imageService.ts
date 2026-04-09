@@ -23,6 +23,7 @@ export class ImageService {
   }
 
   static readonly MAX_IMAGE_SIZE = 8 * 1024 * 1024;
+
   /**
    * Validates the image metadata using `sharp`.
    * Checks that `sharp` is able to open the image file and that the size of the image does not exceed `ImageService.MAX_IMAGE_SIZE`.
@@ -122,12 +123,7 @@ export class ImageService {
           .limit(1)
       ).map(getFirstRow);
 
-      const { count } = yield* Result.try(() =>
-        this.dbService.db
-          .select({ count: sql<number>`count(*)` })
-          .from(imageTable)
-          .where(and(eq(imageTable.eventId, eventId), eq(imageTable.userId, userId)))
-      ).map(getFirstRow);
+      const count = yield* this.getUploadedImageCountByUser(eventId, userId);
 
       if (uploadLimit !== null && count >= uploadLimit) {
         throw new HTTPError("Upload limit reached", 403);
@@ -235,6 +231,42 @@ export class ImageService {
       )
       .onSuccess(() => this.dbService.flush())
       .map(row => this.storage.rm(`${row.id}.webp`).map(() => row));
+  }
+
+  /**
+   * Returns the number of images uploaded by the specified user in the specified event.
+   * @param eventId The id of the event.
+   * @param userId The id of the user.
+   * @returns A result containing the uploaded image count or an error.
+   */
+  private getUploadedImageCountByUser(
+    eventId: string,
+    userId: string
+  ): AsyncResult<number, Error> {
+    return Result.try(() =>
+      this.dbService.db
+        .select({ count: sql<number>`count(*)` })
+        .from(imageTable)
+        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.userId, userId)))
+    )
+      .map(getFirstRow)
+      .map(({ count }) => count);
+  }
+
+  /**
+   * Returns the number of images uploaded by the currently authenticated user in the given event.
+   *
+   * @param eventId The id of the event.
+   * @returns A result containing the uploaded image count or an error.
+   */
+  getUploadedImageCount(eventId: string): AsyncResult<number, Error> {
+    return Result.genCatching(this, function* () {
+      const { userId } = yield* getEventCookie(eventId, JWT_SECRET).mapError(
+        () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
+      );
+
+      return yield* this.getUploadedImageCountByUser(eventId, userId);
+    });
   }
 }
 

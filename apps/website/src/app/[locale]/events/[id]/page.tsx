@@ -1,7 +1,11 @@
 "use client";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
-import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
+import {
+  useImagesQuery,
+  useUploadedImageCountQuery,
+  useUploadImageMutation,
+} from "@/hooks/useImages";
 import { getAdminDashboardEventRoute, routes } from "@/lib/routes";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
@@ -30,6 +34,7 @@ export default function Page() {
   // Image Data
   const { data: imagesData } = useImagesQuery(eventId);
   const images = imagesData ?? [];
+  const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -50,7 +55,7 @@ export default function Page() {
     eventData?.name ??
     (isLoading ? tUpload("loadingEvent") : tUpload("eventFallbackName"));
 
-  const userImageCount = images.filter(img => img.userId === eventAuth?.userId).length;
+  const userImageCount = uploadedCountData?.count ?? 0;
 
   const uploadsRemaining =
     typeof eventData?.uploadLimit === "number"

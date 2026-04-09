@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import z from "zod";
 
 const imageArraySchema = z.array(getImageSchema);
+const uploadedImageCountSchema = z.object({ count: z.number().int().nonnegative() });
 
 export type CreateImageInput = {
   eventId: string;
@@ -64,6 +65,7 @@ export const imagesKeys = {
   event: (eventId?: string) => [...imagesKeys.all, eventId] as const,
   list: (eventId?: string, params?: GetImagesParams) =>
     [...imagesKeys.event(eventId), "list", toImagesSearchParams(params)] as const,
+  uploaded: (eventId?: string) => [...imagesKeys.event(eventId), "uploaded"] as const,
 };
 
 /**
@@ -83,6 +85,18 @@ export function useImagesQuery(
       ),
     enabled: !!eventId,
     refetchInterval,
+  });
+}
+
+/**
+ * Fetches the uploaded image count for the currently authenticated event user.
+ */
+export function useUploadedImageCountQuery(eventId?: string) {
+  return useQuery({
+    queryKey: imagesKeys.uploaded(eventId),
+    queryFn: () =>
+      makeRequest(uploadedImageCountSchema, `/api/events/${eventId}/uploaded`),
+    enabled: !!eventId,
   });
 }
 
