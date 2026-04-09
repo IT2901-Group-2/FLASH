@@ -32,4 +32,14 @@ BEGIN
     `approvedImages` = `approvedImages` + IIF(`NEW`.`isApproved` = TRUE, 1, 0) - IIF(`OLD`.`isApproved` = TRUE, 1, 0),
     `rejectedImages` = `rejectedImages` + IIF(`NEW`.`isApproved` = FALSE, 1, 0) - IIF(`OLD`.`isApproved` = FALSE, 1, 0)
   WHERE `eventId` = `NEW`.`eventId`;
+END;--> statement-breakpoint
+CREATE TRIGGER `imageDeleted`
+AFTER DELETE ON `images`
+FOR EACH ROW
+BEGIN
+  UPDATE `eventStats` SET
+    `pendingImages` = `pendingImages` - IIF(`OLD`.`isApproved` IS NULL, 1, 0),
+    `approvedImages` = `approvedImages` - IIF(`OLD`.`isApproved` = TRUE, 1, 0),
+    `rejectedImages` = `rejectedImages` - IIF(`OLD`.`isApproved` = FALSE, 1, 0)
+  WHERE `eventId` = `OLD`.`eventId`;
 END;
