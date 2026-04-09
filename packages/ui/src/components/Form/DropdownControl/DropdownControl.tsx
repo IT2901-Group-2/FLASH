@@ -80,6 +80,7 @@ const DropdownControl = ({
       className={cl(styles.dropdownControls, className)}
       data-color={color}
       data-error={!!rest.error}
+      data-value={selectedValue}
       {...rest}
     >
       <SegmentedControl
