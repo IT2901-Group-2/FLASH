@@ -7,9 +7,12 @@ import {
   useDeleteEventMutation,
   useEventCodeQuery,
   useEventsQuery,
+  useEventStatsQuery,
   useUpdateEventMutation,
 } from "../useEvents";
 import { Event } from "@/db";
+import { NextResponse } from "next/server";
+import { makeEventStats } from "@test-config";
 
 const mockEvent: Event = {
   id: "1",
@@ -149,6 +152,32 @@ describe("useEventCodeQuery", () => {
     });
 
     expect(result.current.data).toStrictEqual("event-code");
+  });
+});
+
+describe("useEventStatsQuery", () => {
+  it("Fails on malformed response", async () => {
+    vi.stubGlobal("fetch", async () => NextResponse.json({ foo: 1, bar: true }));
+
+    const { result } = renderHook(() => useEventStatsQuery("eventId"), {
+      wrapper: createWrapper().wrapper,
+    });
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.isError).toBe(true);
+  });
+
+  it("Fetches event stats successfully", async () => {
+    const mockEventStats = makeEventStats();
+    vi.stubGlobal("fetch", async () => NextResponse.json(mockEventStats));
+
+    const { result } = renderHook(() => useEventStatsQuery("eventId"), {
+      wrapper: createWrapper().wrapper,
+    });
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.isSuccess).toBe(true);
+    expect(result.current.data).toStrictEqual(mockEventStats);
   });
 });
 
