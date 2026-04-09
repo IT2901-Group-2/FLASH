@@ -9,11 +9,11 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import styles from "./RememberedEvents.module.css";
 
-const RememberedEvent = ({ name, uploadLimit }: Event) => {
+const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
   const c = useTranslations("common");
   const navigation = useRouter();
   return (
-    <Card onClick={() => navigation.back()} className={styles.linkcard}>
+    <Card onClick={() => navigation.push(`/events/${id}`)} className={styles.linkcard}>
       <div className={styles.content}>
         <Title size="small">{name}</Title>
         <span>
