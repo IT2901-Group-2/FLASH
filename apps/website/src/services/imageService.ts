@@ -114,33 +114,22 @@ export class ImageService {
         () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
       );
 
-      const [event] = yield* Result.try(() =>
+      const { uploadLimit } = yield* Result.try(() =>
         this.dbService.db
           .select({ uploadLimit: eventTable.uploadLimit })
           .from(eventTable)
           .where(eq(eventTable.id, eventId))
           .limit(1)
-      );
+      ).map(getFirstRow);
 
-      /** This should never happen since we check for the existence of the event before allowing uploads.
-       *  Was added to avoid "possibly 'undefined'" error on `event.uploadLimit`.
-       *  Can be removed if the warning message is deemed acceptable.
-       **/
-      if (!event) {
-        throw new HTTPError(`Event with id ${eventId} not found`, 404);
-      }
-
-      const countRow = yield* Result.try(() =>
+      const { count } = yield* Result.try(() =>
         this.dbService.db
           .select({ count: sql<number>`count(*)` })
           .from(imageTable)
           .where(and(eq(imageTable.eventId, eventId), eq(imageTable.userId, userId)))
-      );
+      ).map(getFirstRow);
 
-      const uploadCount = Number(countRow[0]?.count ?? 0);
-      const uploadLimit = event.uploadLimit ?? Infinity;
-
-      if (uploadCount >= uploadLimit) {
+      if (uploadLimit !== null && count >= uploadLimit) {
         throw new HTTPError("Upload limit reached", 403);
       }
 
