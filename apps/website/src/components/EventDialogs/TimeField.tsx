@@ -30,6 +30,7 @@ function EventTimeField({ value, onChange, error }: EventTimeFieldProps) {
       dropdownBorder
       value={preset}
       onChange={handlePresetChange}
+      data-testid="dropdown-control"
     >
       <DropdownControl.Item value="full" label={t("value.full")} />
       <DropdownControl.Item
