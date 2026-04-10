@@ -62,7 +62,7 @@ export const SidebarGroup = ({
       {title && <span className={styles.title}>{title.toUpperCase()}</span>}
       <div className={styles.groupItems}>
         {icon && !showChildren && (
-          <SidebarItem icon={icon} onClick={() => setOpen(true)} />
+          <SidebarItem icon={icon} onClick={() => setOpen(true)} border />
         )}
         {showChildren && children}
       </div>

@@ -8,6 +8,8 @@ import {
   Clock4,
   HardDrive,
   House,
+  Languages,
+  Moon,
   Settings,
   SquareDashed,
   Users,
@@ -48,18 +50,20 @@ export const Default: Story = {
       <Sidebar>
         <Sidebar.Header />
         <Sidebar.Group title="Admin">
-          <Sidebar.Item icon={<House />}>Dashboard</Sidebar.Item>
+          <Sidebar.Item icon={<House />} border>
+            Dashboard
+          </Sidebar.Item>
         </Sidebar.Group>
         <Sidebar.Group title="Events" hideChildrenWhenClosed icon={<Calendar />} scroll>
           {EXAMPLE_EVENTS.map((event, key) => (
-            <Sidebar.Item key={key}>
+            <Sidebar.Item key={key} border>
               {event} <ChevronRight />
             </Sidebar.Item>
           ))}
         </Sidebar.Group>
         <Sidebar.Group title="Options" position="bottom">
-          <Sidebar.Item icon={<House />}>Dashboard</Sidebar.Item>{" "}
-          <Sidebar.Item icon={<House />}>Dashboard</Sidebar.Item>
+          <Sidebar.Item icon={<Languages />}>Language </Sidebar.Item>
+          <Sidebar.Item icon={<Moon />}>Dark Mode</Sidebar.Item>
         </Sidebar.Group>
         <Sidebar.Group>
           <Sidebar.Item icon={<ArrowLeft />} data-color="brand-purple">

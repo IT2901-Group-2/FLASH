@@ -21,7 +21,7 @@ export interface SidebarItemProps extends HTMLAttributes<HTMLButtonElement> {
  */
 export const SidebarItem = ({
   "data-color": color,
-  border = true,
+  border = false,
   icon,
   children,
   ...rest
