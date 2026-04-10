@@ -71,7 +71,9 @@ describe("isModerateRoute", () => {
   });
 
   it("Should not match non-moderate routes", () => {
-    expect(isModerateRoute(new NextRequest("http://www.test.com/en/events/abc"))).toBe(false);
+    expect(isModerateRoute(new NextRequest("http://www.test.com/en/events/abc"))).toBe(
+      false
+    );
     expect(
       isModerateRoute(new NextRequest("http://www.test.com/en/events/abc/moderate/extra"))
     ).toBe(false);
