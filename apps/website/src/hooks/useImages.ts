@@ -1,10 +1,14 @@
-import { getImageSchema, GetImagesParams, UpdateImage } from "@/db";
+import {
+  getImageSchema,
+  GetImagesParams,
+  UpdateImage,
+  uploadedImageCountSchema,
+} from "@/db";
 import { makeRequest } from "@/lib/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import z from "zod";
 
 const imageArraySchema = z.array(getImageSchema);
-const uploadedImageCountSchema = z.object({ count: z.number().int().nonnegative() });
 
 export type CreateImageInput = {
   eventId: string;
