@@ -10,7 +10,7 @@ import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
-import { getAdminDashboardEventRoute, routes } from "@/lib/routes";
+import { routes } from "@/lib/routes";
 import Image from "next/image";
 
 export default function Page() {
@@ -57,9 +57,7 @@ export default function Page() {
       typeof uploadsRemaining === "number" ? uploadsRemaining : tUpload("unlimited"),
   });
 
-  const backHref = eventAuth.isModerator
-    ? getAdminDashboardEventRoute(eventId)
-    : routes.root;
+  const backHref = routes.root;
 
   const { openFilePicker, FileInput } = useFileUpload({
     multiple: false,
