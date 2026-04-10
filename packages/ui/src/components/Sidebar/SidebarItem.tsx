@@ -1,6 +1,5 @@
 import { HTMLAttributes } from "react";
 import styles from "./Sidebar.module.css";
-import { useSidebar } from "./SidebarContext";
 
 export interface SidebarItemProps extends HTMLAttributes<HTMLButtonElement> {
   /**
@@ -8,19 +7,34 @@ export interface SidebarItemProps extends HTMLAttributes<HTMLButtonElement> {
    * in the sidebar. This icon is the only thing shown for the link to the page
    * if the sidebar is in the closed state.
    */
-  icon: React.ReactElement;
+  icon?: React.ReactElement;
+  /**
+   * If the item should have a border at the bottom. This is used to separate
+   * items in the sidebar.
+   * @default false
+   */
+  border?: boolean;
 }
 
 /**
  * Component representing a clickable link to another page in the sidebar.
  */
-export const SidebarItem = ({ children, icon, ...rest }: SidebarItemProps) => {
-  const { open } = useSidebar();
-
+export const SidebarItem = ({
+  "data-color": color,
+  border = true,
+  icon,
+  children,
+  ...rest
+}: SidebarItemProps) => {
   return (
-    <button className={styles.sidebarItem} {...rest}>
+    <button
+      data-color={color}
+      data-border={border}
+      className={styles.sidebarItem}
+      {...rest}
+    >
       {icon}
-      {open && <span className={styles.itemTitle}>{children}</span>}
+      {<span className={styles.itemTitle}>{children}</span>}
     </button>
   );
 };

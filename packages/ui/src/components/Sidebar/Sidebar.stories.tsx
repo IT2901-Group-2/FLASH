@@ -1,8 +1,10 @@
 import { Meta, StoryObj } from "@storybook/react-vite";
 import Sidebar from "./Sidebar";
 import {
+  ArrowLeft,
   Calendar,
   ChartColumn,
+  ChevronRight,
   Clock4,
   HardDrive,
   House,
@@ -11,6 +13,8 @@ import {
   Users,
 } from "lucide-react";
 import { expect, userEvent, within } from "storybook/test";
+
+const EXAMPLE_EVENTS = ["Event 1", "Event 2", "Event 3"];
 
 const meta: Meta<typeof Sidebar> = {
   title: "Building Blocks/Components/Sidebar",
@@ -37,6 +41,35 @@ const meta: Meta<typeof Sidebar> = {
 export default meta;
 
 type Story = StoryObj<typeof Sidebar>;
+
+export const Default: Story = {
+  render: () => (
+    <Sidebar.Provider open={false}>
+      <Sidebar>
+        <Sidebar.Header />
+        <Sidebar.Group title="Admin">
+          <Sidebar.Item icon={<House />}>Dashboard</Sidebar.Item>
+        </Sidebar.Group>
+        <Sidebar.Group title="Events" hideChildrenWhenClosed icon={<Calendar />} scroll>
+          {EXAMPLE_EVENTS.map((event, key) => (
+            <Sidebar.Item key={key}>
+              {event} <ChevronRight />
+            </Sidebar.Item>
+          ))}
+        </Sidebar.Group>
+        <Sidebar.Group title="Options" position="bottom">
+          <Sidebar.Item icon={<House />}>Dashboard</Sidebar.Item>{" "}
+          <Sidebar.Item icon={<House />}>Dashboard</Sidebar.Item>
+        </Sidebar.Group>
+        <Sidebar.Group>
+          <Sidebar.Item icon={<ArrowLeft />} data-color="brand-purple">
+            Exit
+          </Sidebar.Item>
+        </Sidebar.Group>
+      </Sidebar>
+    </Sidebar.Provider>
+  ),
+};
 
 export const Simple: Story = {
   render: () => (

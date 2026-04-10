@@ -3,9 +3,10 @@
   --color-bg-hover: var(--color-primary-light);
   --color-group-title: var(--color-text-base);
   --border: 0.1rem solid var(--color-border-base);
-  --transition: 0.25s ease-in-out;
+  --transition-time: 0.3s;
+  --transition: var(--transition-time) ease-in-out;
 
-  width: 15rem;
+  width: 20rem;
   min-width: 4.5rem;
   max-width: 40rem;
 
@@ -22,7 +23,7 @@
   border-right: var(--border);
 
   transition-property: width;
-  transition-duration: 0.2s;
+  transition-duration: var(--transition-time);
   transition-timing-function: linear;
 
   position: sticky;
@@ -38,7 +39,7 @@
   }
 
   &[data-open="false"] {
-    width: 4.5rem;
+    width: 5rem;
     padding: 0 0.5rem;
   }
 }
@@ -53,8 +54,7 @@
 
     &[data-open="true"] {
       left: 0;
-      width: 75%;
-      max-width: 75%;
+      width: clamp(20rem, 100%, 50rem);
     }
   }
 }
@@ -101,9 +101,8 @@
   color: inherit;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.5rem;
   padding: 1.5rem 0;
-  align-self: stretch;
 
   &:has(+ .sidebarFooter) {
     margin-bottom: auto;
@@ -127,6 +126,13 @@
   [data-open="false"] & {
     align-items: center;
   }
+
+  &[data-scroll="true"] {
+    flex: 1;
+    .groupItems {
+      overflow-y: scroll;
+    }
+  }
 }
 
 .sidebarItem {
@@ -134,27 +140,55 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 0.5rem 0.25rem;
-  border-radius: var(--radius-4);
+
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+
+  border-radius: var(--radius-8);
   cursor: pointer;
   border: none;
   background-color: inherit;
+
+  width: 100%;
+
+  transition: padding var(--transition);
 
   &:hover {
     background-color: var(--color-bg-hover);
   }
 
+  &[data-border="true"]:not([data-color]) {
+    border: 0.1rem solid var(--color-border-base);
+  }
+
+  &[data-color] {
+    background-color: var(--color-base);
+    color: var(--color-text-contrast);
+
+    &:hover {
+      background-color: var(--color-light);
+    }
+
+    &:active {
+      background-color: var(--color-dark);
+    }
+  }
+
   .itemTitle {
     font-size: 1rem;
     font-weight: 500;
-    max-width: 12rem;
     opacity: 1;
     overflow: hidden;
     white-space: nowrap;
+
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   [data-open="false"] & {
-    padding: 0.5rem 0.5rem;
+    padding: 0.5rem;
     gap: 0;
     > .itemTitle {
       opacity: 0;
