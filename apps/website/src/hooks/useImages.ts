@@ -1,4 +1,9 @@
-import { getImageSchema, GetImagesParams, UpdateImage } from "@/db";
+import {
+  getImageSchema,
+  GetImagesParams,
+  UpdateImage,
+  uploadedImageCountSchema,
+} from "@/db";
 import { makeRequest } from "@/lib/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import z from "zod";
@@ -64,6 +69,7 @@ export const imagesKeys = {
   event: (eventId?: string) => [...imagesKeys.all, eventId] as const,
   list: (eventId?: string, params?: GetImagesParams) =>
     [...imagesKeys.event(eventId), "list", toImagesSearchParams(params)] as const,
+  uploaded: (eventId?: string) => [...imagesKeys.event(eventId), "uploaded"] as const,
 };
 
 /**
@@ -83,6 +89,18 @@ export function useImagesQuery(
       ),
     enabled: !!eventId,
     refetchInterval,
+  });
+}
+
+/**
+ * Fetches the uploaded image count for the currently authenticated event user.
+ */
+export function useUploadedImageCountQuery(eventId?: string) {
+  return useQuery({
+    queryKey: imagesKeys.uploaded(eventId),
+    queryFn: () =>
+      makeRequest(uploadedImageCountSchema, `/api/events/${eventId}/uploaded`),
+    enabled: !!eventId,
   });
 }
 

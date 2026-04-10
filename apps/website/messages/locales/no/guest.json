@@ -87,14 +87,16 @@
       "loadingEvent": "Laster arrangement...",
       "eventFallbackName": "Arrangement",
       "eventLoadFailed": "Kunne ikke laste arrangementsdetaljer for denne lenken.",
-      "unlimited": "ubegrenset",
-      "description": "Du kan laste opp {uploadsRemaining} bilder",
+      "descriptionRemaining": "Du kan laste opp {count, plural, one {# bilde} other {# bilder}}",
+      "descriptionUnlimited": "Du kan laste opp ubegrenset med bilder",
+      "descriptionNone": "Du har ingen opplastinger igjen",
       "emptyState": "Ingen bilder funnet",
       "imageAlt": "Bilde {index} av {total}",
       "imageTitle": "Bilde {index}",
       "errors": {
         "uploadUnavailable": "Kan ikke laste opp bilder for dette arrangementet.",
-        "uploadFailed": "{count, plural, one {Kunne ikke laste opp bilde} other {Noen bilder kunne ikke lastes opp}}"
+        "uploadFailed": "{count, plural, one {Kunne ikke laste opp bilde} other {Noen bilder kunne ikke lastes opp}}",
+        "uploadLimitReached": "Du har nådd opplastingsgrensen for dette arrangementet."
       }
     }
   }

@@ -1,17 +1,21 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, QrCode, Upload, X } from "lucide-react";
-import styles from "./UploadImage.module.css";
-import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
-import { useFileUpload } from "@/hooks/useFileUpload";
-import { useTranslations } from "next-intl";
-import { useParams, useRouter } from "next/navigation";
-import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
-import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
-import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
+import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+import {
+  useImagesQuery,
+  useUploadedImageCountQuery,
+  useUploadImageMutation,
+} from "@/hooks/useImages";
 import { getAdminDashboardEventRoute, routes } from "@/lib/routes";
+import { useEventAuth } from "@/providers/EventAuthContext";
+import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
+import { ChevronLeft, ChevronRight, QrCode, Upload, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import styles from "./UploadImage.module.css";
+import { useFileUpload } from "@/hooks/useFileUpload";
 
 export default function Page() {
   const router = useRouter();
@@ -30,6 +34,7 @@ export default function Page() {
   // Image Data
   const { data: imagesData } = useImagesQuery(eventId);
   const images = imagesData ?? [];
+  const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -49,13 +54,20 @@ export default function Page() {
   const eventName =
     eventData?.name ??
     (isLoading ? tUpload("loadingEvent") : tUpload("eventFallbackName"));
-  const uploadsRemaining =
-    typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
 
-  const uploadDescription = tUpload("description", {
-    uploadsRemaining:
-      typeof uploadsRemaining === "number" ? uploadsRemaining : tUpload("unlimited"),
-  });
+  const userImageCount = uploadedCountData?.count ?? 0;
+
+  const uploadsRemaining =
+    typeof eventData?.uploadLimit === "number"
+      ? Math.max(0, eventData.uploadLimit - userImageCount)
+      : undefined;
+
+  const uploadDescription =
+    typeof uploadsRemaining !== "number"
+      ? tUpload("descriptionUnlimited")
+      : uploadsRemaining === 0
+        ? tUpload("descriptionNone")
+        : tUpload("descriptionRemaining", { count: uploadsRemaining });
 
   const backHref = eventAuth.isModerator
     ? getAdminDashboardEventRoute(eventId)
@@ -81,8 +93,20 @@ export default function Page() {
         ]);
         const successfulUploads = results.filter(r => r.status === "fulfilled").length;
         const failureCount = results.length - successfulUploads;
+
+        const hasUploadLimitError = results.some(
+          (result): result is PromiseRejectedResult =>
+            result.status === "rejected" &&
+            result.reason instanceof Error &&
+            /upload\s+limit\s+reached/i.test(result.reason.message)
+        );
+
         if (failureCount > 0) {
-          setUploadError(tUpload("errors.uploadFailed", { count: failureCount }));
+          setUploadError(
+            hasUploadLimitError
+              ? tUpload("errors.uploadLimitReached")
+              : tUpload("errors.uploadFailed", { count: failureCount })
+          );
         }
       } finally {
         setIsUploading(false);
