@@ -101,3 +101,9 @@
     display: none;
   }
 }
+
+@media screen and (min-width: 768px) {
+  .sidebarTrigger {
+    display: none;
+  }
+}

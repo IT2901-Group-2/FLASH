@@ -1,7 +1,7 @@
 import type { HTMLAttributes } from "react";
 import styles from "./PhoneHeader.module.css";
 import { cl } from "@/utils/className";
-import { Title } from "@flash/ui";
+import { Sidebar, Title } from "@flash/ui";
 import { User } from "lucide-react";
 
 export interface PhoneHeaderProps extends HTMLAttributes<HTMLHeadingElement> {
@@ -40,6 +40,7 @@ export const PhoneHeader = ({
   return (
     <header className={cl(styles.container, className)} {...rest}>
       <div className={styles.infoSection}>
+        <Sidebar.Trigger className={styles.sidebarTrigger} />
         <div className={styles.titleBlock}>
           <Title size="small" as="h1">
             {title}
