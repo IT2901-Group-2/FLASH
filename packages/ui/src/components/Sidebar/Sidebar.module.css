@@ -153,11 +153,12 @@
 
   transition: padding var(--transition);
 
+  &:hover {
+    background-color: var(--color-bg-hover);
+  }
+
   &[data-border="true"]:not([data-color]) {
     border: 0.1rem solid var(--color-border-base);
-    &:hover {
-      background-color: var(--color-bg-hover);
-    }
   }
 
   &[data-color] {
