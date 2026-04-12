@@ -74,10 +74,30 @@
   flex-direction: row;
   justify-content: space-between;
 
+  .headerLogoContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+
+    .headerText {
+      font-weight: var(--font-weight-bold);
+      font-size: var(--font-size-heading-large);
+      overflow-x: hidden;
+      text-overflow: clip;
+      text-align: center;
+      width: min-content;
+    }
+  }
+
   [data-open="false"] & {
     flex-direction: column;
     padding-left: 0;
     padding-right: 0;
+
+    .headerText {
+      display: none;
+    }
 
     .logo {
       color: inherit;
