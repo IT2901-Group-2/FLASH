@@ -27,7 +27,7 @@ export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
 /**
  * The sidebar is used in on every admin page.
  *
- * > _Last updated: `2026-02-05`_
+ * > _Last updated: `2026-04-12`_
  */
 const Sidebar = ({ children, className, ...rest }: HTMLAttributes<HTMLDivElement>) => {
   const { open } = useSidebar();
