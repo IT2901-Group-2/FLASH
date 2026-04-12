@@ -2,8 +2,7 @@ import type { HTMLAttributes } from "react";
 import styles from "./PhoneHeader.module.css";
 import { cl } from "@/utils/className";
 import { Title } from "@flash/ui";
-import { ArrowLeft, User } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { User } from "lucide-react";
 
 export interface PhoneHeaderProps extends HTMLAttributes<HTMLHeadingElement> {
   /**
@@ -38,20 +37,13 @@ export const PhoneHeader = ({
   title,
   description,
   username,
-  backHref = "/",
   className,
   children,
   ...rest
 }: PhoneHeaderProps) => {
-  const navigation = useRouter();
-
   return (
     <header className={cl(styles.container, className)} {...rest}>
       <div className={styles.infoSection}>
-        <ArrowLeft
-          className={styles.backButton}
-          onClick={() => navigation.push(backHref)}
-        />
         <div className={styles.titleBlock}>
           <Title size="small" as="h1">
             {title}
