@@ -1,0 +1,43 @@
+.layout {
+  display: flex;
+  position: relative;
+  height: 100dvh;
+  overflow-y: scroll;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.header {
+  height: 4.15rem;
+  border-bottom: 0.1rem solid var(--color-border-base);
+  background-color: var(--color-primary-base);
+  padding: 1rem;
+
+  display: none;
+  justify-content: start;
+  align-items: center;
+
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+}
+
+.main {
+  flex: 1;
+  padding: 2rem;
+}
+
+@media screen and (max-width: 767px) {
+  .main {
+    padding-top: 4.5rem;
+  }
+  .header {
+    display: flex;
+  }
+}
