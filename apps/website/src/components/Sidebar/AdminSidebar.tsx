@@ -1,59 +1,91 @@
 "use client";
 
-import { Calendar, HardDrive, House, Moon, Settings, Sun } from "lucide-react";
-import { Sidebar } from "@flash/ui";
-import SidebarFooter from "./SidebarFooter";
+import {
+  ArrowLeft,
+  Calendar,
+  ChevronRight,
+  House,
+  Languages,
+  Moon,
+  Sun,
+} from "lucide-react";
+import { Sidebar as FlashSidebar } from "@flash/ui";
 import { useTranslations } from "next-intl";
 import { HTMLAttributes } from "react";
 import { useTheme } from "@/hooks/useTheme";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { useRouter } from "next/navigation";
 import Logo from "../Logo/Logo";
+import { useJoinedEvents } from "@/providers/JoinedEventsContext";
+import { useEventsQuery } from "@/hooks/useEvents";
+import LanguageSwitch from "./LanguageSwitch";
+import { useLanguage } from "@/hooks/useLanguage";
 
-/**
- * Admin sidebar used in the /admin/dashboard pages
- */
-export const AdminSidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) => {
-  const navigation = useRouter();
+export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) => {
   const t = useTranslations("common.navigation");
-  const { resolvedTheme, toggleTheme } = useTheme();
 
   const mounted = useIsMounted();
+  const navigation = useRouter();
+  const { switchLocale } = useLanguage();
+  const { resolvedTheme, toggleTheme } = useTheme();
+
+  const eventIds = useJoinedEvents();
+  const { data: events } = useEventsQuery({ id: eventIds });
+
+  if (!events) return;
 
   return (
-    <Sidebar className={className} {...rest}>
-      <Sidebar.Header logo={<Logo redirectTo="/admin/dashboard" />} />
-      <Sidebar.Group title={t("main")}>
-        <Sidebar.Item
+    <FlashSidebar className={className} {...rest}>
+      <FlashSidebar.Header logo={<Logo />}>FLASH</FlashSidebar.Header>
+      <FlashSidebar.Group title="Admin">
+        <FlashSidebar.Item
           icon={<House />}
+          border
           onClick={() => navigation.push("/admin/dashboard")}
         >
-          {t("desktop")}
-        </Sidebar.Item>
-        <Sidebar.Item
-          icon={<Calendar />}
-          onClick={() => navigation.push("/admin/dashboard/events")}
-        >
-          {t("events")}
-        </Sidebar.Item>
-      </Sidebar.Group>
-      <Sidebar.Group title={t("config")} position="bottom">
-        <Sidebar.Item icon={<Settings />}>{t("settings")}</Sidebar.Item>
-        <Sidebar.Item icon={<HardDrive />}>{t("storage")}</Sidebar.Item>
+          Dashboard
+        </FlashSidebar.Item>
+      </FlashSidebar.Group>
+      <FlashSidebar.Group
+        title="Events"
+        hideChildrenWhenClosed
+        icon={<Calendar />}
+        scroll
+      >
+        {events?.map(event => (
+          <FlashSidebar.Item
+            key={event.id}
+            border
+            onClick={() => navigation.push(`/events/${event.id}`)}
+          >
+            {event.name} <ChevronRight />
+          </FlashSidebar.Item>
+        ))}
+      </FlashSidebar.Group>
+      <FlashSidebar.Group title="Options" position="bottom">
+        <FlashSidebar.Item icon={<Languages />} onClick={switchLocale}>
+          Language <LanguageSwitch />
+        </FlashSidebar.Item>
         {mounted && (
-          <Sidebar.Item
+          <FlashSidebar.Item
             icon={resolvedTheme === "dark" ? <Sun /> : <Moon />}
             onClick={toggleTheme}
           >
             {resolvedTheme === "dark" ? t("darkMode") : t("lightMode")}
-          </Sidebar.Item>
+          </FlashSidebar.Item>
         )}
-      </Sidebar.Group>
-      <Sidebar.Footer>
-        <SidebarFooter />
-      </Sidebar.Footer>
-    </Sidebar>
+      </FlashSidebar.Group>
+      <FlashSidebar.Group>
+        <FlashSidebar.Item
+          icon={<ArrowLeft />}
+          data-color="brand-purple"
+          onClick={() => navigation.push("/")}
+        >
+          Exit
+        </FlashSidebar.Item>
+      </FlashSidebar.Group>
+    </FlashSidebar>
   );
 };
 
-export default AdminSidebar;
+export default Sidebar;
