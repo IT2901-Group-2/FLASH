@@ -21,10 +21,6 @@ export interface PhoneHeaderProps extends HTMLAttributes<HTMLHeadingElement> {
    * Child elements inside the header
    */
   children?: React.ReactNode;
-  /**
-   * Path to navigate to when clicking the back button.
-   */
-  backHref?: string;
 }
 
 /**
