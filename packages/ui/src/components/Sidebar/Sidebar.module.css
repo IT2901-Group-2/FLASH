@@ -136,7 +136,7 @@
 }
 
 .sidebarItem {
-  color: inherit;
+  color: var(--color-text-base);
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -195,7 +195,7 @@
     }
   }
 
-  svg {
+  > svg {
     width: 1.5rem;
     height: 1.5rem;
     aspect-ratio: 1/1;
