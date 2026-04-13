@@ -4,7 +4,7 @@ import styles from "./Dialog.module.css";
 import { cl } from "@/util/helpers";
 
 export type DialogProps = RefAttributes<HTMLDialogElement> &
-  HTMLAttributes<HTMLDialogElement> & {
+  HTMLAttributes<HTMLDivElement> & {
     /**
      * Fired when closed
      */
@@ -34,14 +34,10 @@ const Dialog = ({
   ...rest
 }: DialogProps) => {
   return (
-    <dialog
-      ref={ref}
-      className={styles.container}
-      autoFocus
-      closedby={closedby}
-      {...rest}
-    >
-      <Card className={cl(styles.card, className)}>{children}</Card>
+    <dialog ref={ref} className={styles.container} autoFocus closedby={closedby}>
+      <Card className={cl(styles.card, className)} {...rest}>
+        {children}
+      </Card>
     </dialog>
   );
 };

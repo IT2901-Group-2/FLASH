@@ -1,5 +1,11 @@
 import { DateRange, DEFAULT_DATE_RANGE } from "./DatePicker.types";
-import { createContext, useContext, useImperativeHandle, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 
 interface DateRangeContextState extends DateRange {
   viewMonth: number;
@@ -30,6 +36,7 @@ export const useDateRange = () => {
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
 interface DateRangeProviderProps {
+  defaultValue?: DateRange;
   onChange?: (range: DateRange) => void;
   local: string;
   children: React.ReactNode;
@@ -54,8 +61,16 @@ const DateRangeProvider = ({
   local,
   children,
   ref,
+  defaultValue,
 }: DateRangeProviderProps) => {
-  const [value, setValue] = useState<DateRangeContextState>(DEFAULT_VALUES.state);
+  const [value, setValue] = useState<DateRangeContextState>({
+    ...DEFAULT_VALUES.state,
+    ...defaultValue,
+  });
+
+  useEffect(() => {
+    setValue(v => ({ ...v, ...defaultValue }));
+  }, [defaultValue]);
 
   const selectDate = (date: Date) => {
     if (value.selecting === "start")
