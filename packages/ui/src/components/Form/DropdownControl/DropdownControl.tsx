@@ -80,6 +80,7 @@ const DropdownControl = ({
       className={cl(styles.dropdownControls, className)}
       data-color={color}
       data-error={!!rest.error}
+      data-value={selectedValue}
       {...rest}
     >
       <SegmentedControl
@@ -88,6 +89,7 @@ const DropdownControl = ({
         value={selectedValue}
         onChange={handleChange}
         fill
+        data-testid="dropdown-control-segmented"
       >
         {items.map(item => (
           <SegmentedControl.Item

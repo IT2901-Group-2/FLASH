@@ -1,16 +1,16 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, QrCode, Upload, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, ImageMinus, QrCode, Upload, X } from "lucide-react";
 import styles from "./UploadImage.module.css";
 import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
-import { getAdminDashboardEventRoute, routes } from "@/lib/routes";
+import { getAdminDashboardEventRoute, getModerateEventRoute, routes } from "@/lib/routes";
 import Image from "next/image";
 
 export default function Page() {
@@ -22,6 +22,7 @@ export default function Page() {
 
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
+  const locale = useLocale();
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );
@@ -259,7 +260,19 @@ export default function Page() {
             data-color="brand-purple"
             variant="secondary"
             onClick={() => dialogRef.current?.showModal()}
+            className={eventAuth.isModerator ? styles.desktopOnly : undefined}
           />
+          {eventAuth.isModerator && (
+            <Button
+              icon={<ImageMinus />}
+              iconPosition="right"
+              data-color="brand-purple"
+              variant="primary"
+              onClick={() => router.push(getModerateEventRoute(locale, eventId))}
+            >
+              {tCommon("actions.moderate")}
+            </Button>
+          )}
           <Button
             icon={<Upload />}
             iconPosition="right"

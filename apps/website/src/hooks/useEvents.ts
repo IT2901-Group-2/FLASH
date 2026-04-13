@@ -9,6 +9,7 @@ import {
   GetEventsParams,
   getEventSchema,
   UpdateEvent,
+  getEventStatsSchema,
 } from "@/db";
 import z from "zod";
 
@@ -52,6 +53,7 @@ export const eventsKeys = {
   code: (eventId?: string, role: GetEventCodeParams["role"] = "guest") =>
     [...eventsKeys.all, eventId, "code", role] as const,
   byCode: (code?: string) => [...eventsKeys.all, "by-code", code] as const,
+  stats: (eventId?: string) => [...eventsKeys.all, "stats", eventId] as const,
 };
 
 /**
@@ -88,6 +90,21 @@ export function useEventByCodeQuery(code?: string) {
     queryKey: eventsKeys.byCode(code),
     queryFn: () => makeRequest(getEventCodeSchema, `/api/events/by-code/${code}`),
     enabled: !!code,
+  });
+}
+
+/**
+ * Fetches the tracked statistics for the specified event.
+ * Disabled when `eventId` is `undefined` or `""`.
+ *
+ * @param eventId The event to fetch the stats for.
+ * @returns A `UseQueryResult` tracked stats for the specified event or an error.
+ */
+export function useEventStatsQuery(eventId?: string) {
+  return useQuery({
+    queryKey: eventsKeys.stats(eventId),
+    queryFn: () => makeRequest(getEventStatsSchema, `/api/events/${eventId}/stats`),
+    enabled: !!eventId,
   });
 }
 
