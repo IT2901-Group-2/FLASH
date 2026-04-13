@@ -21,12 +21,14 @@ import { useEventsQuery } from "@/hooks/useEvents";
 import LanguageSwitch from "./LanguageSwitch";
 import { useLanguage } from "@/hooks/useLanguage";
 import useIsMobile from "@/hooks/useIsMobile";
+import { useAuth } from "@/providers/AuthContext";
 
 export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) => {
   const t = useTranslations("common.navigation");
 
   const { setOpen } = useSidebar();
 
+  const { isAdmin } = useAuth();
   const mounted = useIsMounted();
   const isMobile = useIsMobile();
   const navigation = useRouter();
@@ -49,15 +51,17 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
   return (
     <FlashSidebar className={className} {...rest}>
       <FlashSidebar.Header logo={<Logo />}>FLASH</FlashSidebar.Header>
-      <FlashSidebar.Group title={t("admin")}>
-        <FlashSidebar.Item
-          icon={<House />}
-          border
-          onClick={() => handleRedirect("/admin/dashboard")}
-        >
-          {t("dashboard")}
-        </FlashSidebar.Item>
-      </FlashSidebar.Group>
+      {isAdmin && (
+        <FlashSidebar.Group title={t("admin")}>
+          <FlashSidebar.Item
+            icon={<House />}
+            border
+            onClick={() => handleRedirect("/admin/dashboard")}
+          >
+            {t("dashboard")}
+          </FlashSidebar.Item>
+        </FlashSidebar.Group>
+      )}
       {events && events.length > 0 && (
         <FlashSidebar.Group
           title={t("events")}
