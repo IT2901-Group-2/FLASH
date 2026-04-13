@@ -221,7 +221,6 @@ export class ImageService {
             ).getOrThrow();
           }
         }
-        return images;
       });
   }
 
