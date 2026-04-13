@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, QrCode, Upload, X } from "lucide-react";
 import styles from "./UploadImage.module.css";
-import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
+import { ActionCard, Button, Dialog, QRDisplay } from "@flash/ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
@@ -136,8 +136,6 @@ export default function Page() {
     }
   }, [images.length, previewIndex]);
 
-  const handleImagePreview = (index: number) => setPreviewIndex(index);
-
   const closePreview = () => setPreviewIndex(null);
 
   const nextPreviewImage = () => {
@@ -216,7 +214,6 @@ export default function Page() {
             src={previewImage.src}
             alt={previewImage.alt}
             className={styles.previewFullscreenImage}
-            sizes="100vw"
           />
           <Button
             className={styles.previewClose}
@@ -302,12 +299,19 @@ export default function Page() {
       ) : (
         <div className={styles.grid}>
           {images.map(image => (
-            <div key={image.id} className={styles.cell}>
+            <div
+              key={image.id}
+              className={styles.cell}
+              onClick={() => setPreviewIndex(images.indexOf(image))}
+            >
               <Image
                 src={`/api/events/${eventId}/images/${image.id}`}
                 alt=""
                 fill
                 className={styles.image}
+                placeholder="blur"
+                blurDataURL={image.previewImage}
+                sizes="(max-width: 768px) 66vw, 33vw"
               />
             </div>
           ))}
