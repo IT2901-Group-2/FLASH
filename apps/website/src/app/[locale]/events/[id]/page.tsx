@@ -301,17 +301,15 @@ export default function Page() {
         </div>
       ) : (
         <div className={styles.grid}>
-          {images.map((image, index) => (
-            <ImageCard
-              key={image.id}
-              variant="preview2"
-              src={`/api/events/${eventId}/images/${image.id}`}
-              alt={tUpload("imageAlt", { index: index + 1, total: images.length })}
-              title={tUpload("imageTitle", { index: index + 1 })}
-              data-image-id={image.id}
-              placeholder={image.previewImage}
-              onClick={() => handleImagePreview(index)}
-            />
+          {images.map(image => (
+            <div key={image.id} className={styles.cell}>
+              <Image
+                src={`/api/events/${eventId}/images/${image.id}`}
+                alt=""
+                fill
+                className={styles.image}
+              />
+            </div>
           ))}
         </div>
       )}
