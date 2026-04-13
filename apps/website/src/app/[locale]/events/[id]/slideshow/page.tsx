@@ -1,6 +1,6 @@
 "use client";
 
-import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+import { useEventCodeQuery, useEventsQuery, useEventStatsQuery } from "@/hooks/useEvents";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button, QRDisplay, Title } from "@flash/ui";
@@ -38,6 +38,7 @@ const Page = () => {
   const eventData = data?.[0];
 
   const { data: joinCode } = useEventCodeQuery(id, "guest");
+  const { data: imageStats } = useEventStatsQuery(id);
 
   const { data: imageData } = useImagesQuery(id, { approval: "pending" }, INTERVAL);
   const [viewIndex, setViewIndex, { paused, toggle }] = useInterval(
@@ -78,7 +79,7 @@ const Page = () => {
             size="xsmall"
             description={t("viewProgress", {
               index: Math.min(viewIndex + 1, imageData?.length ?? 0),
-              total: imageData?.length ?? 0,
+              total: imageStats?.pendingImages ?? 0,
             })}
           >
             {eventData?.name}
