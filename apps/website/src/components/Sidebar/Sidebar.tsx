@@ -99,7 +99,7 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
           data-color="brand-purple"
           onClick={() => navigation.push("/")}
         >
-          {t("exit")}
+          {t("back")}
         </FlashSidebar.Item>
       </FlashSidebar.Group>
     </FlashSidebar>

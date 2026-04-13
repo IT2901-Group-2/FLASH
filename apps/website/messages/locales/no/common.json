@@ -34,7 +34,7 @@
     "language": "Språk",
     "darkMode": "Mørk modus",
     "lightMode": "Lys modus",
-    "exit": "Forlat"
+    "back": "Tilbake"
   },
   "fields": {
     "password": "Passord",

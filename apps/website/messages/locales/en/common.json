@@ -34,7 +34,7 @@
     "language": "Language",
     "darkMode": "Dark mode",
     "lightMode": "Light mode",
-    "exit": "Exit"
+    "back": "Back"
   },
   "fields": {
     "password": "Password",
