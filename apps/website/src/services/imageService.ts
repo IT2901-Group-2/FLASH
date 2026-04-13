@@ -336,6 +336,7 @@ export class ImageService {
       this.withZipLock(eventId, () =>
         this.storage
           .read(`${eventId}.zip`)
+          .recover(() => Result.ok(undefined))
           .map(zip => new AdmZip(zip))
           .mapCatching(zip =>
             Result.try(() => zip.deleteFile(`${imageId}.webp`)).map(() =>

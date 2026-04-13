@@ -259,7 +259,11 @@ describe("ImageService downloadImage", () => {
   });
 
   it("Should return the zip archive when it exists", async () => {
-    await imageService.rebuildZip("wedding").getOrThrow();
+    vi.spyOn(DatabaseService.prototype, "flush").mockImplementation(() => {});
+
+    await imageService
+      .updateImages("wedding", ["image-3", "image-5"], { isApproved: true })
+      .getOrThrow();
 
     const result = await imageService.downloadImages("wedding").getOrThrow();
     const zip = new AdmZip(result);
@@ -479,41 +483,6 @@ describe("ImageService deleteImage", () => {
   });
 });
 
-describe("ImageService rebuildZip", () => {
-  it("Should build a zip containing only approved images", async () => {
-    await imageService.rebuildZip("birthday").getOrThrow();
-
-    const buf = await imageService["storage"].read("birthday.zip").getOrThrow();
-    const zip = new AdmZip(buf);
-    const names = zip.getEntries().map(e => e.entryName);
-    expect(new Set(names)).toStrictEqual(new Set(["image-2.webp"]));
-  });
-
-  it("Should produce an empty zip when no images are approved", async () => {
-    await imageService.rebuildZip("birthday").getOrThrow();
-    await imageService
-      .updateImage("birthday", "image-2", { isApproved: false })
-      .getOrThrow();
-
-    const buf = await imageService["storage"].read("birthday.zip").getOrThrow();
-    const zip = new AdmZip(buf);
-    expect(zip.getEntries()).toHaveLength(0);
-  });
-
-  it("Should overwrite an existing zip on rebuild", async () => {
-    await imageService.rebuildZip("wedding").getOrThrow();
-    await imageService
-      .updateImage("wedding", "image-3", { isApproved: false })
-      .getOrThrow();
-
-    const buf = await imageService["storage"].read("wedding.zip").getOrThrow();
-    const zip = new AdmZip(buf);
-    const names = zip.getEntries().map(e => e.entryName);
-    expect(names).not.toContain("image-3.webp");
-    expect(names).toContain("image-5.webp");
-  });
-});
-
 describe("ImageService zip side effects", () => {
   it("uploadImage on autoApprove event should add image to zip", async () => {
     mockedGetEventCookie.mockImplementationOnce(() =>
@@ -562,6 +531,7 @@ describe("ImageService zip side effects", () => {
 
   it("rejecting an image should remove it from the zip", async () => {
     vi.spyOn(DatabaseService.prototype, "flush").mockImplementation(() => {});
+
     await imageService
       .updateImage("wedding", "image-3", { isApproved: true })
       .getOrThrow();
@@ -577,7 +547,10 @@ describe("ImageService zip side effects", () => {
 
   it("deleting an image should remove it from the zip", async () => {
     vi.spyOn(DatabaseService.prototype, "flush").mockImplementation(() => {});
-    await imageService.rebuildZip("wedding").getOrThrow();
+
+    await imageService
+      .updateImage("wedding", "image-3", { isApproved: true })
+      .getOrThrow();
 
     await imageService.deleteImage("wedding", "image-3").getOrThrow();
 
@@ -586,7 +559,7 @@ describe("ImageService zip side effects", () => {
     expect(zip.getEntries().map(e => e.entryName)).not.toContain("image-3.webp");
   });
 
-  it("updateImages approval change should trigger a zip rebuild", async () => {
+  it("updateImages approval change should trigger zip updates", async () => {
     vi.spyOn(DatabaseService.prototype, "flush").mockImplementation(() => {});
 
     await imageService
