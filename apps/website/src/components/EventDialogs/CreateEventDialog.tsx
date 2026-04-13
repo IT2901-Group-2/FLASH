@@ -1,6 +1,6 @@
 "use client";
 
-import { RefAttributes, useState } from "react";
+import { MouseEvent, RefAttributes, useState } from "react";
 import { Button, Dialog, ProgressDots } from "@flash/ui";
 import styles from "./CreateEventDialog.module.css";
 import { ReviewStep } from "./Steps";
@@ -42,7 +42,8 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
 
   const goToPreviousStep = () => setCurrentStepIndex(i => i - 1);
 
-  const handleCreate = async () => {
+  const handleCreate = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     if (!currentStep) return;
     if (!(await methods.trigger(currentStep.fields))) return;
     setCurrentStepIndex(i => i + 1);
