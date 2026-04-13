@@ -1,21 +1,15 @@
-import { RefAttributes, useRef, useState } from "react";
+import { RefAttributes, useEffect, useState } from "react";
 import { Button, Dialog, ProgressDots } from "@flash/ui";
 import { useTranslations } from "next-intl";
 import { useUpdateEventMutation } from "@/hooks/useEvents";
-import { BasicInfoStep } from "./Steps/BasicInfoStep";
-import { OptionsStep } from "./Steps/OptionsStep";
-import { FormStepConfig } from "./Steps/types";
+import { FORM_STEPS } from "./formSteps";
 import styles from "./CreateEventDialog.module.css";
-import { CreateEvent, Event, UpdateEvent } from "@/db";
-
-const EDIT_STEPS: FormStepConfig[] = [
-  { Component: BasicInfoStep },
-  { Component: OptionsStep },
-];
+import { Event, UpdateEvent } from "@/db";
+import { FormProvider, useForm } from "react-hook-form";
 
 interface EditEventDialogProps extends RefAttributes<HTMLDialogElement> {
   event: Event;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 export const EditEventDialog = ({
@@ -27,86 +21,86 @@ export const EditEventDialog = ({
   const t = useTranslations("common.actions");
   const { mutateAsync, status } = useUpdateEventMutation();
 
-  const formRef = useRef<HTMLFormElement>(null);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
+  const [formKey, setFormKey] = useState<number>(0);
 
-  const [formData, setFormData] = useState<CreateEvent>({
-    name: event.name,
-    description: event.description,
-    uploadLimit: event.uploadLimit ?? undefined,
-    // autoApprove: event.autoApprove,
-    startDate: new Date(event.startDate),
-    endDate: new Date(event.endDate),
+  const methods = useForm<UpdateEvent>({
+    defaultValues: event,
+    mode: "onChange",
   });
 
-  const updateFormData = <K extends keyof CreateEvent>(field: K, value: CreateEvent[K]) =>
-    setFormData(prev => ({ ...prev, [field]: value }));
+  useEffect(() => {
+    methods.reset(event);
+  }, [event, methods]);
 
   const isOnFirstStep = currentStepIndex === 0;
-  const isOnLastStep = currentStepIndex === EDIT_STEPS.length - 1;
-  const currentStep = EDIT_STEPS[currentStepIndex];
+  const isOnLastStep = currentStepIndex === FORM_STEPS.length - 1;
+  const currentStep = FORM_STEPS[currentStepIndex]!;
 
-  const tryGoToNextStep = () => {
-    if (!formRef.current?.reportValidity()) return;
-    setCurrentStepIndex(i => i + 1);
+  const tryGoToNextStep = async () => {
+    if (await methods.trigger(currentStep.fields)) setCurrentStepIndex(i => i + 1);
   };
 
   const goToPreviousStep = () => setCurrentStepIndex(i => i - 1);
 
   const handleSave = async () => {
-    if (!formRef.current?.reportValidity()) return;
-    const payload: UpdateEvent = {
-      ...formData,
-      uploadLimit: formData.uploadLimit ?? null,
-    };
-    // Added as .then(), so its easy to add if there are error popups in the future
-    await mutateAsync({ eventId: event.id, data: payload }).then(handleClose);
+    if (!(await methods.trigger(currentStep.fields))) return;
+    await mutateAsync({
+      eventId: event.id,
+      data: {
+        ...methods.getValues(),
+        uploadLimit: methods.getValues("uploadLimit") ?? null,
+      },
+    }).then(handleClose);
   };
 
   const handleClose = () => {
+    methods.reset();
     setCurrentStepIndex(0);
-    onClose();
+    setFormKey(i => i + 1);
+    onClose?.();
+    if (ref && typeof ref !== "function") ref.current?.close();
   };
 
   return (
     <Dialog ref={ref} closedby="none" {...rest}>
       <ProgressDots
-        maxValue={EDIT_STEPS.length}
+        maxValue={FORM_STEPS.length}
         value={currentStepIndex + 1}
         data-color="brand-purple"
       />
-      <form className={styles.form} ref={formRef} noValidate>
-        {currentStep && (
-          <currentStep.Component formData={formData} updateFormData={updateFormData} />
-        )}
+      <FormProvider {...methods}>
+        <form key={formKey} className={styles.form} noValidate>
+          {currentStep && <currentStep.Component />}
 
-        <div className={styles.buttonGroup}>
-          <Button variant="tertiary" data-color="neutral" onClick={handleClose}>
-            {t("cancel")}
-          </Button>
+          <div className={styles.buttonGroup}>
+            <Button variant="tertiary" data-color="neutral" onClick={handleClose}>
+              {t("cancel")}
+            </Button>
 
-          {!isOnFirstStep && (
-            <Button variant="secondary" data-color="neutral" onClick={goToPreviousStep}>
-              {t("previous")}
-            </Button>
-          )}
+            {!isOnFirstStep && (
+              <Button variant="secondary" data-color="neutral" onClick={goToPreviousStep}>
+                {t("previous")}
+              </Button>
+            )}
 
-          {!isOnLastStep ? (
-            <Button variant="secondary" data-color="neutral" onClick={tryGoToNextStep}>
-              {t("next")}
-            </Button>
-          ) : (
-            <Button
-              variant="primary"
-              data-color="brand-purple"
-              onClick={handleSave}
-              disabled={status === "pending"}
-            >
-              {t("save")}
-            </Button>
-          )}
-        </div>
-      </form>
+            {!isOnLastStep ? (
+              <Button variant="secondary" data-color="neutral" onClick={tryGoToNextStep}>
+                {t("next")}
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                data-color="brand-purple"
+                onClick={handleSave}
+                disabled={status === "pending"}
+              >
+                {t("save")}
+              </Button>
+            )}
+          </div>
+        </form>
+      </FormProvider>
     </Dialog>
   );
 };

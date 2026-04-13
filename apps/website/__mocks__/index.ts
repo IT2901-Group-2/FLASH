@@ -4,3 +4,4 @@ export * from "./fetch.mock";
 export * from "./factories";
 export * from "./hooks";
 export * from "./modules";
+export * from "./form.mock";
