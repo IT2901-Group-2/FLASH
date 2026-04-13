@@ -211,7 +211,7 @@ export class ImageService {
         .returning()
     )
       .onSuccess(() => this.dbService.flush())
-      .mapCatching(async images => {
+      .onSuccess(async images => {
         if (data.isApproved !== undefined) {
           for (const image of images) {
             await (
