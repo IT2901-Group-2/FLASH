@@ -24,6 +24,8 @@ export const eventTable = sqliteTable(
       .$defaultFn(() => new Date())
       .$onUpdate(() => new Date()),
     isArchived: integer({ mode: "boolean" }).notNull().default(false),
+    autoApprove: integer({ mode: "boolean" }).notNull().default(true),
+    uploadsArePrivate: integer({ mode: "boolean" }).notNull().default(false),
   },
   t => [check("dateConstraint", lte(t.startDate, t.endDate))]
 );
@@ -39,6 +41,23 @@ export const eventCodeTable = sqliteTable(
   },
   t => [unique("codeConstraint").on(t.code, t.eventId, t.isModerator)]
 );
+
+export const eventStatsTable = sqliteTable("eventStats", {
+  eventId: text()
+    .primaryKey()
+    .references(() => eventTable.id, { onDelete: "cascade" }),
+  pendingImages: integer().notNull().default(0),
+  approvedImages: integer().notNull().default(0),
+  rejectedImages: integer().notNull().default(0),
+});
+
+export const getEventStatsSchema = z.object({
+  eventId: z.string(),
+  pendingImages: z.number().nonnegative(),
+  approvedImages: z.number().nonnegative(),
+  rejectedImages: z.number().nonnegative(),
+});
+void assertEqual<EventStats, z.infer<typeof getEventStatsSchema>>;
 
 export const getEventsParamsSchema = z.object({
   id: z.string().array().min(1).optional(),
@@ -97,6 +116,8 @@ export const getEventSchema = z.object({
   endDate: z.coerce.date(),
   uploadLimit: z.number().positive().nullable(),
   isArchived: z.boolean(),
+  autoApprove: z.boolean(),
+  uploadsArePrivate: z.boolean(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
@@ -109,6 +130,8 @@ export const createEventSchema = z.object({
   endDate: z.coerce.date(),
   uploadLimit: z.number().positive().nullable().optional(),
   isArchived: z.boolean().optional(),
+  autoApprove: z.boolean().optional(),
+  uploadsArePrivate: z.boolean().optional(),
 });
 
 export const updateEventSchema = z.object({
@@ -118,10 +141,13 @@ export const updateEventSchema = z.object({
   endDate: z.coerce.date().optional(),
   uploadLimit: z.number().positive().nullable().optional(),
   isArchived: z.boolean().optional(),
+  autoApprove: z.boolean().optional(),
+  uploadsArePrivate: z.boolean().optional(),
 });
 
 export type Event = typeof eventTable.$inferSelect;
 export type EventCode = typeof eventCodeTable.$inferSelect;
+export type EventStats = typeof eventStatsTable.$inferSelect;
 export type GetEventsParams = z.infer<typeof getEventsParamsSchema>;
 export type GetEventCodeParams = z.infer<typeof getEventCodeParamsSchema>;
 export type CreateEvent = z.infer<typeof createEventSchema>;

@@ -2,7 +2,9 @@ import {
   eventHooksMock,
   imageHooksMock,
   makeEvent,
+  makeEventStats,
   makeImage,
+  mockEventStatsLoaded,
   mockImagesLoaded,
   renderWithQuery,
 } from "@test-config";
@@ -11,7 +13,7 @@ import { cleanup, screen } from "@testing-library/react";
 import EventCard from "./EventCard";
 import { useImagesQuery } from "@/hooks/useImages";
 import userEvent from "@testing-library/user-event";
-import { useDeleteEventMutation } from "@/hooks/useEvents";
+import { useDeleteEventMutation, useEventStatsQuery } from "@/hooks/useEvents";
 
 vi.mock("@/hooks/useImages", () => imageHooksMock());
 vi.mock("@/hooks/useEvents", () => eventHooksMock());
@@ -71,6 +73,10 @@ describe("EventCard", () => {
         makeImage({ isApproved: null }),
       ])
     );
+    vi.mocked(useEventStatsQuery).mockReturnValue(
+      mockEventStatsLoaded(makeEventStats({ pendingImages: 1, approvedImages: 2 }))
+    );
+
     const data = makeEvent();
     renderWithQuery(<EventCard data={data} />);
     expect(screen.getByTestId("event-total-photos").textContent).toContain("3");

@@ -16,9 +16,10 @@
     "toggleCamera": "{open, select, true {Lukk kamera} other {Åpne kamera}}",
     "uploadImage": "Last opp bilde",
     "slideshow": "Lysbildefremvisning",
-    "createNewEvent": "Lag nytt arrangement",
-    "shareEvent": "Del arrangement",
-    "copyLink": "Kopier lenke"
+    "createNewEvent": "Lag nytt event",
+    "shareEvent": "Del event",
+    "copyLink": "Kopier lenke",
+    "moderate": "Moderer"
   },
   "roles": {
     "guest": "Gjest",
@@ -29,7 +30,7 @@
     "main": "Meny",
     "config": "Konfig",
     "desktop": "Dashboard",
-    "events": "Arrangementer",
+    "events": "Eventer",
     "settings": "Innstillinger",
     "storage": "Lagring",
     "darkMode": "Mørk modus",
@@ -39,8 +40,8 @@
     "password": "Passord",
     "passwordPlaceholder": "•••••",
     "nickname": "Kallenavn",
-    "eventCode": "Arrangementskode",
-    "eventName": "Navn på arrangement",
+    "eventCode": "Eventkode",
+    "eventName": "Navn på event",
     "eventDescription": "Beskrivelse",
     "startDate": "Startdato",
     "endDate": "Sluttdato",
