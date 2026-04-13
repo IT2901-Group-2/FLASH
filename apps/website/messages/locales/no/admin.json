@@ -4,12 +4,12 @@
     "main": {},
     "event": {
       "basics": {
-        "title": "Opprett arrangement",
-        "description": "Sett opp et nytt fotoarrangement for gjestene dine. En QR-kode vil bli generert automatisk.",
+        "title": "Opprett event",
+        "description": "Sett opp et nytt fotoevent for gjestene dine. En QR-kode vil bli generert automatisk.",
         "field": {
           "name": {
-            "title": "Arrangementnavn",
-            "description": "Navnet på arrangementet ditt. Lag et unikt et.",
+            "title": "Eventnavn",
+            "description": "Navnet på eventet ditt. Lag et unikt et.",
             "error": {
               "required": "Dette feltet er påkrevd",
               "minLength": "Tittelen må være minst {min} bokstaver"
@@ -17,12 +17,12 @@
           },
           "description": {
             "title": "Beskrivelse",
-            "description": "En beskrivelse av arrangementet ditt.",
+            "description": "En beskrivelse av eventet ditt.",
             "error": {}
           },
           "dateRange": {
             "title": "Datoer",
-            "description": "Velg en start og slutt dato for arrangementet. Du velger tidspunkt under.",
+            "description": "Velg en start og slutt dato for eventet. Du velger tidspunkt under.",
             "error": {
               "required": "Begge datoene er påkrevd"
             }
@@ -35,14 +35,14 @@
               "startTime": "Starttid",
               "endTime": "Sluttid"
             },
-            "description": "Velg en start og sluttid for arrangementet.",
+            "description": "Velg en start og sluttid for eventet.",
             "error": { "timeOrder": "Starttid må være før sluttid." }
           }
         }
       },
       "options": {
-        "title": "Arrangement-innstillinger",
-        "description": "Konfigurer innstillingene for arrangementet.",
+        "title": "Event-innstillinger",
+        "description": "Konfigurer innstillingene for eventet.",
         "fields": {
           "uploadLimit": {
             "title": "Opplastningsgrense",
@@ -68,11 +68,11 @@
         }
       },
       "review": {
-        "title": "Del arrangementet",
-        "description": "Del QR-koden eller arrangementlenken slik at andre kan bli med og laste opp bilder.",
+        "title": "Del eventet",
+        "description": "Del QR-koden eller eventlenken slik at andre kan bli med og laste opp bilder.",
         "links": {
           "title": "{role, select, guest {Gjestelenke} moderator {Moderatorlenke} other {}}",
-          "description": "Alle med denne lenken kan {role, select, guest {laste opp bilder til arrangementet} moderator {moderere opplastede bilder} other {}}."
+          "description": "Alle med denne lenken kan {role, select, guest {laste opp bilder til eventet} moderator {moderere opplastede bilder} other {}}."
         }
       },
       "details": {
@@ -86,8 +86,8 @@
           "none": "Ingen bildegrense"
         },
         "deleteConfirmation": {
-          "title": "Slett arrangement",
-          "message": "Er du sikker på at du vil slette dette arrangementet?"
+          "title": "Slett event",
+          "message": "Er du sikker på at du vil slette dette eventet?"
         }
       }
     }
@@ -97,7 +97,7 @@
       "heading": "Logg inn",
       "description": "Skriv inn påloggingsinformasjonen din for å få tilgang til administrasjonspanelet",
       "links": {
-        "guestAccessPrefix": "Ikke en administrator? Bli med på et arrangement som en"
+        "guestAccessPrefix": "Ikke en administrator? Delta i et event som en"
       }
     }
   }

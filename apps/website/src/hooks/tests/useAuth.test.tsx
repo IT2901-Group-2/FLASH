@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import {
-  useAuth,
+  useAuthRefresh,
   useLoginMutation,
   useLogoutMutation,
   useRefreshMutation,
@@ -25,7 +25,7 @@ function createWrapper() {
   return { wrapper, queryClient };
 }
 
-describe("useAuth", () => {
+describe("useAuthRefresh", () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -42,7 +42,7 @@ describe("useAuth", () => {
       ) as unknown as typeof fetch
     );
 
-    const { result } = renderHook(() => useAuth(), {
+    const { result } = renderHook(() => useAuthRefresh(), {
       wrapper: createWrapper().wrapper,
     });
 
@@ -63,7 +63,7 @@ describe("useAuth", () => {
       )
     );
 
-    const { result } = renderHook(() => useAuth(), {
+    const { result } = renderHook(() => useAuthRefresh(), {
       wrapper: createWrapper().wrapper,
     });
 
@@ -84,7 +84,7 @@ describe("useAuth", () => {
       )
     );
 
-    const { result } = renderHook(() => useAuth(), {
+    const { result } = renderHook(() => useAuthRefresh(), {
       wrapper: createWrapper().wrapper,
     });
 
