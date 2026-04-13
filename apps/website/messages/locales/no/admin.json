@@ -9,7 +9,7 @@
           "description": "Sett opp et nytt fotoevent for gjestene dine. En QR-kode vil bli generert automatisk."
         },
         "options": {
-          "title": "event-innstillinger",
+          "title": "Event-innstillinger",
           "description": "Konfigurer innstillingene for eventet.",
           "fields": {
             "uploadLimit": {
