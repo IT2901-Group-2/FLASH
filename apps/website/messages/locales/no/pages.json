@@ -5,15 +5,15 @@
   },
   "adminLogin": {
     "title": "FLASH Admin",
-    "description": "Administrer fotoarrangementene dine enkelt",
-    "subtitle": "Selvhostet system for administrasjon av fotoarrangementer"
+    "description": "Administrer fotoeventene dine enkelt",
+    "subtitle": "Selvhostet system for administrasjon av fotoeventer"
   },
   "joinEvent": {
-    "title": "Bli med på et arrangement",
-    "description": "Skriv inn arrangementskoden eller skann QR-koden for å bli med"
+    "title": "Bli med på et event",
+    "description": "Skriv inn eventkoden eller skann QR-koden for å bli med"
   },
   "adminEvents": {
-    "title": "Arrangementer",
-    "description": "Administrer arrangementene dine"
+    "title": "Eventer",
+    "description": "Administrer eventene dine"
   }
 }
