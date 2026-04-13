@@ -54,7 +54,7 @@
 
     &[data-open="true"] {
       left: 0;
-      width: clamp(20rem, 100%, 50rem);
+      width: clamp(16rem, 100%, 30rem);
     }
   }
 }
