@@ -29,7 +29,7 @@ export default function Page() {
   const eventData = data?.[0];
 
   // Image Data
-  const { data: imagesData } = useImagesQuery(eventId);
+  const { data: imagesData } = useImagesQuery(eventId, { approval: "approved" });
   const images = imagesData ?? [];
 
   const [uploadError, setUploadError] = useState<string | null>(null);

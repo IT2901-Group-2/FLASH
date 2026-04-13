@@ -2,8 +2,13 @@ import { useEffect, useState } from "react";
 import { Title, DropdownControl, Switch, TextField } from "@flash/ui";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
-import { useFormContext, useFormState } from "react-hook-form";
+import { Controller, useFormContext, useFormState } from "react-hook-form";
 import { CreateEvent } from "@/db";
+
+type OptionsFormData = {
+  autoApprove: boolean;
+  uploadsArePrivate: boolean;
+};
 
 export const OptionsStep = () => {
   const t = useTranslations("admin.dashboard.event.options");
@@ -15,6 +20,14 @@ export const OptionsStep = () => {
   const [limitMode, setLimitMode] = useState<"limited" | "unlimited">(
     uploadLimit === null ? "unlimited" : "limited"
   );
+  const [formData, setFormData] = useState<OptionsFormData>({
+    autoApprove: false,
+    uploadsArePrivate: false,
+  });
+
+  const updateFormData = (key: keyof OptionsFormData, value: boolean) => {
+    setFormData(prev => ({ ...prev, [key]: value }));
+  };
 
   useEffect(() => {
     if (limitMode === "unlimited") setValue("uploadLimit", null);
@@ -60,23 +73,36 @@ export const OptionsStep = () => {
           label={t("fields.uploadLimit.value.unlimited")}
         />
       </DropdownControl>
-      {/* // TODO: When database is updated, uncomment these */}
-      <Switch
-        position="right"
-        description={t("fields.autoApprovePhotos.description")}
-        // checked={formData.autoApprove}
-        // onChange={(checked: boolean) => updateFormData("autoApprove", checked)}
-      >
-        <b>{t("fields.autoApprovePhotos.title")}</b>
-      </Switch>
-      <Switch
-        position="right"
-        description={t("fields.guestCanViewAll.description")}
-        // checked={formData.seeAllPictures}
-        // onChange={(checked: boolean) => updateFormData("seeAllPictures", checked)}
-      >
-        <b>{t("fields.guestCanViewAll.title")}</b>
-      </Switch>
+      <Controller
+        control={control}
+        name="autoApprove"
+        defaultValue={false}
+        render={({ field }) => (
+          <Switch
+            position="right"
+            description={t("fields.autoApprovePhotos.description")}
+            checked={field.value}
+            onChange={e => field.onChange(e.target.checked)}
+          >
+            <b>{t("fields.autoApprovePhotos.title")}</b>
+          </Switch>
+        )}
+      />
+      <Controller
+        control={control}
+        name="uploadsArePrivate"
+        defaultValue={false}
+        render={({ field }) => (
+          <Switch
+            position="right"
+            description={t("fields.guestCanViewAll.description")}
+            checked={field.value}
+            onChange={e => field.onChange(e.target.checked)}
+          >
+            <b>{t("fields.guestCanViewAll.title")}</b>
+          </Switch>
+        )}
+      />{" "}
     </>
   );
 };
