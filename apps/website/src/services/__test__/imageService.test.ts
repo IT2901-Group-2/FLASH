@@ -10,6 +10,8 @@ import { EventCookie, eventTable, imageTable, userTable } from "@/db";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { Result } from "typescript-result";
 import { getEventCookie } from "@/lib/utils/eventCookie";
+import { HTTPError } from "@/lib/utils/error";
+import { eq } from "drizzle-orm";
 
 vi.mock("@/lib/utils/eventCookie");
 const mockedGetEventCookie = vi.mocked(getEventCookie);
@@ -324,6 +326,50 @@ describe("ImageService uploadImage", () => {
     expect(image2.isApproved).toBeNull();
     Result.assertOk(await imageService["storage"].read(`${image2.id}.webp`));
     expect(flush).toHaveBeenCalledTimes(2);
+  });
+
+  it("Should reject upload when user has reached event upload limit", async () => {
+    await imageService["dbService"].db
+      .update(eventTable)
+      .set({ uploadLimit: 2 })
+      .where(eq(eventTable.id, "wedding"));
+
+    mockedGetEventCookie.mockImplementationOnce(() =>
+      Result.fromAsync(async () => ({ userId: "john2" }) as EventCookie)
+    );
+
+    const blockedUpload = await imageService.uploadImage("wedding", mockImageData[0]!);
+    Result.assertError(blockedUpload);
+
+    const error = blockedUpload.error as HTTPError;
+    expect(error).toBeInstanceOf(HTTPError);
+    expect(error.code).toBe(403);
+    expect(String(error.json ?? error.message)).toContain("Upload limit reached");
+
+    const weddingImages = await imageService.getImages("wedding").getOrThrow();
+    expect(weddingImages.filter(image => image.userId === "john2")).toHaveLength(2);
+  });
+
+  it("Should allow upload when user is below event upload limit", async () => {
+    await imageService["dbService"].db
+      .update(eventTable)
+      .set({ uploadLimit: 3 })
+      .where(eq(eventTable.id, "wedding"));
+
+    mockedGetEventCookie.mockImplementationOnce(() =>
+      Result.fromAsync(async () => ({ userId: "john2" }) as EventCookie)
+    );
+
+    const uploadedImage = await imageService
+      .uploadImage("wedding", mockImageData[0]!)
+      .getOrThrow();
+
+    expect(uploadedImage.userId).toBe("john2");
+    expect(uploadedImage.eventId).toBe("wedding");
+    Result.assertOk(await imageService["storage"].read(`${uploadedImage.id}.webp`));
+
+    const weddingImages = await imageService.getImages("wedding").getOrThrow();
+    expect(weddingImages.filter(image => image.userId === "john2")).toHaveLength(3);
   });
 });
 
