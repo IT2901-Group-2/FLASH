@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, ImageMinus, QrCode, Upload, X } from "lucide
 import styles from "./UploadImage.module.css";
 import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
@@ -21,7 +21,6 @@ export default function Page() {
 
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
-  const locale = useLocale();
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );
