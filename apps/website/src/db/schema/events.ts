@@ -24,6 +24,8 @@ export const eventTable = sqliteTable(
       .$defaultFn(() => new Date())
       .$onUpdate(() => new Date()),
     isArchived: integer({ mode: "boolean" }).notNull().default(false),
+    autoApprove: integer({ mode: "boolean" }).notNull().default(true),
+    uploadsArePrivate: integer({ mode: "boolean" }).notNull().default(false),
   },
   t => [check("dateConstraint", lte(t.startDate, t.endDate))]
 );
@@ -114,6 +116,8 @@ export const getEventSchema = z.object({
   endDate: z.coerce.date(),
   uploadLimit: z.number().positive().nullable(),
   isArchived: z.boolean(),
+  autoApprove: z.boolean(),
+  uploadsArePrivate: z.boolean(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
@@ -126,6 +130,8 @@ export const createEventSchema = z.object({
   endDate: z.coerce.date(),
   uploadLimit: z.number().positive().nullable().optional(),
   isArchived: z.boolean().optional(),
+  autoApprove: z.boolean().optional(),
+  uploadsArePrivate: z.boolean().optional(),
 });
 
 export const updateEventSchema = z.object({
@@ -135,6 +141,8 @@ export const updateEventSchema = z.object({
   endDate: z.coerce.date().optional(),
   uploadLimit: z.number().positive().nullable().optional(),
   isArchived: z.boolean().optional(),
+  autoApprove: z.boolean().optional(),
+  uploadsArePrivate: z.boolean().optional(),
 });
 
 export type Event = typeof eventTable.$inferSelect;
