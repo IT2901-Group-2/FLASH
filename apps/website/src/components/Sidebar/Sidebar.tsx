@@ -9,7 +9,7 @@ import {
   Moon,
   Sun,
 } from "lucide-react";
-import { Sidebar as FlashSidebar } from "@flash/ui";
+import { Sidebar as FlashSidebar, useSidebar } from "@flash/ui";
 import { useTranslations } from "next-intl";
 import { HTMLAttributes } from "react";
 import { useTheme } from "@/hooks/useTheme";
@@ -20,11 +20,15 @@ import { useJoinedEvents } from "@/providers/JoinedEventsContext";
 import { useEventsQuery } from "@/hooks/useEvents";
 import LanguageSwitch from "./LanguageSwitch";
 import { useLanguage } from "@/hooks/useLanguage";
+import useIsMobile from "@/hooks/useIsMobile";
 
 export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) => {
   const t = useTranslations("common.navigation");
 
+  const { setOpen } = useSidebar();
+
   const mounted = useIsMounted();
+  const isMobile = useIsMobile();
   const navigation = useRouter();
   const { switchLocale } = useLanguage();
   const { resolvedTheme, toggleTheme } = useTheme();
@@ -37,6 +41,11 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
     rememberedEvents.length > 0
   );
 
+  const handleRedirect = (href: string) => {
+    if (isMobile) setOpen(false);
+    navigation.push(href);
+  };
+
   return (
     <FlashSidebar className={className} {...rest}>
       <FlashSidebar.Header logo={<Logo />}>FLASH</FlashSidebar.Header>
@@ -44,7 +53,7 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
         <FlashSidebar.Item
           icon={<House />}
           border
-          onClick={() => navigation.push("/admin/dashboard")}
+          onClick={() => handleRedirect("/admin/dashboard")}
         >
           {t("dashboard")}
         </FlashSidebar.Item>
@@ -60,7 +69,7 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
             <FlashSidebar.Item
               key={event.id}
               border
-              onClick={() => navigation.push(`/events/${event.id}`)}
+              onClick={() => handleRedirect(`/events/${event.id}`)}
             >
               {event.name} <ChevronRight />
             </FlashSidebar.Item>
