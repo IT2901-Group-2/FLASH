@@ -5,11 +5,6 @@ import { useTranslations } from "next-intl";
 import { Controller, useFormContext, useFormState } from "react-hook-form";
 import { CreateEvent } from "@/db";
 
-type OptionsFormData = {
-  autoApprove: boolean;
-  uploadsArePrivate: boolean;
-};
-
 export const OptionsStep = () => {
   const t = useTranslations("admin.dashboard.event.options");
 
@@ -20,14 +15,6 @@ export const OptionsStep = () => {
   const [limitMode, setLimitMode] = useState<"limited" | "unlimited">(
     uploadLimit === null ? "unlimited" : "limited"
   );
-  const [formData, setFormData] = useState<OptionsFormData>({
-    autoApprove: false,
-    uploadsArePrivate: false,
-  });
-
-  const updateFormData = (key: keyof OptionsFormData, value: boolean) => {
-    setFormData(prev => ({ ...prev, [key]: value }));
-  };
 
   useEffect(() => {
     if (limitMode === "unlimited") setValue("uploadLimit", null);
