@@ -50,7 +50,7 @@
     left: -100%;
 
     transition-property: width, left;
-    transition-duration: 0.5s;
+    transition-duration: var(--transition-time);
 
     &[data-open="true"] {
       left: 0;
