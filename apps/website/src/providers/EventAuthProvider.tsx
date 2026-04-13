@@ -12,7 +12,11 @@ export async function getEventAuth(eventId: string): Promise<EventAuth> {
       nickname: name,
       isModerator,
     }),
-    () => ({ isAuthenticated: false, nickname: undefined, isModerator: undefined })
+    () => ({
+      isAuthenticated: false,
+      nickname: undefined,
+      isModerator: undefined,
+    })
   );
 }
 

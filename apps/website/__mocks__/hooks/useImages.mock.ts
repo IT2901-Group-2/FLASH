@@ -97,6 +97,15 @@ export const defaultDeleteImageMutationReturn = {
   reset: vi.fn(),
 } as unknown as UseMutationResult<void, Error, DeleteImageInput>;
 
+/**
+ * Idle default for `useUploadedImageCountQuery`.
+ */
+export const defaultUploadedImageCountQueryReturn = {
+  data: { count: 0 },
+  isLoading: false,
+  isError: false,
+} as UseQueryResult<{ count: number }>;
+
 // ---------------------------------------------------------------------------
 // State builders
 // ---------------------------------------------------------------------------
