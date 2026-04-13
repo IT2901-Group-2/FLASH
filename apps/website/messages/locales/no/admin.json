@@ -3,37 +3,76 @@
     "sidebar": {},
     "main": {},
     "event": {
-      "create": {
-        "basics": {
-          "title": "Opprett event",
-          "description": "Sett opp et nytt fotoevent for gjestene dine. En QR-kode vil bli generert automatisk."
-        },
-        "options": {
-          "title": "Event-innstillinger",
-          "description": "Konfigurer innstillingene for eventet.",
-          "fields": {
-            "uploadLimit": {
-              "label": "Maks antall opplastinger",
-              "limited": "Begrenset",
-              "unlimited": "Ubegrenset"
-            },
-            "autoApprovePhotos": "Godkjenn bilder automatisk",
-            "guestCanViewAll": "La gjester se alle opplastede bilder"
-          }
-        },
-        "review": {
-          "title": "Del eventet",
-          "description": "Del QR-koden eller eventlenken slik at andre kan bli med og laste opp bilder.",
-          "links": {
-            "guest": {
-              "title": "Gjestelenke",
-              "description": "Alle med denne lenken kan laste opp bilder til eventet."
-            },
-            "moderator": {
-              "title": "Moderatorlenke",
-              "description": "Alle med denne lenken kan moderere opplastede bilder."
+      "basics": {
+        "title": "Opprett event",
+        "description": "Sett opp et nytt fotoevent for gjestene dine. En QR-kode vil bli generert automatisk.",
+        "field": {
+          "name": {
+            "title": "Eventnavn",
+            "description": "Navnet på eventet ditt. Lag et unikt et.",
+            "error": {
+              "required": "Dette feltet er påkrevd",
+              "minLength": "Tittelen må være minst {min} bokstaver"
             }
+          },
+          "description": {
+            "title": "Beskrivelse",
+            "description": "En beskrivelse av eventet ditt.",
+            "error": {}
+          },
+          "dateRange": {
+            "title": "Datoer",
+            "description": "Velg en start og slutt dato for eventet. Du velger tidspunkt under.",
+            "error": {
+              "required": "Begge datoene er påkrevd"
+            }
+          },
+          "timeRange": {
+            "title": "Start og sluttid",
+            "value": {
+              "full": "Hele dagen",
+              "specific": "Spesifikke tider",
+              "startTime": "Starttid",
+              "endTime": "Sluttid"
+            },
+            "description": "Velg en start og sluttid for eventet.",
+            "error": { "timeOrder": "Starttid må være før sluttid." }
           }
+        }
+      },
+      "options": {
+        "title": "Event-innstillinger",
+        "description": "Konfigurer innstillingene for eventet.",
+        "fields": {
+          "uploadLimit": {
+            "title": "Opplastningsgrense",
+            "description": "Velg en opplastningsgrense eller uendelig antall opplastninger.",
+            "value": {
+              "maxUploads": "Maks opplastninger",
+              "limited": "Begrenset",
+              "unlimited": "Uendelig"
+            },
+            "error": {
+              "required": "Velg en opplasningsgrense",
+              "min": "Nedre grense er 1"
+            }
+          },
+          "autoApprovePhotos": {
+            "title": "Godkjenn bilder automatisk",
+            "description": "Slipp å ha moderatorer ved å la alle bilder bli godkjente."
+          },
+          "guestCanViewAll": {
+            "title": "La gjester se alle bilder",
+            "description": "Hvis på vil gjester se all bilder. Hvis av vil de bare se sine egne."
+          }
+        }
+      },
+      "review": {
+        "title": "Del eventet",
+        "description": "Del QR-koden eller eventlenken slik at andre kan bli med og laste opp bilder.",
+        "links": {
+          "title": "{role, select, guest {Gjestelenke} moderator {Moderatorlenke} other {}}",
+          "description": "Alle med denne lenken kan {role, select, guest {laste opp bilder til eventet} moderator {moderere opplastede bilder} other {}}."
         }
       },
       "details": {

@@ -67,12 +67,7 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
           </Button>
         </div>
       </Dialog>
-      <EditEventCard
-        data-testid="edit-event-dialog"
-        ref={dialogRef}
-        event={data}
-        onClose={() => dialogRef.current?.close()}
-      />
+      <EditEventCard data-testid="edit-event-dialog" ref={dialogRef} event={data} />
       <Card {...rest} className={styles.card}>
         <div className={styles.column}>
           <Title className={styles.title} size="xsmall">
