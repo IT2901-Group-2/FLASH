@@ -9,7 +9,7 @@
         "field": {
           "name": {
             "title": "Arrangementnavn",
-            "description": "Navnet på arrangementet ditt. Lag et unikte et.",
+            "description": "Navnet på arrangementet ditt. Lag et unikt et.",
             "error": {
               "required": "Dette feltet er påkrevd",
               "minLength": "Tittelen må være minst {min} bokstaver"
@@ -22,7 +22,7 @@
           },
           "dateRange": {
             "title": "Datoer",
-            "description": "Valg en start og slutt dato for arrangementet. Du velger tidspunkt under.",
+            "description": "Velg en start og slutt dato for arrangementet. Du velger tidspunkt under.",
             "error": {
               "required": "Begge datoene er påkrevd"
             }
@@ -31,7 +31,7 @@
             "title": "Start og sluttid",
             "value": {
               "full": "Hele dagen",
-              "specific": "Spesifike tider",
+              "specific": "Spesifikke tider",
               "startTime": "Starttid",
               "endTime": "Sluttid"
             },
