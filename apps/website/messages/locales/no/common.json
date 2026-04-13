@@ -26,14 +26,14 @@
     "admin": "Administrator"
   },
   "navigation": {
-    "main": "Meny",
-    "config": "Konfig",
-    "desktop": "Dashboard",
-    "events": "Arrangementer",
-    "settings": "Innstillinger",
-    "storage": "Lagring",
+    "admin": "Admin",
+    "events": "Events",
+    "options": "Valg",
+    "dashboard": "Kontrollpanel",
+    "language": "Språk",
     "darkMode": "Mørk modus",
-    "lightMode": "Lys modus"
+    "lightMode": "Lys modus",
+    "exit": "Forlat"
   },
   "fields": {
     "password": "Passord",

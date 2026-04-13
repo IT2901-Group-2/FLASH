@@ -37,18 +37,18 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
   return (
     <FlashSidebar className={className} {...rest}>
       <FlashSidebar.Header logo={<Logo />}>FLASH</FlashSidebar.Header>
-      <FlashSidebar.Group title="Admin">
+      <FlashSidebar.Group title={t("admin")}>
         <FlashSidebar.Item
           icon={<House />}
           border
           onClick={() => navigation.push("/admin/dashboard")}
         >
-          Dashboard
+          {t("dashboard")}
         </FlashSidebar.Item>
       </FlashSidebar.Group>
       {events.length > 0 && (
         <FlashSidebar.Group
-          title="Events"
+          title={t("events")}
           hideChildrenWhenClosed
           icon={<Calendar />}
           scroll
@@ -64,9 +64,9 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
           ))}
         </FlashSidebar.Group>
       )}
-      <FlashSidebar.Group title="Options" position="bottom">
+      <FlashSidebar.Group title={t("options")} position="bottom">
         <FlashSidebar.Item icon={<Languages />} onClick={switchLocale}>
-          Language <LanguageSwitch />
+          {t("language")} <LanguageSwitch />
         </FlashSidebar.Item>
         {mounted && (
           <FlashSidebar.Item
@@ -83,7 +83,7 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
           data-color="brand-purple"
           onClick={() => navigation.push("/")}
         >
-          Exit
+          {t("exit")}
         </FlashSidebar.Item>
       </FlashSidebar.Group>
     </FlashSidebar>
