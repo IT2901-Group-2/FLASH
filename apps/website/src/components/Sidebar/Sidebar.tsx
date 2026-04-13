@@ -29,10 +29,13 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
   const { switchLocale } = useLanguage();
   const { resolvedTheme, toggleTheme } = useTheme();
 
-  const eventIds = useJoinedEvents();
-  const { data: events } = useEventsQuery({ id: eventIds.length > 0 ? eventIds : [""] });
-
-  if (!events) return;
+  const rememberedEvents = useJoinedEvents();
+  const { data: events } = useEventsQuery(
+    {
+      id: rememberedEvents.map(o => o.eventId),
+    },
+    rememberedEvents.length > 0
+  );
 
   return (
     <FlashSidebar className={className} {...rest}>
@@ -46,7 +49,7 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
           {t("dashboard")}
         </FlashSidebar.Item>
       </FlashSidebar.Group>
-      {events.length > 0 && (
+      {events && events.length > 0 && (
         <FlashSidebar.Group
           title={t("events")}
           hideChildrenWhenClosed
