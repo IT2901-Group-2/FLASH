@@ -58,7 +58,7 @@
       "heading": "Logg inn",
       "description": "Skriv inn påloggingsinformasjonen din for å få tilgang til administrasjonspanelet",
       "links": {
-        "guestAccessPrefix": "Ikke en administrator? Bli med på et event som en"
+        "guestAccessPrefix": "Ikke en administrator? Delta i et event som en"
       }
     }
   }

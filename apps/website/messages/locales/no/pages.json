@@ -9,7 +9,7 @@
     "subtitle": "Selvhostet system for administrasjon av fotoeventer"
   },
   "joinEvent": {
-    "title": "Bli med på et event",
+    "title": "Delta i et event",
     "description": "Skriv inn eventkoden eller skann QR-koden for å bli med"
   },
   "adminEvents": {
