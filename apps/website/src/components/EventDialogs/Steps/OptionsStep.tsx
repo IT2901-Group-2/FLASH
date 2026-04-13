@@ -50,7 +50,7 @@ export const OptionsStep = () => {
                 })}
                 error={errors.uploadLimit?.message}
                 type="number"
-                required={limitMode == "limited"}
+                required={limitMode === "limited"}
               />
             </div>
           }
