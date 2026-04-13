@@ -62,11 +62,6 @@ export class ImageService {
       eventId,
       next.catch(() => {})
     );
-    next.then(() => {
-      if (this.zipLocks.get(eventId) === next) {
-        this.zipLocks.delete(eventId);
-      }
-    });
     return next;
   }
 
@@ -175,14 +170,8 @@ export class ImageService {
         .map(rows => getFirstRow(rows, "Failed to upload image"))
         .onSuccess(async image => {
           this.dbService.flush();
-          if (event.autoApprove) {
-            const result = await this.addImageToZip(eventId, image.id);
-            if (!result.ok) {
-              console.error(
-                `Failed to add image ${image.id} to zip for event ${eventId}:`,
-                result.error
-              );
-            }
+          if (image.isApproved) {
+            await this.addImageToZip(eventId, image.id).getOrThrow();
           }
         })
         .onFailure(async () => {
@@ -215,9 +204,12 @@ export class ImageService {
       .onSuccess(() => this.dbService.flush())
       .mapCatching(async images => {
         if (data.isApproved !== undefined) {
-          const result = await this.rebuildZip(eventId);
-          if (!result.ok) {
-            console.error(`Failed to rebuild zip for event ${eventId}:`, result.error);
+          for (const image of images) {
+            await (
+              image.isApproved
+                ? this.addImageToZip(eventId, image.id)
+                : this.removeImageFromZip(eventId, image.id)
+            ).getOrThrow();
           }
         }
         return images;
@@ -251,20 +243,15 @@ export class ImageService {
           `Image with id ${imageId} does not exist on event with id ${eventId}`
         )
       )
-      .onSuccess(() => this.dbService.flush())
-      .mapCatching(async image => {
-        if (data.isApproved === true) {
-          const result = await this.addImageToZip(eventId, imageId);
-          if (!result.ok) {
-            console.error(`Failed to add image ${imageId} to zip:`, result.error);
-          }
-        } else if (data.isApproved === false) {
-          const result = await this.removeImageFromZip(eventId, imageId);
-          if (!result.ok) {
-            console.error(`Failed to remove image ${imageId} from zip:`, result.error);
-          }
+      .onSuccess(async () => {
+        this.dbService.flush();
+        if (data.isApproved !== undefined) {
+          await (
+            data.isApproved === true
+              ? this.addImageToZip(eventId, imageId)
+              : this.removeImageFromZip(eventId, imageId)
+          ).getOrThrow();
         }
-        return image;
       });
   }
 
@@ -289,17 +276,11 @@ export class ImageService {
           `Image with id ${imageId} does not exist on event with id ${eventId}`
         )
       )
-      .onSuccess(() => this.dbService.flush())
-      .map(row => this.storage.rm(`${row.id}.webp`).map(() => row))
-      .onSuccess(async image => {
-        const result = await this.removeImageFromZip(eventId, image.id);
-        if (!result.ok) {
-          console.error(
-            `Failed to remove image ${image.id} from zip for event ${eventId}:`,
-            result.error
-          );
-        }
-      });
+      .onSuccess(async () => {
+        this.dbService.flush();
+        await this.removeImageFromZip(eventId, imageId).getOrThrow();
+      })
+      .map(row => this.storage.rm(`${row.id}.webp`).map(() => row));
   }
 
   /**
@@ -317,29 +298,6 @@ export class ImageService {
   }
 
   /**
-   * Rebuilds the zip archive for the specified event from scratch.
-   * Fetches all images associated with the event and repacks them into a new zip.
-   * Aquires the zip lock to ensure no concurrent zip operations run during the rebuild.
-   * @param eventId The id of the event to rebuild the zip for.
-   * @returns A result containing void or an error.
-   */
-  rebuildZip(eventId: string): AsyncResult<void, Error> {
-    return Result.fromAsyncCatching(
-      this.withZipLock(eventId, async () => {
-        const images = await this.getImages(eventId, {
-          approval: "approved",
-        }).getOrThrow();
-        const zip = new AdmZip();
-        for (const image of images) {
-          const buffer = await this.storage.read(`${image.id}.webp`).getOrThrow();
-          zip.addFile(`${image.id}.webp`, buffer);
-        }
-        await this.storage.write(`${eventId}.zip`, zip.toBuffer()).getOrThrow();
-      })
-    );
-  }
-
-  /**
    * Adds a single image to the zip archive for the specified event.
    * Creates a new zip if one does not already exist.
    * Acquires the zip lock to ensure the operation is serialized with other zip operations
@@ -349,16 +307,19 @@ export class ImageService {
    */
   private addImageToZip(eventId: string, imageId: string): AsyncResult<void, Error> {
     return Result.fromAsyncCatching(
-      this.withZipLock(eventId, async () => {
-        const existing = await this.storage.read(`${eventId}.zip`).getOrNull();
-        const zip = new AdmZip(existing ?? undefined);
-
-        const buffer = await this.storage.read(`${imageId}.webp`).getOrThrow();
-
-        zip.addFile(`${imageId}.webp`, buffer);
-
-        await this.storage.write(`${eventId}.zip`, zip.toBuffer()).getOrThrow();
-      })
+      this.withZipLock(eventId, () =>
+        this.storage
+          .read(`${eventId}.zip`)
+          .recover(() => undefined)
+          .map(zip => new AdmZip(zip))
+          .map(zip =>
+            this.storage
+              .read(`${imageId}.webp`)
+              .map(buffer => zip.addFile(`${imageId}.webp`, buffer))
+              .map(() => this.storage.write(`${eventId}.zip`, zip.toBuffer()))
+          )
+          .getOrThrow()
+      )
     );
   }
 
@@ -372,12 +333,17 @@ export class ImageService {
    */
   private removeImageFromZip(eventId: string, imageId: string): AsyncResult<void, Error> {
     return Result.fromAsyncCatching(
-      this.withZipLock(eventId, async () => {
-        const existing = await this.storage.read(`${eventId}.zip`).getOrNull();
-        const zip = new AdmZip(existing ?? undefined);
-        zip.deleteFile(`${imageId}.webp`);
-        await this.storage.write(`${eventId}.zip`, zip.toBuffer()).getOrThrow();
-      })
+      this.withZipLock(eventId, () =>
+        this.storage
+          .read(`${eventId}.zip`)
+          .map(zip => new AdmZip(zip))
+          .mapCatching(zip =>
+            Result.try(() => zip.deleteFile(`${imageId}.webp`)).map(() =>
+              this.storage.write(`${eventId}.zip`, zip.toBuffer())
+            )
+          )
+          .getOrThrow()
+      )
     );
   }
 }
