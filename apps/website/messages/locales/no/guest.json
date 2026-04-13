@@ -10,21 +10,21 @@
           "placeholder": "Skriv inn kallenavn (f.eks. Alex)"
         },
         "eventCode": {
-          "placeholder": "Skriv inn arrangementskode (f.eks. 245033)"
+          "placeholder": "Skriv inn eventkode (f.eks. 245033)"
         }
       },
       "scanQr": {
-        "description": "Åpne kameraet ditt til å skanne QR-koden til arrangementet"
+        "description": "Åpne kameraet ditt til å skanne QR-koden til eventet"
       },
       "links": {
-        "adminAccessPrefix": "Ikke en gjest? Administrer arrangementer som en"
+        "adminAccessPrefix": "Ikke en gjest? Administrer eventer som en"
       },
       "errors": {
-        "missingEventCode": "Vennligst skriv inn en arrangementskode.",
-        "invalidEventCode": "Ugyldig arrangementskode. Vennligst prøv igjen.",
+        "missingEventCode": "Vennligst skriv inn en eventkode.",
+        "invalidEventCode": "Ugyldig eventkode. Vennligst prøv igjen.",
         "missingNickname": "Vennligst skriv inn et kallenavn.",
         "nicknameTaken": "Kallenavnet er allerede tatt.",
-        "joinFailed": "Kunne ikke bli med i arrangementet. Prøv igjen.",
+        "joinFailed": "Kunne ikke bli med i eventet. Prøv igjen.",
         "invalidQr": "Ikke en gyldig Qr kode. Prøv igjen."
       },
       "nickname": {
@@ -36,7 +36,7 @@
   },
   "event": {
     "list": {
-      "title": "Dine arrangementer"
+      "title": "Dine eventer"
     },
     "moderate": {
       "title": "Moderer",
@@ -59,7 +59,7 @@
         "rejected": "Avviste bilder"
       },
       "breadcrumb": {
-        "event": "Arrangement",
+        "event": "Event",
         "moderate": "Moderer"
       },
       "actions": {
@@ -91,9 +91,9 @@
       "imageAlt": "Bilde {index} av {total}",
       "imageTitle": "Bilde {index}",
       "errors": {
-        "uploadUnavailable": "Kan ikke laste opp bilder for dette arrangementet.",
+        "uploadUnavailable": "Kan ikke laste opp bilder for dette eventet.",
         "uploadFailed": "{count, plural, one {Kunne ikke laste opp bilde} other {Noen bilder kunne ikke lastes opp}}",
-        "uploadLimitReached": "Du har nådd opplastingsgrensen for dette arrangementet."
+        "uploadLimitReached": "Du har nådd opplastingsgrensen for dette eventet."
       }
     }
   }
