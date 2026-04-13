@@ -35,3 +35,15 @@ export function getAdminDashboardEventsRoute(): string {
 export function getAdminDashboardEventRoute(eventId: string): string {
   return `${getAdminDashboardEventsRoute()}/${encodeURIComponent(eventId)}`;
 }
+
+/**
+ * Generates the route for the moderate page of a specific event.
+ * @param locale - The current locale (e.g. "en", "no").
+ * @param eventId - The unique identifier of the event.
+ * @return The URL path to the moderate page for the specified event.
+ *
+ * "/{locale}/events/{eventId}/moderate"
+ */
+export function getModerateEventRoute(locale: string, eventId: string): string {
+  return `/${locale}/events/${encodeURIComponent(eventId)}/moderate`;
+}
