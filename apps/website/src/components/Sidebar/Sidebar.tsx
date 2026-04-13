@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  ArrowLeft,
-  Calendar,
-  ChevronRight,
-  House,
-  Languages,
-  Moon,
-  Sun,
-} from "lucide-react";
+import { ArrowLeft, Calendar, House, Languages, Moon, Sun } from "lucide-react";
 import { Sidebar as FlashSidebar, useSidebar } from "@flash/ui";
 import { useTranslations } from "next-intl";
 import { HTMLAttributes } from "react";
@@ -22,6 +14,8 @@ import LanguageSwitch from "./LanguageSwitch";
 import { useLanguage } from "@/hooks/useLanguage";
 import useIsMobile from "@/hooks/useIsMobile";
 import { useAuth } from "@/providers/AuthContext";
+import ModTag from "./ModTag";
+import { EventCookie } from "@/db";
 
 export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) => {
   const t = useTranslations("common.navigation");
@@ -47,6 +41,11 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
     if (isMobile) setOpen(false);
     navigation.push(href);
   };
+
+  const rememberedEventsMap = rememberedEvents.reduce(
+    (acc, re) => ({ ...acc, [re.eventId]: re }),
+    {} as Record<string, Omit<EventCookie, "userId">>
+  );
 
   return (
     <FlashSidebar className={className} {...rest}>
@@ -75,7 +74,8 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
               border
               onClick={() => handleRedirect(`/events/${event.id}`)}
             >
-              {event.name} <ChevronRight />
+              {event.name}
+              <ModTag isMod={rememberedEventsMap[event.id]?.isModerator ?? false} />
             </FlashSidebar.Item>
           ))}
         </FlashSidebar.Group>
