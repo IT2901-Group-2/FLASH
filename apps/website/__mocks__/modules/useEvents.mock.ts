@@ -5,6 +5,7 @@ import {
   defaultCreateEventMutationReturn,
   defaultUpdateEventMutationReturn,
   defaultDeleteEventMutationReturn,
+  defaultEventStatsQueryReturn,
 } from "../hooks/useEvents.mock";
 
 /**
@@ -25,9 +26,10 @@ export const eventHooksMock = () => ({
     all: ["events"],
     event: (eventId?: string) => ["events", eventId],
   },
-  useEventsQuery: vi.fn(() => ({ ...defaultEventsQueryReturn })),
-  useEventCodeQuery: vi.fn(() => ({ ...defaultEventCodeQueryReturn })),
-  useCreateEventMutation: vi.fn(() => ({ ...defaultCreateEventMutationReturn })),
-  useUpdateEventMutation: vi.fn(() => ({ ...defaultUpdateEventMutationReturn })),
-  useDeleteEventMutation: vi.fn(() => ({ ...defaultDeleteEventMutationReturn })),
+  useEventsQuery: vi.fn(() => defaultEventsQueryReturn),
+  useEventCodeQuery: vi.fn(() => defaultEventCodeQueryReturn),
+  useEventStatsQuery: vi.fn(() => defaultEventStatsQueryReturn),
+  useCreateEventMutation: vi.fn(() => defaultCreateEventMutationReturn),
+  useUpdateEventMutation: vi.fn(() => defaultUpdateEventMutationReturn),
+  useDeleteEventMutation: vi.fn(() => defaultDeleteEventMutationReturn),
 });

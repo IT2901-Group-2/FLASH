@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "d24035ec-1dfd-4529-8109-b9a7a617492d",
-  "prevId": "7801d76d-9b56-4a0c-a950-56dcb2737ee0",
+  "id": "9c3f03bf-ebf3-44ec-bfe9-bfa614fd1cc8",
+  "prevId": "d24035ec-1dfd-4529-8109-b9a7a617492d",
   "tables": {
     "eventCodes": {
       "name": "eventCodes",
@@ -176,6 +176,22 @@
         },
         "isArchived": {
           "name": "isArchived",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "autoApprove": {
+          "name": "autoApprove",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "uploadsArePrivate": {
+          "name": "uploadsArePrivate",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,

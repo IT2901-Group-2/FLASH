@@ -42,6 +42,23 @@ export const eventCodeTable = sqliteTable(
   t => [unique("codeConstraint").on(t.code, t.eventId, t.isModerator)]
 );
 
+export const eventStatsTable = sqliteTable("eventStats", {
+  eventId: text()
+    .primaryKey()
+    .references(() => eventTable.id, { onDelete: "cascade" }),
+  pendingImages: integer().notNull().default(0),
+  approvedImages: integer().notNull().default(0),
+  rejectedImages: integer().notNull().default(0),
+});
+
+export const getEventStatsSchema = z.object({
+  eventId: z.string(),
+  pendingImages: z.number().nonnegative(),
+  approvedImages: z.number().nonnegative(),
+  rejectedImages: z.number().nonnegative(),
+});
+void assertEqual<EventStats, z.infer<typeof getEventStatsSchema>>;
+
 export const getEventsParamsSchema = z.object({
   id: z.string().array().min(1).optional(),
   name: z
@@ -130,6 +147,7 @@ export const updateEventSchema = z.object({
 
 export type Event = typeof eventTable.$inferSelect;
 export type EventCode = typeof eventCodeTable.$inferSelect;
+export type EventStats = typeof eventStatsTable.$inferSelect;
 export type GetEventsParams = z.infer<typeof getEventsParamsSchema>;
 export type GetEventCodeParams = z.infer<typeof getEventCodeParamsSchema>;
 export type CreateEvent = z.infer<typeof createEventSchema>;

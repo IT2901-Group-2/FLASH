@@ -24,7 +24,7 @@ export class ImageService {
     this.storage = storage;
   }
 
-  static readonly MAX_IMAGE_SIZE = 8 * 1024 * 1024;
+  static readonly MAX_IMAGE_SIZE = 12 * 1024 * 1024;
   /**
    * Validates the image metadata using `sharp`.
    * Checks that `sharp` is able to open the image file and that the size of the image does not exceed `ImageService.MAX_IMAGE_SIZE`.
