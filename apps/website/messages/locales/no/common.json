@@ -18,7 +18,8 @@
     "slideshow": "Lysbildefremvisning",
     "createNewEvent": "Lag nytt arrangement",
     "shareEvent": "Del arrangement",
-    "copyLink": "Kopier lenke"
+    "copyLink": "Kopier lenke",
+    "moderate": "Moderer"
   },
   "roles": {
     "guest": "Gjest",

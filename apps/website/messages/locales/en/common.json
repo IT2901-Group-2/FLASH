@@ -18,7 +18,8 @@
     "slideshow": "Slideshow",
     "createNewEvent": "Create New Event",
     "shareEvent": "Share Event",
-    "copyLink": "Copy Link"
+    "copyLink": "Copy Link",
+    "moderate": "Moderate"
   },
   "roles": {
     "guest": "Guest",

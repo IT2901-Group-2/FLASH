@@ -1,56 +1,94 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { screen, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { BasicInfoStep } from "./BasicInfoStep";
-import { CreateEvent } from "@/db";
+import { renderWithForm, TEST_DEFAULT_FORM_DATA } from "@test-config";
+import type { UseFormReturn } from "react-hook-form";
+import type { CreateEvent } from "@/db";
+import userEvent from "@testing-library/user-event";
 
-const today = new Date("2026-01-01");
+vi.mock("../TimeField", () => ({
+  default: () => <div data-testid="time-field" />,
+}));
 
-const baseFormData: CreateEvent = {
-  name: "",
-  description: "",
-  uploadLimit: 1,
-  startDate: today,
-  endDate: today,
-};
+/** Captures form methods so individual tests can call setValue / trigger. */
+let capturedMethods: UseFormReturn<CreateEvent>;
 
-const renderStep = (overrides: Partial<CreateEvent> = {}) => {
-  const updateFormData = vi.fn();
-  render(
-    <BasicInfoStep
-      formData={{ ...baseFormData, ...overrides }}
-      updateFormData={updateFormData}
-    />
-  );
-  return { updateFormData };
-};
+function renderStep(defaultValues = TEST_DEFAULT_FORM_DATA) {
+  return renderWithForm(<BasicInfoStep />, {
+    defaultValues,
+    onMethods: m => {
+      capturedMethods = m as UseFormReturn<CreateEvent>;
+    },
+  });
+}
 
 describe("BasicInfoStep", () => {
-  it("renders all four inputs", () => {
-    renderStep();
-    expect(screen.getByTestId("name")).toBeInTheDocument();
-    expect(screen.getByTestId("description")).toBeInTheDocument();
-    expect(screen.getByTestId("startDate")).toBeInTheDocument();
-    expect(screen.getByTestId("endDate")).toBeInTheDocument();
+  describe("rendering", () => {
+    it("renders title and description", () => {
+      renderStep();
+      expect(screen.getByTestId("title")).toBeInTheDocument();
+    });
+
+    it("renders the name field", () => {
+      renderStep();
+      expect(screen.getByTestId("name")).toBeInTheDocument();
+    });
+
+    it("renders the description textarea", () => {
+      renderStep();
+      expect(screen.getByTestId("description")).toBeInTheDocument();
+    });
   });
 
-  it("marks name and description as required", () => {
-    renderStep();
-    expect(screen.getByTestId("name")).toBeRequired();
-    expect(screen.getByTestId("startDate")).toBeRequired();
-    expect(screen.getByTestId("endDate")).toBeRequired();
-  });
+  describe("name field validation", () => {
+    it("shows required error when name is empty and field is touched", async () => {
+      renderStep();
+      const nameInput = screen.getByTestId("name");
 
-  it("sets the end date min attribute to the current start date", () => {
-    renderStep({ startDate: new Date("2026-03-01") });
-    expect(screen.getByTestId("endDate")).toHaveAttribute("min", "2026-03-01");
-  });
+      await userEvent.clear(nameInput);
 
-  it("calls updateFormData with the new name when typing", async () => {
-    const { updateFormData } = renderStep();
-    const input = screen.getByTestId("name");
-    await userEvent.type(input, "My Event");
-    // Each keystroke fires a change, so check the last call
-    expect(updateFormData).toHaveBeenCalledTimes(8);
+      await act(async () => {
+        await capturedMethods.trigger("name");
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText("field.name.error.required")).toBeInTheDocument();
+      });
+    });
+
+    it("shows minLength error when name is too short", async () => {
+      renderStep();
+      const nameInput = screen.getByTestId("name");
+
+      await userEvent.type(nameInput, "ab");
+
+      await act(async () => {
+        await capturedMethods.trigger("name");
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText("field.name.error.minLength")).toBeInTheDocument();
+      });
+    });
+
+    it("clears validation error when a valid name is entered", async () => {
+      renderStep();
+      const nameInput = screen.getByTestId("name");
+
+      // Trigger error first
+      await userEvent.clear(nameInput);
+      await act(async () => {
+        await capturedMethods.trigger("name");
+      });
+
+      await userEvent.type(nameInput, "My Great Event");
+      await act(async () => {
+        await capturedMethods.trigger("name");
+      });
+
+      await waitFor(() => {
+        expect(screen.queryByText("field.name.error.required")).not.toBeInTheDocument();
+      });
+    });
   });
 });

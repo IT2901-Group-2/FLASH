@@ -1,21 +1,21 @@
 "use client";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+import { useFileUpload } from "@/hooks/useFileUpload";
 import {
   useImagesQuery,
   useUploadedImageCountQuery,
   useUploadImageMutation,
 } from "@/hooks/useImages";
-import { getAdminDashboardEventRoute, routes } from "@/lib/routes";
+import { getAdminDashboardEventRoute, getModerateEventRoute, routes } from "@/lib/routes";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
-import { ChevronLeft, ChevronRight, QrCode, Upload, X } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { ChevronLeft, ChevronRight, ImageMinus, QrCode, Upload, X } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styles from "./UploadImage.module.css";
-import { useFileUpload } from "@/hooks/useFileUpload";
 
 export default function Page() {
   const router = useRouter();
@@ -26,6 +26,7 @@ export default function Page() {
 
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
+  const locale = useLocale();
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );
@@ -283,7 +284,19 @@ export default function Page() {
             data-color="brand-purple"
             variant="secondary"
             onClick={() => dialogRef.current?.showModal()}
+            className={eventAuth.isModerator ? styles.desktopOnly : undefined}
           />
+          {eventAuth.isModerator && (
+            <Button
+              icon={<ImageMinus />}
+              iconPosition="right"
+              data-color="brand-purple"
+              variant="primary"
+              onClick={() => router.push(getModerateEventRoute(locale, eventId))}
+            >
+              {tCommon("actions.moderate")}
+            </Button>
+          )}
           <Button
             icon={<Upload />}
             iconPosition="right"
