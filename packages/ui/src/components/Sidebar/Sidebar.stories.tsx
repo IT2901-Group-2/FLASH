@@ -94,9 +94,7 @@ export const Simple: Story = {
   render: () => (
     <Sidebar.Provider>
       <Sidebar>
-        <Sidebar.Header>
-          <Sidebar.Trigger />
-        </Sidebar.Header>
+        <Sidebar.Header />
       </Sidebar>
     </Sidebar.Provider>
   ),
