@@ -30,7 +30,7 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
   const { resolvedTheme, toggleTheme } = useTheme();
 
   const eventIds = useJoinedEvents();
-  const { data: events } = useEventsQuery({ id: eventIds });
+  const { data: events } = useEventsQuery({ id: eventIds.length > 0 ? eventIds : [""] });
 
   if (!events) return;
 
@@ -46,22 +46,24 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
           Dashboard
         </FlashSidebar.Item>
       </FlashSidebar.Group>
-      <FlashSidebar.Group
-        title="Events"
-        hideChildrenWhenClosed
-        icon={<Calendar />}
-        scroll
-      >
-        {events?.map(event => (
-          <FlashSidebar.Item
-            key={event.id}
-            border
-            onClick={() => navigation.push(`/events/${event.id}`)}
-          >
-            {event.name} <ChevronRight />
-          </FlashSidebar.Item>
-        ))}
-      </FlashSidebar.Group>
+      {events.length > 0 && (
+        <FlashSidebar.Group
+          title="Events"
+          hideChildrenWhenClosed
+          icon={<Calendar />}
+          scroll
+        >
+          {events?.map(event => (
+            <FlashSidebar.Item
+              key={event.id}
+              border
+              onClick={() => navigation.push(`/events/${event.id}`)}
+            >
+              {event.name} <ChevronRight />
+            </FlashSidebar.Item>
+          ))}
+        </FlashSidebar.Group>
+      )}
       <FlashSidebar.Group title="Options" position="bottom">
         <FlashSidebar.Item icon={<Languages />} onClick={switchLocale}>
           Language <LanguageSwitch />
