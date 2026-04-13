@@ -10,17 +10,6 @@ import {
 import { getAdminDashboardEventRoute, getModerateEventRoute, routes } from "@/lib/routes";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
-import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
-import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
-import { useFileUpload } from "@/hooks/useFileUpload";
-import {
-  useImagesQuery,
-  useUploadedImageCountQuery,
-  useUploadImageMutation,
-} from "@/hooks/useImages";
-import { getAdminDashboardEventRoute, getModerateEventRoute, routes } from "@/lib/routes";
-import { useEventAuth } from "@/providers/EventAuthContext";
-import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
 import { ChevronLeft, ChevronRight, ImageMinus, QrCode, Upload, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
