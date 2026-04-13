@@ -1,29 +1,21 @@
 "use client";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+import { useFileUpload } from "@/hooks/useFileUpload";
 import {
   useImagesQuery,
   useUploadedImageCountQuery,
   useUploadImageMutation,
 } from "@/hooks/useImages";
-import { getAdminDashboardEventRoute, routes } from "@/lib/routes";
+import { getAdminDashboardEventRoute, getModerateEventRoute, routes } from "@/lib/routes";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
 import { ChevronLeft, ChevronRight, ImageMinus, QrCode, Upload, X } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styles from "./UploadImage.module.css";
-import { useFileUpload } from "@/hooks/useFileUpload";
-import { useLocale, useTranslations } from "next-intl";
-import { useParams, useRouter } from "next/navigation";
-import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
-import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
-import { useEventAuth } from "@/providers/EventAuthContext";
-import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
-import { getAdminDashboardEventRoute, getModerateEventRoute, routes } from "@/lib/routes";
-import Image from "next/image";
 
 export default function Page() {
   const router = useRouter();
