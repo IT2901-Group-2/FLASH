@@ -1,109 +1,44 @@
-import { Title, QRDisplay, Button, Input, Loader, DropdownControl } from "@flash/ui";
-import { useEffect, useRef, useState } from "react";
-import { Check, Copy, Download } from "lucide-react";
+import { Title, QRDisplay, Button, Loader, SegmentedControl, TextField } from "@flash/ui";
+import { useRef, useState } from "react";
+import { Copy, CopyCheck, CopyX, Download } from "lucide-react";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
 import { downloadQrSvg } from "@/utils/downloadqrcode";
-import { ReviewStepProps } from "./types";
 import { useEventCodeQuery } from "@/hooks/useEvents";
+import { Event } from "@/db";
 
-/*
- * CopyButtonProps defines the properties for the CopyButton component, which includes:
- * isCopied: A boolean indicating whether the link has been successfully copied.
- * onCopy: A function to be called when the copy button is clicked.
- * ariaLabel: A string for accessibility, providing a label for screen readers.
- */
-type CopyButtonProps = {
-  isCopied: boolean;
-  onCopy: () => void;
-  ariaLabel: string;
-};
-
-/*
- * CopyButton component renders a button that allows users to copy a link to the clipboard.
- * It provides visual feedback on whether the link has been successfully copied or if there was an error during the copy process.
- * The button is disabled when the link has already been copied to prevent multiple copy attempts.
- */
-const CopyButton = ({ isCopied, onCopy, ariaLabel }: CopyButtonProps) => (
-  <button
-    type="button"
-    onClick={isCopied ? undefined : onCopy}
-    disabled={isCopied}
-    aria-label={ariaLabel}
-    style={{
-      cursor: isCopied ? "default" : "pointer",
-      background: "none",
-      border: "none",
-      color: "var(--color-text-secondary)",
-      padding: 0,
-      display: "flex",
-      alignItems: "center",
-    }}
-  >
-    {isCopied ? <Check size={18} /> : <Copy size={18} />}
-  </button>
-);
+export interface ReviewStepProps {
+  status: "idle" | "pending" | "success" | "error";
+  result: Event | null;
+}
 
 const ReviewStep = ({ status, result }: ReviewStepProps) => {
-  const tReview = useTranslations("admin.dashboard.event.create.review");
+  const tReview = useTranslations("admin.dashboard.event.review");
   const tCommon = useTranslations("common");
-  const [shareRole, setShareRole] = useState<"guest" | "moderator">("guest");
-  const [copyState, setCopyState] = useState<{
-    role: "guest" | "moderator" | null;
-    status: "copied" | "error" | null;
-  }>({ role: null, status: null });
-  const isCopied = copyState.role === shareRole && copyState.status === "copied";
-  const hasCopyError = copyState.role === shareRole && copyState.status === "error";
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const [role, setRole] = useState<"guest" | "moderator">("guest");
+  const [iconState, setIconState] = useState<React.ReactElement>(<Copy />);
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
-  const { data: displayCode } = useEventCodeQuery(
-    result?.id,
-    shareRole as "guest" | "moderator"
-  );
+  const { data: displayCode } = useEventCodeQuery(result?.id, role);
 
   const displayLink = displayCode ? `${window.location.origin}/join/${displayCode}` : "";
 
-  // Clear the timeout on unmount to avoid having state on an unmounted component
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, []);
-
-  /**
-   * Function to handle downloading the QR code as an SVG file.
-   * It queries the QR code SVG element from the DOM and uses a utility function to trigger the download with
-   * a filename based on the display code.
-   *
-   */
   const handleDownloadQR = () => {
     const svg = qrContainerRef.current?.querySelector("svg");
     if (svg && displayCode) downloadQrSvg(svg, `qr-${displayCode.toLowerCase()}.svg`);
   };
 
-  /**
-   * Function to handle copying the share link to the clipboard. It attempts to write the display link to the clipboard
-   * and provides user feedback on success or failure. If the copy action is successful, it sets a "copied" state to true
-   * for a brief period to indicate success. If it fails, it sets an error message in the state.
-   */
-  const handleCopy = async () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-
-    if (!displayLink) {
-      setCopyState({ role: shareRole, status: "error" });
+  const handleCopyLink = () => {
+    if (!navigator.clipboard) {
+      setIconState(<CopyX />);
+      setTimeout(() => setIconState(<Copy />), 1000);
       return;
     }
-
-    try {
-      await navigator.clipboard.writeText(displayLink);
-      setCopyState({ role: shareRole, status: "copied" });
-      timeoutRef.current = setTimeout(
-        () => setCopyState({ role: null, status: null }),
-        1000
-      );
-    } catch {
-      setCopyState({ role: shareRole, status: "error" });
-    }
+    navigator.clipboard
+      .writeText(displayLink)
+      .then(() => setIconState(<CopyCheck />))
+      .catch(() => setIconState(<CopyX />))
+      .then(() => setTimeout(() => setIconState(<Copy />), 1000));
   };
 
   if (status === "pending") return <Loader />;
@@ -114,97 +49,56 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
         {tReview("title")}
       </Title>
 
-      <DropdownControl
-        onChange={role => setShareRole(role as "guest" | "moderator")}
-        value={shareRole}
+      <SegmentedControl
+        onChange={role => setRole(role as "guest" | "moderator")}
+        value={role}
         className={styles.scroll}
+        fill
       >
-        <DropdownControl.Item
-          label={tCommon("roles.guest")}
-          value="guest"
-          content={
-            <div className={styles.infoContainer}>
-              <div className={styles.QRCodeContainer} ref={qrContainerRef}>
-                <QRDisplay
-                  value={displayLink}
-                  code={displayCode}
-                  helperText={tCommon("messages.scanToUploadPhotos")}
-                />
-                <Button
-                  data-color="neutral"
-                  variant="secondary"
-                  icon={<Download />}
-                  onClick={handleDownloadQR}
-                >
-                  {tCommon("actions.download")}
-                </Button>
-              </div>
+        <SegmentedControl.Item label="Guest" value="guest" />
+        <SegmentedControl.Item label="Moderator" value="moderator" />
+      </SegmentedControl>
 
-              <div className={styles.linkContainer}>
-                <Title size="medium" description={tReview("links.guest.description")}>
-                  {tReview("links.guest.title")}
-                </Title>
-                <Input
-                  aria-label="Guest Link"
-                  readOnly
-                  value={displayLink}
-                  icon={
-                    <CopyButton isCopied={isCopied} onCopy={handleCopy} ariaLabel="" />
-                  }
-                  iconPosition="right"
-                  fill
-                />
-                {hasCopyError ? (
-                  <p className={styles.copyError}>{tCommon("messages.copyFailed")}</p>
-                ) : null}
-              </div>
-            </div>
-          }
-        />
+      <div className={styles.infoContainer}>
+        <div className={styles.QRCodeContainer} ref={qrContainerRef}>
+          <QRDisplay
+            value={displayLink}
+            code={displayCode}
+            helperText={tCommon("messages.scanToUploadPhotos")}
+          />
+          <Button
+            data-color="neutral"
+            variant="secondary"
+            icon={<Download />}
+            onClick={handleDownloadQR}
+            fill
+          >
+            {tCommon("actions.download")}
+          </Button>
+        </div>
 
-        <DropdownControl.Item
-          label={tCommon("roles.moderator")}
-          value="moderator"
-          content={
-            <div className={styles.infoContainer}>
-              <div className={styles.QRCodeContainer} ref={qrContainerRef}>
-                <QRDisplay
-                  value={displayLink}
-                  code={displayCode}
-                  helperText={tCommon("messages.scanToUploadPhotos")}
-                />
-                <Button
-                  data-color="neutral"
-                  variant="secondary"
-                  icon={<Download />}
-                  onClick={handleDownloadQR}
-                >
-                  {tCommon("actions.download")}
-                </Button>
-              </div>
-
-              <div className={styles.linkContainer}>
-                <Title size="medium" description={tReview("links.moderator.description")}>
-                  {tReview("links.moderator.title")}
-                </Title>
-                <Input
-                  aria-label="Moderator Link"
-                  readOnly
-                  value={displayLink}
-                  icon={
-                    <CopyButton isCopied={isCopied} onCopy={handleCopy} ariaLabel="" />
-                  }
-                  iconPosition="right"
-                  fill
-                />
-                {hasCopyError ? (
-                  <p className={styles.copyError}>{tCommon("messages.copyFailed")}</p>
-                ) : null}
-              </div>
-            </div>
-          }
-        />
-      </DropdownControl>
+        <div className={styles.linkContainer}>
+          <Title size="medium" description={tReview("links.description", { role })}>
+            {tReview("links.title", { role })}
+          </Title>
+          <div className={styles.copyContainer}>
+            <TextField
+              label="Link"
+              hideLabel
+              aria-label="Guest Link"
+              readOnly
+              value={displayLink}
+            />
+            <Button
+              variant="icon"
+              icon={iconState}
+              radius="16"
+              onClick={handleCopyLink}
+              data-testid="copy-button"
+            />
+          </div>
+        </div>
+      </div>
     </>
   );
 };

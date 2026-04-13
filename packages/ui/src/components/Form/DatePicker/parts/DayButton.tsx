@@ -23,7 +23,7 @@ const DatePickerDayButton = ({ date }: { date: Date }) => {
       data-range={inRange}
       onClick={() => selectDate(date)}
       className={styles.dateButton}
-      aria-label={date.toLocaleDateString()}
+      aria-label={date.toDateString()}
       type="button"
     >
       {date.getDate()}
