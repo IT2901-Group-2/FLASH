@@ -10,7 +10,7 @@ import {
 } from "@/lib/utils/auth";
 import { Result } from "typescript-result";
 
-export async function getAuth(): Promise<Auth> {
+async function getAuth(): Promise<Auth> {
   return Result.try(verifyAccessToken)
     .recoverCatching(() =>
       Result.try(verifyRefreshToken)

@@ -20,7 +20,7 @@ export const makeEventAuth = (overrides: Partial<EventAuth> = {}): EventAuth =>
       };
 
 /**
- * Creates a mock auth response body (used for useAuth hook tests).
+ * Creates a mock auth response body (used for useAuthRefresh hook tests).
  *
  * @example
  * const auth = makeAuthState();  // { ok: true }
