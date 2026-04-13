@@ -1,15 +1,15 @@
+import { JWT_SECRET, storage } from "@/config";
+import { HTTPError } from "@/lib/utils/error";
+import { getEventCookie } from "@/lib/utils/eventCookie";
+import { makeGlobal } from "@/lib/utils/makeGlobal";
+import { getFirstRow } from "@/lib/utils/sql";
 import { FileStorage } from "@flash/file-storage";
+import { and, eq, inArray, isNull, sql } from "drizzle-orm";
 import { DatabaseService, dbService } from "./databaseService";
 import { AsyncResult, Result } from "typescript-result";
 import { eventTable, GetImagesParams, Image, imageTable, UpdateImage } from "@/db";
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
-import { getFirstRow } from "@/lib/utils/sql";
-import { and, eq, inArray, isNull } from "drizzle-orm";
-import { JWT_SECRET, storage } from "@/config";
-import { makeGlobal } from "@/lib/utils/makeGlobal";
-import { getEventCookie } from "@/lib/utils/eventCookie";
-import { HTTPError } from "@/lib/utils/error";
 import AdmZip from "adm-zip";
 
 const uid = new ShortUniqueId();
@@ -135,13 +135,22 @@ export class ImageService {
         () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
       );
 
-      const event = yield* Result.try(() =>
+      const { autoApprove, uploadLimit } = yield* Result.try(() =>
         this.dbService.db
-          .select()
+          .select({
+            autoApprove: eventTable.autoApprove,
+            uploadLimit: eventTable.uploadLimit,
+          })
           .from(eventTable)
           .where(eq(eventTable.id, eventId))
           .limit(1)
       ).map(rows => getFirstRow(rows, `Event with id ${eventId} does not exist`));
+
+      const count = yield* this.getUploadedImageCountByUser(eventId, userId);
+
+      if (uploadLimit !== null && count >= uploadLimit) {
+        throw new HTTPError("Upload limit reached", 403);
+      }
 
       const sharpImage = yield* this.validateImage(sharp(image)).map(sharpImage =>
         sharpImage.rotate().webp()
@@ -163,7 +172,7 @@ export class ImageService {
             userId,
             eventId,
             previewImage,
-            isApproved: event.autoApprove ? true : null,
+            isApproved: autoApprove ? true : null,
           })
           .returning()
       )
@@ -310,7 +319,7 @@ export class ImageService {
       this.withZipLock(eventId, () =>
         this.storage
           .read(`${eventId}.zip`)
-          .recover(() => undefined)
+          .recover(() => Result.ok(undefined))
           .map(zip => new AdmZip(zip))
           .map(zip =>
             this.storage
@@ -346,6 +355,42 @@ export class ImageService {
           .getOrThrow()
       )
     );
+  }
+
+  /**
+   * Returns the number of images uploaded by the specified user in the specified event.
+   * @param eventId The id of the event.
+   * @param userId The id of the user.
+   * @returns A result containing the uploaded image count or an error.
+   */
+  private getUploadedImageCountByUser(
+    eventId: string,
+    userId: string
+  ): AsyncResult<number, Error> {
+    return Result.try(() =>
+      this.dbService.db
+        .select({ count: sql<number>`count(*)` })
+        .from(imageTable)
+        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.userId, userId)))
+    )
+      .map(getFirstRow)
+      .map(({ count }) => count);
+  }
+
+  /**
+   * Returns the number of images uploaded by the currently authenticated user in the given event.
+   *
+   * @param eventId The id of the event.
+   * @returns A result containing the uploaded image count or an error.
+   */
+  getUploadedImageCount(eventId: string): AsyncResult<number, Error> {
+    return Result.genCatching(this, function* () {
+      const { userId } = yield* getEventCookie(eventId, JWT_SECRET).mapError(
+        () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
+      );
+
+      return yield* this.getUploadedImageCountByUser(eventId, userId);
+    });
   }
 }
 
