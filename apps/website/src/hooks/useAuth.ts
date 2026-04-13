@@ -11,7 +11,7 @@ export type AuthState = z.infer<typeof okSchema>;
  * staleTime: infinity prevents background refetches - auth state is
  * managed manually via setQueryData from mutations.
  */
-export function useAuth() {
+export function useAuthRefresh() {
   return useQuery({
     queryKey: ["auth"],
     queryFn: async () => {
