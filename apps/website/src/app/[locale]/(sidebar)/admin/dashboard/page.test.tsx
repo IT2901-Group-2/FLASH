@@ -42,6 +42,6 @@ describe("Page", () => {
     renderWithQuery(<Page />);
 
     await userEvent.click(screen.getByText("Event 1"));
-    expect(mockRouter.push).toHaveBeenCalledWith("./events/1");
+    expect(mockRouter.push).toHaveBeenCalledWith("./dashboard/1");
   });
 });
