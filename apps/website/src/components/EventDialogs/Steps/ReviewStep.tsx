@@ -28,8 +28,13 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
     if (svg && displayCode) downloadQrSvg(svg, `qr-${displayCode.toLowerCase()}.svg`);
   };
 
-  const handleCopyLink = async () => {
-    await navigator.clipboard
+  const handleCopyLink = () => {
+    if (!navigator.clipboard) {
+      setIconState(<CopyX />);
+      setTimeout(() => setIconState(<Copy />), 1000);
+      return;
+    }
+    navigator.clipboard
       .writeText(displayLink)
       .then(() => setIconState(<CopyCheck />))
       .catch(() => setIconState(<CopyX />))
