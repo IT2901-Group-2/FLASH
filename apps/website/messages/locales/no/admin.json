@@ -50,7 +50,7 @@
             "value": {
               "maxUploads": "Maks opplastninger",
               "limited": "Begrenset",
-              "unlimited": "uendelig"
+              "unlimited": "Uendelig"
             },
             "error": {
               "required": "Velg en opplasningsgrense",
