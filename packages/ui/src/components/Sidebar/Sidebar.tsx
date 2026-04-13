@@ -52,7 +52,7 @@ Sidebar.Footer = SidebarFooter;
 Sidebar.Trigger = SidebarTrigger;
 
 export default Sidebar;
-export { SidebarHeader, SidebarGroup, SidebarItem, SidebarFooter };
+export { SidebarHeader, SidebarGroup, SidebarItem, SidebarFooter, useSidebar };
 export type {
   SidebarHeaderProps,
   SidebarGroupProps,
