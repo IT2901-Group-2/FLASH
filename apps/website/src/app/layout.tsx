@@ -7,6 +7,10 @@ import { NextIntlClientProvider } from "next-intl";
 import { Geist, Geist_Mono } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
+import ThemeProvider from "@/providers/ThemeProvider";
+import ReactQueryProvider from "@/providers/ReactQueryProvider";
+import { JoinedEventsProvider } from "@/providers/JoinedEventsProvider";
+import { AuthProvider } from "@/providers/AuthProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,9 +55,11 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <NextIntlClientProvider>
           <ReactQueryProvider>
-            <JoinedEventsProvider>
-              <ThemeProvider defaultTheme={"system"}>{children}</ThemeProvider>
-            </JoinedEventsProvider>
+            <AuthProvider>
+              <JoinedEventsProvider>
+                <ThemeProvider defaultTheme={"system"}>{children}</ThemeProvider>
+              </JoinedEventsProvider>
+            </AuthProvider>
           </ReactQueryProvider>
         </NextIntlClientProvider>
       </body>
