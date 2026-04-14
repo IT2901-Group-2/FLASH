@@ -1,10 +1,36 @@
 "use client";
 import { makeRequest } from "@/lib/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback } from "react";
 import { z } from "zod";
+import { useOnRefresh } from "./useOnRefresh";
+import { useOnCookieChange } from "./useOnCookieChange";
+import { getAuth } from "@/actions/auth";
 
 const okSchema = z.object({ ok: z.literal(true) });
 export type AuthState = z.infer<typeof okSchema>;
+
+const authKeys = {
+  all: ["auth"] as const,
+  state: () => [...authKeys.all, "state"] as const,
+  refresh: () => [...authKeys.all, "refresh"] as const,
+} as const;
+
+export function useAuth() {
+  const queryClient = useQueryClient();
+
+  const invalidateQuery = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: authKeys.state() });
+  }, [queryClient, authKeys.state]);
+
+  useOnRefresh(invalidateQuery);
+  useOnCookieChange(invalidateQuery);
+
+  return useQuery({
+    queryKey: authKeys.state(),
+    queryFn: getAuth,
+  });
+}
 
 /**
  * Attempts a token refresh on mount to restore session state.
@@ -13,7 +39,7 @@ export type AuthState = z.infer<typeof okSchema>;
  */
 export function useAuthRefresh() {
   return useQuery({
-    queryKey: ["auth"],
+    queryKey: authKeys.refresh(),
     queryFn: async () => {
       const res = await makeRequest(okSchema, "/api/auth/refresh", "POST");
       return res ?? null;
