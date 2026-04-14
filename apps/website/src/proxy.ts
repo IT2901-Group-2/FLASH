@@ -67,9 +67,7 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
     }
 
     if (isModerateRoute(request) && !(await isModerator(eventId))) {
-      const locale =
-        request.nextUrl.pathname.match(/^\/([a-z]{2}(-[A-Z]{2})?)/)?.[1] ?? "en";
-      return NextResponse.redirect(new URL(`/${locale}/events/${eventId}`, request.url));
+      return NextResponse.redirect(new URL(`/events/${eventId}`, request.url));
     }
   }
 
