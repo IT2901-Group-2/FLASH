@@ -1,8 +1,7 @@
 import { getJoinedEvents } from "@/actions/joinedEvents";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useOnRefresh } from "./useOnRefresh";
-import { useOnCookieChange } from "./useOnCookieChange";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const joinedEventsKeys = {
   all: ["joinedEvents"] as const,
@@ -14,13 +13,21 @@ const joinedEventsKeys = {
  */
 export function useJoinedEvents() {
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const invalidateQuery = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: joinedEventsKeys.all });
-  }, [queryClient, joinedEventsKeys.all]);
+  }, [queryClient]);
 
-  useOnRefresh(invalidateQuery);
-  useOnCookieChange(invalidateQuery);
+  // Refetch on URL change
+  useEffect(invalidateQuery, [pathname, searchParams, invalidateQuery]);
+
+  // Refetch on `cookieStore` change
+  useEffect(() => {
+    cookieStore.addEventListener("change", invalidateQuery);
+    return () => cookieStore.removeEventListener("change", invalidateQuery);
+  }, [invalidateQuery]);
 
   return useQuery({
     queryKey: joinedEventsKeys.all,

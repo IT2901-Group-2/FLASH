@@ -1,11 +1,10 @@
 "use client";
 import { makeRequest } from "@/lib/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { z } from "zod";
-import { useOnRefresh } from "./useOnRefresh";
-import { useOnCookieChange } from "./useOnCookieChange";
 import { getAuth } from "@/actions/auth";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const okSchema = z.object({ ok: z.literal(true) });
 export type AuthState = z.infer<typeof okSchema>;
@@ -22,13 +21,21 @@ const authKeys = {
  */
 export function useAuth() {
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const invalidateQuery = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: authKeys.state() });
-  }, [queryClient, authKeys.state]);
+  }, [queryClient]);
 
-  useOnRefresh(invalidateQuery);
-  useOnCookieChange(invalidateQuery);
+  // Refetch on URL change
+  useEffect(invalidateQuery, [pathname, searchParams, invalidateQuery]);
+
+  // Refetch on `cookieStore` change
+  useEffect(() => {
+    cookieStore.addEventListener("change", invalidateQuery);
+    return () => cookieStore.removeEventListener("change", invalidateQuery);
+  }, [invalidateQuery]);
 
   return useQuery({
     queryKey: authKeys.state(),
