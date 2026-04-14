@@ -32,8 +32,8 @@ export const DEFAULT_FORM_DATA: CreateEvent = {
   name: "",
   description: "",
   uploadLimit: 1,
-  // autoApprove: false,
-  // seeAllPictures: false,
+  autoApprove: false,
+  uploadsArePrivate: false,
   startDate: parseTimeOrDate(TIME_PRESETS.full.startTime),
   endDate: parseTimeOrDate(TIME_PRESETS.full.endTime),
 };

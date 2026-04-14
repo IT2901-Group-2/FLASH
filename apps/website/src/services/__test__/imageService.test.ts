@@ -12,6 +12,7 @@ import { Result } from "typescript-result";
 import { getEventCookie } from "@/lib/utils/eventCookie";
 import { HTTPError } from "@/lib/utils/error";
 import { eq } from "drizzle-orm";
+import AdmZip from "adm-zip";
 
 vi.mock("@/lib/utils/eventCookie");
 const mockedGetEventCookie = vi.mocked(getEventCookie);
@@ -25,12 +26,14 @@ const mockEvents: (typeof eventTable.$inferInsert)[] = [
     name: "Birthday",
     startDate: new Date(),
     endDate: new Date(),
+    autoApprove: false,
   },
   {
     id: "wedding",
     name: "Wedding",
     startDate: new Date(),
     endDate: new Date(),
+    autoApprove: true,
   },
 ];
 
@@ -250,6 +253,25 @@ describe("ImageService downloadImage", () => {
         .getOrThrow()
     ).toBe(mockImageData[0]!.toString("base64"));
   });
+
+  it("Should return an empty zip when no zip exists for event", async () => {
+    const result = await imageService.downloadImages("birthday").getOrThrow();
+    const zip = new AdmZip(result);
+    expect(zip.getEntries()).toHaveLength(0);
+  });
+
+  it("Should return the zip archive when it exists", async () => {
+    vi.spyOn(DatabaseService.prototype, "flush").mockImplementation(() => {});
+
+    await imageService
+      .updateImages("wedding", ["image-3", "image-5"], { isApproved: true })
+      .getOrThrow();
+
+    const result = await imageService.downloadImages("wedding").getOrThrow();
+    const zip = new AdmZip(result);
+    const names = zip.getEntries().map(e => e.entryName);
+    expect(new Set(names)).toStrictEqual(new Set(["image-3.webp", "image-5.webp"]));
+  });
 });
 
 describe("ImageService uploadImage", () => {
@@ -314,7 +336,7 @@ describe("ImageService uploadImage", () => {
       .getOrThrow();
 
     expect(image1.eventId).toBe("wedding");
-    expect(image1.isApproved).toBeNull();
+    expect(image1.isApproved).toBe(true);
     Result.assertOk(await imageService["storage"].read(`${image1.id}.webp`));
     expect(flush).toHaveBeenCalledOnce();
 
@@ -504,5 +526,96 @@ describe("ImageService deleteImage", () => {
     expect(image2.id).toBe("image-1");
     expect(image2.isApproved).toBeNull();
     expect(flush).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("ImageService zip side effects", () => {
+  it("uploadImage on autoApprove event should add image to zip", async () => {
+    mockedGetEventCookie.mockImplementationOnce(() =>
+      Result.fromAsync(async () => ({ userId: "john2" }) as EventCookie)
+    );
+    vi.spyOn(DatabaseService.prototype, "flush").mockImplementation(() => {});
+
+    const image = await imageService
+      .uploadImage("wedding", mockImageData[0]!)
+      .getOrThrow();
+
+    const buf = await imageService["storage"].read("wedding.zip").getOrThrow();
+    const zip = new AdmZip(buf);
+    const names = zip.getEntries().map(e => e.entryName);
+    expect(names).toContain(`${image.id}.webp`);
+  });
+
+  it("uploadImage on non-autoApprove event should NOT add image to zip", async () => {
+    mockedGetEventCookie.mockImplementationOnce(() =>
+      Result.fromAsync(async () => ({ userId: "john1" }) as EventCookie)
+    );
+    vi.spyOn(DatabaseService.prototype, "flush").mockImplementation(() => {});
+
+    await imageService.uploadImage("birthday", mockImageData[0]!).getOrThrow();
+
+    const result = await imageService["storage"].read("birthday.zip").getOrNull();
+    if (result !== null) {
+      const zip = new AdmZip(result);
+      expect(zip.getEntries()).toHaveLength(0);
+    } else {
+      expect(result).toBeNull();
+    }
+  });
+
+  it("approving an image should add it to the zip", async () => {
+    vi.spyOn(DatabaseService.prototype, "flush").mockImplementation(() => {});
+
+    await imageService
+      .updateImage("birthday", "image-1", { isApproved: true })
+      .getOrThrow();
+
+    const buf = await imageService["storage"].read("birthday.zip").getOrThrow();
+    const zip = new AdmZip(buf);
+    expect(zip.getEntries().map(e => e.entryName)).toContain("image-1.webp");
+  });
+
+  it("rejecting an image should remove it from the zip", async () => {
+    vi.spyOn(DatabaseService.prototype, "flush").mockImplementation(() => {});
+
+    await imageService
+      .updateImage("wedding", "image-3", { isApproved: true })
+      .getOrThrow();
+
+    await imageService
+      .updateImage("wedding", "image-3", { isApproved: false })
+      .getOrThrow();
+
+    const buf = await imageService["storage"].read("wedding.zip").getOrThrow();
+    const zip = new AdmZip(buf);
+    expect(zip.getEntries().map(e => e.entryName)).not.toContain("image-3.webp");
+  });
+
+  it("deleting an image should remove it from the zip", async () => {
+    vi.spyOn(DatabaseService.prototype, "flush").mockImplementation(() => {});
+
+    await imageService
+      .updateImage("wedding", "image-3", { isApproved: true })
+      .getOrThrow();
+
+    await imageService.deleteImage("wedding", "image-3").getOrThrow();
+
+    const buf = await imageService["storage"].read("wedding.zip").getOrThrow();
+    const zip = new AdmZip(buf);
+    expect(zip.getEntries().map(e => e.entryName)).not.toContain("image-3.webp");
+  });
+
+  it("updateImages approval change should trigger zip updates", async () => {
+    vi.spyOn(DatabaseService.prototype, "flush").mockImplementation(() => {});
+
+    await imageService
+      .updateImages("wedding", ["image-3", "image-5"], { isApproved: false })
+      .getOrThrow();
+
+    const buf = await imageService["storage"].read("wedding.zip").getOrThrow();
+    const zip = new AdmZip(buf);
+    const names = zip.getEntries().map(e => e.entryName);
+    expect(names).not.toContain("image-3.webp");
+    expect(names).not.toContain("image-5.webp");
   });
 });
