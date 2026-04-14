@@ -6,9 +6,18 @@ import {
   verifyAccessToken,
   verifyRefreshToken,
 } from "@/lib/utils/auth";
-import { Auth } from "@/providers/AuthContext";
 import { Result } from "typescript-result";
 
+export type Auth = {
+  isAdmin: boolean;
+};
+
+/**
+ * Returns the authentication state of the user by checking for the existence
+ * and validity of an acces or refresh token.
+ *
+ * @returns The auth state of the user.
+ */
 export async function getAuth(): Promise<Auth> {
   return Result.try(verifyAccessToken)
     .recoverCatching(() =>

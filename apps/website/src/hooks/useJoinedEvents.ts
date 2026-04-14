@@ -8,6 +8,10 @@ const joinedEventsKeys = {
   all: ["joinedEvents"] as const,
 } as const;
 
+/**
+ * Fetches a list of all currently joined events.
+ * Event cookies are accessed on the server.
+ */
 export function useJoinedEvents() {
   const queryClient = useQueryClient();
 

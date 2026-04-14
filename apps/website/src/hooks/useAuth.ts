@@ -16,6 +16,10 @@ const authKeys = {
   refresh: () => [...authKeys.all, "refresh"] as const,
 } as const;
 
+/**
+ * Fetches the current auth state of the user.
+ * The access token cookie will be validated on the server.
+ */
 export function useAuth() {
   const queryClient = useQueryClient();
 
