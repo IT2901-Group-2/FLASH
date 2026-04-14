@@ -4,6 +4,29 @@ import { getEventCookie } from "@/lib/utils/eventCookie";
 import { cookies } from "next/headers";
 
 /**
+ * Checks whether the request was made to the moderate sub-route of an event.
+ *
+ * @param request The request to check.
+ * @returns A boolean indicating whether the request targets an event moderate route.
+ */
+export function isModerateRoute(request: NextRequest): boolean {
+  return /^\/[^\/]+\/events\/[^\/]+\/moderate$/.test(request.nextUrl.pathname);
+}
+
+/**
+ * Checks whether the event cookie for the given event grants moderator access.
+ *
+ * @param eventId The event id to check the moderator flag for.
+ * @returns A promise that resolves to true if the cookie grants moderator access, false otherwise.
+ */
+export async function isModerator(eventId: string): Promise<boolean> {
+  return getEventCookie(eventId, JWT_SECRET).fold(
+    ({ isModerator }) => isModerator,
+    () => false
+  );
+}
+
+/**
  * Checks whether the request was made to a route that requires event session authentication.
  *
  * @param request The request to check.
