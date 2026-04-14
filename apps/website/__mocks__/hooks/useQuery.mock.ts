@@ -27,3 +27,17 @@ export function mockQueryResult<T>({
     isError,
   } as UseQueryResult<T>;
 }
+
+/**
+ * Creates a generic mock loading `UseQueryResult`, suitable for use in tests.
+ */
+export function mockQueryLoading<T>(): UseQueryResult<T> {
+  return mockQueryResult({ isLoading: true });
+}
+
+/**
+ * Creates a generic mock failed `UseQueryResult`, suitable for use in tests.
+ */
+export function mockQueryError<T>(error?: Error): UseQueryResult<T> {
+  return mockQueryResult({ isError: true, error });
+}

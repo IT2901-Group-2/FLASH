@@ -197,25 +197,3 @@ export const mockEventStatsError = (error?: Error): UseQueryResult<EventStats> =
 export const mockJoinedEventsLoaded = (
   joinedEvents?: JoinedEvent[]
 ): UseQueryResult<JoinedEvent[]> => mockQueryResult({ data: joinedEvents });
-
-/**
- * Loading `useJoinedEventsQuery` result.
- * `data` is undefined, `isLoading` is true.
- *
- * @example
- * vi.mocked(useJoinedEventsQuery).mockReturnValue(mockJoinedEventsLoading());
- */
-export const mockJoinedEventsLoading = (): UseQueryResult<JoinedEvent> =>
-  mockQueryResult({ isLoading: true });
-
-/**
- * Failed `useJoinedEventsQuery` result.
- * `isError` is true, `data` is undefined.
- *
- * @example
- * vi.mocked(useJoinedEventsQuery).mockReturnValue(mockJoinedEventsError(new Error("500")));
- *
- * @param error - Defaults to a generic load failure message.
- */
-export const mockJoinedEventsError = (error?: Error): UseQueryResult<EventStats> =>
-  mockQueryResult({ error, isError: true });
