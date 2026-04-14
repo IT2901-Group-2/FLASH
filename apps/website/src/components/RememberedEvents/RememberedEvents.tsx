@@ -1,13 +1,12 @@
 "use client";
 
 import { Event } from "@/db";
-import { useEventsQuery } from "@/hooks/useEvents";
+import { useEventsQuery, useJoinedEvents } from "@/hooks/useEvents";
 import { Card, Title } from "@flash/ui";
 import { Calendar, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import styles from "./RememberedEvents.module.css";
-import { useJoinedEvents } from "@/hooks/useJoinedEvents";
 
 const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
   const c = useTranslations("common");
