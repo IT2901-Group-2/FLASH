@@ -3,6 +3,7 @@ import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 import type { CreateEvent, Event, EventStats, UpdateEvent } from "@/db";
 import { makeEvent } from "../factories/event.factory";
 import { mockQueryResult } from "./useQuery.mock";
+import { JoinedEvent } from "@/actions/joinedEvents";
 
 // ---------------------------------------------------------------------------
 // Default return values
@@ -39,6 +40,16 @@ export const defaultEventStatsQueryReturn = {
   isLoading: false,
   isError: false,
 } as UseQueryResult<EventStats>;
+
+/**
+ * Idle default for `useJoinedEventsQuery`. Used internally by `eventHooksMock()`.
+ * In tests, prefer `mockJoinedEventsLoaded` / `mockJoinedEventsLoading` / `mockJoinedEventsError`.
+ */
+export const defaultJoinedEventsQueryReturn = {
+  data: undefined as EventStats | undefined,
+  isLoading: false,
+  isError: false,
+} as UseQueryResult<JoinedEvent[]>;
 
 /**
  * Idle default for `useCreateEventMutation`. `mutateAsync` resolves with `makeEvent()`.
@@ -169,4 +180,42 @@ export const mockEventStatsLoading = (): UseQueryResult<EventStats> =>
  * @param error - Defaults to a generic load failure message.
  */
 export const mockEventStatsError = (error?: Error): UseQueryResult<EventStats> =>
+  mockQueryResult({ error, isError: true });
+
+/**
+ * Successful `useJoinedEventsQuery` result with the gived joined events.
+ *
+ * @example
+ * beforeEach(() => {
+ *   vi.mocked(useJoinedEventsQuery)
+ *      .mockReturnValue(
+ *         mockJoinedEventsLoaded([makeJoinedEvent({ isModerator: true })]
+ *      )
+ *    );
+ * });
+ */
+export const mockJoinedEventsLoaded = (
+  joinedEvents?: JoinedEvent[]
+): UseQueryResult<JoinedEvent[]> => mockQueryResult({ data: joinedEvents });
+
+/**
+ * Loading `useJoinedEventsQuery` result.
+ * `data` is undefined, `isLoading` is true.
+ *
+ * @example
+ * vi.mocked(useJoinedEventsQuery).mockReturnValue(mockJoinedEventsLoading());
+ */
+export const mockJoinedEventsLoading = (): UseQueryResult<JoinedEvent> =>
+  mockQueryResult({ isLoading: true });
+
+/**
+ * Failed `useJoinedEventsQuery` result.
+ * `isError` is true, `data` is undefined.
+ *
+ * @example
+ * vi.mocked(useJoinedEventsQuery).mockReturnValue(mockJoinedEventsError(new Error("500")));
+ *
+ * @param error - Defaults to a generic load failure message.
+ */
+export const mockJoinedEventsError = (error?: Error): UseQueryResult<EventStats> =>
   mockQueryResult({ error, isError: true });

@@ -1,3 +1,4 @@
+import { JoinedEvent } from "@/actions/joinedEvents";
 import type { CreateEvent, Event, EventStats, UpdateEvent } from "@/db";
 
 let _counter = 1;
@@ -74,6 +75,22 @@ export const makeEventStats = (overrides: Partial<EventStats> = {}): EventStats 
     ...overrides,
   };
 };
+
+/**
+ * Creates a fully-populated `JoinedEvent` object.
+ *
+ * @example
+ * const joinedEvent = makeJoinedEvent({ isModerator: true });
+ *
+ * @param overrides An object used to override the properties of the returned object.
+ * @returns A `JoinedEvent` object.
+ */
+export const makeJoinedEvent = (overrides: Partial<JoinedEvent> = {}): JoinedEvent => ({
+  eventId: nextId(),
+  name: "Joined event",
+  isModerator: false,
+  ...overrides,
+});
 
 /**
  * Resets the internal ID counter.
