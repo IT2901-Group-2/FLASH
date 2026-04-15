@@ -3,6 +3,7 @@ import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 import type { CreateEvent, Event, EventStats, UpdateEvent } from "@/db";
 import { makeEvent } from "../factories/event.factory";
 import { mockQueryResult } from "./useQuery.mock";
+import { JoinedEvent } from "@/actions/joinedEvents";
 
 // ---------------------------------------------------------------------------
 // Default return values
@@ -39,6 +40,19 @@ export const defaultEventStatsQueryReturn = {
   isLoading: false,
   isError: false,
 } as UseQueryResult<EventStats>;
+
+/**
+ * Idle default for `useJoinedEventsQuery`. Used internally by `eventHooksMock()`.
+ * In tests, prefer `mockJoinedEventsLoaded` / `mockJoinedEventsLoading` / `mockJoinedEventsError`.
+ *
+ * @example
+ * vi.mocked(useJoinedEvents).mockReturnValue({ ...defaultJoinedEventsQueryReturn, data: [makeJoinedEvent()] });
+ */
+export const defaultJoinedEventsQueryReturn = {
+  data: undefined as EventStats | undefined,
+  isLoading: false,
+  isError: false,
+} as UseQueryResult<JoinedEvent[]>;
 
 /**
  * Idle default for `useCreateEventMutation`. `mutateAsync` resolves with `makeEvent()`.
@@ -170,3 +184,19 @@ export const mockEventStatsLoading = (): UseQueryResult<EventStats> =>
  */
 export const mockEventStatsError = (error?: Error): UseQueryResult<EventStats> =>
   mockQueryResult({ error, isError: true });
+
+/**
+ * Successful `useJoinedEventsQuery` result with the gived joined events.
+ *
+ * @example
+ * beforeEach(() => {
+ *   vi.mocked(useJoinedEventsQuery)
+ *      .mockReturnValue(
+ *         mockJoinedEventsLoaded([makeJoinedEvent({ isModerator: true })]
+ *      )
+ *    );
+ * });
+ */
+export const mockJoinedEventsLoaded = (
+  joinedEvents?: JoinedEvent[]
+): UseQueryResult<JoinedEvent[]> => mockQueryResult({ data: joinedEvents });

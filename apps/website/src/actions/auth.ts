@@ -1,7 +1,5 @@
 "use server";
 
-import { PropsWithChildren } from "react";
-import { Auth, AuthContextProvider } from "./AuthContext";
 import {
   signAccessToken,
   signRefreshToken,
@@ -10,7 +8,17 @@ import {
 } from "@/lib/utils/auth";
 import { Result } from "typescript-result";
 
-async function getAuth(): Promise<Auth> {
+export type Auth = {
+  isAdmin: boolean;
+};
+
+/**
+ * Returns the authentication state of the user by checking for the existence
+ * and validity of an acces or refresh token.
+ *
+ * @returns The auth state of the user.
+ */
+export async function getAuth(): Promise<Auth> {
   return Result.try(verifyAccessToken)
     .recoverCatching(() =>
       Result.try(verifyRefreshToken)
@@ -19,10 +27,4 @@ async function getAuth(): Promise<Auth> {
     )
     .map(() => ({ isAdmin: true }))
     .getOrDefault({ isAdmin: false });
-}
-
-export async function AuthProvider({ children }: PropsWithChildren) {
-  const authPromise = getAuth();
-
-  return <AuthContextProvider value={authPromise}>{children}</AuthContextProvider>;
 }

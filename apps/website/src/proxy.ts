@@ -11,6 +11,8 @@ import {
   isEventRoute,
   getEventId,
   checkEventCookie,
+  isModerateRoute,
+  isModerator,
   isJoinRoute,
   getJoinCode,
   getEventByCode,
@@ -62,6 +64,10 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
     const isAuthenticated = await checkEventCookie(eventId);
     if (!isAuthenticated) {
       return NextResponse.redirect(new URL(`/`, request.url));
+    }
+
+    if (isModerateRoute(request) && !(await isModerator(eventId))) {
+      return NextResponse.redirect(new URL(`/events/${eventId}`, request.url));
     }
   }
 

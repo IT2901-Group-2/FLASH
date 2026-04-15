@@ -1,9 +1,8 @@
 "use client";
 
 import { Event } from "@/db";
-import { useEventsQuery } from "@/hooks/useEvents";
+import { useEventsQuery, useJoinedEvents } from "@/hooks/useEvents";
 import { useUploadedImageCountQuery } from "@/hooks/useImages";
-import { useJoinedEvents } from "@/providers/JoinedEventsContext";
 import { Card, Title } from "@flash/ui";
 import { Calendar, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -38,7 +37,8 @@ const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
 
 const RememberedEvents = () => {
   const t = useTranslations("guest.event");
-  const eventIDs = useJoinedEvents();
+  const { data: joinedEvents = [] } = useJoinedEvents();
+  const eventIDs = joinedEvents.map(e => e.eventId);
   const events = useEventsQuery(
     {
       id: eventIDs,

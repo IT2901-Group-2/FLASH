@@ -21,6 +21,8 @@ function getMockedEvent(data: Partial<Event> = {}): Event {
     isArchived: false,
     createdAt: setMilliseconds(new Date(), 0),
     updatedAt: setMilliseconds(new Date(), 0),
+    autoApprove: true,
+    uploadsArePrivate: false,
     ...data,
   };
 }
