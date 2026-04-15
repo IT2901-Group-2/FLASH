@@ -3,7 +3,7 @@ import { imageService } from "@/services/imageService";
 import { Result } from "typescript-result";
 import { parseRequestBody, parseSearchParams } from "@/lib/utils/validation";
 import { getImagesParamsSchema, updateImagesSchema } from "@/db";
-import { errorResponse, HTTPError } from "@/lib/utils/error";
+import { errorResponse } from "@/lib/utils/error";
 import { withAuth } from "@/lib/utils/withAuth";
 
 export async function GET(

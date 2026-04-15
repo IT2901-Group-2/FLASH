@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { imageService } from "@/services/imageService";
 import { parseRequestBody } from "@/lib/utils/validation";
 import { updateImageSchema } from "@/db";
-import { errorResponse, HTTPError } from "@/lib/utils/error";
+import { errorResponse } from "@/lib/utils/error";
 import { withAuth } from "@/lib/utils/withAuth";
 
 export async function GET(
