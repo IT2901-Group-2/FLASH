@@ -32,7 +32,7 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
   const rememberedEvents = useJoinedEvents();
   const { data: events } = useEventsQuery(
     {
-      id: rememberedEvents.map(o => o.eventId),
+      id: rememberedEvents.map(e => e.eventId),
     },
     rememberedEvents.length > 0
   );
