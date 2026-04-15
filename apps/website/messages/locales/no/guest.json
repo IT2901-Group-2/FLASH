@@ -84,9 +84,9 @@
       }
     },
     "upload": {
-      "loadingEvent": "Laster arrangement...",
-      "eventFallbackName": "Arrangement",
-      "eventLoadFailed": "Kunne ikke laste arrangementsdetaljer for denne lenken.",
+      "loadingEvent": "Laster event...",
+      "eventFallbackName": "Event",
+      "eventLoadFailed": "Kunne ikke laste eventdetaljer for denne lenken.",
       "emptyState": "Ingen bilder funnet",
       "imageAlt": "Bilde {index} av {total}",
       "imageTitle": "Bilde {index}",
