@@ -1,16 +1,19 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, QrCode, Upload, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, ImageMinus, QrCode, Upload, X } from "lucide-react";
 import styles from "./UploadImage.module.css";
 import { ActionCard, Button, Dialog, QRDisplay } from "@flash/ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
-import { useImagesQuery, useUploadImageMutation } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
-import { getAdminDashboardEventRoute, routes } from "@/lib/routes";
+import {
+  useImagesQuery,
+  useUploadedImageCountQuery,
+  useUploadImageMutation,
+} from "@/hooks/useImages";
 import Image from "next/image";
 
 export default function Page() {
@@ -28,8 +31,9 @@ export default function Page() {
   const eventData = data?.[0];
 
   // Image Data
-  const { data: imagesData } = useImagesQuery(eventId);
+  const { data: imagesData } = useImagesQuery(eventId, { approval: "approved" });
   const images = imagesData ?? [];
+  const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -49,17 +53,20 @@ export default function Page() {
   const eventName =
     eventData?.name ??
     (isLoading ? tUpload("loadingEvent") : tUpload("eventFallbackName"));
+
+  const userImageCount = uploadedCountData?.count ?? 0;
+
   const uploadsRemaining =
-    typeof eventData?.uploadLimit === "number" ? eventData.uploadLimit : undefined;
+    typeof eventData?.uploadLimit === "number"
+      ? Math.max(0, eventData.uploadLimit - userImageCount)
+      : undefined;
 
-  const uploadDescription = tUpload("description", {
-    uploadsRemaining:
-      typeof uploadsRemaining === "number" ? uploadsRemaining : tUpload("unlimited"),
-  });
-
-  const backHref = eventAuth.isModerator
-    ? getAdminDashboardEventRoute(eventId)
-    : routes.root;
+  const uploadDescription =
+    typeof uploadsRemaining !== "number"
+      ? tCommon("uploads.unlimited.long")
+      : uploadsRemaining === 0
+        ? tCommon("uploads.none.long")
+        : tCommon("uploads.remaining.long", { count: uploadsRemaining });
 
   const { openFilePicker, FileInput } = useFileUpload({
     multiple: false,
@@ -81,8 +88,20 @@ export default function Page() {
         ]);
         const successfulUploads = results.filter(r => r.status === "fulfilled").length;
         const failureCount = results.length - successfulUploads;
+
+        const hasUploadLimitError = results.some(
+          (result): result is PromiseRejectedResult =>
+            result.status === "rejected" &&
+            result.reason instanceof Error &&
+            /upload\s+limit\s+reached/i.test(result.reason.message)
+        );
+
         if (failureCount > 0) {
-          setUploadError(tUpload("errors.uploadFailed", { count: failureCount }));
+          setUploadError(
+            hasUploadLimitError
+              ? tUpload("errors.uploadLimitReached")
+              : tUpload("errors.uploadFailed", { count: failureCount })
+          );
         }
       } finally {
         setIsUploading(false);
@@ -248,7 +267,6 @@ export default function Page() {
           title={eventName}
           username={eventAuth?.nickname ?? ""}
           description={uploadDescription}
-          backHref={backHref}
         >
           <Button
             icon={<QrCode />}
@@ -256,7 +274,19 @@ export default function Page() {
             data-color="brand-purple"
             variant="secondary"
             onClick={() => dialogRef.current?.showModal()}
+            className={eventAuth.isModerator ? styles.desktopOnly : undefined}
           />
+          {eventAuth.isModerator && (
+            <Button
+              icon={<ImageMinus />}
+              iconPosition="right"
+              data-color="brand-purple"
+              variant="primary"
+              onClick={() => router.push(`./${eventId}/moderate`)}
+            >
+              {tCommon("actions.moderate")}
+            </Button>
+          )}
           <Button
             icon={<Upload />}
             iconPosition="right"

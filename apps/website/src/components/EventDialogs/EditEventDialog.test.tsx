@@ -1,121 +1,153 @@
-import { eventHooksMock, makeEvent } from "@test-config";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import {
+  defaultUpdateEventMutationReturn,
+  eventHooksMock,
+  makeEvent,
+} from "@test-config";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { useUpdateEventMutation } from "@/hooks/useEvents";
+import userEvent from "@testing-library/user-event";
 import EditEventDialog from "./EditEventDialog";
-import { Dialog } from "@flash/ui";
-
-const MockedDialog = vi.mocked(Dialog);
 
 vi.mock("@/hooks/useEvents", () => eventHooksMock());
 
-const onClose = vi.fn();
-const renderCard = () => {
-  render(
-    <EditEventDialog
-      event={makeEvent({
-        name: "Existing Event",
-        description: "Existing description",
-        uploadLimit: 5,
-      })}
-      onClose={onClose}
-    />
-  );
-};
+vi.mock("./formSteps", () => ({
+  FORM_STEPS: [
+    {
+      fields: ["name"],
+      Component: () => <div data-testid="step-1">Step 1</div>,
+    },
+    {
+      fields: ["description"],
+      Component: () => <div data-testid="step-2">Step 2</div>,
+    },
+  ],
+}));
 
-const mockReportValidity = (valid: boolean) => {
-  HTMLFormElement.prototype.reportValidity = vi.fn().mockReturnValue(valid);
-};
+vi.mock("./Steps", () => ({
+  ReviewStep: ({ status }: { status: string }) => (
+    <div data-testid="review-step" data-status={status} />
+  ),
+}));
 
-describe("EditEventDialog", () => {
+function setupMutation() {
+  vi.mocked(useUpdateEventMutation).mockReturnValue(defaultUpdateEventMutationReturn);
+}
+
+function renderDialog(onClose = vi.fn()) {
+  return {
+    onClose,
+    ...render(<EditEventDialog onClose={onClose} event={makeEvent()} />),
+  };
+}
+
+describe("UpdateEventDialog", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    setupMutation();
   });
 
-  describe("Dialog behavior", () => {
-    it("disables backdrop close", () => {
-      renderCard();
-      expect(MockedDialog.mock.calls[0]![0]).toMatchObject({ closedby: "none" });
-    });
-  });
-
-  describe("Pre-population", () => {
-    it("pre-populates the name field with the existing event name", () => {
-      renderCard();
-      expect(screen.getByLabelText("eventName")).toHaveValue("Existing Event");
+  describe("initial render", () => {
+    it("starts on step 1", () => {
+      renderDialog();
+      expect(screen.getByTestId("step-1")).toBeInTheDocument();
+      expect(screen.queryByTestId("step-2")).not.toBeInTheDocument();
     });
 
-    it("pre-populates the description field", () => {
-      renderCard();
-      expect(screen.getByLabelText("eventDescription")).toHaveValue(
-        "Existing description"
-      );
+    it("renders a Cancel button on the first step", () => {
+      renderDialog();
+      expect(screen.getByText("cancel")).toBeInTheDocument();
     });
 
-    it("pre-populates the upload limit on the options step", async () => {
-      mockReportValidity(true);
-      renderCard();
-
-      await userEvent.click(screen.getByText("next"));
-
-      expect(screen.getByLabelText("maxImages")).toHaveValue(5);
-    });
-  });
-
-  describe("Navigation", () => {
-    it("renders the first step on mount", () => {
-      renderCard();
-      expect(screen.getByLabelText("eventName")).toBeInTheDocument();
+    it("does NOT render a Previous button on the first step", () => {
+      renderDialog();
+      expect(screen.queryByText("previous")).not.toBeInTheDocument();
     });
 
-    it("does not advance when validation fails", async () => {
-      mockReportValidity(false);
-      renderCard();
-      await userEvent.click(screen.getByText("next"));
-      expect(screen.getByLabelText("eventName")).toBeInTheDocument();
+    it("renders a Next button on the first step", () => {
+      renderDialog();
+      expect(screen.getByText("next")).toBeInTheDocument();
     });
 
-    it("advances to step 2 when validation passes", async () => {
-      mockReportValidity(true);
-      renderCard();
-      await userEvent.click(screen.getByText("next"));
-      expect(screen.getByLabelText("maxImages")).toBeInTheDocument();
-    });
-
-    it("does not show ReviewStep at any point", async () => {
-      mockReportValidity(true);
-      renderCard();
-      await userEvent.click(screen.getByText("next"));
-      // After the last step, save is called — there is no review
-      expect(screen.queryByText("finish")).not.toBeInTheDocument();
+    it("does NOT render a Create button on the first step", () => {
+      renderDialog();
+      expect(screen.queryByText("create")).not.toBeInTheDocument();
     });
   });
 
-  describe("Saving", async () => {
-    it("calls onClose after saving", async ({ skip }) => {
-      mockReportValidity(true);
-      renderCard();
+  describe("navigation", () => {
+    it("advances to step 2 when Next is clicked and validation passes", async () => {
+      renderDialog();
 
-      // TODO - Update this when inputs are redone
-      skip();
+      await userEvent.click(screen.getByText("next"));
+      await waitFor(() => {
+        expect(screen.getByTestId("step-2")).toBeInTheDocument();
+      });
     });
 
-    it("saves the updated upload limit", async ({ skip }) => {
-      mockReportValidity(true);
-      renderCard();
+    it("shows Previous and Create on the last step", async () => {
+      renderDialog();
 
-      // TODO - Update this when inputs are redone
-      skip();
+      await userEvent.click(screen.getByText("next"));
+      await waitFor(() => {
+        expect(screen.getByText("previous")).toBeInTheDocument();
+        expect(screen.getByText("save")).toBeInTheDocument();
+      });
     });
 
-    it("does not call mutateAsync when validation fails on the last step", async ({
-      skip,
-    }) => {
-      mockReportValidity(false);
-      renderCard();
+    it("goes back to step 1 when Previous is clicked", async () => {
+      renderDialog();
 
-      // TODO - Update this when inputs are redone
-      skip();
+      await userEvent.click(screen.getByText("next"));
+      await waitFor(() => screen.getByText("previous"));
+
+      await userEvent.click(screen.getByText("previous"));
+      await waitFor(() => {
+        expect(screen.getByTestId("step-1")).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("handleClose", () => {
+    it("calls onClose when Cancel is clicked", async () => {
+      const { onClose } = renderDialog();
+      await userEvent.click(screen.getByText("cancel"));
+      expect(onClose).toHaveBeenCalledOnce();
+    });
+
+    it("resets back to step 1 after close", async () => {
+      renderDialog();
+
+      await userEvent.click(screen.getByText("next"));
+      await waitFor(() => screen.getByTestId("step-2"));
+
+      await userEvent.click(screen.getByText("cancel"));
+      await waitFor(() => {
+        expect(screen.queryByTestId("step-2")).not.toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("ProgressDots", () => {
+    it("passes the correct maxValue (steps + review)", () => {
+      renderDialog();
+      const dots = screen.getByTestId("progress-dots");
+      expect(dots).toHaveAttribute("data-max-value", "2");
+    });
+
+    it("starts at step 1 (value = 1)", () => {
+      renderDialog();
+      const dots = screen.getByTestId("progress-dots");
+      expect(dots).toHaveAttribute("data-value", "1");
+    });
+
+    it("advances the dot value when navigating forward", async () => {
+      renderDialog();
+
+      await userEvent.click(screen.getByText("next"));
+      await waitFor(() => {
+        const dots = screen.getByTestId("progress-dots");
+        expect(dots).toHaveAttribute("data-value", "2");
+      });
     });
   });
 });

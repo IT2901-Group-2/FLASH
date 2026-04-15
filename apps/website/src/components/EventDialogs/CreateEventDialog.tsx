@@ -1,48 +1,32 @@
-import { RefAttributes, useRef, useState } from "react";
+"use client";
+
+import { MouseEvent, RefAttributes, useState } from "react";
 import { Button, Dialog, ProgressDots } from "@flash/ui";
 import styles from "./CreateEventDialog.module.css";
-import { BasicInfoStep, OptionsStep, ReviewStep } from "./Steps";
+import { ReviewStep } from "./Steps";
 import { useTranslations } from "next-intl";
 import { useCreateEventMutation } from "@/hooks/useEvents";
-import { FormStepConfig } from "./Steps/types";
-import { Event, CreateEvent } from "@/db";
-
-const DEFAULT_FORM_DATA: CreateEvent = {
-  name: "",
-  description: "",
-  uploadLimit: 1,
-  // autoApprove: false,
-  // seeAllPictures: false,
-  startDate: new Date(),
-  endDate: new Date(),
-};
-
-/**
- * Ordered form steps for event creation.
- * Each step declares its validity constraints via standard HTML attributes
- * (`required`, `min`, `type`, etc.) on its inputs. The card calls
- * `form.reportValidity()` before advancing, which triggers browser-native
- * error messages and blocks navigation if any constraint is violated.
- */
-const FORM_STEPS: FormStepConfig[] = [
-  { Component: BasicInfoStep },
-  { Component: OptionsStep },
-];
+import { FORM_STEPS } from "./formSteps";
+import { CreateEvent, Event } from "@/db";
+import { useForm, FormProvider } from "react-hook-form";
+import { DEFAULT_FORM_DATA } from "./defaults";
 
 interface CreateEventDialogProps extends RefAttributes<HTMLDialogElement> {
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogProps) => {
   const t = useTranslations("common.actions");
   const { mutateAsync, status } = useCreateEventMutation();
 
-  const formRef = useRef<HTMLFormElement>(null);
+  const [formKey, setFormKey] = useState<number>(0);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
-  const [formData, setFormData] = useState<CreateEvent>(DEFAULT_FORM_DATA);
   const [eventResult, setEventResult] = useState<Event | null>(null);
-  const updateFormData = <K extends keyof CreateEvent>(field: K, value: CreateEvent[K]) =>
-    setFormData(prev => ({ ...prev, [field]: value }));
+
+  const methods = useForm<CreateEvent>({
+    defaultValues: DEFAULT_FORM_DATA,
+    mode: "onChange",
+  });
 
   const isOnReviewStep = currentStepIndex >= FORM_STEPS.length;
   const isOnFirstStep = currentStepIndex === 0;
@@ -51,27 +35,29 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
   const currentStep = FORM_STEPS[currentStepIndex];
 
   /** Validates the current step's inputs and advances if they all pass. */
-  const tryGoToNextStep = () => {
-    if (formRef.current?.reportValidity()) {
-      setCurrentStepIndex(i => i + 1);
-    }
+  const tryGoToNextStep = async () => {
+    if (!currentStep) return;
+    if (await methods.trigger(currentStep.fields)) setCurrentStepIndex(i => i + 1);
   };
 
   const goToPreviousStep = () => setCurrentStepIndex(i => i - 1);
 
-  const handleCreate = async () => {
-    if (!formRef.current?.reportValidity()) return;
-    // Advance to review immediately so the loader is shown during the request.
+  const handleCreate = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!currentStep) return;
+    if (!(await methods.trigger(currentStep.fields))) return;
     setCurrentStepIndex(i => i + 1);
-    const result = await mutateAsync(formData);
+    const result = await mutateAsync(methods.getValues());
     setEventResult(result);
   };
 
   const handleClose = () => {
-    setFormData(DEFAULT_FORM_DATA);
+    methods.reset(DEFAULT_FORM_DATA);
     setCurrentStepIndex(0);
     setEventResult(null);
-    onClose();
+    setFormKey(i => i + 1);
+    onClose?.();
+    if (ref && typeof ref !== "function") ref.current?.close();
   };
 
   const totalSteps = FORM_STEPS.length + 1;
@@ -83,47 +69,68 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
         value={currentStepIndex + 1}
         data-color="brand-purple"
       />
-      <form className={styles.form} ref={formRef} noValidate>
-        {isOnReviewStep ? (
-          <ReviewStep status={status} result={eventResult} />
-        ) : (
-          currentStep && (
-            <currentStep.Component formData={formData} updateFormData={updateFormData} />
-          )
-        )}
+      <FormProvider {...methods}>
+        <form key={formKey} className={styles.form} noValidate>
+          {isOnReviewStep ? (
+            <ReviewStep status={status} result={eventResult} />
+          ) : (
+            currentStep && <currentStep.Component />
+          )}
 
-        <div className={styles.buttonGroup}>
-          {!isOnReviewStep && (
-            <Button variant="tertiary" data-color="neutral" onClick={handleClose}>
-              {t("cancel")}
-            </Button>
-          )}
-          {!isOnReviewStep && !isOnFirstStep && (
-            <Button variant="secondary" data-color="neutral" onClick={goToPreviousStep}>
-              {t("previous")}
-            </Button>
-          )}
-          {!isOnReviewStep && !isOnLastFormStep && (
-            <Button
-              variant="secondary"
-              data-color="brand-purple"
-              onClick={tryGoToNextStep}
-            >
-              {t("next")}
-            </Button>
-          )}
-          {!isOnReviewStep && isOnLastFormStep && (
-            <Button variant="primary" data-color="brand-purple" onClick={handleCreate}>
-              {t("create")}
-            </Button>
-          )}
-          {isOnReviewStep && (
-            <Button variant="primary" data-color="brand-purple" onClick={handleClose}>
-              {t("finish")}
-            </Button>
-          )}
-        </div>
-      </form>
+          <div className={styles.buttonGroup}>
+            {!isOnReviewStep && (
+              <Button
+                type="button"
+                variant="tertiary"
+                data-color="neutral"
+                onClick={handleClose}
+              >
+                {t("cancel")}
+              </Button>
+            )}
+            {!isOnReviewStep && !isOnFirstStep && (
+              <Button
+                type="button"
+                variant="secondary"
+                data-color="neutral"
+                onClick={goToPreviousStep}
+              >
+                {t("previous")}
+              </Button>
+            )}
+            {!isOnReviewStep && !isOnLastFormStep && (
+              <Button
+                type="button"
+                variant="secondary"
+                data-color="brand-purple"
+                onClick={tryGoToNextStep}
+              >
+                {t("next")}
+              </Button>
+            )}
+            {!isOnReviewStep && isOnLastFormStep && (
+              <Button
+                type="submit"
+                variant="primary"
+                data-color="brand-purple"
+                onClick={handleCreate}
+              >
+                {t("create")}
+              </Button>
+            )}
+            {isOnReviewStep && (
+              <Button
+                type="button"
+                variant="primary"
+                data-color="brand-purple"
+                onClick={handleClose}
+              >
+                {t("finish")}
+              </Button>
+            )}
+          </div>
+        </form>
+      </FormProvider>
     </Dialog>
   );
 };

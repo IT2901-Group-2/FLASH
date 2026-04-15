@@ -16,20 +16,3 @@ import { EventAuth } from "@/providers/EventAuthContext";
 export const eventAuthMock = (user: Partial<EventAuth> = {}) => ({
   useEventAuth: vi.fn(() => makeEventAuth(user)),
 });
-
-/**
- * Returns a mock for "@/providers/JoinedEventsContext".
- *
- * Default: empty joined events array.
- *
- * @example
- * vi.mock("@/providers/JoinedEventsContext", () => joinedEventsMock());
- *
- * // Pre-seed joined events:
- * vi.mock("@/providers/JoinedEventsContext", () =>
- *   joinedEventsMock(["event-1", "event-2"])
- * );
- */
-export const joinedEventsMock = (joinedEventIds: string[] = []) => ({
-  useJoinedEvents: vi.fn(() => joinedEventIds),
-});

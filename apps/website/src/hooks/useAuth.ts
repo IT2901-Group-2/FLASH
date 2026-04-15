@@ -1,19 +1,56 @@
 "use client";
 import { makeRequest } from "@/lib/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect } from "react";
 import { z } from "zod";
+import { getAuth } from "@/actions/auth";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const okSchema = z.object({ ok: z.literal(true) });
 export type AuthState = z.infer<typeof okSchema>;
+
+const authKeys = {
+  all: ["auth"] as const,
+  state: () => [...authKeys.all, "state"] as const,
+  refresh: () => [...authKeys.all, "refresh"] as const,
+} as const;
+
+/**
+ * Fetches the current auth state of the user.
+ * The access token cookie will be validated on the server.
+ */
+export function useAuth() {
+  const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  const invalidateQuery = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: authKeys.state() });
+  }, [queryClient]);
+
+  // Refetch on URL change
+  useEffect(invalidateQuery, [pathname, searchParams, invalidateQuery]);
+
+  // Refetch on `cookieStore` change
+  useEffect(() => {
+    cookieStore.addEventListener("change", invalidateQuery);
+    return () => cookieStore.removeEventListener("change", invalidateQuery);
+  }, [invalidateQuery]);
+
+  return useQuery({
+    queryKey: authKeys.state(),
+    queryFn: getAuth,
+  });
+}
 
 /**
  * Attempts a token refresh on mount to restore session state.
  * staleTime: infinity prevents background refetches - auth state is
  * managed manually via setQueryData from mutations.
  */
-export function useAuth() {
+export function useAuthRefresh() {
   return useQuery({
-    queryKey: ["auth"],
+    queryKey: authKeys.refresh(),
     queryFn: async () => {
       const res = await makeRequest(okSchema, "/api/auth/refresh", "POST");
       return res ?? null;

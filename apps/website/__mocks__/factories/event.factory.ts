@@ -1,4 +1,5 @@
-import type { CreateEvent, Event, UpdateEvent } from "@/db";
+import { JoinedEvent } from "@/actions/joinedEvents";
+import type { CreateEvent, Event, EventStats, UpdateEvent } from "@/db";
 
 let _counter = 1;
 const nextId = () => `event-${_counter++}`;
@@ -55,6 +56,41 @@ export const makeUpdateEvent = (overrides: Partial<UpdateEvent> = {}): UpdateEve
     ...overrides,
   };
 };
+
+/**
+ * Creates a fully-populated `EventStats` object.
+ *
+ * @example
+ * const eventStats = makeEventStats({ pendingImages: 2 });
+ *
+ * @param overrides An object used to override the properties of the returned object.
+ * @returns An `EventStats` object.
+ */
+export const makeEventStats = (overrides: Partial<EventStats> = {}): EventStats => {
+  return {
+    eventId: nextId(),
+    pendingImages: 0,
+    approvedImages: 0,
+    rejectedImages: 0,
+    ...overrides,
+  };
+};
+
+/**
+ * Creates a fully-populated `JoinedEvent` object.
+ *
+ * @example
+ * const joinedEvent = makeJoinedEvent({ isModerator: true });
+ *
+ * @param overrides An object used to override the properties of the returned object.
+ * @returns A `JoinedEvent` object.
+ */
+export const makeJoinedEvent = (overrides: Partial<JoinedEvent> = {}): JoinedEvent => ({
+  eventId: nextId(),
+  name: "Joined event",
+  isModerator: false,
+  ...overrides,
+});
 
 /**
  * Resets the internal ID counter.

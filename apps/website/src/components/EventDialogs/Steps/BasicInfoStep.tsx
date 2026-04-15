@@ -1,82 +1,109 @@
-import { Calendar } from "lucide-react";
-import { Title, Input } from "@flash/ui";
+import { Title, TextField, Textarea, DatePicker, DateRange } from "@flash/ui";
 import { useTranslations } from "next-intl";
-import { StepProps } from "./types";
-import styles from "./Steps.module.css";
-import {
-  formatDateForInput,
-  formatTimeForInput,
-  makeDateTimeHandler,
-} from "@/utils/date-utils";
+import { Controller, useFormContext, useFormState, useWatch } from "react-hook-form";
+import EventTimeField from "../TimeField";
+import { CreateEvent } from "@/db";
+import { formatTimeForInput } from "@/utils/date-utils";
+import { EventTime } from "../defaults";
 
-export const BasicInfoStep = ({ formData, updateFormData }: StepProps) => {
-  const tStep = useTranslations("admin.dashboard.event.create.basics");
-  const tFields = useTranslations("common.fields");
+export const BasicInfoStep = () => {
+  const t = useTranslations("admin.dashboard.event.basics");
 
-  const startDateValue = formData.startDate.toISOString().split("T")[0];
+  const { register, control, setValue } = useFormContext<CreateEvent>();
+  const startDate = useWatch({ control, name: "startDate" });
+  const endDate = useWatch({ control, name: "endDate" });
+  const { errors } = useFormState({ control });
+
+  const handleDateRangeChange = (range: DateRange) => {
+    if (range.startDate) {
+      const d = new Date(range.startDate);
+      d.setHours(startDate?.getHours() ?? 0, startDate?.getMinutes() ?? 0);
+      setValue("startDate", d, { shouldValidate: true });
+    }
+    if (range.endDate) {
+      const d = new Date(range.endDate);
+      d.setHours(endDate?.getHours() ?? 23, endDate?.getMinutes() ?? 59);
+      setValue("endDate", d, { shouldValidate: true });
+    }
+  };
+
+  const handleTimeChange = (time: EventTime) => {
+    const [startH, startM] = time.startTime.split(":").map(Number);
+    const [endH, endM] = time.endTime.split(":").map(Number);
+
+    const newStart = new Date(startDate);
+    newStart.setHours(startH!, startM, 0, 0);
+    setValue("startDate", newStart, { shouldValidate: true });
+
+    const newEnd = new Date(endDate);
+    newEnd.setHours(endH!, endM, 0, 0);
+    setValue("endDate", newEnd, { shouldValidate: true });
+  };
 
   return (
     <>
-      <Title description={tStep("description")}>{tStep("title")}</Title>
-      <Input
-        value={formData.name}
-        onChange={e => updateFormData("name", e.target.value)}
-        label={tFields("eventName")}
-        aria-label={tFields("eventName")}
-        minLength={3}
+      <Title description={t("description")}>{t("title")}</Title>
+      <TextField
+        {...register("name", {
+          required: t("field.name.error.required"),
+          minLength: { value: 3, message: t("field.name.error.minLength", { min: 3 }) },
+        })}
+        error={errors.name?.message}
+        label={t("field.name.title")}
+        description={t("field.name.description")}
+        aria-label={t("field.name.title")}
         required
         data-testid="name"
+        autoFocus
       />
-      <Input
-        value={formData.description}
-        onChange={e => updateFormData("description", e.target.value)}
-        label={tFields("eventDescription")}
-        aria-label={tFields("eventDescription")}
+      <Textarea
+        {...register("description")}
+        error={errors.description?.message}
+        label={t("field.description.title")}
+        description={t("field.description.description")}
+        aria-label={t("field.description.title")}
         data-testid="description"
+        resize="vertical"
+        maxRows={10}
       />
-      <div className={styles.timeContainer}>
-        <Input
-          value={formatDateForInput(formData.startDate)}
-          onChange={makeDateTimeHandler("startDate", "date", formData, updateFormData)}
-          label={tFields("startDate")}
-          aria-label={tFields("startDate")}
-          type="date"
-          icon={<Calendar />}
-          required
-          data-testid="startDate"
-          fill
-        />
-        <Input
-          value={formatTimeForInput(formData.startDate)}
-          onChange={makeDateTimeHandler("startDate", "time", formData, updateFormData)}
-          label={tFields("startTime")}
-          aria-label={tFields("startTime")}
-          type="time"
-          icon={<Calendar />}
-          required
-        />
-        <Input
-          value={formatDateForInput(formData.endDate)}
-          onChange={makeDateTimeHandler("endDate", "date", formData, updateFormData)}
-          label={tFields("endDate")}
-          aria-label={tFields("endDate")}
-          min={startDateValue}
-          type="date"
-          icon={<Calendar />}
-          required
-          data-testid="endDate"
-          fill
-        />
-        <Input
-          value={formatTimeForInput(formData.endDate)}
-          onChange={makeDateTimeHandler("endDate", "time", formData, updateFormData)}
-          label={tFields("endTime")}
-          aria-label={tFields("endTime")}
-          type="time"
-          icon={<Calendar />}
-          required
-        />
-      </div>
+      <Controller
+        name="startDate"
+        control={control}
+        rules={{ required: t("field.dateRange.error.required") }}
+        render={({ fieldState }) => (
+          <DatePicker
+            label={t("field.dateRange.title")}
+            description={t("field.dateRange.description")}
+            data-color="accent"
+            value={{ startDate, endDate }}
+            onChange={handleDateRangeChange}
+            error={fieldState.error?.message}
+            required
+          />
+        )}
+      />
+      <Controller
+        name="endDate"
+        control={control}
+        rules={{
+          required: t("field.dateRange.error.required"),
+          validate: v => {
+            if (startDate?.toDateString() === v?.toDateString())
+              return startDate < v || t("field.timeRange.error.timeOrder");
+            return true;
+          },
+        }}
+        render={({ fieldState }) => (
+          <EventTimeField
+            value={{
+              startTime: formatTimeForInput(startDate),
+              endTime: formatTimeForInput(endDate),
+            }}
+            onChange={handleTimeChange}
+            error={fieldState.error?.message}
+          />
+        )}
+      />
     </>
   );
 };

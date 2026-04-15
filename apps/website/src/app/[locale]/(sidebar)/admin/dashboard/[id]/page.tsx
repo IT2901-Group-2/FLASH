@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 import { ReviewStep } from "@/components/EventDialogs/Steps";
 import { useRef } from "react";
 import { useTranslations } from "next-intl";
-import { getAdminDashboardEventsRoute } from "@/lib/routes";
 
 const Page = () => {
   const qrCodeRef = useRef<HTMLDialogElement>(null);
@@ -18,13 +17,13 @@ const Page = () => {
 
   const { id, locale } = useParams<{ id: string; locale: string }>();
   const { data: joinCode } = useEventCodeQuery(id, "moderator");
-  const { data, status } = useEventsQuery({ id: [id?.toString() || ""] });
-  if (data === undefined) return;
+  const { data = [], status } = useEventsQuery({ id: [id?.toString() || ""] });
   const eventData = data[0];
+  if (!eventData) return;
 
   return (
     <>
-      <Dialog ref={qrCodeRef} closedby="any">
+      <Dialog ref={qrCodeRef} closedby="any" style={{ overflowY: "scroll" }}>
         <ReviewStep result={eventData} status={status} />
         <Button
           variant="secondary"
@@ -40,7 +39,7 @@ const Page = () => {
         <div className={styles.headerItem}>
           <ArrowLeft
             className={styles.back}
-            onClick={() => navigation.push(getAdminDashboardEventsRoute())}
+            onClick={() => navigation.push("/admin/dashboard")}
           />
           <Title description={eventData?.description}>{eventData?.name}</Title>
         </div>

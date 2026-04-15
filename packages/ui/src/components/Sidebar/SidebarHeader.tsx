@@ -10,12 +10,15 @@ export interface SidebarHeaderProps extends HTMLAttributes<HTMLElement> {
 /**
  * The header component for the sidebar
  */
-export const SidebarHeader = ({ logo, ...rest }: SidebarHeaderProps) => {
+export const SidebarHeader = ({ logo, children, ...rest }: SidebarHeaderProps) => {
   const { showToggleButton } = useSidebar();
 
   return (
     <div className={styles.sidebarHeader} {...rest}>
-      <div className={styles.logo}>{logo && cloneElement(logo)}</div>
+      <span className={styles.headerLogoContainer}>
+        <div className={styles.logo}>{logo && cloneElement(logo)}</div>
+        <div className={styles.headerText}>{children}</div>
+      </span>
       {showToggleButton && <SidebarTrigger />}
     </div>
   );

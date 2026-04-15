@@ -8,6 +8,7 @@ import {
   DeleteImageInput,
   UpdateImageInput,
 } from "@/hooks/useImages";
+import { mockQueryResult } from "./useQuery.mock";
 
 // ---------------------------------------------------------------------------
 // Default return values
@@ -96,33 +97,18 @@ export const defaultDeleteImageMutationReturn = {
   reset: vi.fn(),
 } as unknown as UseMutationResult<void, Error, DeleteImageInput>;
 
+/**
+ * Idle default for `useUploadedImageCountQuery`.
+ */
+export const defaultUploadedImageCountQueryReturn = {
+  data: { count: 0 },
+  isLoading: false,
+  isError: false,
+} as UseQueryResult<{ count: number }>;
+
 // ---------------------------------------------------------------------------
 // State builders
 // ---------------------------------------------------------------------------
-
-/**
- * Creates a mock `UseQueryResult` for an images query, suitable for use in tests.
- * Automatically sets `data` and `error` to `undefined`/`null` based on the provided state flags.
- *
- * @example
- * mockImagesQuery([makeImage(), makeImage()]); // { data: [<Image1>, <Image2>], isLoading: false, isError: false, error: null }
- * mockImagesQuery([], { isLoading: true }); // { data: undefined, isLoading: true, isError: false, error: null }
- * mockImagesQuery([], { isError: true }); // { data: undefined, isLoading: false, isError: true, error: Error("Failed to load Images") }
- * mockImagesQuery([], { isError: true, error: new Error("custom") }); // { data: undefined, isLoading: false, isError: true, error: Error("custom") }
- */
-export const mockImagesQueryResult = ({
-  data,
-  isLoading = false,
-  isError = false,
-  error = new Error("Failed to load Images"),
-}: Partial<UseQueryResult<Image[]>>): UseQueryResult<Image[]> => {
-  return {
-    data: isLoading || isError ? undefined : data,
-    error: isLoading || !isError ? null : error,
-    isLoading,
-    isError,
-  } as UseQueryResult<Image[]>;
-};
 
 /**
  * Successful `useImagesQuery` result with the given images.
@@ -132,7 +118,7 @@ export const mockImagesQueryResult = ({
  * });
  */
 export const mockImagesLoaded = (images: Image[]): UseQueryResult<Image[]> =>
-  mockImagesQueryResult({ data: images });
+  mockQueryResult({ data: images });
 
 /**
  * Loading `useImagesQuery` result.
@@ -142,7 +128,7 @@ export const mockImagesLoaded = (images: Image[]): UseQueryResult<Image[]> =>
  * vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoading());
  */
 export const mockImagesLoading = (): UseQueryResult<Image[]> =>
-  mockImagesQueryResult({ isLoading: true });
+  mockQueryResult({ isLoading: true });
 
 /**
  * Failed `useImagesQuery` result.
@@ -152,7 +138,7 @@ export const mockImagesLoading = (): UseQueryResult<Image[]> =>
  * vi.mocked(useImagesQuery).mockReturnValue(mockImagesError(new Error("403 Forbidden")));
  */
 export const mockImagesError = (error?: Error): UseQueryResult<Image[]> =>
-  mockImagesQueryResult({ error, isError: true });
+  mockQueryResult({ error, isError: true });
 
 /**
  * Creates `count` pending images for the same event. Covers the standard moderation `beforeEach`.
