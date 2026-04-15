@@ -29,12 +29,13 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
   const { resolvedTheme, toggleTheme } = useTheme();
 
   const { data: rememberedEvents = [] } = useJoinedEvents();
-  const { data: events } = useEventsQuery(
+  const { data: eventData } = useEventsQuery(
     {
       id: rememberedEvents.map(e => e.eventId),
     },
     rememberedEvents.length > 0
   );
+  const events = rememberedEvents.length > 0 ? eventData : [];
 
   const handleRedirect = (href: string) => {
     if (isMobile) setOpen(false);
