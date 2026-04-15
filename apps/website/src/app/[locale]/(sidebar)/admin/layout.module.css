@@ -18,7 +18,7 @@
   padding: 2rem;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 768px) {
   .main {
     padding-top: 4.5rem;
   }
