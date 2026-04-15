@@ -1,18 +1,3 @@
-.layout {
-  display: flex;
-  position: relative;
-  height: 100dvh;
-  overflow-y: scroll;
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  min-width: 0;
-  overflow: hidden;
-}
-
 .header {
   height: 4.15rem;
   border-bottom: 0.1rem solid var(--color-border-base);
@@ -33,7 +18,7 @@
   padding: 2rem;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 768px) {
   .main {
     padding-top: 4.5rem;
   }
