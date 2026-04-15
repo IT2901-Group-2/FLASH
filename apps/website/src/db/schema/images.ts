@@ -58,8 +58,6 @@ export const updateImagesSchema = z.object({
 export const uploadedImageCountSchema = z.object({ count: z.number().nonnegative() });
 
 export type Image = typeof imageTable.$inferSelect;
-export type GetImagesParams = z.infer<typeof getImagesParamsSchema> & {
-  visibleToUserId?: string;
-};
+export type GetImagesParams = z.infer<typeof getImagesParamsSchema>;
 export type UpdateImage = z.infer<typeof updateImageSchema>;
 export type UpdateImages = z.infer<typeof updateImagesSchema>;

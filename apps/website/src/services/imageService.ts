@@ -11,6 +11,8 @@ import { eventTable, GetImagesParams, Image, imageTable, UpdateImage } from "@/d
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
 import AdmZip from "adm-zip";
+import { verifyAccessToken } from "@/lib/utils/auth";
+import { eventService } from "./eventService";
 
 const uid = new ShortUniqueId();
 
@@ -73,26 +75,30 @@ export class ImageService {
    */
   getImages(
     eventId: string,
-    { id, approval, visibleToUserId }: GetImagesParams = {}
+    { id, approval }: GetImagesParams = {}
   ): AsyncResult<Image[], Error> {
-    return Result.try(() =>
-      this.dbService.db
-        .select()
-        .from(imageTable)
-        .where(
-          and(
-            eq(imageTable.eventId, eventId),
-            id !== undefined ? inArray(imageTable.id, id) : undefined,
-            approval !== undefined && approval !== "pending"
-              ? eq(imageTable.isApproved, approval === "approved")
-              : undefined,
-            approval === "pending" ? isNull(imageTable.isApproved) : undefined,
-            visibleToUserId !== undefined
-              ? eq(imageTable.userId, visibleToUserId)
-              : undefined
+    return Result.genCatching(this, async function* () {
+      const visibleToUserId = yield* this.getVisibleToUserId(eventId);
+
+      return yield* Result.try(() =>
+        this.dbService.db
+          .select()
+          .from(imageTable)
+          .where(
+            and(
+              eq(imageTable.eventId, eventId),
+              id !== undefined ? inArray(imageTable.id, id) : undefined,
+              approval !== undefined && approval !== "pending"
+                ? eq(imageTable.isApproved, approval === "approved")
+                : undefined,
+              approval === "pending" ? isNull(imageTable.isApproved) : undefined,
+              visibleToUserId !== undefined
+                ? eq(imageTable.userId, visibleToUserId)
+                : undefined
+            )
           )
-        )
-    );
+      );
+    });
   }
 
   /**
@@ -105,31 +111,34 @@ export class ImageService {
    */
   downloadImage(
     eventId: string,
-    imageId: string,
-    { visibleToUserId }: { visibleToUserId?: string } = {}
+    imageId: string
   ): AsyncResult<Buffer<ArrayBufferLike>, Error> {
-    return Result.try(() =>
-      this.dbService.db
-        .select()
-        .from(imageTable)
-        .where(
-          and(
-            eq(imageTable.eventId, eventId),
-            eq(imageTable.id, imageId),
-            visibleToUserId !== undefined
-              ? eq(imageTable.userId, visibleToUserId)
-              : undefined
+    return Result.genCatching(this, async function* () {
+      const visibleToUserId = yield* this.getVisibleToUserId(eventId);
+
+      const rows = yield* Result.try(() =>
+        this.dbService.db
+          .select()
+          .from(imageTable)
+          .where(
+            and(
+              eq(imageTable.eventId, eventId),
+              eq(imageTable.id, imageId),
+              visibleToUserId !== undefined
+                ? eq(imageTable.userId, visibleToUserId)
+                : undefined
+            )
           )
-        )
-        .limit(1)
-    )
-      .map(rows =>
-        getFirstRow(
-          rows,
-          `Image with id ${imageId} does not exist on event with id ${eventId}`
-        )
-      )
-      .map(() => this.storage.read(`${imageId}.webp`));
+          .limit(1)
+      );
+
+      yield* getFirstRow(
+        rows,
+        `Image with id ${imageId} does not exist on event with id ${eventId}`
+      );
+
+      return yield* this.storage.read(`${imageId}.webp`);
+    });
   }
 
   /**
@@ -401,6 +410,30 @@ export class ImageService {
       );
 
       return yield* this.getUploadedImageCountByUser(eventId, userId);
+    });
+  }
+  /**
+   * Returns the userId to filter images by based on whether the event's uploads
+   * are private and whether the requesting user has elevated privileges.
+   * Returns `undefined` if all images are visible (i.e. public or privileged user).
+   */
+
+  private getVisibleToUserId(eventId: string): AsyncResult<string | undefined, Error> {
+    return Result.genCatching(this, async function* () {
+      const cookieResult = await getEventCookie(eventId, JWT_SECRET).getOrNull();
+      if (!cookieResult) return undefined;
+
+      const { userId, isModerator } = cookieResult;
+      const isAdmin = await verifyAccessToken()
+        .then(() => true)
+        .catch(() => false);
+      const isPrivileged = isAdmin || isModerator;
+
+      const events = yield* eventService.getEvents({ id: [eventId] });
+      const event = events[0];
+      if (!event) return undefined;
+
+      return event.uploadsArePrivate && !isPrivileged ? userId : undefined;
     });
   }
 }
