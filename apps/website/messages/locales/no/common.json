@@ -62,5 +62,19 @@
   "slideshow": {
     "viewProgress": "{index} av {total}",
     "noApproved": "Ingen godkjente bilder"
+  },
+  "uploads": {
+    "remaining": {
+      "short": "{count, plural, one {# opplasting} other {# opplastinger}} gjenstår",
+      "long": "Du kan laste opp {count, plural, one {# bilde} other {# bilder}}"
+    },
+    "none": {
+      "short": "Opplastingsgrensen er nådd",
+      "long": "Du har ingen opplastinger igjen"
+    },
+    "unlimited": {
+      "short": "Ubegrenset opplasting",
+      "long": "Du kan laste opp ubegrenset med bilder"
+    }
   }
 }
