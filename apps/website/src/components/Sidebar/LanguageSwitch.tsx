@@ -5,7 +5,7 @@ export default function LanguageSwitch() {
   const { locales, currentLocale } = useLanguage();
 
   if (locales.length !== 2)
-    throw new Error(`
+    throw new RangeError(`
       LanguageSwitch: Wrong number of locales. This component suports exactly 2 locales. If the number is more or less, refactor this component.
       
       Current number of locales: ${locales.length}`);
