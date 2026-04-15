@@ -29,6 +29,10 @@ export type BatchUpdateImageInput = {
   isApproved: boolean;
 };
 
+export type DownloadImagesInput = {
+  eventId: string;
+};
+
 /**
  * Serializes `GetImages` filters into a URL query string.
  * Returns an empty string when no params are provided.
@@ -171,6 +175,17 @@ export function useDeleteImageMutation() {
       makeRequest(getImageSchema, `/api/events/${eventId}/images/${imageId}`, "DELETE"),
     onSuccess: async (_data, { eventId }) => {
       await queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) });
+    },
+  });
+}
+
+/**
+ * Downloads all images for the given event as a zip file.
+ */
+export function useDownloadImagesMutation() {
+  return useMutation({
+    mutationFn: async ({ eventId }: DownloadImagesInput) => {
+      window.location.href = `/api/events/${eventId}/images/download`;
     },
   });
 }
