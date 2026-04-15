@@ -59,7 +59,6 @@
 
 .toggleGroup {
   color: inherit;
-  /* width: max(100%, 7.5rem); */
 
   border-radius: var(--radius-16);
   background-color: var(--color-bg);
