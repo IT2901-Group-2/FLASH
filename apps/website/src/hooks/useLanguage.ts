@@ -6,7 +6,14 @@ import { routing } from "@/i18n/routing";
 
 type Locale = (typeof routing.locales)[number];
 
-export function useLanguage() {
+export interface UseLanguageReturn {
+  locales: readonly string[];
+  currentLocale: string;
+  nextLocale: string | undefined;
+  switchLocale: () => void;
+}
+
+export const useLanguage = (): UseLanguageReturn => {
   const [isPending, startTransition] = useTransition();
   const locale = useLocale();
   const pathname = usePathname();
@@ -36,4 +43,4 @@ export function useLanguage() {
     nextLocale,
     switchLocale,
   };
-}
+};
