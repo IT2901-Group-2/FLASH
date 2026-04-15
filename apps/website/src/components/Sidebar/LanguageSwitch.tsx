@@ -4,10 +4,11 @@ import styles from "./LanguageSwitch.module.css";
 export default function LanguageSwitch() {
   const { locales, currentLocale } = useLanguage();
 
-  if (locales.length > 2)
-    throw new Error(
-      "LanguageSwitch: This component does not suport more than 2 languages. If more have been added, refactor this component"
-    );
+  if (locales.length !== 2)
+    throw new Error(`
+      LanguageSwitch: Wrong number of locales. This component suports exactly 2 locales. If the number is more or less, refactor this component.
+      
+      Current number of locales: ${locales.length}`);
 
   return (
     <span className={styles.switch} lang-index={locales.indexOf(currentLocale)}>
