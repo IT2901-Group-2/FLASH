@@ -1,6 +1,4 @@
 import { THEME_RESOLVED_COOKIE_KEY } from "@/config/theme";
-import { AuthProvider } from "@/providers/AuthProvider";
-import { JoinedEventsProvider } from "@/providers/JoinedEventsProvider";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import ThemeProvider from "@/providers/ThemeProvider";
 import type { Metadata } from "next";
@@ -8,8 +6,6 @@ import { NextIntlClientProvider } from "next-intl";
 import { Geist, Geist_Mono } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
-import ThemeProvider from "@/providers/ThemeProvider";
-import ReactQueryProvider from "@/providers/ReactQueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,11 +50,7 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <NextIntlClientProvider>
           <ReactQueryProvider>
-            <AuthProvider>
-              <JoinedEventsProvider>
-                <ThemeProvider defaultTheme={"system"}>{children}</ThemeProvider>
-              </JoinedEventsProvider>
-            </AuthProvider>
+            <ThemeProvider defaultTheme={"system"}>{children}</ThemeProvider>
           </ReactQueryProvider>
         </NextIntlClientProvider>
       </body>
