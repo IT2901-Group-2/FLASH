@@ -1,5 +1,8 @@
+import { AsyncResult } from "typescript-result";
 import { JSONObject, parseAsJSON } from "./json";
 import z from "zod";
+import { NextResponse } from "next/server";
+import { errorResponse } from "./error";
 
 export type HTTPMethod = "GET" | "HEAD" | "OPTIONS" | "POST" | "PUT" | "DELETE" | "PATCH";
 
@@ -106,4 +109,8 @@ export async function makeRequest<T>(
   }
 
   return z.parseAsync(schema, await response.json().catch(() => undefined));
+}
+
+export function jsonResponse<T>(result: AsyncResult<T, Error>): Promise<NextResponse> {
+  return result.fold(data => NextResponse.json(data), errorResponse);
 }
