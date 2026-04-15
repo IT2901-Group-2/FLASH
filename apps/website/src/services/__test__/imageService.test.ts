@@ -105,6 +105,10 @@ beforeEach(async () => {
   await dbService.initialize().getOrThrow();
   imageService = new ImageService(dbService, storage);
 
+  mockedGetEventCookie.mockImplementation(() =>
+    Result.fromAsync(async () => Result.error(new Error("Not authenticated")))
+  );
+
   await dbService.db.insert(eventTable).values(mockEvents);
   await dbService.db.insert(userTable).values(mockUsers);
   await dbService.db.insert(imageTable).values(mockImages);
