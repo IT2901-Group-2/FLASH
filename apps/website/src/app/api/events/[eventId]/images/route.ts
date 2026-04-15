@@ -16,39 +16,9 @@ export async function GET(
 ): Promise<NextResponse> {
   const { eventId } = await params;
 
-  const cookie = await getEventCookie(eventId, JWT_SECRET);
-  if (!cookie.ok) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const { userId, isModerator } = cookie.value;
-  const isAdmin = await verifyAccessToken()
-    .then(() => true)
-    .catch(() => false);
-  const isPrivileged = isAdmin || isModerator;
-
-  return eventService
-    .getEvents({ id: [eventId] })
-    .map(events => {
-      const event = events[0];
-      if (!event) throw new HTTPError("Event not found", 404);
-      return event;
-    })
-    .fold(
-      async event =>
-        parseSearchParams(req.nextUrl.searchParams, getImagesParamsSchema).fold(
-          async queryParams => {
-            const visibleToUserId =
-              event.uploadsArePrivate && !isPrivileged ? userId : undefined;
-
-            return imageService
-              .getImages(eventId, { ...queryParams, visibleToUserId })
-              .fold(images => NextResponse.json(images), errorResponse);
-          },
-          errorResponse
-        ),
-      errorResponse
-    );
+  return parseSearchParams(req.nextUrl.searchParams, getImagesParamsSchema)
+    .map(filters => imageService.getImages(eventId, filters))
+    .fold(images => NextResponse.json(images), errorResponse);
 }
 
 export async function PATCH(
