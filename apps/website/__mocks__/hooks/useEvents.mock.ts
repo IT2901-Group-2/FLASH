@@ -44,6 +44,9 @@ export const defaultEventStatsQueryReturn = {
 /**
  * Idle default for `useJoinedEventsQuery`. Used internally by `eventHooksMock()`.
  * In tests, prefer `mockJoinedEventsLoaded` / `mockJoinedEventsLoading` / `mockJoinedEventsError`.
+ *
+ * @example
+ * vi.mocked(useJoinedEvents).mockReturnValue({ ...defaultJoinedEventsQueryReturn, data: [makeJoinedEvent()] });
  */
 export const defaultJoinedEventsQueryReturn = {
   data: undefined as EventStats | undefined,
