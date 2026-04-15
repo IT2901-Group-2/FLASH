@@ -1,9 +1,9 @@
-import { joinedEventsMock, renderWithQuery } from "@test-config";
+import { eventHooksMock, renderWithQuery } from "@test-config";
 import { describe, expect, test, vi } from "vitest";
 import { screen } from "@testing-library/react";
 import Page from "./page";
 
-vi.mock("@/providers/JoinedEventsContext", () => joinedEventsMock());
+vi.mock("@/hooks/useEvents", () => eventHooksMock());
 
 vi.mock("@/components/Logo/Logo", () => ({
   default: () => <div data-testid="logo">Logo</div>,
