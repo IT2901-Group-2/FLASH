@@ -7,9 +7,10 @@
 }
 
 .filterContainer {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+  gap: 0 1rem;
+
   align-items: end;
 
   min-width: min-content;

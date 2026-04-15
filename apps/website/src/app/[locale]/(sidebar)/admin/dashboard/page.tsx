@@ -16,16 +16,29 @@ const Page = () => {
   const navigation = useRouter();
 
   const [searchName, setSearchName] = useState<GetEventsParams["name"]>("");
+  const [status, setStatus] = useState<GetEventsParams["status"]>(undefined);
   const [sortBy, setSortBy] = useState<GetEventsParams["sortBy"]>("name");
   const [sortOrder, setSortOrder] = useState<GetEventsParams["order"]>("descending");
+  const [archived, setArchived] = useState<GetEventsParams["archived"]>(false);
 
   const { data, isLoading } = useEventsQuery({
     name: searchName,
-    sortBy,
     order: sortOrder,
+    sortBy,
+    status,
+    archived,
   });
 
   const dialogRef = useRef<HTMLDialogElement>(null);
+
+  const handleStatus = (status: GetEventsParams["status"] | "archived") => {
+    if (status === "archived") {
+      setArchived(true);
+      return;
+    }
+    setArchived(false);
+    setStatus(prev => (prev === status ? undefined : status));
+  };
 
   return (
     <>
@@ -49,6 +62,19 @@ const Page = () => {
           onChange={e => setSearchName(e.target.value)}
         />
         <Select
+          label="Status"
+          value={status ?? ""}
+          onChange={e =>
+            handleStatus(e.target.value as GetEventsParams["status"] | "archived")
+          }
+        >
+          <Select.Option value="" label="All" />
+          <Select.Option value="upcoming" label="Upcoming" />
+          <Select.Option value="active" label="Active" />
+          <Select.Option value="finished" label="Finished" />
+          <Select.Option value="archived" label="Archived" />
+        </Select>
+        <Select
           label="Sort"
           value={sortBy}
           onChange={e => setSortBy(e.target.value as GetEventsParams["sortBy"])}
@@ -58,6 +84,7 @@ const Page = () => {
           <Select.Option value="endDate" label="End Date" />
           <Select.Option value="createdAt" label="Created At" />
         </Select>
+
         <Button
           variant="icon"
           onClick={() =>
