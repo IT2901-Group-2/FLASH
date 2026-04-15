@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { GetEventsParams } from "@/db";
 
 const Page = () => {
-  const t = useTranslations("pages.adminEvents");
+  const t = useTranslations("pages.dashboard");
   const c = useTranslations("common.actions");
   const navigation = useRouter();
 
@@ -57,32 +57,32 @@ const Page = () => {
       </div>
       <div className={styles.filterContainer}>
         <TextField
-          label="Search"
+          label={t("filter.search.title")}
           value={searchName}
           onChange={e => setSearchName(e.target.value)}
         />
         <Select
-          label="Status"
+          label={t("filter.status.title")}
           value={status ?? ""}
           onChange={e =>
             handleStatus(e.target.value as GetEventsParams["status"] | "archived")
           }
         >
-          <Select.Option value="" label="All" />
-          <Select.Option value="upcoming" label="Upcoming" />
-          <Select.Option value="active" label="Active" />
-          <Select.Option value="finished" label="Finished" />
-          <Select.Option value="archived" label="Archived" />
+          <Select.Option value="" label={t("filter.status.options.all")} />
+          <Select.Option value="upcoming" label={t("filter.status.options.upcoming")} />
+          <Select.Option value="active" label={t("filter.status.options.active")} />
+          <Select.Option value="finished" label={t("filter.status.options.finished")} />
+          <Select.Option value="archived" label={t("filter.status.options.archived")} />
         </Select>
         <Select
-          label="Sort"
+          label={t("filter.sort.title")}
           value={sortBy}
           onChange={e => setSortBy(e.target.value as GetEventsParams["sortBy"])}
         >
-          <Select.Option value="name" label="Name" />
-          <Select.Option value="startDate" label="Start Date" />
-          <Select.Option value="endDate" label="End Date" />
-          <Select.Option value="createdAt" label="Created At" />
+          <Select.Option value="name" label={t("filter.sort.options.name")} />
+          <Select.Option value="startDate" label={t("filter.sort.options.startDate")} />
+          <Select.Option value="endDate" label={t("filter.sort.options.endDate")} />
+          <Select.Option value="createdAt" label={t("filter.sort.options.createdAt")} />
         </Select>
 
         <Button
