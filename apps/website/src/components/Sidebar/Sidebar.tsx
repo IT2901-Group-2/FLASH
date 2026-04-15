@@ -8,28 +8,27 @@ import { useTheme } from "@/hooks/useTheme";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { useRouter } from "next/navigation";
 import Logo from "../Logo/Logo";
-import { useJoinedEvents } from "@/providers/JoinedEventsContext";
-import { useEventsQuery } from "@/hooks/useEvents";
+import { useEventsQuery, useJoinedEvents } from "@/hooks/useEvents";
 import LanguageSwitch from "./LanguageSwitch";
 import { useLanguage } from "@/hooks/useLanguage";
 import useIsMobile from "@/hooks/useIsMobile";
-import { useAuth } from "@/providers/AuthContext";
 import ModTag from "./ModTag";
 import { EventCookie } from "@/db";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) => {
   const t = useTranslations("common.navigation");
 
   const { setOpen } = useSidebar();
 
-  const { isAdmin } = useAuth();
+  const { data: isAdmin } = useAuth();
   const mounted = useIsMounted();
   const isMobile = useIsMobile();
   const navigation = useRouter();
   const { switchLocale } = useLanguage();
   const { resolvedTheme, toggleTheme } = useTheme();
 
-  const rememberedEvents = useJoinedEvents();
+  const { data: rememberedEvents = [] } = useJoinedEvents();
   const { data: events } = useEventsQuery(
     {
       id: rememberedEvents.map(e => e.eventId),
