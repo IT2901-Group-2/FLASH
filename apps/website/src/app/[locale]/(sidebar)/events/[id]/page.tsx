@@ -63,10 +63,10 @@ export default function Page() {
 
   const uploadDescription =
     typeof uploadsRemaining !== "number"
-      ? tUpload("descriptionUnlimited")
+      ? tCommon("uploads.unlimited.long")
       : uploadsRemaining === 0
-        ? tUpload("descriptionNone")
-        : tUpload("descriptionRemaining", { count: uploadsRemaining });
+        ? tCommon("uploads.none.long")
+        : tCommon("uploads.remaining.long", { count: uploadsRemaining });
 
   const { openFilePicker, FileInput } = useFileUpload({
     multiple: false,

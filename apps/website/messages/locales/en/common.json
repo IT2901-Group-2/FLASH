@@ -62,5 +62,19 @@
   "slideshow": {
     "viewProgress": "{index} of {total}",
     "noApproved": "No approved images"
+  },
+  "uploads": {
+    "remaining": {
+      "short": "{count, plural, one {# upload} other {# uploads}} remaining",
+      "long": "You can upload {count, plural, one {# photo} other {# photos}}"
+    },
+    "none": {
+      "short": "Upload limit reached",
+      "long": "You have no uploads remaining"
+    },
+    "unlimited": {
+      "short": "Unlimited uploads",
+      "long": "You can upload unlimited photos"
+    }
   }
 }
