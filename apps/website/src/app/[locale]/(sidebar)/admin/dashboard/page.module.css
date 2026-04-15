@@ -6,6 +6,19 @@
   position: relative;
 }
 
+.filterContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: end;
+
+  min-width: min-content;
+
+  > button {
+    margin-bottom: 0.575rem;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .createButton {
     position: fixed;
