@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+
+  padding: 0.25rem 0.5rem;
+
+  border-radius: var(--radius-full);
+  background-color: var(--color-accent-base);
+
+  font-size: var(--font-size-small);
+}

@@ -37,13 +37,12 @@ const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
 
 const RememberedEvents = () => {
   const t = useTranslations("guest.event");
-  const { data: joinedEvents = [] } = useJoinedEvents();
-  const eventIDs = joinedEvents.map(e => e.eventId);
+  const { data: rememberedEvents = [] } = useJoinedEvents();
   const events = useEventsQuery(
     {
-      id: eventIDs,
+      id: rememberedEvents.map(e => e.eventId),
     },
-    eventIDs.length !== 0
+    rememberedEvents.length > 0
   ).data;
 
   if (!events) return;

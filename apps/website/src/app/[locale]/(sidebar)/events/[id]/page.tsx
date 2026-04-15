@@ -1,21 +1,20 @@
 "use client";
-import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
-import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, ImageMinus, QrCode, Upload, X } from "lucide-react";
+import styles from "./UploadImage.module.css";
+import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
+import { useTranslations } from "next-intl";
+import { useParams, useRouter } from "next/navigation";
+import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+import { useEventAuth } from "@/providers/EventAuthContext";
+import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 import {
   useImagesQuery,
   useUploadedImageCountQuery,
   useUploadImageMutation,
 } from "@/hooks/useImages";
-import { getAdminDashboardEventRoute, getModerateEventRoute, routes } from "@/lib/routes";
-import { useEventAuth } from "@/providers/EventAuthContext";
-import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
-import { ChevronLeft, ChevronRight, ImageMinus, QrCode, Upload, X } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import styles from "./UploadImage.module.css";
 
 export default function Page() {
   const router = useRouter();
@@ -26,7 +25,6 @@ export default function Page() {
 
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
-  const locale = useLocale();
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );
@@ -69,10 +67,6 @@ export default function Page() {
       : uploadsRemaining === 0
         ? tCommon("uploads.none.long")
         : tCommon("uploads.remaining.long", { count: uploadsRemaining });
-
-  const backHref = eventAuth.isModerator
-    ? getAdminDashboardEventRoute(eventId)
-    : routes.root;
 
   const { openFilePicker, FileInput } = useFileUpload({
     multiple: false,
@@ -276,7 +270,6 @@ export default function Page() {
           title={eventName}
           username={eventAuth?.nickname ?? ""}
           description={uploadDescription}
-          backHref={backHref}
         >
           <Button
             icon={<QrCode />}
@@ -292,7 +285,7 @@ export default function Page() {
               iconPosition="right"
               data-color="brand-purple"
               variant="primary"
-              onClick={() => router.push(getModerateEventRoute(locale, eventId))}
+              onClick={() => router.push(`./${eventId}/moderate`)}
             >
               {tCommon("actions.moderate")}
             </Button>

@@ -27,14 +27,14 @@
     "admin": "Admin"
   },
   "navigation": {
-    "main": "Main",
-    "config": "Config",
-    "desktop": "Desktop",
+    "admin": "Admin",
     "events": "Events",
-    "settings": "Settings",
-    "storage": "Storage",
+    "options": "Options",
+    "dashboard": "Dashboard",
+    "language": "Language",
     "darkMode": "Dark mode",
-    "lightMode": "Light mode"
+    "lightMode": "Light mode",
+    "back": "Back"
   },
   "fields": {
     "password": "Password",
