@@ -5,10 +5,6 @@ import { parseRequestBody, parseSearchParams } from "@/lib/utils/validation";
 import { getImagesParamsSchema, updateImagesSchema } from "@/db";
 import { errorResponse, HTTPError } from "@/lib/utils/error";
 import { withAuth } from "@/lib/utils/withAuth";
-import { verifyAccessToken } from "@/lib/utils/auth";
-import { getEventCookie } from "@/lib/utils/eventCookie";
-import { JWT_SECRET } from "@/config";
-import { eventService } from "@/services/eventService";
 
 export async function GET(
   req: NextRequest,
