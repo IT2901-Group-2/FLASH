@@ -1,8 +1,7 @@
 "use client";
 
 import { Event } from "@/db";
-import { useEventsQuery } from "@/hooks/useEvents";
-import { useJoinedEvents } from "@/providers/JoinedEventsContext";
+import { useEventsQuery, useJoinedEvents } from "@/hooks/useEvents";
 import { Card, Title } from "@flash/ui";
 import { Calendar, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -27,7 +26,7 @@ const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
 
 const RememberedEvents = () => {
   const t = useTranslations("guest.event");
-  const rememberedEvents = useJoinedEvents();
+  const { data: rememberedEvents = [] } = useJoinedEvents();
   const events = useEventsQuery(
     {
       id: rememberedEvents.map(e => e.eventId),
