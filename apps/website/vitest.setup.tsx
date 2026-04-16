@@ -23,6 +23,7 @@ import {
   resetImageCounter,
   resetMockRouter,
   resetMockCookieStore,
+  mockCookieStore,
 } from "@test-config";
 import {
   redirect,
@@ -77,6 +78,14 @@ vi.mock("next/link", () => ({ default: Link }));
  * own package.
  */
 vi.mock("@flash/ui", () => flashUiMock());
+
+/**
+ * Mocks the cookieStore global with a simple object of vi.fn() methods.
+ */
+Object.defineProperty(global, "cookieStore", {
+  value: mockCookieStore,
+  writable: true,
+});
 
 /**
  * Factory contains ONLY vi.fn() calls - no reference to any imported variable.
