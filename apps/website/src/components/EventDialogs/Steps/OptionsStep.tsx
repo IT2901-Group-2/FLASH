@@ -1,64 +1,95 @@
 import { useEffect, useState } from "react";
-import { StepProps } from "./types";
-import { Title, DropdownControl, Input, Switch } from "@flash/ui";
+import { Title, DropdownControl, Switch, TextField } from "@flash/ui";
 import styles from "./Steps.module.css";
 import { useTranslations } from "next-intl";
+import { Controller, useFormContext, useFormState } from "react-hook-form";
+import { CreateEvent } from "@/db";
 
-export const OptionsStep = ({ formData, updateFormData }: StepProps) => {
-  const tStep = useTranslations("admin.dashboard.event.create.options");
-  const tFields = useTranslations("common.fields");
+export const OptionsStep = () => {
+  const t = useTranslations("admin.dashboard.event.options");
 
-  const [limitMode, setLimitMode] = useState<string>(
-    formData.uploadLimit === undefined ? "unlimited" : "limited"
+  const { register, control, watch, setValue } = useFormContext<CreateEvent>();
+  const { errors } = useFormState({ control });
+
+  const uploadLimit = watch("uploadLimit");
+  const [limitMode, setLimitMode] = useState<"limited" | "unlimited">(
+    uploadLimit === null ? "unlimited" : "limited"
   );
 
   useEffect(() => {
-    if (limitMode === "unlimited") updateFormData("uploadLimit", undefined);
-  }, [limitMode, updateFormData]);
+    if (limitMode === "unlimited") setValue("uploadLimit", null);
+  }, [limitMode, setValue]);
 
   return (
     <>
-      <Title description={tStep("description")}>{tStep("title")}</Title>
-      <DropdownControl value={limitMode} onChange={setLimitMode} dropdownBorder>
+      <Title description={t("description")}>{t("title")}</Title>
+      <DropdownControl
+        label={t("fields.uploadLimit.title")}
+        description={t("fields.uploadLimit.description")}
+        value={limitMode}
+        onChange={v => setLimitMode(v as typeof limitMode)}
+        dropdownBorder
+        data-testid="dropdown-control"
+      >
         <DropdownControl.Item
           value="limited"
-          label={tStep("fields.uploadLimit.limited")}
+          label={t("fields.uploadLimit.value.limited")}
           content={
             <div className={styles.maxImageContainer}>
-              <span>{tStep("fields.uploadLimit.label")}</span>
-              <Input
-                aria-label={tFields("maxImages")}
+              <span>{t("fields.uploadLimit.value.maxUploads")}</span>
+              <TextField
+                label
+                hideLabel
+                {...register("uploadLimit", {
+                  valueAsNumber: true,
+                  min: { value: 1, message: t("fields.uploadLimit.error.min") },
+                  required:
+                    limitMode === "limited"
+                      ? t("fields.uploadLimit.error.required")
+                      : false,
+                })}
+                error={errors.uploadLimit?.message}
                 type="number"
-                min={1}
-                value={formData.uploadLimit ?? undefined}
-                onChange={e =>
-                  updateFormData("uploadLimit", Math.max(1, Number(e.target.value)))
-                }
-                required={limitMode == "limited"}
+                required={limitMode === "limited"}
               />
             </div>
           }
         />
         <DropdownControl.Item
           value="unlimited"
-          label={tStep("fields.uploadLimit.unlimited")}
+          label={t("fields.uploadLimit.value.unlimited")}
         />
       </DropdownControl>
-      {/* // TODO: When database is updated, uncomment these */}
-      <Switch
-        position="right"
-        // checked={formData.autoApprove}
-        // onChange={(checked: boolean) => updateFormData("autoApprove", checked)}
-      >
-        <b>{tStep("fields.autoApprovePhotos")}</b>
-      </Switch>
-      <Switch
-        position="right"
-        // checked={formData.seeAllPictures}
-        // onChange={(checked: boolean) => updateFormData("seeAllPictures", checked)}
-      >
-        <b>{tStep("fields.guestCanViewAll")}</b>
-      </Switch>
+      <Controller
+        control={control}
+        name="autoApprove"
+        defaultValue={false}
+        render={({ field }) => (
+          <Switch
+            position="right"
+            description={t("fields.autoApprovePhotos.description")}
+            checked={field.value}
+            onChange={e => field.onChange(e.target.checked)}
+          >
+            <b>{t("fields.autoApprovePhotos.title")}</b>
+          </Switch>
+        )}
+      />
+      <Controller
+        control={control}
+        name="uploadsArePrivate"
+        defaultValue={false}
+        render={({ field }) => (
+          <Switch
+            position="right"
+            description={t("fields.guestCanViewAll.description")}
+            checked={field.value}
+            onChange={e => field.onChange(e.target.checked)}
+          >
+            <b>{t("fields.guestCanViewAll.title")}</b>
+          </Switch>
+        )}
+      />{" "}
     </>
   );
 };

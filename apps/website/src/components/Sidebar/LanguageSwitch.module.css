@@ -1,0 +1,40 @@
+.switch {
+  position: relative;
+  width: 4rem;
+  height: 1.5rem;
+  background: transparent;
+  border-radius: var(--radius-full);
+  border: 0.1rem solid var(--color-border-base);
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-full);
+  background-color: var(--color-accent-base);
+
+  [lang-index="0"] & {
+    clip-path: polygon(0 0, 58% 0, 42% 100%, 0 100%);
+  }
+  [lang-index="1"] & {
+    clip-path: polygon(58% 0, 100% 0, 100% 100%, 42% 100%);
+  }
+}
+
+.label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+
+  > span {
+    flex: 1;
+    text-align: center;
+    font-size: var(--font-size-xsmall);
+    font-weight: var(--font-weight-bold);
+  }
+}

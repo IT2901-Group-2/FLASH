@@ -4,7 +4,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/providers/ThemeProvider";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
-import { JoinedEventsProvider } from "@/providers/JoinedEventsProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,9 +39,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <NextIntlClientProvider>
           <ReactQueryProvider>
-            <JoinedEventsProvider>
-              <ThemeProvider defaultTheme="system">{children}</ThemeProvider>
-            </JoinedEventsProvider>
+            <ThemeProvider defaultTheme="system">{children}</ThemeProvider>
           </ReactQueryProvider>
         </NextIntlClientProvider>
       </body>

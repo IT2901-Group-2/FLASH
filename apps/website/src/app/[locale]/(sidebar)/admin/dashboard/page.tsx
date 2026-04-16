@@ -48,7 +48,7 @@ const Page = () => {
 
   return (
     <>
-      <CreateEventCard ref={dialogRef} onClose={() => dialogRef.current?.close()} />
+      <CreateEventCard ref={dialogRef} />
 
       <div className={styles.header}>
         <Title description={t("description")}>{t("title")}</Title>
@@ -67,24 +67,22 @@ const Page = () => {
             <Loader size="3xlarge" />
           </div>
         ) : (
-          <>
-            {events.map(event => (
-              <EventCard
-                key={event.id}
-                data={event}
-                onClick={() => navigation.push(`./events/${event.id}`)}
-              />
-            ))}
-            {hasNextPage ? (
-              <div ref={loadMoreRef} className={styles.loadMoreSentinel} />
-            ) : null}
-            {isFetchingNextPage ? (
-              <div className={styles.loadingContainer} data-testid="loading-more-spinner">
-                <Loader size="large" />
-              </div>
-            ) : null}
-          </>
+          events.map(event => (
+            <EventCard
+              key={event.id}
+              data={event}
+              onClick={() => navigation.push(`./dashboard/${event.id}`)}
+            />
+          ))
         )}
+        {hasNextPage ? (
+          <div ref={loadMoreRef} className={styles.loadMoreSentinel} />
+        ) : null}
+        {isFetchingNextPage ? (
+          <div className={styles.loadingContainer} data-testid="loading-more-spinner">
+            <Loader size="large" />
+          </div>
+        ) : null}
       </div>
     </>
   );

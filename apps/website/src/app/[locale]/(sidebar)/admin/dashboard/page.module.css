@@ -10,7 +10,7 @@
   .createButton {
     position: fixed;
     /* left: 50%; */
-    width: clamp(19rem, calc(100% - 4rem), 100%);
+    width: clamp(19rem, calc(100% - 4rem), 100%) !important;
     bottom: 1rem;
   }
 }

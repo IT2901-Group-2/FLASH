@@ -3,7 +3,7 @@ import { describe, it, beforeEach, expect, vi, afterEach } from "vitest";
 import { DatabaseService } from "../databaseService";
 import { Result } from "typescript-result";
 import { EventService } from "../eventService";
-import { Event, eventCodeTable, eventTable } from "@/db";
+import { Event, eventCodeTable, eventTable, Image, imageTable, userTable } from "@/db";
 import { subDays, addDays, subHours, addHours, setMilliseconds } from "date-fns";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { eq } from "drizzle-orm";
@@ -21,6 +21,21 @@ function getMockedEvent(data: Partial<Event> = {}): Event {
     isArchived: false,
     createdAt: setMilliseconds(new Date(), 0),
     updatedAt: setMilliseconds(new Date(), 0),
+    autoApprove: true,
+    uploadsArePrivate: false,
+    ...data,
+  };
+}
+
+function getMockedImage(data: Partial<Image> = {}): Image {
+  return {
+    id: "id",
+    userId: "user-1",
+    eventId: "event-1",
+    createdAt: NOW,
+    updatedAt: NOW,
+    isApproved: null,
+    previewImage: "",
     ...data,
   };
 }
@@ -79,6 +94,45 @@ const mockModeratorCodes: Record<string, string> = {
   "birthday-2": "birth2mod",
 };
 
+const mockImages: Image[] = [
+  {
+    id: "image-1",
+    userId: "birthday-1",
+    eventId: "birthday-1",
+    isApproved: null,
+  },
+  {
+    id: "image-2",
+    userId: "birthday-1",
+    eventId: "birthday-1",
+    isApproved: null,
+  },
+  {
+    id: "image-3",
+    userId: "birthday-1",
+    eventId: "birthday-1",
+    isApproved: false,
+  },
+  {
+    id: "image-4",
+    userId: "birthday-2",
+    eventId: "birthday-2",
+    isApproved: true,
+  },
+  {
+    id: "image-5",
+    userId: "birthday-2",
+    eventId: "birthday-2",
+    isApproved: true,
+  },
+  {
+    id: "image-6",
+    userId: "birthday-2",
+    eventId: "birthday-2",
+    isApproved: false,
+  },
+].map(getMockedImage);
+
 let eventService: EventService;
 
 beforeEach(async () => {
@@ -89,16 +143,28 @@ beforeEach(async () => {
   await dbService.initialize().getOrThrow();
 
   await dbService.db.insert(eventTable).values(mockEvents);
-  await Promise.all(
-    mockEvents.map(async e => {
+  await Promise.all([
+    ...mockEvents.map(async e => {
       await dbService.db
         .insert(eventCodeTable)
         .values({ eventId: e.id, code: mockModeratorCodes[e.id], isModerator: true });
       await dbService.db
         .insert(eventCodeTable)
         .values({ eventId: e.id, code: mockGuestCodes[e.id], isModerator: false });
-    })
-  );
+    }),
+    ...mockImages.map(async i => {
+      await dbService.db
+        .insert(userTable)
+        .values({
+          id: i.userId,
+          eventId: i.eventId,
+          name: "Mock User",
+          isModerator: false,
+        })
+        .onConflictDoNothing();
+      await dbService.db.insert(imageTable).values(i);
+    }),
+  ]);
 
   eventService = new EventService(dbService);
 });
@@ -480,33 +546,33 @@ describe("eventService getEventCode", () => {
   });
 });
 
-describe("eventService getEventCode", () => {
+describe("eventService getEventStats", () => {
   it("Should return Err when database call fails", async () => {
     vi.spyOn(BetterSQLite3Database.prototype, "select").mockImplementationOnce(() => {
       throw new Error();
     });
 
-    Result.assertError(await eventService.getEventCode("birthday-1", { role: "guest" }));
+    Result.assertError(await eventService.getEventStats("birthday-1"));
   });
 
-  it("Should correctly return guest code", async () => {
-    expect(
-      await eventService.getEventCode("birthday-1", { role: "guest" }).getOrThrow()
-    ).toBe("birth1guest");
-
-    expect(
-      await eventService.getEventCode("birthday-2", { role: "guest" }).getOrThrow()
-    ).toBe("birth2guest");
+  it("Should return Err when event id is invalid", async () => {
+    Result.assertError(await eventService.getEventStats("not-birthday"));
   });
 
-  it("Should correctly return moderator code", async () => {
-    expect(
-      await eventService.getEventCode("birthday-1", { role: "moderator" }).getOrThrow()
-    ).toBe("birth1mod");
+  it("Should correctly return EventStats", async () => {
+    expect(await eventService.getEventStats("birthday-1").getOrThrow()).toStrictEqual({
+      eventId: "birthday-1",
+      pendingImages: 2,
+      approvedImages: 0,
+      rejectedImages: 1,
+    });
 
-    expect(
-      await eventService.getEventCode("birthday-2", { role: "moderator" }).getOrThrow()
-    ).toBe("birth2mod");
+    expect(await eventService.getEventStats("birthday-2").getOrThrow()).toStrictEqual({
+      eventId: "birthday-2",
+      pendingImages: 0,
+      approvedImages: 2,
+      rejectedImages: 1,
+    });
   });
 });
 

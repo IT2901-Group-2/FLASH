@@ -3,9 +3,8 @@ import { Card, Title, Dialog, Button } from "@flash/ui";
 import styles from "./EventCard.module.css";
 import { cl } from "@/utils/className";
 import { Event } from "@/db";
-import { useDeleteEventMutation } from "@/hooks/useEvents";
-import { useImagesQuery } from "@/hooks/useImages";
-import { MouseEvent, useMemo, useRef } from "react";
+import { useDeleteEventMutation, useEventStatsQuery } from "@/hooks/useEvents";
+import { MouseEvent, useRef } from "react";
 import EditEventCard from "../EventDialogs/EditEventDialog";
 import { useTranslations } from "next-intl";
 
@@ -23,20 +22,9 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const deleteConfirmRef = useRef<HTMLDialogElement>(null);
   const { name, startDate, uploadLimit, id } = data;
-  const { data: imagePages } = useImagesQuery(id);
-
-  const { totalPhotos, approvedPhotos, pendingPhotos } = useMemo(() => {
-    const images = imagePages?.pages.flatMap(page => page.items) ?? [];
-    const total = images.length;
-    const approved = images.filter(image => image.isApproved === true).length;
-    const pending = images.filter(image => image.isApproved === null).length;
-
-    return {
-      totalPhotos: total,
-      approvedPhotos: approved,
-      pendingPhotos: pending,
-    };
-  }, [imagePages]);
+  const { data: imageStats } = useEventStatsQuery(id);
+  const { pendingImages = 0, approvedImages = 0, rejectedImages = 0 } = imageStats ?? {};
+  const totalImages = pendingImages + approvedImages + rejectedImages;
 
   const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -78,12 +66,7 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
           </Button>
         </div>
       </Dialog>
-      <EditEventCard
-        data-testid="edit-event-dialog"
-        ref={dialogRef}
-        event={data}
-        onClose={() => dialogRef.current?.close()}
-      />
+      <EditEventCard data-testid="edit-event-dialog" ref={dialogRef} event={data} />
       <Card {...rest} className={styles.card}>
         <div className={styles.column}>
           <Title className={styles.title} size="xsmall">
@@ -103,16 +86,16 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
           <div className={cl(styles.column, styles.soft)}>
             {t("summary.totalPhotos")}
             <span className={styles.row} data-testid="event-total-photos">
-              <ImageIcon size={16} /> {totalPhotos}
+              <ImageIcon size={16} /> {totalImages}
             </span>
           </div>
           <div className={cl(styles.column, styles.soft)}>
             {t("summary.approved")}{" "}
-            <span data-testid="event-approved-photos">{approvedPhotos}</span>
+            <span data-testid="event-approved-photos">{approvedImages}</span>
           </div>
           <div className={cl(styles.column, styles.soft)}>
             {t("summary.pending")}{" "}
-            <span data-testid="event-pending-photos">{pendingPhotos}</span>
+            <span data-testid="event-pending-photos">{pendingImages}</span>
           </div>
         </div>
         <div className={cl(styles.row, styles.footer)}>

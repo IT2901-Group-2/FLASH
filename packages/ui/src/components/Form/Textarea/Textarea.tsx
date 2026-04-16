@@ -62,6 +62,7 @@ export const Textarea = ({
   className,
   description,
   maxLength,
+  maxRows,
   hideLabel = false,
   resize,
   value,
@@ -81,7 +82,7 @@ export const Textarea = ({
   const hasMaxLength = maxLength !== undefined && maxLength > 0;
   const minRows = rest.minRows ?? (size === "small" ? 2 : 3);
 
-  const resizeArea = useAutoResize(inputRef, minRows, rest.maxRows);
+  const resizeArea = useAutoResize(inputRef, minRows, maxRows);
 
   const [uncontrolledValue, setUncontrolledValue] = useState<string>(
     rest.defaultValue ?? ""

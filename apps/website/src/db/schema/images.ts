@@ -71,6 +71,8 @@ export const getImagesPageSchema = z.object({
   nextCursor: z.number().nullable(),
 });
 
+export const uploadedImageCountSchema = z.object({ count: z.number().nonnegative() });
+
 export type Image = typeof imageTable.$inferSelect;
 export type GetImagesParams = z.infer<typeof getImagesParamsSchema>;
 export type UpdateImage = z.infer<typeof updateImageSchema>;

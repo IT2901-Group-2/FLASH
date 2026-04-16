@@ -4,7 +4,7 @@ import type {
   UseInfiniteQueryResult,
   UseMutationResult,
 } from "@tanstack/react-query";
-import type { Image } from "@/db";
+import type { GetImagesPage, Image } from "@/db";
 import { makeImage, makeImages } from "../factories/image.factory";
 import {
   BatchUpdateImageInput,
@@ -12,14 +12,10 @@ import {
   DeleteImageInput,
   UpdateImageInput,
 } from "@/hooks/useImages";
-
-type ImagesPage = {
-  items: Image[];
-  nextCursor: number | null;
-};
+import { mockQueryResult } from "./useQuery.mock";
 
 type ImagesInfiniteQueryResult = UseInfiniteQueryResult<
-  InfiniteData<ImagesPage, unknown>,
+  InfiniteData<GetImagesPage, unknown>,
   Error
 >;
 
@@ -113,53 +109,18 @@ export const defaultDeleteImageMutationReturn = {
   reset: vi.fn(),
 } as unknown as UseMutationResult<void, Error, DeleteImageInput>;
 
+/**
+ * Idle default for `useUploadedImageCountQuery`.
+ */
+export const defaultUploadedImageCountQueryReturn = {
+  data: { count: 0 },
+  isLoading: false,
+  isError: false,
+} as UseQueryResult<{ count: number }>;
+
 // ---------------------------------------------------------------------------
 // State builders
 // ---------------------------------------------------------------------------
-
-/**
- * Creates a mock infinite-query result for images, suitable for use in tests.
- *
- * @example
- * mockImagesQueryResult({ data: [makeImage(), makeImage()] });
- * mockImagesQueryResult({ isLoading: true });
- * mockImagesQueryResult({ isError: true });
- */
-export const mockImagesQueryResult = ({
-  data,
-  isLoading = false,
-  isError = false,
-  hasNextPage = false,
-  isFetchingNextPage = false,
-  nextCursor = null,
-  fetchNextPage = vi.fn(),
-  error = new Error("Failed to load Images"),
-}: {
-  data?: Image[];
-  isLoading?: boolean;
-  isError?: boolean;
-  hasNextPage?: boolean;
-  isFetchingNextPage?: boolean;
-  nextCursor?: number | null;
-  fetchNextPage?: ReturnType<typeof vi.fn>;
-  error?: Error;
-}): ImagesInfiniteQueryResult => {
-  return {
-    data:
-      isLoading || isError
-        ? undefined
-        : {
-            pages: [{ items: data ?? [], nextCursor }],
-            pageParams: [undefined],
-          },
-    error: isLoading || !isError ? null : error,
-    isLoading,
-    isError,
-    hasNextPage,
-    isFetchingNextPage,
-    fetchNextPage,
-  } as unknown as ImagesInfiniteQueryResult;
-};
 
 /**
  * Successful `useImagesQuery` result with the given images.
@@ -169,7 +130,7 @@ export const mockImagesQueryResult = ({
  * });
  */
 export const mockImagesLoaded = (images: Image[]): ImagesInfiniteQueryResult =>
-  mockImagesQueryResult({ data: images });
+  mockQueryResult({ data: images });
 
 /**
  * Loading `useImagesQuery` result.
@@ -179,7 +140,7 @@ export const mockImagesLoaded = (images: Image[]): ImagesInfiniteQueryResult =>
  * vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoading());
  */
 export const mockImagesLoading = (): ImagesInfiniteQueryResult =>
-  mockImagesQueryResult({ isLoading: true });
+  mockQueryResult({ isLoading: true });
 
 /**
  * Failed `useImagesQuery` result.
@@ -189,7 +150,7 @@ export const mockImagesLoading = (): ImagesInfiniteQueryResult =>
  * vi.mocked(useImagesQuery).mockReturnValue(mockImagesError(new Error("403 Forbidden")));
  */
 export const mockImagesError = (error?: Error): ImagesInfiniteQueryResult =>
-  mockImagesQueryResult({ error, isError: true });
+  mockQueryResult({ error, isError: true });
 
 /**
  * Creates `count` pending images for the same event. Covers the standard moderation `beforeEach`.

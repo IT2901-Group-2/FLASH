@@ -17,9 +17,10 @@
     "uploadImage": "Last opp bilde",
     "loadMore": "Last inn flere",
     "slideshow": "Lysbildefremvisning",
-    "createNewEvent": "Lag nytt arrangement",
-    "shareEvent": "Del arrangement",
-    "copyLink": "Kopier lenke"
+    "createNewEvent": "Lag nytt event",
+    "shareEvent": "Del event",
+    "copyLink": "Kopier lenke",
+    "moderate": "Moderer"
   },
   "roles": {
     "guest": "Gjest",
@@ -27,21 +28,21 @@
     "admin": "Administrator"
   },
   "navigation": {
-    "main": "Meny",
-    "config": "Konfig",
-    "desktop": "Dashboard",
-    "events": "Arrangementer",
-    "settings": "Innstillinger",
-    "storage": "Lagring",
+    "admin": "Admin",
+    "events": "Events",
+    "options": "Valg",
+    "dashboard": "Kontrollpanel",
+    "language": "Språk",
     "darkMode": "Mørk modus",
-    "lightMode": "Lys modus"
+    "lightMode": "Lys modus",
+    "back": "Tilbake"
   },
   "fields": {
     "password": "Passord",
     "passwordPlaceholder": "•••••",
     "nickname": "Kallenavn",
-    "eventCode": "Arrangementskode",
-    "eventName": "Navn på arrangement",
+    "eventCode": "Eventkode",
+    "eventName": "Navn på event",
     "eventDescription": "Beskrivelse",
     "startDate": "Startdato",
     "endDate": "Sluttdato",
@@ -62,5 +63,19 @@
   "slideshow": {
     "viewProgress": "{index} av {total}",
     "noApproved": "Ingen godkjente bilder"
+  },
+  "uploads": {
+    "remaining": {
+      "short": "{count, plural, one {# opplasting} other {# opplastinger}} gjenstår",
+      "long": "Du kan laste opp {count, plural, one {# bilde} other {# bilder}}"
+    },
+    "none": {
+      "short": "Opplastingsgrensen er nådd",
+      "long": "Du har ingen opplastinger igjen"
+    },
+    "unlimited": {
+      "short": "Ubegrenset opplasting",
+      "long": "Du kan laste opp ubegrenset med bilder"
+    }
   }
 }

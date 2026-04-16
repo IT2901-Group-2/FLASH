@@ -8,6 +8,7 @@ import {
   LoaderProps,
   LogoProps,
   ProgressBarProps,
+  ProgressDotsProps,
   QRDisplayProps,
   SwitchProps,
   TextareaProps,
@@ -62,9 +63,9 @@ export const flashUiMock = async () => {
     </div>
   ));
 
-  const Dialog = vi.fn(({ children, ...rest }: DialogProps) => (
-    <dialog data-testid="dialog" {...rest}>
-      {children}
+  const Dialog = vi.fn(({ children, closedby, ref, ...rest }: DialogProps) => (
+    <dialog data-testid="dialog" closedby={closedby} ref={ref}>
+      <div {...rest}>{children}</div>
     </dialog>
   ));
 
@@ -73,22 +74,24 @@ export const flashUiMock = async () => {
   // SegmentedControls
   // Select
 
-  const Textarea = vi.fn(({ label, ...props }: TextareaProps) => {
+  const Textarea = vi.fn(({ label, error, ...props }: TextareaProps) => {
     const id = useId();
     return (
       <div>
         <label htmlFor={id}>{label}</label>
         <textarea id={id} data-testid="textarea" {...props} />
+        {error && <p data-testid="textarea-error">{error}</p>}
       </div>
     );
   });
 
-  const TextField = vi.fn(({ label, size, ...rest }: TextFieldProps) => {
+  const TextField = vi.fn(({ label, size, error, ...rest }: TextFieldProps) => {
     const id = useId();
     return (
       <div>
         <label htmlFor={id}>{label}</label>
         <input id={id} data-testid="text-field" data-size={size} {...rest} />
+        {error && <p data-testid="text-field-error">{error}</p>}
       </div>
     );
   });
@@ -117,10 +120,14 @@ export const flashUiMock = async () => {
     <div data-testid="progress-bar" data-value={value} data-max={maxValue} />
   ));
 
-  const ProgressDots = vi.fn(() => <div data-testid="progress-dots" />);
+  const ProgressDots = vi.fn(({ maxValue, value }: ProgressDotsProps) => (
+    <div data-testid="progress-dots" data-value={value} data-max-value={maxValue} />
+  ));
 
   const QRDisplay = vi.fn(({ value, code, ...rest }: QRDisplayProps) => (
-    <div data-testid="qr-display" data-value={value} data-code={code} {...rest} />
+    <div data-testid="qr-display" data-value={value} data-code={code} {...rest}>
+      <svg />
+    </div>
   ));
 
   const Switch = vi.fn(({ children, size, ...rest }: SwitchProps) => (

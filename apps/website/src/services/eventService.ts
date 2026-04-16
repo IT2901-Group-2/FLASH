@@ -4,6 +4,8 @@ import {
   Event,
   EventCode,
   eventCodeTable,
+  EventStats,
+  eventStatsTable,
   eventTable,
   GetEventCodeParams,
   GetEventsPage,
@@ -107,8 +109,24 @@ export class EventService {
         )
         .limit(1)
     )
-      .map(rows => getFirstRow(rows))
+      .map(getFirstRow)
       .map(row => row.code);
+  }
+
+  /**
+   * Fetches the tracked statistics for the specified event.
+   *
+   * @param eventId The event to fetch the stats for.
+   * @returns A result with the tracked stats for the specified event or an error.
+   */
+  getEventStats(eventId: string): AsyncResult<EventStats, Error> {
+    return Result.try(() =>
+      this.dbService.db
+        .select()
+        .from(eventStatsTable)
+        .where(eq(eventStatsTable.eventId, eventId))
+        .limit(1)
+    ).map(getFirstRow);
   }
 
   /**

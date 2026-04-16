@@ -45,7 +45,13 @@ const DatePicker = ({
 
   // For making "reset" inside a form work
   useEffect(() => {
-    const next = _value ?? DEFAULT_DATE_RANGE;
+    const { startDate, endDate } = _value ?? DEFAULT_DATE_RANGE;
+    const next: DateRange = {
+      startDate: startDate ? new Date(startDate) : null,
+      endDate: endDate ? new Date(endDate) : null,
+    };
+    Object.values(next).map(d => d?.setHours(0, 0, 0, 0));
+
     setValue(next);
     // Only reset the calendar state if value is clearing back to default
     if (!next.startDate && !next.endDate) providerRef.current?.resetSelection();
@@ -78,10 +84,19 @@ const DatePicker = ({
           e.currentTarget.blur();
           calendarRef.current?.showPopover();
         }}
+        onFocus={e => {
+          e.currentTarget.blur();
+          calendarRef.current?.showPopover();
+        }}
         onChange={() => {}} // To stop error in console
         className={styles.inputField}
       />
-      <DateRangeProvider ref={providerRef} onChange={handleChange} local={local}>
+      <DateRangeProvider
+        ref={providerRef}
+        onChange={handleChange}
+        local={local}
+        defaultValue={value}
+      >
         <div
           ref={calendarRef}
           data-color={color}
