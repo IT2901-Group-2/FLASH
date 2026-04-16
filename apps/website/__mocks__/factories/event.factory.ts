@@ -19,6 +19,8 @@ export const makeEvent = (overrides: Partial<Event> = {}): Event => {
     endDate: new Date(),
     uploadLimit: 5,
     isArchived: false,
+    autoApprove: false,
+    uploadsArePrivate: false,
     createdAt: new Date(),
     updatedAt: new Date(),
     ...overrides,
