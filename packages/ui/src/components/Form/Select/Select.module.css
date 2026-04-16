@@ -60,6 +60,8 @@
   background-color: inherit;
   border-radius: var(--radius-16);
 
+  width: max-content;
+
   &[data-open="false"] {
     opacity: 0;
   }
@@ -156,6 +158,8 @@
 
     transform: translateY(100%); /* hidden below */
     transition: transform 0.2s ease-in-out;
+
+    width: auto;
 
     &[data-open="false"] {
       opacity: 1;
