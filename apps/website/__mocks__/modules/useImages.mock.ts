@@ -6,6 +6,7 @@ import {
   defaultUpdateImageMutationReturn,
   defaultBatchUpdateImageMutationReturn,
   defaultDeleteImageMutationReturn,
+  defaultDownloadImagesMutationReturn,
 } from "../hooks/useImages.mock";
 
 /**
@@ -40,4 +41,5 @@ export const imageHooksMock = () => ({
     ...defaultBatchUpdateImageMutationReturn,
   })),
   useDeleteImageMutation: vi.fn(() => ({ ...defaultDeleteImageMutationReturn })),
+  useDownloadImagesMutation: vi.fn(() => ({ ...defaultDownloadImagesMutationReturn })),
 });
