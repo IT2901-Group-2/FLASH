@@ -70,6 +70,7 @@ export const imagesKeys = {
   list: (eventId?: string, params?: GetImagesParams) =>
     [...imagesKeys.event(eventId), "list", toImagesSearchParams(params)] as const,
   uploaded: (eventId?: string) => [...imagesKeys.event(eventId), "uploaded"] as const,
+  mine: (eventId?: string) => [...imagesKeys.event(eventId), "mine"] as const,
 };
 
 /**
@@ -89,6 +90,19 @@ export function useImagesQuery(
       ),
     enabled: !!eventId,
     refetchInterval,
+  });
+}
+
+/**
+ * Fetches all images uploaded by the currently authenticated event user,
+ * regardless of approval status.
+ */
+export function useMyImagesQuery(eventId?: string, enabled = true) {
+  return useQuery({
+    queryKey: imagesKeys.mine(eventId),
+    queryFn: () =>
+      makeRequest(imageArraySchema, `/api/events/${eventId}/images/mine`),
+    enabled: !!eventId && enabled,
   });
 }
 

@@ -19,6 +19,7 @@ import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 import {
   useImagesQuery,
+  useMyImagesQuery,
   useUploadedImageCountQuery,
   useUploadImageMutation,
 } from "@/hooks/useImages";
@@ -42,6 +43,7 @@ export default function Page() {
   // Image Data
   const { data: imagesData } = useImagesQuery(eventId, { approval: "approved" });
   const images = imagesData ?? [];
+  const { data: myImagesData } = useMyImagesQuery(eventId, uploadsArePrivate);
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -49,13 +51,7 @@ export default function Page() {
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
 
   const [activeTab, setActiveTab] = useState<"all" | "user">("all");
-  const myImages = useMemo(
-    () =>
-      images.filter(
-        img => eventAuth.isAuthenticated && img.userId === eventAuth.userId
-      ),
-    [images, eventAuth]
-  );
+  const myImages = myImagesData ?? [];
   const displayedImages = useMemo(
     () => (uploadsArePrivate && activeTab === "user" ? myImages : images),
     [uploadsArePrivate, activeTab, myImages, images]

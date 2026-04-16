@@ -356,6 +356,12 @@ export class ImageService {
     );
   }
 
+  private getAuthenticatedUserId(eventId: string): AsyncResult<string, Error> {
+    return getEventCookie(eventId, JWT_SECRET)
+      .mapError(() => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403))
+      .map(({ userId }) => userId);
+  }
+
   /**
    * Returns the number of images uploaded by the specified user in the specified event.
    * @param eventId The id of the event.
@@ -377,6 +383,26 @@ export class ImageService {
   }
 
   /**
+   * Returns all images uploaded by the currently authenticated user in the given event,
+   * regardless of approval status.
+   *
+   * @param eventId The id of the event.
+   * @returns A result containing the list of `Image` objects or an error.
+   */
+  getImagesByUser(eventId: string): AsyncResult<Image[], Error> {
+    return Result.genCatching(this, function* () {
+      const userId = yield* this.getAuthenticatedUserId(eventId);
+
+      return yield* Result.try(() =>
+        this.dbService.db
+          .select()
+          .from(imageTable)
+          .where(and(eq(imageTable.eventId, eventId), eq(imageTable.userId, userId)))
+      );
+    });
+  }
+
+  /**
    * Returns the number of images uploaded by the currently authenticated user in the given event.
    *
    * @param eventId The id of the event.
@@ -384,9 +410,7 @@ export class ImageService {
    */
   getUploadedImageCount(eventId: string): AsyncResult<number, Error> {
     return Result.genCatching(this, function* () {
-      const { userId } = yield* getEventCookie(eventId, JWT_SECRET).mapError(
-        () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
-      );
+      const userId = yield* this.getAuthenticatedUserId(eventId);
 
       return yield* this.getUploadedImageCountByUser(eventId, userId);
     });
