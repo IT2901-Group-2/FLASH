@@ -2,7 +2,8 @@ import { vi } from "vitest";
 
 /**
  * A mock implementation of the Cookie Store API. This is a simple object
- * with jest.fn() for each method.
+ * with vi.fn() methods that can be customized in tests to simulate different
+ * cookie store behaviors.
  *
  * Import and customize the methods you need in your tests.
  *
