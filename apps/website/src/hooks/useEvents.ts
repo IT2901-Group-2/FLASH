@@ -44,9 +44,9 @@ function toEventsSearchParams(params?: GetEventsParams): string {
  * events-related query in one go.
  *
  * Structure:
- *   eventsKeys.all                 → ["events"]
- *   eventsKeys.list(params)        → ["events", "list", "?status=active&..."]
- *   eventsKeys.code(eventId, role) → ["events", eventId, "code", role]
+ * - eventsKeys.all                 → ["events"]
+ * - eventsKeys.list(params)        → ["events", "list", "?status=active&..."]
+ * - eventsKeys.code(eventId, role) → ["events", eventId, "code", role]
  */
 
 export const eventsKeys = {
