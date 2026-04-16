@@ -3,9 +3,7 @@
 type Debounced<T extends unknown[]> = ((...args: T) => void) & { clear: () => void };
 
 /**
- * Creates a debounced function that delays invoking the provided function
- * until after a specified wait time has elapsed since the last time the
- * debounced function was invoked.
+ * Creates a debounced function of the provided function.
  *
  * Optionally, the function can be invoked immediately on the leading edge
  * of the timeout instead of the trailing edge.
