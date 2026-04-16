@@ -1,6 +1,14 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, ImageMinus, QrCode, Upload, X } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  ImageMinus,
+  QrCode,
+  Upload,
+  X,
+} from "lucide-react";
 import styles from "./UploadImage.module.css";
 import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
@@ -49,6 +57,13 @@ export default function Page() {
       setJoinLink(new URL(`/join/${joinCode}`, window.location.origin).href))();
   }, [setJoinLink, joinCode]);
 
+  //Event date data
+  const now = new Date();
+  const isLive = eventData
+    ? now >= eventData.startDate && now <= eventData.endDate
+    : false;
+  const isEnded = eventData ? now > eventData.endDate : false;
+
   // Translation strings
   const eventName =
     eventData?.name ??
@@ -61,8 +76,9 @@ export default function Page() {
       ? Math.max(0, eventData.uploadLimit - userImageCount)
       : undefined;
 
-  const uploadDescription =
-    typeof uploadsRemaining !== "number"
+  const uploadDescription = isEnded
+    ? tCommon("uploads.eventEnded")
+    : typeof uploadsRemaining !== "number"
       ? tCommon("uploads.unlimited.long")
       : uploadsRemaining === 0
         ? tCommon("uploads.none.long")
@@ -291,15 +307,19 @@ export default function Page() {
             </Button>
           )}
           <Button
-            icon={<Upload />}
+            icon={isEnded ? <Download /> : <Upload />}
             iconPosition="right"
             data-color="brand-purple"
             variant="primary"
-            onClick={openFilePicker}
+            onClick={
+              isEnded
+                ? () => (window.location.href = `/api/events/${eventId}/images/download`)
+                : openFilePicker
+            }
             loading={isUploading}
             className={styles.desktopOnly}
           >
-            {tCommon("actions.uploadImage")}
+            {isEnded ? tCommon("actions.downloadImages") : tCommon("actions.uploadImage")}
           </Button>
         </PhoneHeader>
         {!isLoading && (isError || !eventData) ? (
@@ -315,10 +335,14 @@ export default function Page() {
             descriptionColor={uploadError ? "danger" : undefined}
             primaryButton={{
               "data-color": "brand-purple",
-              icon: <Upload size={18} />,
+              icon: isEnded ? <Download size={18} /> : <Upload size={18} />,
               iconPosition: "right",
-              text: tCommon("actions.uploadImage"),
-              onClick: openFilePicker,
+              text: isEnded
+                ? tCommon("actions.downloadImages")
+                : tCommon("actions.uploadImage"),
+              onClick: isEnded
+                ? () => (window.location.href = `/api/events/${eventId}/images/download`)
+                : openFilePicker,
               loading: isUploading,
             }}
           />
