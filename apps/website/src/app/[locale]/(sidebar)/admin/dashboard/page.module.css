@@ -6,7 +6,29 @@
   position: relative;
 }
 
+.filterContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+  gap: 0 1rem;
+
+  align-items: end;
+
+  min-width: min-content;
+
+  :first-child {
+    grid-column: span 2;
+  }
+
+  > button {
+    margin-bottom: 0.575rem;
+  }
+}
+
 @media screen and (max-width: 768px) {
+  .filterContainer :first-child {
+    grid-column: span 1;
+  }
+
   .createButton {
     position: fixed;
     /* left: 50%; */
@@ -17,7 +39,7 @@
 
 .eventsContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
   gap: 1rem;
   margin-top: 1rem;
 }
