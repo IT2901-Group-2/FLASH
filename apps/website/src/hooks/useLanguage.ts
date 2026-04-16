@@ -16,12 +16,6 @@ export interface UseLanguageReturn {
 /**
  * Custom hook to manage language switching using next-intl.
  *
- * It provides the current locale, the next locale to switch to, and a function
- * to perform the switch. The switchLocale function uses Next.js's router to
- * replace the current URL with the same path and query parameters, but with
- * the new locale. It also uses startTransition to avoid blocking the UI during
- * the switch.
- *
  * @returns An object containing the `list of locales`, the `current locale`, the
  * `next locale`, and the `switchLocale` function.
  *
