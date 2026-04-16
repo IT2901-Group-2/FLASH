@@ -25,14 +25,14 @@ const mockEvents: (typeof eventTable.$inferInsert)[] = [
     id: "birthday",
     name: "Birthday",
     startDate: new Date(),
-    endDate: new Date(),
+    endDate: new Date(Date.now() + 86_400_000),
     autoApprove: false,
   },
   {
     id: "wedding",
     name: "Wedding",
     startDate: new Date(),
-    endDate: new Date(),
+    endDate: new Date(Date.now() + 86_400_000),
     autoApprove: true,
   },
 ];
@@ -255,12 +255,28 @@ describe("ImageService downloadImage", () => {
   });
 
   it("Should return an empty zip when no zip exists for event", async () => {
+    await imageService["dbService"].db
+      .update(eventTable)
+      .set({
+        startDate: new Date(Date.now() - 2 * 86_400_000),
+        endDate: new Date(Date.now() - 86_400_000),
+      })
+      .where(eq(eventTable.id, "birthday"));
+
     const result = await imageService.downloadImages("birthday").getOrThrow();
     const zip = new AdmZip(result);
     expect(zip.getEntries()).toHaveLength(0);
   });
 
   it("Should return the zip archive when it exists", async () => {
+    await imageService["dbService"].db
+      .update(eventTable)
+      .set({
+        startDate: new Date(Date.now() - 2 * 86_400_000),
+        endDate: new Date(Date.now() - 86_400_000),
+      })
+      .where(eq(eventTable.id, "wedding"));
+
     vi.spyOn(DatabaseService.prototype, "flush").mockImplementation(() => {});
 
     await imageService
