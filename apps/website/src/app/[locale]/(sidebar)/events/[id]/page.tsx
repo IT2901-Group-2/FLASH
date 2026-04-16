@@ -59,9 +59,6 @@ export default function Page() {
 
   //Event date data
   const now = new Date();
-  const isLive = eventData
-    ? now >= eventData.startDate && now <= eventData.endDate
-    : false;
   const isEnded = eventData ? now > eventData.endDate : false;
 
   // Translation strings
