@@ -18,6 +18,7 @@ import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 import {
+  useDownloadImagesMutation,
   useImagesQuery,
   useUploadedImageCountQuery,
   useUploadImageMutation,
@@ -30,6 +31,7 @@ export default function Page() {
   const tUpload = useTranslations("guest.event.upload");
   const eventAuth = useEventAuth();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const { mutate: downloadImages } = useDownloadImagesMutation();
 
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
@@ -308,11 +310,7 @@ export default function Page() {
             iconPosition="right"
             data-color="brand-purple"
             variant="primary"
-            onClick={
-              isEnded
-                ? () => (window.location.href = `/api/events/${eventId}/images/download`)
-                : openFilePicker
-            }
+            onClick={isEnded ? () => downloadImages({ eventId }) : openFilePicker}
             loading={isUploading}
             className={styles.desktopOnly}
           >
@@ -337,9 +335,7 @@ export default function Page() {
               text: isEnded
                 ? tCommon("actions.downloadImages")
                 : tCommon("actions.uploadImage"),
-              onClick: isEnded
-                ? () => (window.location.href = `/api/events/${eventId}/images/download`)
-                : openFilePicker,
+              onClick: isEnded ? () => downloadImages({ eventId }) : openFilePicker,
               loading: isUploading,
             }}
           />
