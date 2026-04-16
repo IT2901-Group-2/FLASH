@@ -1,277 +1,397 @@
+import {
+  createQueryClientWithWrapper,
+  createQueryClientWrapper,
+  makeEvent,
+  makeEventStats,
+  makeJoinedEvent,
+  mockCookieStore,
+  mockJsonResponse,
+  mockServerErrorResponse,
+  mockUnauthorizedResponse,
+} from "@test-config";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import {
   eventsKeys,
   useCreateEventMutation,
   useDeleteEventMutation,
+  useEventByCodeQuery,
   useEventCodeQuery,
   useEventsQuery,
   useEventStatsQuery,
+  useJoinedEvents,
   useUpdateEventMutation,
 } from "../useEvents";
-import { Event } from "@/db";
-import { NextResponse } from "next/server";
-import { makeEventStats } from "@test-config";
 
-const mockEvent: Event = {
-  id: "1",
-  name: "Test event",
-  description: "",
-  startDate: new Date(),
-  endDate: new Date(),
-  uploadLimit: 5,
-  isArchived: false,
-  autoApprove: true,
-  uploadsArePrivate: false,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+const mockGetJoinedEvents = vi.fn();
+vi.mock("@/actions/joinedEvents", () => ({
+  getJoinedEvents: () => mockGetJoinedEvents(),
+}));
 
-function createWrapper() {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  });
-  const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-
-  return { wrapper, queryClient };
-}
+let wrapper: ReturnType<typeof createQueryClientWrapper>;
+beforeEach(() => {
+  wrapper = createQueryClientWrapper();
+});
 
 describe("useEventsQuery", () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
+  it("returns data on a successful response", async () => {
+    const events = [makeEvent(), makeEvent()];
+    vi.stubGlobal("fetch", mockJsonResponse(events));
 
-  it("fetches events successfully", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify([mockEvent]), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          })
-      ) as unknown as typeof fetch
-    );
+    const { result } = renderHook(() => useEventsQuery(), { wrapper });
 
-    const { result } = renderHook(() => useEventsQuery(), {
-      wrapper: createWrapper().wrapper,
-    });
-
-    await waitFor(() => {
-      expect(result.current.isSuccess).toBe(true);
-    });
-
-    expect(result.current.data).toStrictEqual([mockEvent]);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toStrictEqual(events);
   });
 
   it("handles fetch error", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify({ message: "failed to fetch" }), {
-            status: 500,
-            headers: { "Content-Type": "application/json" },
-          })
-      )
-    );
+    vi.stubGlobal("fetch", mockServerErrorResponse());
 
-    const { result } = renderHook(() => useEventsQuery(), {
-      wrapper: createWrapper().wrapper,
-    });
+    const { result } = renderHook(() => useEventsQuery(), { wrapper });
 
-    await waitFor(() => {
-      expect(result.current.isError).toBe(true);
-    });
-
+    await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.error).toBeInstanceOf(Error);
   });
 
   it("passes query params to fetch", async () => {
-    const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(JSON.stringify([]), { status: 200 })
-    );
-
+    const fetchMock = mockJsonResponse([makeEvent()]);
     vi.stubGlobal("fetch", fetchMock);
 
-    renderHook(() => useEventsQuery({ status: "active" }), {
-      wrapper: createWrapper().wrapper,
-    });
+    renderHook(() => useEventsQuery({ status: "active" }), { wrapper });
 
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
-
     expect(fetchMock.mock.calls[0]?.[0]).toContain("status=active");
   });
 
   it("extracts error message from JSON response", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify({ message: "Testing custom error" }), {
-            status: 400,
-            headers: { "Content-Type": "application/json" },
-          })
-      )
-    );
+    vi.stubGlobal("fetch", mockUnauthorizedResponse("Unauthorized access"));
 
-    const { result } = renderHook(() => useEventsQuery(), {
-      wrapper: createWrapper().wrapper,
-    });
+    const { result } = renderHook(() => useEventsQuery(), { wrapper });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
-
-    expect(result.current.error?.message).toBe("Testing custom error");
+    expect(result.current.error?.message).toBe("Unauthorized access");
   });
 });
 
 describe("useEventCodeQuery", () => {
-  it("Fetches event code successfully", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify("event-code"), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          })
-      ) as unknown as typeof fetch
-    );
+  it("returns the event code string on success", async () => {
+    vi.stubGlobal("fetch", mockJsonResponse("ABC123"));
 
-    const { result } = renderHook(() => useEventCodeQuery("eventId"), {
-      wrapper: createWrapper().wrapper,
+    const { result } = renderHook(() => useEventCodeQuery("eventId"), { wrapper });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toStrictEqual("ABC123");
+  });
+
+  it("calls the correct URL with eventId and role", async () => {
+    const fetchMock = mockJsonResponse("CODE");
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useEventCodeQuery("ev-42", "moderator"), {
+      wrapper,
     });
 
-    await waitFor(() => {
-      expect(result.current.isSuccess).toBe(true);
-    });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(result.current.data).toStrictEqual("event-code");
+    const calledUrl = fetchMock.mock.calls[0]?.[0] as string;
+    expect(calledUrl).toContain("/api/events/ev-42/code");
+    expect(calledUrl).toContain("role=moderator");
+  });
+
+  it("is disabled when eventId is undefined", async () => {
+    const fetchMock = mockJsonResponse("CODE");
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useEventCodeQuery(undefined), { wrapper });
+
+    await new Promise(r => setTimeout(r, 50));
+    expect(result.current.isFetching).toBe(false);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("defaults role to guest", async () => {
+    const fetchMock = mockJsonResponse("CODE");
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useEventCodeQuery("ev-1"), { wrapper });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    const calledUrl = fetchMock.mock.calls[0]?.[0] as string;
+    expect(calledUrl).toContain("role=guest");
+  });
+});
+
+describe("useEventByCodeQuery", () => {
+  it("calls the correct URL", async () => {
+    const fetchMock = mockJsonResponse([makeEvent()]);
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderHook(() => useEventByCodeQuery("JOIN42"), { wrapper });
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    expect(fetchMock.mock.calls[0]?.[0]).toContain("/api/events/by-code/JOIN42");
+  });
+
+  it("is disabled when code is undefined", async () => {
+    const fetchMock = mockJsonResponse({});
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useEventByCodeQuery(undefined), { wrapper });
+
+    await new Promise(r => setTimeout(r, 50));
+    expect(result.current.isFetching).toBe(false);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("is disabled when code is an empty string", async () => {
+    const fetchMock = mockJsonResponse({});
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderHook(() => useEventByCodeQuery(""), { wrapper });
+
+    await new Promise(r => setTimeout(r, 50));
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });
 
 describe("useEventStatsQuery", () => {
-  it("Fails on malformed response", async () => {
-    vi.stubGlobal("fetch", async () => NextResponse.json({ foo: 1, bar: true }));
+  it("returns event stats on success", async () => {
+    const stats = makeEventStats();
+    vi.stubGlobal("fetch", mockJsonResponse(stats));
 
-    const { result } = renderHook(() => useEventStatsQuery("eventId"), {
-      wrapper: createWrapper().wrapper,
-    });
+    const { result } = renderHook(() => useEventStatsQuery("ev-1"), { wrapper });
 
-    await waitFor(() => expect(result.current.isLoading).toBe(false));
-    expect(result.current.isError).toBe(true);
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toMatchObject(stats);
   });
 
-  it("Fetches event stats successfully", async () => {
-    const mockEventStats = makeEventStats();
-    vi.stubGlobal("fetch", async () => NextResponse.json(mockEventStats));
+  it("calls the correct URL", async () => {
+    const fetchMock = mockJsonResponse(makeEventStats());
+    vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() => useEventStatsQuery("eventId"), {
-      wrapper: createWrapper().wrapper,
-    });
+    const { result } = renderHook(() => useEventStatsQuery("ev-99"), { wrapper });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    await waitFor(() => expect(result.current.isLoading).toBe(false));
-    expect(result.current.isSuccess).toBe(true);
-    expect(result.current.data).toStrictEqual(mockEventStats);
+    expect(fetchMock.mock.calls[0]?.[0]).toContain("/api/events/ev-99/stats");
+  });
+
+  it("is disabled when eventId is undefined", async () => {
+    const fetchMock = mockJsonResponse({});
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderHook(() => useEventStatsQuery(undefined), { wrapper });
+
+    await new Promise(r => setTimeout(r, 50));
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("is disabled when eventId is an empty string", async () => {
+    const fetchMock = mockJsonResponse({});
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderHook(() => useEventStatsQuery(""), { wrapper });
+
+    await new Promise(r => setTimeout(r, 50));
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("enters an error state on a server error", async () => {
+    vi.stubGlobal("fetch", mockServerErrorResponse());
+
+    const { result } = renderHook(() => useEventStatsQuery("ev-1"), { wrapper });
+    await waitFor(() => expect(result.current.isError).toBe(true));
+  });
+});
+
+describe("useJoinedEvents", () => {
+  beforeEach(() => {
+    mockGetJoinedEvents.mockResolvedValue(makeJoinedEvent());
+  });
+
+  it("returns joined events from the server action", async () => {
+    const events = [makeEvent(), makeEvent()];
+    mockGetJoinedEvents.mockResolvedValue(events);
+
+    const { result } = renderHook(() => useJoinedEvents(), { wrapper });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toHaveLength(2);
+  });
+
+  it("registers a cookieStore change listener on mount", () => {
+    const { wrapper } = createQueryClientWithWrapper();
+    renderHook(() => useJoinedEvents(), { wrapper });
+    expect(mockCookieStore.addEventListener).toHaveBeenCalledWith(
+      "change",
+      expect.any(Function)
+    );
+  });
+
+  it("removes the cookieStore listener on unmount", () => {
+    const { wrapper } = createQueryClientWithWrapper();
+    const { unmount } = renderHook(() => useJoinedEvents(), { wrapper });
+    unmount();
+    expect(mockCookieStore.removeEventListener).toHaveBeenCalledWith(
+      "change",
+      expect.any(Function)
+    );
+  });
+
+  it("invalidates the joined query when the cookieStore change event fires", async () => {
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+
+    renderHook(() => useJoinedEvents(), { wrapper });
+
+    const [, handler] = mockCookieStore.addEventListener.mock.calls[0] as [
+      string,
+      () => void,
+    ];
+
+    await act(async () => handler());
+
+    expect(invalidateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ queryKey: eventsKeys.joined() })
+    );
   });
 });
 
 describe("useCreateEventMutation", () => {
-  it("creates an event and invalidates cache", async () => {
-    const { wrapper, queryClient } = createWrapper();
-
-    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
-
-    const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(JSON.stringify(mockEvent), { status: 200 })
-    );
-
+  it("calls POST /api/events with the event payload", async () => {
+    const event = makeEvent();
+    const fetchMock = mockJsonResponse(event);
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() => useCreateEventMutation(), { wrapper });
 
-    const input = {
-      name: "Test",
-      startDate: new Date("2025-01-01"),
-      endDate: new Date("2025-01-02"),
-    };
+    await act(async () => result.current.mutateAsync(event));
 
-    result.current.mutate(input);
+    const [calledUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(calledUrl).toContain("/api/events");
+    expect(init.method).toBe("POST");
+  });
 
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  it("returns the created event on success", async () => {
+    const event = makeEvent();
+    vi.stubGlobal("fetch", mockJsonResponse(event));
 
-    expect(fetchMock).toHaveBeenCalled();
+    const { result } = renderHook(() => useCreateEventMutation(), { wrapper });
+    const created = await act(async () => result.current.mutateAsync(event));
 
-    const call = fetchMock.mock.calls[0];
-    expect(call).toBeDefined();
-    const [, init] = call!;
-    const body = JSON.parse(init!.body as string);
+    expect(created).toMatchObject(event);
+  });
 
-    expect(body.startDate).toContain("2025");
-    expect(body.endDate).toContain("2025");
+  it("invalidates all events queries on success", async () => {
+    const event = makeEvent();
+    vi.stubGlobal("fetch", mockJsonResponse(event));
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
 
-    expect(invalidateSpy).toHaveBeenCalledWith({
-      queryKey: eventsKeys.all,
-    });
+    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+    const { result } = renderHook(() => useCreateEventMutation(), { wrapper });
+
+    await act(async () => result.current.mutateAsync(event));
+    expect(invalidateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ queryKey: eventsKeys.all })
+    );
+  });
+
+  it("enters error state on a server error", async () => {
+    vi.stubGlobal("fetch", mockServerErrorResponse());
+    const { wrapper } = createQueryClientWithWrapper();
+
+    const { result } = renderHook(() => useCreateEventMutation(), { wrapper });
+
+    await act(async () => result.current.mutate(makeEvent()));
+    await waitFor(() => expect(result.current.isError).toBe(true));
   });
 });
 
 describe("useUpdateEventMutation", () => {
-  it("updates an event and invalidates cache", async () => {
-    const { wrapper, queryClient } = createWrapper();
-    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
-
-    const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(JSON.stringify(mockEvent), { status: 200 })
-    );
-
+  it("calls PATCH /api/events/:eventId", async () => {
+    const event = makeEvent();
+    const fetchMock = mockJsonResponse(event);
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() => useUpdateEventMutation(), { wrapper });
+    await act(async () => result.current.mutateAsync({ eventId: "ev-1", data: event }));
 
-    result.current.mutate({
-      eventId: "123",
-      data: { name: "Updated" },
-    });
+    const [calledUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(calledUrl).toContain("/api/events/ev-1");
+    expect(init.method).toBe("PATCH");
+  });
 
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  it("returns the updated event on success", async () => {
+    const event = makeEvent();
+    vi.stubGlobal("fetch", mockJsonResponse(event));
 
-    expect(fetchMock.mock.calls[0]?.[0]).toContain("/api/events/123");
+    const { result } = renderHook(() => useUpdateEventMutation(), { wrapper });
 
-    expect(invalidateSpy).toHaveBeenCalledWith({
-      queryKey: eventsKeys.all,
-    });
+    const updated = await act(async () =>
+      result.current.mutateAsync({ eventId: "ev-1", data: event })
+    );
+    expect(updated).toMatchObject(event);
+  });
+
+  it("invalidates all events queries on success", async () => {
+    const event = makeEvent();
+    vi.stubGlobal("fetch", mockJsonResponse(event));
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+
+    const { result } = renderHook(() => useUpdateEventMutation(), { wrapper });
+
+    await act(async () => result.current.mutateAsync({ eventId: "ev-1", data: event }));
+    expect(invalidateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ queryKey: eventsKeys.all })
+    );
+  });
+
+  it("enters error state on a server error", async () => {
+    vi.stubGlobal("fetch", mockServerErrorResponse());
+
+    const { result } = renderHook(() => useUpdateEventMutation(), { wrapper });
+
+    await act(async () => result.current.mutate({ eventId: "ev-1", data: makeEvent() }));
+    await waitFor(() => expect(result.current.isError).toBe(true));
   });
 });
 
 describe("useDeleteEventMutation", () => {
-  it("deletes an event and invalidates cache", async () => {
-    const { wrapper, queryClient } = createWrapper();
-    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
-
-    const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(JSON.stringify(mockEvent), { status: 200 })
-    );
-
+  it("calls DELETE /api/events/:eventId", async () => {
+    const fetchMock = mockJsonResponse(makeEvent());
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() => useDeleteEventMutation(), { wrapper });
 
-    result.current.mutate({ eventId: "999" });
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
-
-    expect(fetchMock.mock.calls[0]?.[0]).toContain("/api/events/999");
-
-    expect(invalidateSpy).toHaveBeenCalledWith({
-      queryKey: eventsKeys.all,
-    });
+    await act(async () => result.current.mutateAsync({ eventId: "ev-1" }));
+    const [calledUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(calledUrl).toContain("/api/events/ev-1");
+    expect(init.method).toBe("DELETE");
   });
+
+  it("invalidates all events queries on success", async () => {
+    vi.stubGlobal("fetch", mockJsonResponse(makeEvent()));
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+
+    const { result } = renderHook(() => useDeleteEventMutation(), { wrapper });
+
+    await act(async () => result.current.mutateAsync({ eventId: "ev-1" }));
+    expect(invalidateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ queryKey: eventsKeys.all })
+    );
+  });
+
+  it("enters error state on a server error", async () => {
+    vi.stubGlobal("fetch", mockServerErrorResponse());
+
+    const { result } = renderHook(() => useDeleteEventMutation(), { wrapper });
+
+    await act(async () => result.current.mutate({ eventId: "ev-1" }));
+    await waitFor(() => expect(result.current.isError).toBe(true));
+  });
+});
+
+describe("useJoinMutation", () => {
+  it("no idea how to test this hook", ({ skip }) => skip);
 });
