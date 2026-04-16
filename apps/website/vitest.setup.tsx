@@ -17,8 +17,13 @@
 
 import { cleanup } from "@testing-library/react";
 import { afterEach, beforeEach, vi } from "vitest";
-import { mockRouter, resetMockRouter } from "./__mocks__/router.mock";
-import { flashUiMock, resetEventCounter, resetImageCounter } from "@test-config";
+import {
+  flashUiMock,
+  resetEventCounter,
+  resetImageCounter,
+  resetMockRouter,
+  resetMockCookieStore,
+} from "@test-config";
 import {
   redirect,
   useParams,
@@ -105,16 +110,7 @@ globalThis.fetch = mockFetch;
  */
 beforeEach(async () => {
   resetMockRouter();
-
-  // Clear router call history so each test starts from a clean slate.
-  // Tests that need to assert on router calls can do so without interference
-  // from previous tests.
-  mockRouter.push.mockClear();
-  mockRouter.replace.mockClear();
-  mockRouter.back.mockClear();
-  mockRouter.forward.mockClear();
-  mockRouter.refresh.mockClear();
-  mockRouter.prefetch.mockClear();
+  resetMockCookieStore();
 
   // Reset fetch so each test controls its own responses.
   mockFetch.mockReset();
@@ -125,9 +121,12 @@ beforeEach(async () => {
 
   // Reset all mocks
   vi.resetAllMocks();
+
+  // Unstub any globals that were stubbed in a test
+  vi.unstubAllGlobals();
 });
 
-// ─── afterEach: unmount React trees ─────────────────────────────────────────
+// Unmount React trees
 afterEach(() => {
   cleanup();
 });
