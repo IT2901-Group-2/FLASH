@@ -46,9 +46,6 @@ type DateWithTimeInput =
  * Creates a Date object from separate date and time components, or
  * from a "HH:mm" string.
  *
- * The resulting Date will have the specified hours and minutes, with
- * seconds andmilliseconds set to zero.
- *
  * @param options - An object containing either:
  *   - `date`: An optional Date object to use as the base (defaults to now).
  *   - `hours`: Optional hours to set (0-23, defaults to 0).
