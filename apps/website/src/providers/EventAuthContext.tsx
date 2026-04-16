@@ -13,6 +13,7 @@ export type EventAuth =
       isAuthenticated: true;
       nickname: string;
       isModerator: boolean;
+      userId: string;
     };
 
 export const EventAuthContext = createContext<Promise<EventAuth> | null>(null);

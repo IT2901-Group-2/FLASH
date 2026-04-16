@@ -1,6 +1,5 @@
 .pageWrapper {
   margin: 0;
-  gap: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -66,16 +65,31 @@
 }
 
 .errorText {
-  margin: 0;
+  margin: 1.5rem 0 0;
   color: var(--color-neutral-700);
   font-weight: 600;
   text-align: center;
 }
 
 .emptyState {
-  margin: 1rem 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50dvh;
   color: var(--color-neutral-600);
   font-weight: 500;
+}
+
+.tabContainer {
+  width: 100%;
+  padding: 0 1rem;
+  margin-top: 1.5rem;
+}
+
+.sectionTitle {
+  margin: 1rem 0;
+  padding: 0 1rem;
+  width: 100%;
 }
 
 .grid {
@@ -94,6 +108,10 @@
   .grid {
     grid-template-columns: repeat(6, 1fr);
     padding: 1em 1em 0.3em;
+  }
+
+  .sectionTitle {
+    padding: 0 1rem;
   }
 }
 
@@ -122,5 +140,9 @@
 
   .desktopOnly {
     display: none !important;
+  }
+
+  .sectionTitle[data-size] {
+    font-size: var(--font-size-heading-medium);
   }
 }
