@@ -63,10 +63,7 @@ const createTokenValue = (token: TransformedToken): string => {
 };
 
 /**
- * Formats the token's role based on its group. If the group does not
- * contain a dot, it checks if the group is one of "background", "text",
- * or "border" to assign a role of "root". Otherwise, it uses the part of
- * the group after the dot as the role.
+ * Formats the token's role based on its group.
  *
  * @param group The group attribute of the token, which may contain a dot to indicate hierarchy.
  * @returns A string representing the role of the token, such as "root", "color", "size", etc.
