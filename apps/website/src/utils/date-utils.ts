@@ -75,6 +75,22 @@ export const createDate = ({
   return base;
 };
 
+/**
+ * Parses a Date object from either a "HH:mm" string or an object with
+ * date, hours, and minutes.
+ *
+ * @param input Either a string in "HH:mm" format or an object containing:
+ *   - `date`: An optional Date object to use as the base (defaults to now).
+ *   - `hours`: Optional hours to set (0-23, defaults to 0).
+ *   - `minutes`: Optional minutes to set (0-59, defaults to 0).
+ * @returns A Date object with the specified date and time components.
+ *
+ * @example
+ * parseTimeOrDate("14:30");
+ * // Returns a Date for today at 14:30 local time.
+ *parseTimeOrDate({ date: new Date("2026-01-01"), hours: 14, minutes: 30 });
+ * // Returns a Date for Jan 1, 2026 at 14:30 local time.
+ */
 export const parseTimeOrDate = (input: DateWithTimeInput): Date => {
   if (typeof input === "string") {
     const [h, m] = input.split(":").map(Number);
