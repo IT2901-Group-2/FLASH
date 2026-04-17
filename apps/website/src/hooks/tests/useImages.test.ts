@@ -253,7 +253,7 @@ describe("useUpdateImageMutation", () => {
     vi.stubGlobal("fetch", mockServerErrorResponse());
 
     const { result } = renderHook(() => useUpdateImageMutation(), { wrapper });
-    await act(async () => result.current.mutate(makeUpdateImageInput({ data: {} })));
+    await act(async () => result.current.mutate(makeUpdateImageInput()));
 
     await waitFor(() => expect(result.current.isError).toBe(true));
   });
