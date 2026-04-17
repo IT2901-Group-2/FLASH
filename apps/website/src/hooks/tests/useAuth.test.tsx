@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import {
   useAuthRefresh,
@@ -7,29 +6,16 @@ import {
   useLogoutMutation,
   useRefreshMutation,
 } from "../useAuth";
+import { createQueryClientWithWrapper, createQueryClientWrapper } from "@test-config";
 
 const mockOk = { ok: true as const };
 
-function createWrapper() {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  });
-  const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-
-  return { wrapper, queryClient };
-}
+let wrapper: ReturnType<typeof createQueryClientWrapper>;
+beforeEach(() => {
+  wrapper = createQueryClientWrapper();
+});
 
 describe("useAuthRefresh", () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
-
   it("fetches auth state successfully", async () => {
     vi.stubGlobal(
       "fetch",
@@ -42,9 +28,7 @@ describe("useAuthRefresh", () => {
       ) as unknown as typeof fetch
     );
 
-    const { result } = renderHook(() => useAuthRefresh(), {
-      wrapper: createWrapper().wrapper,
-    });
+    const { result } = renderHook(() => useAuthRefresh(), { wrapper });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -63,9 +47,7 @@ describe("useAuthRefresh", () => {
       )
     );
 
-    const { result } = renderHook(() => useAuthRefresh(), {
-      wrapper: createWrapper().wrapper,
-    });
+    const { result } = renderHook(() => useAuthRefresh(), { wrapper });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
 
@@ -84,9 +66,7 @@ describe("useAuthRefresh", () => {
       )
     );
 
-    const { result } = renderHook(() => useAuthRefresh(), {
-      wrapper: createWrapper().wrapper,
-    });
+    const { result } = renderHook(() => useAuthRefresh(), { wrapper });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
 
@@ -100,7 +80,7 @@ describe("useLoginMutation", () => {
   });
 
   it("logs in and sets auth query data on success", async () => {
-    const { wrapper, queryClient } = createWrapper();
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
     const setQueryDataSpy = vi.spyOn(queryClient, "setQueryData");
 
     vi.stubGlobal(
@@ -133,9 +113,7 @@ describe("useLoginMutation", () => {
     );
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() => useLoginMutation(), {
-      wrapper: createWrapper().wrapper,
-    });
+    const { result } = renderHook(() => useLoginMutation(), { wrapper });
 
     result.current.mutate({ password: "mypassword" });
 
@@ -159,9 +137,7 @@ describe("useLoginMutation", () => {
       )
     );
 
-    const { result } = renderHook(() => useLoginMutation(), {
-      wrapper: createWrapper().wrapper,
-    });
+    const { result } = renderHook(() => useLoginMutation(), { wrapper });
 
     result.current.mutate({ password: "wrongpassword" });
 
@@ -177,7 +153,7 @@ describe("useLogoutMutation", () => {
   });
 
   it("logs out and sets auth query data to null", async () => {
-    const { wrapper, queryClient } = createWrapper();
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
     const setQueryDataSpy = vi.spyOn(queryClient, "setQueryData");
 
     vi.stubGlobal(
@@ -210,9 +186,7 @@ describe("useLogoutMutation", () => {
     );
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() => useLogoutMutation(), {
-      wrapper: createWrapper().wrapper,
-    });
+    const { result } = renderHook(() => useLogoutMutation(), { wrapper });
 
     result.current.mutate();
 
@@ -228,7 +202,7 @@ describe("useRefreshMutation", () => {
   });
 
   it("refreshes token and sets auth query data on success", async () => {
-    const { wrapper, queryClient } = createWrapper();
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
     const setQueryDataSpy = vi.spyOn(queryClient, "setQueryData");
 
     vi.stubGlobal(
@@ -252,7 +226,7 @@ describe("useRefreshMutation", () => {
   });
 
   it("clears auth state on refresh failure", async () => {
-    const { wrapper, queryClient } = createWrapper();
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
     const setQueryDataSpy = vi.spyOn(queryClient, "setQueryData");
 
     vi.stubGlobal(
@@ -287,9 +261,7 @@ describe("useRefreshMutation", () => {
       ) as unknown as typeof fetch
     );
 
-    const { result } = renderHook(() => useRefreshMutation(), {
-      wrapper: createWrapper().wrapper,
-    });
+    const { result } = renderHook(() => useRefreshMutation(), { wrapper });
 
     expect(typeof result.current.refresh).toBe("function");
 
