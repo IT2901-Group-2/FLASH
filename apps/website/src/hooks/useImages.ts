@@ -4,7 +4,7 @@ import {
   UpdateImage,
   uploadedImageCountSchema,
 } from "@/db";
-import { makeRequest } from "@/lib/utils/api";
+import readResponseError, { makeRequest } from "@/lib/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import z from "zod";
 
@@ -185,7 +185,16 @@ export function useDeleteImageMutation() {
 export function useDownloadImagesMutation() {
   return useMutation({
     mutationFn: async ({ eventId }: DownloadImagesInput) => {
-      window.location.href = `/api/events/${eventId}/images/download`;
+      const response = await fetch(`/api/events/${eventId}/images/download`);
+      if (!response.ok) {
+        throw new Error(await readResponseError(response));
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.click();
+      URL.revokeObjectURL(url);
     },
   });
 }
