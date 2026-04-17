@@ -1,4 +1,10 @@
 import type { Image } from "@/db";
+import {
+  BatchUpdateImageInput,
+  CreateImageInput,
+  DeleteImageInput,
+  UpdateImageInput,
+} from "@/hooks/useImages";
 
 let _counter = 1;
 const nextId = () => `image-${_counter++}`;
@@ -76,4 +82,72 @@ export const makeMockFileList = (file: File): FileList => {
  */
 export const resetImageCounter = () => {
   _counter = 1;
+};
+
+/**
+ * Factory functions for creating input objects for image mutations.
+ *
+ * @example
+ * const input = makeCreateImageInput({ eventId: "event-1" });
+ */
+export const makeCreateImageInput = (
+  overrides: Partial<CreateImageInput> = {}
+): CreateImageInput => {
+  return {
+    eventId: "event-123",
+    file: makeMockFile(),
+    ...overrides,
+  };
+};
+
+/**
+ * Factory functions for creating input objects for image mutations.
+ *
+ * @example
+ * const input = makeUpdateImageInput({ eventId: "event-1", imageId: "image-1", data: { isApproved: true } });
+ */
+export const makeUpdateImageInput = (
+  overrides: Partial<UpdateImageInput> = {}
+): UpdateImageInput => {
+  return {
+    eventId: "event-123",
+    imageId: "image-123",
+    data: {
+      isApproved: true,
+    },
+    ...overrides,
+  };
+};
+
+/**
+ * Factory functions for creating input objects for image mutations.
+ *
+ * @example
+ * const input = makeDeleteImageInput({ eventId: "event-1", imageId: "image-1" });
+ */
+export const makeDeleteImageInput = (
+  overrides: Partial<DeleteImageInput> = {}
+): DeleteImageInput => {
+  return {
+    eventId: "event-123",
+    imageId: "image-123",
+    ...overrides,
+  };
+};
+
+/**
+ * Factory functions for creating input objects for batch image update mutations.
+ *
+ * @example
+ * const input = makeBatchUpdateImageInput({ eventId: "event-1", ids: ["image-1", "image-2"], isApproved: false });
+ */
+export const makeBatchUpdateImageInput = (
+  overrides: Partial<BatchUpdateImageInput> = {}
+): BatchUpdateImageInput => {
+  return {
+    eventId: "event-123",
+    ids: ["image-1", "image-2", "image-3"],
+    isApproved: true,
+    ...overrides,
+  };
 };
