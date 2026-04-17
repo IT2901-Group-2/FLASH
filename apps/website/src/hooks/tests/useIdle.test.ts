@@ -18,56 +18,80 @@ describe("useIdle", () => {
 
   it("becomes idle after the delay", () => {
     const { result } = renderHook(() => useIdle(2000));
-    act(() => vi.advanceTimersByTime(2000));
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
     expect(result.current).toBe(true);
   });
 
   it("does not become idle before the delay", () => {
     const { result } = renderHook(() => useIdle(2000));
-    act(() => vi.advanceTimersByTime(1999));
+    act(() => {
+      vi.advanceTimersByTime(1999);
+    });
     expect(result.current).toBe(false);
   });
 
   it.each(["mousemove", "mousedown", "keydown"])('resets idle on "%s"', event => {
     const { result } = renderHook(() => useIdle(2000));
 
-    act(() => vi.advanceTimersByTime(1500));
-    act(() => window.dispatchEvent(new Event(event)));
-    act(() => vi.advanceTimersByTime(1500));
+    act(() => {
+      vi.advanceTimersByTime(1500);
+    });
+    act(() => {
+      window.dispatchEvent(new Event(event));
+    });
+    act(() => {
+      vi.advanceTimersByTime(1500);
+    });
 
     expect(result.current).toBe(false);
 
-    act(() => vi.advanceTimersByTime(500));
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
     expect(result.current).toBe(true);
   });
 
   it("resets from idle back to active on user input", () => {
     const { result } = renderHook(() => useIdle(2000));
 
-    act(() => vi.advanceTimersByTime(2000));
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
     expect(result.current).toBe(true);
 
-    act(() => window.dispatchEvent(new Event("mousemove")));
+    act(() => {
+      window.dispatchEvent(new Event("mousemove"));
+    });
     expect(result.current).toBe(false);
   });
 
   it("uses the default delay of 2000ms", () => {
     const { result } = renderHook(() => useIdle());
 
-    act(() => vi.advanceTimersByTime(1999));
+    act(() => {
+      vi.advanceTimersByTime(1999);
+    });
     expect(result.current).toBe(false);
 
-    act(() => vi.advanceTimersByTime(1));
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
     expect(result.current).toBe(true);
   });
 
   it("respects a custom delay", () => {
     const { result } = renderHook(() => useIdle(5000));
 
-    act(() => vi.advanceTimersByTime(4999));
+    act(() => {
+      vi.advanceTimersByTime(4999);
+    });
     expect(result.current).toBe(false);
 
-    act(() => vi.advanceTimersByTime(1));
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
     expect(result.current).toBe(true);
   });
 
@@ -89,12 +113,16 @@ describe("useIdle", () => {
       initialProps: { delay: 2000 },
     });
 
-    act(() => vi.advanceTimersByTime(1999));
+    act(() => {
+      vi.advanceTimersByTime(1999);
+    });
     expect(result.current).toBe(false);
 
     rerender({ delay: 500 });
 
-    act(() => vi.advanceTimersByTime(500));
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
     expect(result.current).toBe(true);
   });
 });
