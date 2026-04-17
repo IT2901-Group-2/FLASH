@@ -152,10 +152,12 @@ describe("useUploadImageMutation", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() => useUploadImageMutation(), { wrapper });
-    await act(async () => result.current.mutateAsync(makeCreateImageInput()));
+    await act(async () =>
+      result.current.mutateAsync(makeCreateImageInput({ eventId: "event-1" }))
+    );
 
     const [calledUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-    expect(calledUrl).toContain("/api/events/ev-1/images");
+    expect(calledUrl).toContain("/api/events/event-1/images");
     expect(init.method).toBe("POST");
   });
 
@@ -177,10 +179,12 @@ describe("useUploadImageMutation", () => {
     const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
     const { result } = renderHook(() => useUploadImageMutation(), { wrapper });
-    await act(async () => result.current.mutateAsync(makeCreateImageInput()));
+    await act(async () =>
+      result.current.mutateAsync(makeCreateImageInput({ eventId: "event-1" }))
+    );
 
     expect(invalidateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ queryKey: imagesKeys.event("ev-1") })
+      expect.objectContaining({ queryKey: imagesKeys.event("event-1") })
     );
   });
 
@@ -190,13 +194,15 @@ describe("useUploadImageMutation", () => {
     const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
     const { result } = renderHook(() => useUploadImageMutation(), { wrapper });
-    await act(async () => result.current.mutateAsync(makeCreateImageInput()));
+    await act(async () =>
+      result.current.mutateAsync(makeCreateImageInput({ eventId: "event-1" }))
+    );
 
     expect(invalidateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ queryKey: imagesKeys.event("ev-2") })
+      expect.objectContaining({ queryKey: imagesKeys.event("event-1") })
     );
     expect(invalidateSpy).not.toHaveBeenCalledWith(
-      expect.objectContaining({ queryKey: imagesKeys.event("ev-1") })
+      expect.objectContaining({ queryKey: imagesKeys.event("event-2") })
     );
   });
 
@@ -216,10 +222,14 @@ describe("useUpdateImageMutation", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() => useUpdateImageMutation(), { wrapper });
-    await act(async () => result.current.mutateAsync(makeUpdateImageInput()));
+    await act(async () =>
+      result.current.mutateAsync(
+        makeUpdateImageInput({ eventId: "event-1", imageId: "image-1" })
+      )
+    );
 
     const [calledUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-    expect(calledUrl).toContain("/api/events/ev-1/images/img-1");
+    expect(calledUrl).toContain("/api/events/event-1/images/image-1");
     expect(init.method).toBe("PATCH");
   });
 
@@ -243,12 +253,12 @@ describe("useUpdateImageMutation", () => {
     const { result } = renderHook(() => useUpdateImageMutation(), { wrapper });
     await act(async () =>
       result.current.mutateAsync(
-        makeUpdateImageInput({ eventId: "ev-1", data: { isApproved: false } })
+        makeUpdateImageInput({ eventId: "event-1", data: { isApproved: false } })
       )
     );
 
     expect(invalidateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ queryKey: imagesKeys.event("ev-1") })
+      expect.objectContaining({ queryKey: imagesKeys.event("event-1") })
     );
   });
 
