@@ -4,6 +4,7 @@ import {
   mockCookieStore,
   mockJsonResponse,
   mockServerErrorResponse,
+  mockUnauthorizedResponse,
 } from "@test-config";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { act, renderHook, waitFor } from "@testing-library/react";
@@ -110,70 +111,50 @@ describe("useAuthRefresh", () => {
 });
 
 describe("useLoginMutation", () => {
-  it("logs in and sets auth query data on success", async () => {
-    const { wrapper, queryClient } = createQueryClientWithWrapper();
-    const setQueryDataSpy = vi.spyOn(queryClient, "setQueryData");
-
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify(okResponse), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          })
-      ) as unknown as typeof fetch
-    );
-
-    const { result } = renderHook(() => useLoginMutation(), { wrapper });
-
-    result.current.mutate({ password: "secret123" });
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
-
-    expect(setQueryDataSpy).toHaveBeenCalledWith(["auth"], okResponse);
-  });
-
-  it("sends password in request body", async () => {
-    const fetchMock = vi.fn<typeof fetch>(
-      async () =>
-        new Response(JSON.stringify(okResponse), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        })
-    );
+  it("calls POST /api/auth/login with the password", async () => {
+    const fetchMock = mockJsonResponse(okResponse);
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() => useLoginMutation(), { wrapper });
+    await act(async () => result.current.mutateAsync({ password: "secret" }));
 
-    result.current.mutate({ password: "mypassword" });
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
-
-    const [, init] = fetchMock.mock.calls[0]!;
-    const body = JSON.parse(init!.body as string);
-
-    expect(body.password).toBe("mypassword");
+    const [calledUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(calledUrl).toContain("/api/auth/login");
+    expect(init.method).toBe("POST");
+    expect(JSON.parse(init.body as string)).toStrictEqual({ password: "secret" });
   });
 
-  it("handles login failure", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify({ message: "Invalid password" }), {
-            status: 401,
-            headers: { "Content-Type": "application/json" },
-          })
-      )
-    );
+  it("logs in and sets auth query data on success", async () => {
+    vi.stubGlobal("fetch", mockJsonResponse(okResponse));
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
+    const setDataSpy = vi.spyOn(queryClient, "setQueryData");
 
     const { result } = renderHook(() => useLoginMutation(), { wrapper });
+    const data = await act(async () =>
+      result.current.mutateAsync({ password: "secret" })
+    );
 
-    result.current.mutate({ password: "wrongpassword" });
+    expect(setDataSpy).toHaveBeenCalledWith(["auth"], okResponse);
+    expect(data).toStrictEqual(okResponse);
+  });
+
+  it("enters error state on unauthorized response", async () => {
+    vi.stubGlobal("fetch", mockUnauthorizedResponse("Unauthorized"));
+
+    const { result } = renderHook(() => useLoginMutation(), { wrapper });
+    await act(async () => result.current.mutate({ password: "wrong" }));
 
     await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(result.current.error?.message).toBe("Unauthorized");
+  });
 
+  it("enters error state on a server error", async () => {
+    vi.stubGlobal("fetch", mockServerErrorResponse("Invalid password"));
+
+    const { result } = renderHook(() => useLoginMutation(), { wrapper });
+    await act(async () => result.current.mutate({ password: "wrong_password" }));
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.error?.message).toBe("Invalid password");
   });
 });
