@@ -1,8 +1,9 @@
 import {
   createQueryClientWithWrapper,
   createQueryClientWrapper,
+  makeCreateImageInput,
   makeImage,
-  makeMockFile,
+  makeUpdateImageInput,
   makeUploadedImageCount,
   mockJsonResponse,
   mockServerErrorResponse,
@@ -148,9 +149,7 @@ describe("useUploadImageMutation", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() => useUploadImageMutation(), { wrapper });
-    await act(async () =>
-      result.current.mutateAsync({ eventId: "ev-1", file: makeMockFile() })
-    );
+    await act(async () => result.current.mutateAsync(makeCreateImageInput()));
 
     const [calledUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect(calledUrl).toContain("/api/events/ev-1/images");
@@ -163,7 +162,7 @@ describe("useUploadImageMutation", () => {
 
     const { result } = renderHook(() => useUploadImageMutation(), { wrapper });
     const created = await act(async () =>
-      result.current.mutateAsync({ eventId: "ev-1", file: makeMockFile() })
+      result.current.mutateAsync(makeCreateImageInput())
     );
 
     expect(created).toMatchObject(image);
@@ -175,9 +174,7 @@ describe("useUploadImageMutation", () => {
     const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
     const { result } = renderHook(() => useUploadImageMutation(), { wrapper });
-    await act(async () =>
-      result.current.mutateAsync({ eventId: "ev-1", file: makeMockFile() })
-    );
+    await act(async () => result.current.mutateAsync(makeCreateImageInput()));
 
     expect(invalidateSpy).toHaveBeenCalledWith(
       expect.objectContaining({ queryKey: imagesKeys.event("ev-1") })
@@ -190,9 +187,7 @@ describe("useUploadImageMutation", () => {
     const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
     const { result } = renderHook(() => useUploadImageMutation(), { wrapper });
-    await act(async () =>
-      result.current.mutateAsync({ eventId: "ev-2", file: makeMockFile() })
-    );
+    await act(async () => result.current.mutateAsync(makeCreateImageInput()));
 
     expect(invalidateSpy).toHaveBeenCalledWith(
       expect.objectContaining({ queryKey: imagesKeys.event("ev-2") })
@@ -206,42 +201,61 @@ describe("useUploadImageMutation", () => {
     vi.stubGlobal("fetch", mockServerErrorResponse());
 
     const { result } = renderHook(() => useUploadImageMutation(), { wrapper });
-    await act(async () =>
-      result.current.mutate({ eventId: "ev-1", file: new Blob(["img"]) })
-    );
+    await act(async () => result.current.mutate(makeCreateImageInput()));
 
     await waitFor(() => expect(result.current.isError).toBe(true));
   });
 });
 
 describe("useUpdateImageMutation", () => {
-  it("updates an image and invalidates cache", async () => {
-    const { wrapper, queryClient } = createWrapper();
-    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
-
-    const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(JSON.stringify(mockImage), { status: 200 })
-    );
-
+  it("calls PATCH /api/events/:eventId/images/:imageId", async () => {
+    const fetchMock = mockJsonResponse(makeImage());
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() => useUpdateImageMutation(), { wrapper });
+    await act(async () => result.current.mutateAsync(makeUpdateImageInput()));
 
-    result.current.mutate({
-      eventId: "event-1",
-      imageId: "img-1",
-      data: { isApproved: true },
-    });
+    const [calledUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(calledUrl).toContain("/api/events/ev-1/images/img-1");
+    expect(init.method).toBe("PATCH");
+  });
 
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  it("returns the updated image on success", async () => {
+    const image = makeImage();
+    vi.stubGlobal("fetch", mockJsonResponse(image));
 
-    const [url, init] = fetchMock.mock.calls[0]!;
-    expect(url).toContain("/api/events/event-1/images/img-1");
-    expect(init?.method).toBe("PATCH");
+    const { result } = renderHook(() => useUpdateImageMutation(), { wrapper });
+    const updated = await act(async () =>
+      result.current.mutateAsync(makeUpdateImageInput())
+    );
 
-    expect(invalidateSpy).toHaveBeenCalledWith({
-      queryKey: imagesKeys.event("event-1"),
-    });
+    expect(updated).toMatchObject(image);
+  });
+
+  it("invalidates the event images cache on success", async () => {
+    vi.stubGlobal("fetch", mockJsonResponse(makeImage()));
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+
+    const { result } = renderHook(() => useUpdateImageMutation(), { wrapper });
+    await act(async () =>
+      result.current.mutateAsync(
+        makeUpdateImageInput({ eventId: "ev-1", data: { isApproved: false } })
+      )
+    );
+
+    expect(invalidateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ queryKey: imagesKeys.event("ev-1") })
+    );
+  });
+
+  it("enters error state on a server error", async () => {
+    vi.stubGlobal("fetch", mockServerErrorResponse());
+
+    const { result } = renderHook(() => useUpdateImageMutation(), { wrapper });
+    await act(async () => result.current.mutate(makeUpdateImageInput({ data: {} })));
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
   });
 });
 
