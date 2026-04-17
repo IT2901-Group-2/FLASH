@@ -1,12 +1,14 @@
 import {
+  createQueryClientWithWrapper,
   createQueryClientWrapper,
   makeImage,
+  makeMockFile,
   makeUploadedImageCount,
   mockJsonResponse,
   mockServerErrorResponse,
 } from "@test-config";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import {
   imagesKeys,
   useImagesQuery,
@@ -141,30 +143,74 @@ describe("useUploadedImageCountQuery", () => {
 });
 
 describe("useUploadImageMutation", () => {
-  it("uploads an image and invalidates cache", async () => {
-    const { wrapper, queryClient } = createWrapper();
-    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
-
-    const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(JSON.stringify(mockImage), { status: 200 })
-    );
-
+  it("calls POST /api/events/:eventId/images", async () => {
+    const fetchMock = mockJsonResponse(makeImage());
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() => useUploadImageMutation(), { wrapper });
+    await act(async () =>
+      result.current.mutateAsync({ eventId: "ev-1", file: makeMockFile() })
+    );
 
-    const file = new File(["content"], "photo.jpg", { type: "image/jpeg" });
-    result.current.mutate({ eventId: "event-1", file });
+    const [calledUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(calledUrl).toContain("/api/events/ev-1/images");
+    expect(init.method).toBe("POST");
+  });
 
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  it("returns the created image on success", async () => {
+    const image = makeImage();
+    vi.stubGlobal("fetch", mockJsonResponse(image));
 
-    const [url, init] = fetchMock.mock.calls[0]!;
-    expect(url).toContain("/api/events/event-1/images");
-    expect(init?.method).toBe("POST");
+    const { result } = renderHook(() => useUploadImageMutation(), { wrapper });
+    const created = await act(async () =>
+      result.current.mutateAsync({ eventId: "ev-1", file: makeMockFile() })
+    );
 
-    expect(invalidateSpy).toHaveBeenCalledWith({
-      queryKey: imagesKeys.event("event-1"),
-    });
+    expect(created).toMatchObject(image);
+  });
+
+  it("uploads an image and invalidates cache", async () => {
+    vi.stubGlobal("fetch", mockJsonResponse(makeImage()));
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+
+    const { result } = renderHook(() => useUploadImageMutation(), { wrapper });
+    await act(async () =>
+      result.current.mutateAsync({ eventId: "ev-1", file: makeMockFile() })
+    );
+
+    expect(invalidateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ queryKey: imagesKeys.event("ev-1") })
+    );
+  });
+
+  it("only invalidates the cache for the uploaded event, not others", async () => {
+    vi.stubGlobal("fetch", mockJsonResponse(makeImage()));
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+
+    const { result } = renderHook(() => useUploadImageMutation(), { wrapper });
+    await act(async () =>
+      result.current.mutateAsync({ eventId: "ev-2", file: makeMockFile() })
+    );
+
+    expect(invalidateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ queryKey: imagesKeys.event("ev-2") })
+    );
+    expect(invalidateSpy).not.toHaveBeenCalledWith(
+      expect.objectContaining({ queryKey: imagesKeys.event("ev-1") })
+    );
+  });
+
+  it("enters error state on a server error", async () => {
+    vi.stubGlobal("fetch", mockServerErrorResponse());
+
+    const { result } = renderHook(() => useUploadImageMutation(), { wrapper });
+    await act(async () =>
+      result.current.mutate({ eventId: "ev-1", file: new Blob(["img"]) })
+    );
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
   });
 });
 
