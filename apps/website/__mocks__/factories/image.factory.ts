@@ -34,6 +34,14 @@ export const makeImages = (count: number, overrides: Partial<Image> = {}): Image
 };
 
 /**
+ * Creates a mock response for the uploaded image count endpoint.
+ *
+ * @example
+ * const response = makeUploadedImageCount(10); // { count: 10 }
+ */
+export const makeUploadedImageCount = (count = 5) => ({ count });
+
+/**
  * Creates a mock File object suitable for upload tests.
  *
  * @example
