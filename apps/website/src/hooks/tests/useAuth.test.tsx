@@ -1,3 +1,4 @@
+import { createQueryClientWithWrapper, createQueryClientWrapper } from "@test-config";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import {
@@ -6,7 +7,6 @@ import {
   useLogoutMutation,
   useRefreshMutation,
 } from "../useAuth";
-import { createQueryClientWithWrapper, createQueryClientWrapper } from "@test-config";
 
 const mockOk = { ok: true as const };
 
