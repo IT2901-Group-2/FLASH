@@ -30,6 +30,13 @@ const resolveCssVarsInString = (value: string): string => {
  * 3) Resolve CSS variables in `fill`, `stroke`, and `style`.
  * 4) Inject an explicit background rectangle for portability.
  * 5) Serialize and download through a temporary object URL.
+ *
+ * @param svg The SVG element containing the QR code to download.
+ * @param fileName The desired name of the downloaded SVG file (e.g., "qr-code.svg").
+ *
+ * @example
+ * const svgElement = document.getElementById("my-qr-code") as SVGSVGElement;
+ * downloadQrSvg(svgElement, "my-qr-code.svg");
  */
 export const downloadQrSvg = (svg: SVGSVGElement, fileName: string) => {
   // Work on a detached clone so the on-screen QR stays untouched.
