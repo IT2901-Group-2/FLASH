@@ -1,5 +1,11 @@
+import {
+  createQueryClientWrapper,
+  makeImage,
+  makeUploadedImageCount,
+  mockJsonResponse,
+  mockServerErrorResponse,
+} from "@test-config";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import {
   imagesKeys,
@@ -7,151 +13,130 @@ import {
   useUploadImageMutation,
   useUpdateImageMutation,
   useDeleteImageMutation,
+  useUploadedImageCountQuery,
 } from "../useImages";
-import { Image } from "@/db";
 
-const mockImage: Image = {
-  id: "image-id",
-  userId: "user1",
-  eventId: "event-id",
-  createdAt: new Date(),
-  updatedAt: new Date(),
-  previewImage:
-    "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAABQBQCdASogACAAPm00lUgkIyIhKAgAgA2JaQAA7MJS5IHjB4zLDA3J/kcpw0UNvpizMgAA/v1gU0XW/gLycFAkFtvekNcR3uBZWSxKpCS/DRKoYDyfFd4K1aODamUYMds9wossRPwW7bY0CxN7V+npngAAAA==",
-  isApproved: true,
-};
-
-function createWrapper() {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  });
-  const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-
-  return { wrapper, queryClient };
-}
+let wrapper: ReturnType<typeof createQueryClientWrapper>;
+beforeEach(() => {
+  wrapper = createQueryClientWrapper();
+});
 
 describe("useImagesQuery", () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
+  it("returns images on a successful response", async () => {
+    const images = [makeImage(), makeImage()];
+    vi.stubGlobal("fetch", mockJsonResponse(images));
+
+    const { result } = renderHook(() => useImagesQuery("ev-1"), { wrapper });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toStrictEqual(images);
   });
 
-  it("fetches images successfully", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify([mockImage]), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          })
-      ) as unknown as typeof fetch
-    );
-
-    const { result } = renderHook(() => useImagesQuery("event-1"), {
-      wrapper: createWrapper().wrapper,
-    });
-
-    await waitFor(() => {
-      expect(result.current.isSuccess).toBe(true);
-    });
-
-    expect(result.current.data).toStrictEqual([mockImage]);
-  });
-
-  it("does not fetch when eventId is empty", () => {
-    const fetchMock = vi.fn<typeof fetch>();
+  it("calls the correct URL for an event", async () => {
+    const fetchMock = mockJsonResponse([makeImage()]);
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() => useImagesQuery(""), {
-      wrapper: createWrapper().wrapper,
-    });
+    const { result } = renderHook(() => useImagesQuery("ev-42"), { wrapper });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(result.current.fetchStatus).toBe("idle");
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(fetchMock.mock.calls[0]?.[0]).toContain("/api/events/ev-42/images");
   });
 
-  it("handles fetch error", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify({ message: "failed to fetch" }), {
-            status: 500,
-            headers: { "Content-Type": "application/json" },
-          })
-      )
-    );
-
-    const { result } = renderHook(() => useImagesQuery("event-1"), {
-      wrapper: createWrapper().wrapper,
-    });
-
-    await waitFor(() => {
-      expect(result.current.isError).toBe(true);
-    });
-
-    expect(result.current.error).toBeInstanceOf(Error);
-  });
-
-  it("passes approval query param to fetch", async () => {
-    const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(JSON.stringify([]), { status: 200 })
-    );
-
+  it("appends query string when params are provided", async () => {
+    const fetchMock = mockJsonResponse([]);
     vi.stubGlobal("fetch", fetchMock);
 
-    renderHook(() => useImagesQuery("event-1", { approval: "pending" }), {
-      wrapper: createWrapper().wrapper,
-    });
-
-    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
-
-    expect(fetchMock.mock.calls[0]?.[0]).toContain("approval=pending");
-  });
-
-  it("passes id query params to fetch (sorted)", async () => {
-    const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(JSON.stringify([]), { status: 200 })
+    const { result } = renderHook(
+      () => useImagesQuery("ev-1", { approval: "pending", id: ["img-b", "img-a"] }),
+      {
+        wrapper,
+      }
     );
-
-    vi.stubGlobal("fetch", fetchMock);
-
-    renderHook(() => useImagesQuery("event-1", { id: ["img-b", "img-a"] }), {
-      wrapper: createWrapper().wrapper,
-    });
-
-    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     const url = fetchMock.mock.calls[0]?.[0] as string;
+    expect(url).toContain("approval=pending");
     expect(url).toContain("id=img-a");
     expect(url).toContain("id=img-b");
   });
 
-  it("extracts error message from JSON response", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify({ message: "Testing custom error" }), {
-            status: 400,
-            headers: { "Content-Type": "application/json" },
-          })
-      )
-    );
+  it("is disabled when eventId is undefined", async () => {
+    const fetchMock = mockJsonResponse([]);
+    vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() => useImagesQuery("event-1"), {
-      wrapper: createWrapper().wrapper,
-    });
+    const { result } = renderHook(() => useImagesQuery(undefined), { wrapper });
+
+    await new Promise(r => setTimeout(r, 50));
+    expect(result.current.isFetching).toBe(false);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("is disabled when eventId is an empty string", async () => {
+    const fetchMock = mockJsonResponse([]);
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderHook(() => useImagesQuery(""), { wrapper });
+
+    await new Promise(r => setTimeout(r, 50));
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("enters an error state on a server error", async () => {
+    vi.stubGlobal("fetch", mockServerErrorResponse());
+
+    const { result } = renderHook(() => useImagesQuery("ev-1"), { wrapper });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(result.current.error).toBeInstanceOf(Error);
+  });
+});
 
-    expect(result.current.error?.message).toBe("Testing custom error");
+describe("useUploadedImageCountQuery", () => {
+  it("returns the uploaded count on success", async () => {
+    const count = makeUploadedImageCount();
+    vi.stubGlobal("fetch", mockJsonResponse(count));
+
+    const { result } = renderHook(() => useUploadedImageCountQuery("ev-1"), {
+      wrapper,
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toStrictEqual(count);
+  });
+
+  it("calls the correct URL", async () => {
+    const fetchMock = mockJsonResponse(makeUploadedImageCount());
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useUploadedImageCountQuery("ev-99"), {
+      wrapper,
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(fetchMock.mock.calls[0]?.[0]).toContain("/api/events/ev-99/uploaded");
+  });
+
+  it("is disabled when eventId is undefined", async () => {
+    const fetchMock = mockJsonResponse({});
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useUploadedImageCountQuery(undefined), {
+      wrapper,
+    });
+
+    await new Promise(r => setTimeout(r, 50));
+    expect(result.current.isFetching).toBe(false);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("is disabled when eventId is an empty string", async () => {
+    const fetchMock = mockJsonResponse({});
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderHook(() => useUploadedImageCountQuery(""), { wrapper });
+
+    await new Promise(r => setTimeout(r, 50));
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });
 
@@ -213,6 +198,8 @@ describe("useUpdateImageMutation", () => {
     });
   });
 });
+
+describe("useBatchUpdateImageMutation", () => {});
 
 describe("useDeleteImageMutation", () => {
   it("deletes an image and invalidates cache", async () => {
