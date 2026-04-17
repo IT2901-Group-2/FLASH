@@ -8,9 +8,33 @@
     "title": "Join an Event",
     "description": "Enter the event code or scan the QR code to join"
   },
-  "adminEvents": {
+  "dashboard": {
     "title": "Events",
-    "description": "Manage your events"
+    "description": "Manage your events",
+    "filter": {
+      "search": {
+        "title": "Search"
+      },
+      "status": {
+        "title": "Status",
+        "options": {
+          "all": "All",
+          "upcoming": "Upcoming",
+          "active": "Active",
+          "finished": "Finished",
+          "archived": "Archived"
+        }
+      },
+      "sort": {
+        "title": "Sort",
+        "options": {
+          "name": "Name",
+          "startDate": "Start Date",
+          "endDate": "End Date",
+          "createdAt": "Created At"
+        }
+      }
+    }
   },
   "home": {
     "about": "About Us",
