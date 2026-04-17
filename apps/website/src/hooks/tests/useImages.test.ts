@@ -3,6 +3,7 @@ import {
   createQueryClientWrapper,
   makeBatchUpdateImageInput,
   makeCreateImageInput,
+  makeDeleteImageInput,
   makeImage,
   makeUpdateImageInput,
   makeUploadedImageCount,
@@ -325,26 +326,54 @@ describe("useBatchUpdateImageMutation", () => {
 });
 
 describe("useDeleteImageMutation", () => {
-  it("deletes an image and invalidates cache", async () => {
-    const { wrapper, queryClient } = createWrapper();
-    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
-
-    const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(JSON.stringify(mockImage), { status: 200 })
-    );
-
+  it("calls DELETE /api/events/:eventId/images/:imageId", async () => {
+    const fetchMock = mockJsonResponse(makeImage());
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() => useDeleteImageMutation(), { wrapper });
+    await act(async () =>
+      result.current.mutateAsync(
+        makeDeleteImageInput({ eventId: "event-1", imageId: "image-1" })
+      )
+    );
 
-    result.current.mutate({ eventId: "event-1", imageId: "img-99" });
+    const [calledUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(calledUrl).toContain("/api/events/event-1/images/image-1");
+    expect(init.method).toBe("DELETE");
+  });
 
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  it("invalidates the event images cache on success", async () => {
+    vi.stubGlobal("fetch", mockJsonResponse(makeImage()));
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
 
-    expect(fetchMock.mock.calls[0]?.[0]).toContain("/api/events/event-1/images/img-99");
+    const { result } = renderHook(() => useDeleteImageMutation(), { wrapper });
+    await act(async () =>
+      result.current.mutateAsync(makeDeleteImageInput({ eventId: "event-1" }))
+    );
 
-    expect(invalidateSpy).toHaveBeenCalledWith({
-      queryKey: imagesKeys.event("event-1"),
-    });
+    expect(invalidateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ queryKey: imagesKeys.event("event-1") })
+    );
+  });
+
+  it("only invalidates the cache for the deleted image's event", async () => {
+    vi.stubGlobal("fetch", mockJsonResponse(makeImage()));
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+
+    const { result } = renderHook(() => useDeleteImageMutation(), { wrapper });
+    await act(async () =>
+      result.current.mutateAsync(
+        makeDeleteImageInput({ eventId: "event-1", imageId: "image-1" })
+      )
+    );
+
+    expect(invalidateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ queryKey: imagesKeys.event("event-1") })
+    );
+    expect(invalidateSpy).not.toHaveBeenCalledWith(
+      expect.objectContaining({ queryKey: imagesKeys.event("event-2") })
+    );
   });
 });
