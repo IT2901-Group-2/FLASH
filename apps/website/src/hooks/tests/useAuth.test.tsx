@@ -2,17 +2,33 @@ import { createQueryClientWithWrapper, createQueryClientWrapper } from "@test-co
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import {
+  useAuth,
   useAuthRefresh,
   useLoginMutation,
   useLogoutMutation,
   useRefreshMutation,
 } from "../useAuth";
 
-const mockOk = { ok: true as const };
+const okResponse = { ok: true as const };
+const mockGetAuth = vi.fn();
+vi.mock("@/actions/auth", () => ({
+  getAuth: () => mockGetAuth(),
+}));
 
 let wrapper: ReturnType<typeof createQueryClientWrapper>;
 beforeEach(() => {
   wrapper = createQueryClientWrapper();
+});
+
+describe("useAuth", () => {
+  it("returns auth state from the server action", async () => {
+    mockGetAuth.mockResolvedValue(okResponse);
+
+    const { result } = renderHook(() => useAuth(), { wrapper });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toStrictEqual(okResponse);
+  });
 });
 
 describe("useAuthRefresh", () => {
@@ -21,7 +37,7 @@ describe("useAuthRefresh", () => {
       "fetch",
       vi.fn(
         async () =>
-          new Response(JSON.stringify(mockOk), {
+          new Response(JSON.stringify(okResponse), {
             status: 200,
             headers: { "Content-Type": "application/json" },
           })
@@ -32,7 +48,7 @@ describe("useAuthRefresh", () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(result.current.data).toStrictEqual(mockOk);
+    expect(result.current.data).toStrictEqual(okResponse);
   });
 
   it("returns null when refresh fails", async () => {
@@ -87,7 +103,7 @@ describe("useLoginMutation", () => {
       "fetch",
       vi.fn(
         async () =>
-          new Response(JSON.stringify(mockOk), {
+          new Response(JSON.stringify(okResponse), {
             status: 200,
             headers: { "Content-Type": "application/json" },
           })
@@ -100,13 +116,13 @@ describe("useLoginMutation", () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(setQueryDataSpy).toHaveBeenCalledWith(["auth"], mockOk);
+    expect(setQueryDataSpy).toHaveBeenCalledWith(["auth"], okResponse);
   });
 
   it("sends password in request body", async () => {
     const fetchMock = vi.fn<typeof fetch>(
       async () =>
-        new Response(JSON.stringify(mockOk), {
+        new Response(JSON.stringify(okResponse), {
           status: 200,
           headers: { "Content-Type": "application/json" },
         })
@@ -160,7 +176,7 @@ describe("useLogoutMutation", () => {
       "fetch",
       vi.fn(
         async () =>
-          new Response(JSON.stringify(mockOk), {
+          new Response(JSON.stringify(okResponse), {
             status: 200,
             headers: { "Content-Type": "application/json" },
           })
@@ -179,7 +195,7 @@ describe("useLogoutMutation", () => {
   it("calls POST /api/auth/logout", async () => {
     const fetchMock = vi.fn<typeof fetch>(
       async () =>
-        new Response(JSON.stringify(mockOk), {
+        new Response(JSON.stringify(okResponse), {
           status: 200,
           headers: { "Content-Type": "application/json" },
         })
@@ -209,7 +225,7 @@ describe("useRefreshMutation", () => {
       "fetch",
       vi.fn(
         async () =>
-          new Response(JSON.stringify(mockOk), {
+          new Response(JSON.stringify(okResponse), {
             status: 200,
             headers: { "Content-Type": "application/json" },
           })
@@ -222,7 +238,7 @@ describe("useRefreshMutation", () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(setQueryDataSpy).toHaveBeenCalledWith(["auth"], mockOk);
+    expect(setQueryDataSpy).toHaveBeenCalledWith(["auth"], okResponse);
   });
 
   it("clears auth state on refresh failure", async () => {
@@ -254,7 +270,7 @@ describe("useRefreshMutation", () => {
       "fetch",
       vi.fn(
         async () =>
-          new Response(JSON.stringify(mockOk), {
+          new Response(JSON.stringify(okResponse), {
             status: 200,
             headers: { "Content-Type": "application/json" },
           })
