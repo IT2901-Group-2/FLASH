@@ -194,72 +194,52 @@ describe("useLogoutMutation", () => {
 });
 
 describe("useRefreshMutation", () => {
-  it("refreshes token and sets auth query data on success", async () => {
-    const { wrapper, queryClient } = createQueryClientWithWrapper();
-    const setQueryDataSpy = vi.spyOn(queryClient, "setQueryData");
-
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify(okResponse), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          })
-      ) as unknown as typeof fetch
-    );
+  it("calls POST /api/auth/refresh", async () => {
+    const fetchMock = mockJsonResponse(okResponse);
+    vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() => useRefreshMutation(), { wrapper });
+    await act(async () => result.current.refresh());
 
-    result.current.mutate();
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
-
-    expect(setQueryDataSpy).toHaveBeenCalledWith(["auth"], okResponse);
+    const [calledUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(calledUrl).toContain("/api/auth/refresh");
+    expect(init.method).toBe("POST");
   });
 
-  it("clears auth state on refresh failure", async () => {
-    const { wrapper, queryClient } = createQueryClientWithWrapper();
-    const setQueryDataSpy = vi.spyOn(queryClient, "setQueryData");
+  it("exposes a refresh alias for mutateAsync", async () => {
+    vi.stubGlobal("fetch", mockJsonResponse(okResponse));
+    const { result } = renderHook(() => useRefreshMutation(), { wrapper });
+    expect(result.current.refresh).toBe(result.current.mutateAsync);
+  });
 
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify({ message: "Refresh token expired" }), {
-            status: 401,
-            headers: { "Content-Type": "application/json" },
-          })
-      )
-    );
+  it("writes auth state into the query cache on success", async () => {
+    vi.stubGlobal("fetch", mockJsonResponse(okResponse));
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
+    const setDataSpy = vi.spyOn(queryClient, "setQueryData");
 
     const { result } = renderHook(() => useRefreshMutation(), { wrapper });
+    await act(async () => result.current.refresh());
 
-    result.current.mutate();
+    expect(setDataSpy).toHaveBeenCalledWith(["auth"], okResponse);
+  });
+
+  it("clears auth state in the query cache on error", async () => {
+    vi.stubGlobal("fetch", mockServerErrorResponse());
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
+    const setDataSpy = vi.spyOn(queryClient, "setQueryData");
+
+    const { result } = renderHook(() => useRefreshMutation(), { wrapper });
+    await act(async () => result.current.refresh().catch(() => null));
+
+    await waitFor(() => expect(setDataSpy).toHaveBeenCalledWith(["auth"], null));
+  });
+
+  it("enters error state when the refresh endpoint returns a server error", async () => {
+    vi.stubGlobal("fetch", mockServerErrorResponse());
+
+    const { result } = renderHook(() => useRefreshMutation(), { wrapper });
+    await act(async () => result.current.mutate());
 
     await waitFor(() => expect(result.current.isError).toBe(true));
-
-    expect(setQueryDataSpy).toHaveBeenCalledWith(["auth"], null);
-  });
-
-  it("exposes refresh as an alias for mutateAsync", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify(okResponse), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          })
-      ) as unknown as typeof fetch
-    );
-
-    const { result } = renderHook(() => useRefreshMutation(), { wrapper });
-
-    expect(typeof result.current.refresh).toBe("function");
-
-    result.current.mutate();
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
   });
 });
