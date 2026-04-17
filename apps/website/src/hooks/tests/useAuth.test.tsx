@@ -1,6 +1,10 @@
-import { createQueryClientWithWrapper, createQueryClientWrapper } from "@test-config";
+import {
+  createQueryClientWithWrapper,
+  createQueryClientWrapper,
+  mockCookieStore,
+} from "@test-config";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import {
   useAuth,
   useAuthRefresh,
@@ -23,11 +27,48 @@ beforeEach(() => {
 describe("useAuth", () => {
   it("returns auth state from the server action", async () => {
     mockGetAuth.mockResolvedValue(okResponse);
-
     const { result } = renderHook(() => useAuth(), { wrapper });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toStrictEqual(okResponse);
+  });
+
+  it("registers a cookieStore change listener on mount", () => {
+    const { wrapper } = createQueryClientWithWrapper();
+    renderHook(() => useAuth(), { wrapper });
+
+    expect(mockCookieStore.addEventListener).toHaveBeenCalledWith(
+      "change",
+      expect.any(Function)
+    );
+  });
+
+  it("removes the cookieStore listener on unmount", () => {
+    const { wrapper } = createQueryClientWithWrapper();
+    const { unmount } = renderHook(() => useAuth(), { wrapper });
+    unmount();
+
+    expect(mockCookieStore.removeEventListener).toHaveBeenCalledWith(
+      "change",
+      expect.any(Function)
+    );
+  });
+
+  it("invalidates the auth state query when the cookieStore change event fires", async () => {
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+
+    renderHook(() => useAuth(), { wrapper });
+
+    const [, handler] = mockCookieStore.addEventListener.mock.calls[0] as [
+      string,
+      () => void,
+    ];
+
+    await act(async () => handler());
+    expect(invalidateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ queryKey: ["auth", "state"] })
+    );
   });
 });
 
