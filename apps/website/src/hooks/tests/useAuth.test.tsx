@@ -110,10 +110,6 @@ describe("useAuthRefresh", () => {
 });
 
 describe("useLoginMutation", () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
-
   it("logs in and sets auth query data on success", async () => {
     const { wrapper, queryClient } = createQueryClientWithWrapper();
     const setQueryDataSpy = vi.spyOn(queryClient, "setQueryData");
@@ -183,10 +179,6 @@ describe("useLoginMutation", () => {
 });
 
 describe("useLogoutMutation", () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
-
   it("logs out and sets auth query data to null", async () => {
     const { wrapper, queryClient } = createQueryClientWithWrapper();
     const setQueryDataSpy = vi.spyOn(queryClient, "setQueryData");
@@ -232,10 +224,6 @@ describe("useLogoutMutation", () => {
 });
 
 describe("useRefreshMutation", () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
-
   it("refreshes token and sets auth query data on success", async () => {
     const { wrapper, queryClient } = createQueryClientWithWrapper();
     const setQueryDataSpy = vi.spyOn(queryClient, "setQueryData");
