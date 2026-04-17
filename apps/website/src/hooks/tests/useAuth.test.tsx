@@ -160,47 +160,36 @@ describe("useLoginMutation", () => {
 });
 
 describe("useLogoutMutation", () => {
-  it("logs out and sets auth query data to null", async () => {
-    const { wrapper, queryClient } = createQueryClientWithWrapper();
-    const setQueryDataSpy = vi.spyOn(queryClient, "setQueryData");
-
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify(okResponse), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          })
-      ) as unknown as typeof fetch
-    );
-
-    const { result } = renderHook(() => useLogoutMutation(), { wrapper });
-
-    result.current.mutate();
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
-
-    expect(setQueryDataSpy).toHaveBeenCalledWith(["auth"], null);
-  });
-
   it("calls POST /api/auth/logout", async () => {
-    const fetchMock = vi.fn<typeof fetch>(
-      async () =>
-        new Response(JSON.stringify(okResponse), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        })
-    );
+    const fetchMock = mockJsonResponse(okResponse);
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() => useLogoutMutation(), { wrapper });
+    await act(async () => result.current.mutateAsync());
 
-    result.current.mutate();
+    const [calledUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(calledUrl).toContain("/api/auth/logout");
+    expect(init.method).toBe("POST");
+  });
 
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  it("clears auth state in the query cache on success", async () => {
+    vi.stubGlobal("fetch", mockJsonResponse(okResponse));
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
+    const setDataSpy = vi.spyOn(queryClient, "setQueryData");
 
-    expect(fetchMock.mock.calls[0]?.[0]).toContain("/api/auth/logout");
+    const { result } = renderHook(() => useLogoutMutation(), { wrapper });
+    await act(async () => result.current.mutateAsync());
+
+    expect(setDataSpy).toHaveBeenCalledWith(["auth"], null);
+  });
+
+  it("enters error state on a server error", async () => {
+    vi.stubGlobal("fetch", mockServerErrorResponse());
+
+    const { result } = renderHook(() => useLogoutMutation(), { wrapper });
+    await act(async () => result.current.mutate());
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
   });
 });
 
