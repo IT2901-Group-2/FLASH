@@ -60,8 +60,7 @@ export default function Page() {
   }, [setJoinLink, joinCode]);
 
   //Event date data
-  const now = new Date();
-  const isEnded = eventData ? now > eventData.endDate : false;
+  const isEnded = eventData ? new Date() > eventData.endDate : false;
 
   // Translation strings
   const eventName =
