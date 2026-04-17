@@ -2,6 +2,8 @@ import {
   createQueryClientWithWrapper,
   createQueryClientWrapper,
   mockCookieStore,
+  mockJsonResponse,
+  mockServerErrorResponse,
 } from "@test-config";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { act, renderHook, waitFor } from "@testing-library/react";
@@ -73,60 +75,36 @@ describe("useAuth", () => {
 });
 
 describe("useAuthRefresh", () => {
-  it("fetches auth state successfully", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify(okResponse), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          })
-      ) as unknown as typeof fetch
-    );
+  it("returns ok on a successful refresh", async () => {
+    vi.stubGlobal("fetch", mockJsonResponse(okResponse));
+
+    const { result } = renderHook(() => useAuthRefresh(), { wrapper });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toStrictEqual(okResponse);
+  });
+
+  it("calls POST /api/auth/refresh", async () => {
+    const fetchMock = mockJsonResponse(okResponse);
+    vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() => useAuthRefresh(), { wrapper });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(result.current.data).toStrictEqual(okResponse);
+    const [calledUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(calledUrl).toContain("/api/auth/refresh");
+    expect(init.method).toBe("POST");
   });
 
-  it("returns null when refresh fails", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify({ message: "Unauthorized" }), {
-            status: 401,
-            headers: { "Content-Type": "application/json" },
-          })
-      )
-    );
+  it("enters an error state on a server error", async () => {
+    vi.stubGlobal("fetch", mockServerErrorResponse("Token expired"));
 
     const { result } = renderHook(() => useAuthRefresh(), { wrapper });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
-
     expect(result.current.error).toBeInstanceOf(Error);
-  });
-
-  it("extracts error message from JSON response", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify({ message: "Token expired" }), {
-            status: 401,
-            headers: { "Content-Type": "application/json" },
-          })
-      )
-    );
-
-    const { result } = renderHook(() => useAuthRefresh(), { wrapper });
-
-    await waitFor(() => expect(result.current.isError).toBe(true));
-
+    expect(result.current.isSuccess).toBe(false);
     expect(result.current.error?.message).toBe("Token expired");
   });
 });
