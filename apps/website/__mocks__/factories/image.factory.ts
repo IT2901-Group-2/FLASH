@@ -120,22 +120,6 @@ export const makeUpdateImageInput = (
 };
 
 /**
- * Factory functions for creating input objects for image mutations.
- *
- * @example
- * const input = makeDeleteImageInput({ eventId: "event-1", imageId: "image-1" });
- */
-export const makeDeleteImageInput = (
-  overrides: Partial<DeleteImageInput> = {}
-): DeleteImageInput => {
-  return {
-    eventId: "event-123",
-    imageId: "image-123",
-    ...overrides,
-  };
-};
-
-/**
  * Factory functions for creating input objects for batch image update mutations.
  *
  * @example
@@ -148,6 +132,22 @@ export const makeBatchUpdateImageInput = (
     eventId: "event-123",
     ids: ["image-1", "image-2", "image-3"],
     isApproved: true,
+    ...overrides,
+  };
+};
+
+/**
+ * Factory functions for creating input objects for image mutations.
+ *
+ * @example
+ * const input = makeDeleteImageInput({ eventId: "event-1", imageId: "image-1" });
+ */
+export const makeDeleteImageInput = (
+  overrides: Partial<DeleteImageInput> = {}
+): DeleteImageInput => {
+  return {
+    eventId: "event-123",
+    imageId: "image-123",
     ...overrides,
   };
 };
