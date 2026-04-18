@@ -51,7 +51,7 @@ vi.mock("next-intl", async importOriginal => {
   return {
     ...actual,
     useTranslations,
-    useLocale: useLocale,
+    useLocale,
   };
 });
 
