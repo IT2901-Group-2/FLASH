@@ -24,6 +24,8 @@ import {
   resetMockRouter,
   resetMockCookieStore,
   mockCookieStore,
+  useTranslations,
+  useLocale,
 } from "@test-config";
 import {
   redirect,
@@ -34,6 +36,7 @@ import {
   notFound,
   Image,
   Link,
+  permanentRedirect,
 } from "./__mocks__/next";
 
 /**
@@ -47,8 +50,8 @@ vi.mock("next-intl", async importOriginal => {
   const actual = await importOriginal<typeof import("next-intl")>();
   return {
     ...actual,
-    useTranslations: vi.fn(() => (key: string) => key),
-    useLocale: vi.fn(() => "en"),
+    useTranslations,
+    useLocale: useLocale,
   };
 });
 
@@ -101,6 +104,7 @@ vi.mock("next/navigation", () => ({
   useParams,
   redirect,
   notFound,
+  permanentRedirect,
 }));
 
 /**
