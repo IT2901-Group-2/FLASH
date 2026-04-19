@@ -242,9 +242,6 @@ export default function Page() {
           />
           {images.length > 1 && (
             <>
-              <button>
-                <ChevronLeft />
-              </button>
               <Button
                 className={styles.previewNavButtonLeft}
                 onClick={prevPreviewImage}
