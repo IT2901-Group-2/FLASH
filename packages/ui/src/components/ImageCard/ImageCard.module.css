@@ -160,7 +160,7 @@
   height: unset;
 
   .imageWrapper {
-    height: 100%;
+    flex: 1;
   }
   .titleBox {
     display: none;
@@ -190,12 +190,35 @@
   box-shadow: none;
 
   .image {
-    filter: grayscale(80%);
+    filter: brightness(0.2);
   }
+}
 
+.preview2StatusLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--color-primary-base);
+  border-top: 1px solid var(--color-border-base);
+}
+
+.preview2StatusIcon {
+  display: flex;
+  flex-shrink: 0;
   svg {
-    color: var(--color-danger-base);
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--color-text-base);
   }
+}
+
+.preview2StatusText {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-base);
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .moderateCheckBadge {

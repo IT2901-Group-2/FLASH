@@ -147,17 +147,19 @@ export const ImageCard = ({
             <CircleCheckBig aria-hidden="true" />
           </div>
         )}
-        {variant === "preview2" && state === "pending" && (
-          <div className={styles.moderateCheckBadge} aria-hidden="true">
-            <Timer aria-hidden="true" />
-          </div>
-        )}
-        {variant === "preview2" && state === "rejected" && (
-          <div className={styles.moderateCheckBadge} aria-hidden="true">
-            <CircleX aria-hidden="true" />
-          </div>
-        )}
       </div>
+      {variant === "preview2" && state === "pending" && (
+        <div className={styles.preview2StatusLabel}>
+          <span className={styles.preview2StatusIcon}><Timer /></span>
+          <span className={styles.preview2StatusText}>Pending...</span>
+        </div>
+      )}
+      {variant === "preview2" && state === "rejected" && (
+        <div className={styles.preview2StatusLabel}>
+          <span className={styles.preview2StatusIcon}><CircleX /></span>
+          <span className={styles.preview2StatusText}>Rejected</span>
+        </div>
+      )}
       <div className={styles.titleBox}>
         {state === "pending" && (
           <h3 className={styles.title}>
