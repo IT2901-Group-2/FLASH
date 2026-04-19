@@ -325,11 +325,11 @@ export default function Page() {
         </div>
       ) : (
         <div className={styles.grid}>
-          {images.map(image => (
+          {images.map((image, idx) => (
             <div
               key={image.id}
               className={styles.cell}
-              onClick={() => setPreviewIndex(images.indexOf(image))}
+              onClick={() => setPreviewIndex(idx)}
             >
               <Image
                 src={`/api/events/${eventId}/images/${image.id}`}
