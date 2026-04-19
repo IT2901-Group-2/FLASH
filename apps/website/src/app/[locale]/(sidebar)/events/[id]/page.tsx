@@ -46,21 +46,25 @@ export default function Page() {
   const eventData = data?.[0];
   const uploadsArePrivate = eventData?.uploadsArePrivate ?? false;
 
+  const [activeTab, setActiveTab] = useState<"all" | "user">("all");
+  const isShowingUserTab = uploadsArePrivate && activeTab === "user";
+
   // Image Data
   const { data: imagesData } = useImagesQuery(
     eventId,
     { approval: "approved" },
-    PHOTOS_REFETCH_INTERVAL
+    isShowingUserTab ? undefined : PHOTOS_REFETCH_INTERVAL
   );
-  const { data: myImagesData } = useMyImagesQuery(eventId, uploadsArePrivate);
+  const { data: myImagesData } = useMyImagesQuery(
+    eventId,
+    uploadsArePrivate,
+    isShowingUserTab ? PHOTOS_REFETCH_INTERVAL : undefined
+  );
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
-
-  const [activeTab, setActiveTab] = useState<"all" | "user">("all");
-  const isShowingUserTab = uploadsArePrivate && activeTab === "user";
   const displayedImages = useMemo(() => {
     const images = imagesData ?? [];
     const myImages = myImagesData ?? [];
