@@ -98,6 +98,15 @@ export const defaultDeleteImageMutationReturn = {
 } as unknown as UseMutationResult<void, Error, DeleteImageInput>;
 
 /**
+ * Idle default for `useMyImagesQuery`.
+ */
+export const defaultMyImagesQueryReturn = {
+  data: undefined as Image[] | undefined,
+  isLoading: false,
+  isError: false,
+} as UseQueryResult<Image[]>;
+
+/**
  * Idle default for `useUploadedImageCountQuery`.
  */
 export const defaultUploadedImageCountQueryReturn = {
