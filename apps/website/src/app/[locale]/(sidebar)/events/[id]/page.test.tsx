@@ -51,7 +51,11 @@ describe("Guest Upload Page", () => {
 
     it("uses image query hook", () => {
       render(<Page />);
-      expect(useImagesQuery).toHaveBeenCalledWith("event-123", { approval: "approved" }, expect.any(Number));
+      expect(useImagesQuery).toHaveBeenCalledWith(
+        "event-123",
+        { approval: "approved" },
+        expect.any(Number)
+      );
     });
   });
 
