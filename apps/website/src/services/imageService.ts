@@ -7,7 +7,14 @@ import { FileStorage } from "@flash/file-storage";
 import { and, eq, inArray, isNull, sql } from "drizzle-orm";
 import { DatabaseService, dbService } from "./databaseService";
 import { AsyncResult, Result } from "typescript-result";
-import { eventTable, GetImagesParams, Image, imageTable, UpdateImage } from "@/db";
+import {
+  eventTable,
+  GetImagesParams,
+  Image,
+  imageSizesTable,
+  imageTable,
+  UpdateImage,
+} from "@/db";
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
 import AdmZip from "adm-zip";
@@ -25,6 +32,8 @@ export class ImageService {
   }
 
   static readonly MAX_IMAGE_SIZE = 12 * 1024 * 1024;
+  static readonly TARGET_IMAGE_SIZES: number[] = [150, 350, 500, 750];
+
   /**
    * Validates the image metadata using `sharp`.
    * Checks that `sharp` is able to open the image file and that the size of the image does not exceed `ImageService.MAX_IMAGE_SIZE`.
@@ -120,6 +129,33 @@ export class ImageService {
       .map(() => this.storage.read(`${imageId}.webp`));
   }
 
+  // TODO: jsdoc
+  private saveImage(
+    imageId: string,
+    sharpImage: Sharp
+  ): AsyncResult<[number, number][], Error> {
+    return Result.try(() => sharpImage.clone().toBuffer())
+      .map(buff => this.storage.write(`${imageId}.webp`, buff))
+      .map(() => sharpImage.metadata())
+      .map(({ width, height }) =>
+        Result.all(
+          ...ImageService.TARGET_IMAGE_SIZES.filter(s => s < Math.max(width, height)).map(
+            s =>
+              Result.try(() =>
+                sharpImage
+                  .clone()
+                  .resize(s, s, { fit: "inside" })
+                  .toBuffer({ resolveWithObject: true })
+              ).map(({ data, info: { width, height } }) =>
+                this.storage
+                  .write(`${imageId}-${width}x${height}.webp`, data)
+                  .map(() => [width, height])
+              )
+          )
+        )
+      );
+  }
+
   /**
    * Uploads the given image blob to the specified event.
    *
@@ -156,9 +192,7 @@ export class ImageService {
         sharpImage.rotate().webp()
       );
 
-      yield* Result.try(() => sharpImage.clone().toBuffer()).map(buff =>
-        this.storage.write(`${imageId}.webp`, buff)
-      );
+      const imageSizes = yield* this.saveImage(imageId, sharpImage);
 
       const previewImage = yield* Result.try(() =>
         sharpImage.clone().resize({ width: 32, height: 32 }).blur().toBuffer()
@@ -176,7 +210,20 @@ export class ImageService {
           })
           .returning()
       )
-        .map(rows => getFirstRow(rows, "Failed to upload image"))
+        .map(rows =>
+          getFirstRow(rows, "Failed to upload image").map(image =>
+            imageSizes.length > 0
+              ? Result.try(() =>
+                  this.dbService.db
+                    .insert(imageSizesTable)
+                    .values(
+                      imageSizes.map(([width, height]) => ({ imageId, width, height }))
+                    )
+                    .returning()
+                ).map(rows => getFirstRow(rows).map(() => image))
+              : image
+          )
+        )
         .onSuccess(async image => {
           this.dbService.flush();
           if (image.isApproved) {

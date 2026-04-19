@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import ShortUniqueId from "short-unique-id";
 import { eventTable } from "./events";
 import z from "zod";
@@ -26,6 +26,18 @@ export const imageTable = sqliteTable("images", {
     .$defaultFn(() => new Date())
     .$onUpdate(() => new Date()),
 });
+
+export const imageSizesTable = sqliteTable(
+  "imageSizes",
+  {
+    imageId: text()
+      .notNull()
+      .references(() => imageTable.id, { onDelete: "cascade" }),
+    width: integer().notNull(),
+    height: integer().notNull(),
+  },
+  t => [primaryKey({ columns: [t.imageId, t.width, t.height] })]
+);
 
 export const getImagesParamsSchema = z.object({
   id: z.string().array().min(1).optional(),
