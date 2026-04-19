@@ -54,7 +54,6 @@ export default function Page() {
     { approval: "approved" },
     PHOTOS_REFETCH_INTERVAL
   );
-  const images = imagesData ?? [];
   const { data: myImagesData } = useMyImagesQuery(eventId, uploadsArePrivate);
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
@@ -63,11 +62,11 @@ export default function Page() {
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
 
   const [activeTab, setActiveTab] = useState<"all" | "user">("all");
-  const myImages = myImagesData ?? [];
-  const displayedImages = useMemo(
-    () => (uploadsArePrivate && activeTab === "user" ? myImages : images),
-    [uploadsArePrivate, activeTab, myImages, images]
-  );
+  const displayedImages = useMemo(() => {
+    const images = imagesData ?? [];
+    const myImages = myImagesData ?? [];
+    return uploadsArePrivate && activeTab === "user" ? myImages : images;
+  }, [uploadsArePrivate, activeTab, myImagesData, imagesData]);
   const isShowingUserTab = uploadsArePrivate && activeTab === "user";
 
   const handleTabChange = (val: string) => {

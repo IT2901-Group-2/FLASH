@@ -514,7 +514,6 @@ export const Preview2Pending: Story = {
     onClick: fn(),
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
     const card = canvasElement.querySelector('[data-variant="preview2"]');
 
     await expect(card).toBeInTheDocument();
@@ -531,7 +530,6 @@ export const Preview2Rejected: Story = {
     state: "rejected",
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
     const card = canvasElement.querySelector('[data-variant="preview2"]');
 
     await expect(card).toBeInTheDocument();
