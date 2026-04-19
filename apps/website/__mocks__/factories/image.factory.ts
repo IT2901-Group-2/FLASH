@@ -51,27 +51,42 @@ export const makeUploadedImageCount = (count: number = 10) => ({ count });
  * Creates a mock File object suitable for upload tests.
  *
  * @example
- * const file = makeMockFile("photo.jpg", "image/jpeg");
+ * const file = makeMockFile({ name: "photo.jpg", type: "image/jpeg", content: "fake image data" });
  */
-export const makeMockFile = (
+export const makeMockFile = ({
   name = "test-photo.jpg",
   type = "image/jpeg",
-  content = "mock file content"
-): File => {
+  content = "mock file content",
+} = {}): File => {
   return new File([content], name, { type });
+};
+
+/**
+ * Creates an array of mock File objects.
+ *
+ * @example
+ * const files = makeMockFiles(3); // [File, File, File]
+ */
+export const makeMockFiles = (count: number, overrides: Partial<File> = {}): File[] => {
+  return Array.from({ length: count }, (_, i) =>
+    makeMockFile({
+      name: `test-photo-${i + 1}.jpg`,
+      ...overrides,
+    })
+  );
 };
 
 /**
  * Creates a mock FileList containing a single file.
  * Useful for simulating file input events.
  */
-export const makeMockFileList = (file: File): FileList => {
+export const makeMockFileList = (...files: File[]): FileList => {
   return {
-    0: file,
-    length: 1,
-    item: (index: number) => (index === 0 ? file : null),
+    0: files[0],
+    length: files.length,
+    item: (index: number) => (index < files.length ? files[index] : null),
     [Symbol.iterator]: function* () {
-      yield file;
+      yield* files;
     },
   } as FileList;
 };
