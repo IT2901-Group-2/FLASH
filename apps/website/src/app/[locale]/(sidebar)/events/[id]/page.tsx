@@ -400,6 +400,13 @@ export default function Page() {
               title={tUpload("imageTitle", { index: index + 1 })}
               data-image-id={image.id}
               placeholder={image.previewImage}
+              state={
+                image.isApproved === null
+                  ? "pending"
+                  : image.isApproved === false
+                    ? "rejected"
+                    : undefined
+              }
               onClick={() => handleImagePreview(index)}
             />
           ))}
