@@ -25,6 +25,12 @@ import {
 } from "@/hooks/useImages";
 import Image from "next/image";
 
+// This is for change in event settings
+// (e.g. toggle guest can view all photos)
+const EVENT_REFETCH_INTERVAL = 120_000; // 2 minutes
+
+const PHOTOS_REFETCH_INTERVAL = 12_000; // 12 sec
+
 export default function Page() {
   const router = useRouter();
   const tCommon = useTranslations("common");
@@ -35,13 +41,19 @@ export default function Page() {
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
   const { data, isLoading, isError } = useEventsQuery(
-    eventId ? { id: [eventId] } : undefined
+    eventId ? { id: [eventId] } : undefined,
+    undefined,
+    EVENT_REFETCH_INTERVAL
   );
   const eventData = data?.[0];
   const uploadsArePrivate = eventData?.uploadsArePrivate ?? false;
 
   // Image Data
-  const { data: imagesData } = useImagesQuery(eventId, { approval: "approved" });
+  const { data: imagesData } = useImagesQuery(
+    eventId,
+    { approval: "approved" },
+    PHOTOS_REFETCH_INTERVAL
+  );
   const images = imagesData ?? [];
   const { data: myImagesData } = useMyImagesQuery(eventId, uploadsArePrivate);
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
