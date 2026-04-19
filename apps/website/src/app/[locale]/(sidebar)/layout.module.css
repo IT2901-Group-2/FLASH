@@ -13,3 +13,7 @@
   overflow-x: hidden;
   overflow-y: auto;
 }
+
+.main {
+  overflow-y: scroll;
+}

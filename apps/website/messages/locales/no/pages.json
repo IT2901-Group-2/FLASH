@@ -3,10 +3,33 @@
     "title": "Hallo verden!",
     "about": "Om oss"
   },
-  "adminLogin": {
+  "dashboard": {
     "title": "FLASH Admin",
     "description": "Administrer fotoeventene dine enkelt",
-    "subtitle": "Selvhostet system for administrasjon av fotoeventer"
+    "filter": {
+      "search": {
+        "title": "Søk"
+      },
+      "status": {
+        "title": "Status",
+        "options": {
+          "all": "Alle",
+          "upcoming": "Fremtidige",
+          "active": "Aktive",
+          "finished": "Ferdige",
+          "archived": "Arkiverte"
+        }
+      },
+      "sort": {
+        "title": "Sorter",
+        "options": {
+          "name": "Navn",
+          "startDate": "Start Dato",
+          "endDate": "Slutt Dato",
+          "createdAt": "Opprettelsesdato"
+        }
+      }
+    }
   },
   "joinEvent": {
     "title": "Delta i et event",
