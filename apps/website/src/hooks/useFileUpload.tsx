@@ -58,6 +58,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
       multiple={multiple}
       style={{ display: "none" }}
       onChange={handleFileChange}
+      data-testid="file-input"
     />
   );
 
