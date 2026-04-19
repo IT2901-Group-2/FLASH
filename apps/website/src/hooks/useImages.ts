@@ -100,8 +100,7 @@ export function useImagesQuery(
 export function useMyImagesQuery(eventId?: string, enabled = true) {
   return useQuery({
     queryKey: imagesKeys.mine(eventId),
-    queryFn: () =>
-      makeRequest(imageArraySchema, `/api/events/${eventId}/images/mine`),
+    queryFn: () => makeRequest(imageArraySchema, `/api/events/${eventId}/images/mine`),
     enabled: !!eventId && enabled,
   });
 }

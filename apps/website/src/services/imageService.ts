@@ -358,7 +358,9 @@ export class ImageService {
 
   private getAuthenticatedUserId(eventId: string): AsyncResult<string, Error> {
     return getEventCookie(eventId, JWT_SECRET)
-      .mapError(() => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403))
+      .mapError(
+        () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
+      )
       .map(({ userId }) => userId);
   }
 
