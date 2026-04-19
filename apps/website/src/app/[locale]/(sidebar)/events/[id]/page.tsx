@@ -25,8 +25,6 @@ import {
 } from "@/hooks/useImages";
 import Image from "next/image";
 
-// This is for change in event settings
-// (e.g. toggle guest can view all photos)
 const EVENT_REFETCH_INTERVAL = 120_000; // 2 minutes
 
 const PHOTOS_REFETCH_INTERVAL = 12_000; // 12 sec
@@ -62,12 +60,12 @@ export default function Page() {
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
 
   const [activeTab, setActiveTab] = useState<"all" | "user">("all");
+  const isShowingUserTab = uploadsArePrivate && activeTab === "user";
   const displayedImages = useMemo(() => {
     const images = imagesData ?? [];
     const myImages = myImagesData ?? [];
-    return uploadsArePrivate && activeTab === "user" ? myImages : images;
-  }, [uploadsArePrivate, activeTab, myImagesData, imagesData]);
-  const isShowingUserTab = uploadsArePrivate && activeTab === "user";
+    return isShowingUserTab ? myImages : images;
+  }, [isShowingUserTab, myImagesData, imagesData]);
 
   const handleTabChange = (val: string) => {
     setActiveTab(val as "all" | "user");

@@ -148,20 +148,14 @@ export const ImageCard = ({
           </div>
         )}
       </div>
-      {variant === "preview2" && state === "pending" && (
+      {variant === "preview2" && (state === "pending" || state === "rejected") && (
         <div className={styles.preview2StatusLabel}>
           <span className={styles.preview2StatusIcon}>
-            <Timer />
+            {state === "pending" ? <Timer /> : <CircleX />}
           </span>
-          <span className={styles.preview2StatusText}>Pending...</span>
-        </div>
-      )}
-      {variant === "preview2" && state === "rejected" && (
-        <div className={styles.preview2StatusLabel}>
-          <span className={styles.preview2StatusIcon}>
-            <CircleX />
+          <span className={styles.preview2StatusText}>
+            {state === "pending" ? "Pending..." : "Rejected"}
           </span>
-          <span className={styles.preview2StatusText}>Rejected</span>
         </div>
       )}
       <div className={styles.titleBox}>
