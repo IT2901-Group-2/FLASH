@@ -154,6 +154,10 @@
 /* preview2 variant */
 
 .imageCard[data-variant="preview2"] {
+  contain: layout style;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 128px;
+  aspect-ratio: 3 / 4;
   border: none;
   border-radius: 0;
   width: unset;
