@@ -176,6 +176,28 @@
   }
 }
 
+.imageCard[data-variant="preview2"].pending {
+  background-color: transparent;
+  box-shadow: none;
+
+  .image {
+    opacity: 0.5;
+  }
+}
+
+.imageCard[data-variant="preview2"].rejected {
+  background-color: transparent;
+  box-shadow: none;
+
+  .image {
+    filter: grayscale(80%);
+  }
+
+  svg {
+    color: var(--color-danger-base);
+  }
+}
+
 .moderateCheckBadge {
   position: absolute;
   bottom: 0.5rem;
@@ -183,17 +205,14 @@
   width: 1.5rem;
   height: 1.5rem;
   border-radius: var(--radius-full);
-  background-color: var(--color-background-light);
-  /* TODO: Implement with variable when shadow color is added */
-  box-shadow: var(--shadow-dialog);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-
+  background-color: var(--color-background-base);
   svg {
-    width: 14px;
-    height: 14px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 18px;
+    height: 18px;
     color: var(--color-text-base);
   }
 }

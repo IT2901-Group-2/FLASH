@@ -133,16 +133,28 @@ export const ImageCard = ({
             <Loader size={size} />
           </div>
         )}
-        {state === "rejected" && (
+        {state === "rejected" && variant !== "preview2" && (
           <div className={styles.rejectedOverlay}>
             <X className={styles.rejectedIcon} />
           </div>
         )}
-        {state === "pending" && <div className={styles.pendingOverlay}></div>}
+        {state === "pending" && variant !== "preview2" && (
+          <div className={styles.pendingOverlay}></div>
+        )}
         <img src={src} alt={alt} className={styles.image} />
         {variant === "preview2" && state === "selected" && (
           <div className={styles.moderateCheckBadge} aria-hidden="true">
             <CircleCheckBig aria-hidden="true" />
+          </div>
+        )}
+        {variant === "preview2" && state === "pending" && (
+          <div className={styles.moderateCheckBadge} aria-hidden="true">
+            <Timer aria-hidden="true" />
+          </div>
+        )}
+        {variant === "preview2" && state === "rejected" && (
+          <div className={styles.moderateCheckBadge} aria-hidden="true">
+            <CircleX aria-hidden="true" />
           </div>
         )}
       </div>
