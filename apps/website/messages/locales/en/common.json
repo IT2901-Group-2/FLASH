@@ -19,7 +19,6 @@
     "slideshow": "Slideshow",
     "createNewEvent": "Create New Event",
     "shareEvent": "Share Event",
-    "copyLink": "Copy Link",
     "moderate": "Moderate"
   },
   "roles": {
@@ -56,8 +55,6 @@
     "photos": "Photos"
   },
   "messages": {
-    "copySuccess": "Copied successfully!",
-    "copyFailed": "Failed to copy link to clipboard",
     "scanToUploadPhotos": "Scan to upload photos"
   },
   "slideshow": {
