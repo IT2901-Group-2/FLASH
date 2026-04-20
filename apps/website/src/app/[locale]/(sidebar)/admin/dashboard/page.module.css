@@ -7,24 +7,31 @@
 }
 
 .filterContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(12rem, max-content));
+  display: flex;
+  flex-wrap: wrap;
   gap: 0 1rem;
-
-  align-items: end;
 
   min-width: min-content;
 
-  > button {
-    margin-bottom: 0.575rem;
+  > :first-child {
+    min-width: 15rem;
+    max-width: 25rem;
+  }
+
+  .filterSection {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: end;
+
+    > button {
+      margin-bottom: 0.575rem;
+    }
   }
 }
 
 @media screen and (max-width: 768px) {
-  .filterContainer :first-child {
-    grid-column: span 1;
-  }
-
   .createButton {
     position: fixed;
     /* left: 50%; */
