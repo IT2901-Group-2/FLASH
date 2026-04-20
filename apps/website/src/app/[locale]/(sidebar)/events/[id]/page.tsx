@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, ImageMinus, QrCode, Upload, X } from "lucide-react";
 import styles from "./UploadImage.module.css";
 import {
@@ -65,14 +65,10 @@ export default function Page() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
-  const displayedImages = useMemo(() => {
-    const images = imagesData ?? [];
-    const myImages = myImagesData ?? [];
-    return isShowingUserTab ? myImages : images;
-  }, [isShowingUserTab, myImagesData, imagesData]);
+  const displayedImages = isShowingUserTab ? (myImagesData ?? []) : (imagesData ?? []);
 
   const handleTabChange = (val: string) => {
-    setActiveTab(val as "all" | "user");
+    if (val === "all" || val === "user") setActiveTab(val);
     setPreviewIndex(null);
   };
   const touchStartX = useRef<number | null>(null);
