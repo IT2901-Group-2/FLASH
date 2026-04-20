@@ -26,8 +26,6 @@ import {
   mockCookieStore,
   useTranslations,
   useLocale,
-} from "@test-config";
-import {
   redirect,
   useParams,
   usePathname,
@@ -37,7 +35,7 @@ import {
   Image,
   Link,
   permanentRedirect,
-} from "./__mocks__/next";
+} from "@test-config";
 
 /**
  * Spreads the real module so non-mocked exports keep working.
