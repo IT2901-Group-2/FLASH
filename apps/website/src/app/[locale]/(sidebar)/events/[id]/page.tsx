@@ -288,7 +288,6 @@ export default function Page() {
             data-color="brand-purple"
             variant="secondary"
             onClick={() => dialogRef.current?.showModal()}
-            className={eventAuth.isModerator ? styles.desktopOnly : undefined}
           />
           {eventAuth.isModerator && (
             <Button
@@ -297,6 +296,7 @@ export default function Page() {
               data-color="brand-purple"
               variant="primary"
               onClick={() => router.push(`./${eventId}/moderate`)}
+              className={styles.desktopOnly}
             >
               {tCommon("actions.moderate")}
             </Button>
@@ -334,6 +334,18 @@ export default function Page() {
               onClick: isEnded ? () => downloadImages({ eventId }) : openFilePicker,
               loading: isUploading,
             }}
+            secondaryButton={
+              eventAuth.isModerator
+                ? {
+                    icon: <ImageMinus />,
+                    iconPosition: "right",
+                    "data-color": "brand-purple",
+                    variant: "secondary",
+                    text: "Moderate",
+                    onClick: () => router.push(`./${eventId}/moderate`),
+                  }
+                : undefined
+            }
           />
         </div>
       </div>
