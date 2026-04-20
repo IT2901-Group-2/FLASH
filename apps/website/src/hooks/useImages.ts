@@ -97,7 +97,11 @@ export function useImagesQuery(
  * Fetches all images uploaded by the currently authenticated event user,
  * regardless of approval status.
  */
-export function useMyImagesQuery(eventId?: string, enabled = true, refetchInterval?: number) {
+export function useMyImagesQuery(
+  eventId?: string,
+  enabled = true,
+  refetchInterval?: number
+) {
   return useQuery({
     queryKey: imagesKeys.mine(eventId),
     queryFn: () => makeRequest(imageArraySchema, `/api/events/${eventId}/images/mine`),

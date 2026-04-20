@@ -377,7 +377,12 @@ export default function Page() {
           {isShowingUserTab ? tUpload("tabs.userPhotos") : tUpload("tabs.allPhotos")}
         </Title>
         {!isShowingUserTab && (
-          <Button variant="secondary" icon={<ChevronRight />} iconPosition="right" className={styles.slideshowButton}>
+          <Button
+            variant="secondary"
+            icon={<ChevronRight />}
+            iconPosition="right"
+            className={styles.slideshowButton}
+          >
             {tCommon("actions.slideshow")}
           </Button>
         )}
