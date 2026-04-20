@@ -14,11 +14,7 @@ import {
   DownloadImagesInput,
   UpdateImageInput,
 } from "@/hooks/useImages";
-import {
-  mockInfiniteData,
-  mockInfiniteQueryResult,
-  mockQueryResult,
-} from "./useQuery.mock";
+import { mockInfiniteData, mockInfiniteQueryResult } from "./useQuery.mock";
 
 // ---------------------------------------------------------------------------
 // Default return values
