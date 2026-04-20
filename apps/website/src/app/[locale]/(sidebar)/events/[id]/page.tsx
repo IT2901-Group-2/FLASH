@@ -47,7 +47,7 @@ export default function Page() {
   const uploadsArePrivate = eventData?.uploadsArePrivate ?? false;
 
   const [activeTab, setActiveTab] = useState<"all" | "user">("all");
-  const isShowingUserTab = uploadsArePrivate && activeTab === "user";
+  const isShowingUserTab = !uploadsArePrivate || activeTab === "user";
 
   // Image Data
   const { data: imagesData } = useImagesQuery(
@@ -57,7 +57,7 @@ export default function Page() {
   );
   const { data: myImagesData } = useMyImagesQuery(
     eventId,
-    uploadsArePrivate,
+    true,
     isShowingUserTab ? PHOTOS_REFETCH_INTERVAL : undefined
   );
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
