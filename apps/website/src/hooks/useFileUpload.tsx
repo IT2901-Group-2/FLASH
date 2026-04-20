@@ -1,18 +1,31 @@
 import { useRef, ChangeEvent } from "react";
 
-/**
- * Custom hook to handle file uploads via a hidden file input.
- * Provides a function to open the file picker and a component for the file input.
- *
- * @param options - Configuration options for the file upload behavior.
- * @returns An object containing the `openFilePicker` function and the `FileInput` component.
- */
 interface UseFileUploadOptions {
   accept?: string;
   multiple?: boolean;
   onFilesSelected?: (files: FileList) => void;
 }
 
+/**
+ * Custom hook to handle file uploads via a hidden file input.
+ *
+ * Provides a function to open the file picker and a component for the file input.
+ *
+ * @param options - Configuration options for the file upload behavior.
+ * @returns An object containing the `openFilePicker` function and the `FileInput` component.
+ *
+ * @example
+ * const { openFilePicker, FileInput } = useFileUpload({
+ *   accept: "image/*",
+ *   multiple: false,
+ *  onFilesSelected: (files) => console.log(files[0]),
+ * });
+ *
+ * return (<>
+ *   <FileInput />
+ *   <button onClick={openFilePicker}>Upload Image</button>
+ * </>);
+ */
 export function useFileUpload(options: UseFileUploadOptions = {}) {
   // Default to accepting all image types and allowing multiple file selection
   const { accept = "image/*", multiple = true, onFilesSelected } = options;

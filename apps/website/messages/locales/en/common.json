@@ -15,7 +15,11 @@
     "join": "Join Event",
     "toggleCamera": "{open, select, true {Close camera} other {Open camera}}",
     "uploadImage": "Upload Image",
+<<<<<<< HEAD
     "loadMore": "Load more",
+=======
+    "downloadImages": "Download Images",
+>>>>>>> origin/main
     "slideshow": "Slideshow",
     "createNewEvent": "Create New Event",
     "shareEvent": "Share Event",
@@ -76,6 +80,7 @@
     "unlimited": {
       "short": "Unlimited uploads",
       "long": "You can upload unlimited photos"
-    }
+    },
+    "eventEnded" : "The event has ended"
   }
 }

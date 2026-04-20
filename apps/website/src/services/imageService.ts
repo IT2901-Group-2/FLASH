@@ -18,6 +18,7 @@ import {
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
 import AdmZip from "adm-zip";
+import { verifyAccessToken } from "@/lib/utils/auth";
 
 const uid = new ShortUniqueId();
 
@@ -150,16 +151,21 @@ export class ImageService {
         () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
       );
 
-      const { autoApprove, uploadLimit } = yield* Result.try(() =>
+      const { autoApprove, uploadLimit, endDate } = yield* Result.try(() =>
         this.dbService.db
           .select({
             autoApprove: eventTable.autoApprove,
             uploadLimit: eventTable.uploadLimit,
+            endDate: eventTable.endDate,
           })
           .from(eventTable)
           .where(eq(eventTable.id, eventId))
           .limit(1)
       ).map(rows => getFirstRow(rows, `Event with id ${eventId} does not exist`));
+
+      if (new Date() > endDate) {
+        throw new HTTPError("Event has ended, uploads are closed", 403);
+      }
 
       const count = yield* this.getUploadedImageCountByUser(eventId, userId);
 
@@ -314,9 +320,29 @@ export class ImageService {
    * @returns A result containing the zip archive as a `Buffer` or an error.
    */
   downloadImages(eventId: string): AsyncResult<Buffer, Error> {
-    return this.storage.read(`${eventId}.zip`).recover(() => {
-      const zip = new AdmZip();
-      return Result.ok(zip.toBuffer());
+    return Result.genCatching(this, function* () {
+      const isAdmin = yield* Result.fromAsyncCatching(
+        verifyAccessToken()
+          .then(() => true)
+          .catch(() => false)
+      );
+
+      const { endDate } = yield* Result.try(() =>
+        this.dbService.db
+          .select({ endDate: eventTable.endDate })
+          .from(eventTable)
+          .where(eq(eventTable.id, eventId))
+          .limit(1)
+      ).map(rows => getFirstRow(rows, `Event with id ${eventId} does not exist`));
+
+      if (new Date() < endDate && !isAdmin) {
+        throw new HTTPError("Event is still live, downloads are not yet available", 403);
+      }
+
+      return this.storage.read(`${eventId}.zip`).recover(() => {
+        const zip = new AdmZip();
+        return Result.ok(zip.toBuffer());
+      });
     });
   }
 
