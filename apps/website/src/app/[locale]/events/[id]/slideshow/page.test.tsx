@@ -4,8 +4,10 @@ import {
   makeEvent,
   makeImages,
   mockEventsLoaded,
-  mockImagesQueryResult,
+  mockInfiniteData,
+  mockInfiniteQueryResult,
   mockRouter,
+  mockImagePage,
 } from "@test-config";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -68,8 +70,8 @@ describe("Slideshow Page", () => {
 
     vi.mocked(useEventsQuery).mockReturnValue(mockEventsLoaded([makeEvent()]));
     vi.mocked(useImagesQuery).mockImplementation(() =>
-      mockImagesQueryResult({
-        data: mockImageData,
+      mockInfiniteQueryResult({
+        data: mockInfiniteData(mockImagePage(mockImageData)),
         hasNextPage: mockHasNextPage,
         isFetchingNextPage: mockIsFetchingNextPage,
         fetchNextPage: mockFetchNextPage,
