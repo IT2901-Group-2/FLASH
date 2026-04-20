@@ -17,6 +17,7 @@ const QrScanner = ({ ...props }: IScannerProps) => {
       <Scanner
         classNames={{ video: styles.video }}
         {...props}
+        sound={"/flash.wav"}
         constraints={{
           facingMode: "enviorment",
           aspectRatio: 1,
