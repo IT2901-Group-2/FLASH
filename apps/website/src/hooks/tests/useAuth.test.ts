@@ -16,6 +16,7 @@ import {
 } from "../useAuth";
 
 const okResponse = { ok: true } as const;
+
 const mockGetAuth = vi.fn();
 vi.mock("@/actions/auth", () => ({
   getAuth: () => mockGetAuth(),
