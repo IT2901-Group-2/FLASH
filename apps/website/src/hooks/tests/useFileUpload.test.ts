@@ -85,8 +85,9 @@ describe("useFileUpload", () => {
   });
 
   describe("onFilesSelected callback", () => {
-    it("calls onFilesSelected with the FileList when files are chosen", () => {
-      const onFilesSelected = vi.fn();
+    const onFilesSelected = vi.fn();
+
+    it("calls onFilesSelected with the FileList when files are chosen", async () => {
       const { result } = renderHook(() => useFileUpload({ onFilesSelected }));
       const { FileInput } = result.current;
       render(FileInput());
@@ -94,14 +95,13 @@ describe("useFileUpload", () => {
       const input = document.querySelector("input[type='file']") as HTMLInputElement;
       const files = [makeMockFile()];
 
-      act(() => userEvent.upload(input, files));
+      await userEvent.upload(input, files);
 
       expect(onFilesSelected).toHaveBeenCalledOnce();
       expect(onFilesSelected).toHaveBeenCalledWith(files);
     });
 
-    it("passes all selected files when multiple files are chosen", () => {
-      const onFilesSelected = vi.fn();
+    it("passes all selected files when multiple files are chosen", async () => {
       const { result } = renderHook(() => useFileUpload({ onFilesSelected }));
       const { FileInput } = result.current;
       render(FileInput());
@@ -109,26 +109,24 @@ describe("useFileUpload", () => {
       const input = document.querySelector("input[type='file']") as HTMLInputElement;
       const files = makeMockFiles(3);
 
-      act(() => userEvent.upload(input, files));
+      await userEvent.upload(input, files);
 
       expect(onFilesSelected).toHaveBeenCalledOnce();
       expect(onFilesSelected).toHaveBeenCalledWith(files);
     });
 
-    it("does not call onFilesSelected when no files are selected", () => {
-      const onFilesSelected = vi.fn();
+    it("does not call onFilesSelected when no files are selected", async () => {
       const { result } = renderHook(() => useFileUpload({ onFilesSelected }));
       const { FileInput } = result.current;
       render(FileInput());
 
       const input = document.querySelector("input[type='file']") as HTMLInputElement;
 
-      act(() => userEvent.upload(input, []));
-
+      await userEvent.upload(input, []);
       expect(onFilesSelected).not.toHaveBeenCalled();
     });
 
-    it("does not throw when onFilesSelected is not provided", () => {
+    it("does not throw when onFilesSelected is not provided", async () => {
       const { result } = renderHook(() => useFileUpload());
       const { FileInput } = result.current;
       render(FileInput());
@@ -136,12 +134,12 @@ describe("useFileUpload", () => {
       const input = document.querySelector("input[type='file']") as HTMLInputElement;
       const files = makeMockFiles(2);
 
-      expect(() => act(() => userEvent.upload(input, files))).not.toThrow();
+      expect(() => userEvent.upload(input, files)).not.toThrow();
     });
   });
 
   describe("input reset after selection", () => {
-    it("resets the input value to empty string after files are selected", () => {
+    it("resets the input value to empty string after files are selected", async () => {
       const { result } = renderHook(() => useFileUpload({ onFilesSelected: vi.fn() }));
       const { FileInput } = result.current;
       render(FileInput());
@@ -149,12 +147,11 @@ describe("useFileUpload", () => {
       const input = document.querySelector("input[type='file']") as HTMLInputElement;
       const files = makeMockFiles(1);
 
-      act(() => userEvent.upload(input, files));
-
+      await userEvent.upload(input, files);
       expect(input.value).toBe("");
     });
 
-    it("resets the input value even when onFilesSelected is not provided", () => {
+    it("resets the input value even when onFilesSelected is not provided", async () => {
       const { result } = renderHook(() => useFileUpload());
       const { FileInput } = result.current;
       render(FileInput());
@@ -162,8 +159,7 @@ describe("useFileUpload", () => {
       const input = document.querySelector("input[type='file']") as HTMLInputElement;
       const files = makeMockFiles(1);
 
-      act(() => userEvent.upload(input, files));
-
+      await userEvent.upload(input, files);
       expect(input.value).toBe("");
     });
   });
