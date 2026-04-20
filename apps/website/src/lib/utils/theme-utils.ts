@@ -1,5 +1,5 @@
-import { cookies } from "next/dist/server/request/cookies";
 import { THEME_PREF_COOKIE_KEY, type ResolvedTheme, type Theme } from "@/config/theme";
+import { cookies } from "next/dist/server/request/cookies";
 import { AsyncResult, Result } from "typescript-result";
 
 const VALID_THEMES: ReadonlySet<Theme> = new Set(["light", "dark", "system"]);

@@ -3,7 +3,7 @@ import {
   THEME_PREF_COOKIE_KEY,
   THEME_RESOLVED_COOKIE_KEY,
 } from "@/config/theme";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   applyTheme,
   getSystemTheme,
