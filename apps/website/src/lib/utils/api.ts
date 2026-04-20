@@ -123,6 +123,13 @@ export async function makeRequest<T>(
   return z.parseAsync(schema, await response.json().catch(() => undefined));
 }
 
+/**
+ * Folds an AsyncResult into a NextResponse, returning the data as JSON on success
+ * or an error response on failure.
+ *
+ * @param result The AsyncResult to fold into a response.
+ * @returns A promise resolving to a NextResponse.
+ */
 export function jsonResponse<T>(result: AsyncResult<T, Error>): Promise<NextResponse> {
   return result.fold(data => NextResponse.json(data), errorResponse);
 }
