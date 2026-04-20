@@ -102,25 +102,27 @@ const Page = () => {
           <Select.Option value="finished" label={t("filter.status.options.finished")} />
           <Select.Option value="archived" label={t("filter.status.options.archived")} />
         </Select>
-        <Select
-          label={t("filter.sort.title")}
-          value={sortBy}
-          onChange={e => setSortBy(e.target.value as GetEventsParams["sortBy"])}
-        >
-          <Select.Option value="name" label={t("filter.sort.options.name")} />
-          <Select.Option value="startDate" label={t("filter.sort.options.startDate")} />
-          <Select.Option value="endDate" label={t("filter.sort.options.endDate")} />
-          <Select.Option value="createdAt" label={t("filter.sort.options.createdAt")} />
-        </Select>
+        <div className={styles.filterSection}>
+          <Select
+            label={t("filter.sort.title")}
+            value={sortBy}
+            onChange={e => setSortBy(e.target.value as GetEventsParams["sortBy"])}
+          >
+            <Select.Option value="name" label={t("filter.sort.options.name")} />
+            <Select.Option value="startDate" label={t("filter.sort.options.startDate")} />
+            <Select.Option value="endDate" label={t("filter.sort.options.endDate")} />
+            <Select.Option value="createdAt" label={t("filter.sort.options.createdAt")} />
+          </Select>
 
-        <Button
-          variant="icon"
-          onClick={() =>
-            setSortOrder(prev => (prev === "ascending" ? "descending" : "ascending"))
-          }
-          icon={sortOrder === "ascending" ? <SortAsc /> : <SortDesc />}
-          radius="16"
-        />
+          <Button
+            variant="icon"
+            onClick={() =>
+              setSortOrder(prev => (prev === "ascending" ? "descending" : "ascending"))
+            }
+            icon={sortOrder === "ascending" ? <SortAsc /> : <SortDesc />}
+            radius="16"
+          />
+        </div>
       </div>
       <div className={styles.eventsContainer}>
         {isLoading ? (

@@ -19,7 +19,7 @@ import {
 } from "@/db";
 import z from "zod";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { getJoinedEvents } from "@/actions/joinedEvents";
 
 /**
@@ -134,18 +134,10 @@ export function useJoinedEvents() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
-  const invalidateQuery = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: eventsKeys.joined() });
-  }, [queryClient]);
-
   // Refetch on URL change
-  useEffect(invalidateQuery, [pathname, searchParams, invalidateQuery]);
-
-  // Refetch on `cookieStore` change
   useEffect(() => {
-    cookieStore.addEventListener("change", invalidateQuery);
-    return () => cookieStore.removeEventListener("change", invalidateQuery);
-  }, [invalidateQuery]);
+    queryClient.invalidateQueries({ queryKey: eventsKeys.joined() });
+  }, [pathname, searchParams, queryClient]);
 
   return useQuery({
     queryKey: eventsKeys.joined(),

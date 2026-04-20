@@ -1,0 +1,207 @@
+import {
+  createQueryClientWithWrapper,
+  createQueryClientWrapper,
+  mockJsonResponse,
+  mockServerErrorResponse,
+  mockUnauthorizedResponse,
+} from "@test-config";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { act, renderHook, waitFor } from "@testing-library/react";
+import {
+  useAuth,
+  useAuthRefresh,
+  useLoginMutation,
+  useLogoutMutation,
+  useRefreshMutation,
+} from "../useAuth";
+
+const okResponse = { ok: true } as const;
+
+const mockGetAuth = vi.fn();
+vi.mock("@/actions/auth", () => ({
+  getAuth: () => mockGetAuth(),
+}));
+
+let wrapper: ReturnType<typeof createQueryClientWrapper>;
+beforeEach(() => {
+  wrapper = createQueryClientWrapper();
+});
+
+describe("useAuth", () => {
+  it("returns auth state from the server action", async () => {
+    mockGetAuth.mockResolvedValue(okResponse);
+    const { result } = renderHook(() => useAuth(), { wrapper });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toStrictEqual(okResponse);
+  });
+});
+
+describe("useAuthRefresh", () => {
+  it("returns ok on a successful refresh", async () => {
+    vi.stubGlobal("fetch", mockJsonResponse(okResponse));
+
+    const { result } = renderHook(() => useAuthRefresh(), { wrapper });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toStrictEqual(okResponse);
+  });
+
+  it("calls POST /api/auth/refresh", async () => {
+    const fetchMock = mockJsonResponse(okResponse);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useAuthRefresh(), { wrapper });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    const [calledUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(calledUrl).toContain("/api/auth/refresh");
+    expect(init.method).toBe("POST");
+  });
+
+  it("enters an error state on a server error", async () => {
+    vi.stubGlobal("fetch", mockServerErrorResponse("Token expired"));
+
+    const { result } = renderHook(() => useAuthRefresh(), { wrapper });
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(result.current.error).toBeInstanceOf(Error);
+    expect(result.current.isSuccess).toBe(false);
+    expect(result.current.error?.message).toBe("Token expired");
+  });
+});
+
+describe("useLoginMutation", () => {
+  it("calls POST /api/auth/login with the password", async () => {
+    const fetchMock = mockJsonResponse(okResponse);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useLoginMutation(), { wrapper });
+    await act(async () => result.current.mutateAsync({ password: "secret" }));
+
+    const [calledUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(calledUrl).toContain("/api/auth/login");
+    expect(init.method).toBe("POST");
+    expect(JSON.parse(init.body as string)).toStrictEqual({ password: "secret" });
+  });
+
+  it("logs in and sets auth query data on success", async () => {
+    vi.stubGlobal("fetch", mockJsonResponse(okResponse));
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
+    const setDataSpy = vi.spyOn(queryClient, "setQueryData");
+
+    const { result } = renderHook(() => useLoginMutation(), { wrapper });
+    const data = await act(async () =>
+      result.current.mutateAsync({ password: "secret" })
+    );
+
+    expect(setDataSpy).toHaveBeenCalledWith(["auth"], okResponse);
+    expect(data).toStrictEqual(okResponse);
+  });
+
+  it("enters error state on unauthorized response", async () => {
+    vi.stubGlobal("fetch", mockUnauthorizedResponse("Unauthorized"));
+
+    const { result } = renderHook(() => useLoginMutation(), { wrapper });
+    await act(async () => result.current.mutate({ password: "wrong" }));
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(result.current.error?.message).toBe("Unauthorized");
+  });
+
+  it("enters error state on a server error", async () => {
+    vi.stubGlobal("fetch", mockServerErrorResponse("Invalid password"));
+
+    const { result } = renderHook(() => useLoginMutation(), { wrapper });
+    await act(async () => result.current.mutate({ password: "wrong_password" }));
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(result.current.error?.message).toBe("Invalid password");
+  });
+});
+
+describe("useLogoutMutation", () => {
+  it("calls POST /api/auth/logout", async () => {
+    const fetchMock = mockJsonResponse(okResponse);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useLogoutMutation(), { wrapper });
+    await act(async () => result.current.mutateAsync());
+
+    const [calledUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(calledUrl).toContain("/api/auth/logout");
+    expect(init.method).toBe("POST");
+  });
+
+  it("clears auth state in the query cache on success", async () => {
+    vi.stubGlobal("fetch", mockJsonResponse(okResponse));
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
+    const setDataSpy = vi.spyOn(queryClient, "setQueryData");
+
+    const { result } = renderHook(() => useLogoutMutation(), { wrapper });
+    await act(async () => result.current.mutateAsync());
+
+    expect(setDataSpy).toHaveBeenCalledWith(["auth"], null);
+  });
+
+  it("enters error state on a server error", async () => {
+    vi.stubGlobal("fetch", mockServerErrorResponse());
+
+    const { result } = renderHook(() => useLogoutMutation(), { wrapper });
+    await act(async () => result.current.mutate());
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+  });
+});
+
+describe("useRefreshMutation", () => {
+  it("calls POST /api/auth/refresh", async () => {
+    const fetchMock = mockJsonResponse(okResponse);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useRefreshMutation(), { wrapper });
+    await act(async () => result.current.refresh());
+
+    const [calledUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(calledUrl).toContain("/api/auth/refresh");
+    expect(init.method).toBe("POST");
+  });
+
+  it("exposes a refresh alias for mutateAsync", async () => {
+    vi.stubGlobal("fetch", mockJsonResponse(okResponse));
+    const { result } = renderHook(() => useRefreshMutation(), { wrapper });
+    expect(result.current.refresh).toBe(result.current.mutateAsync);
+  });
+
+  it("writes auth state into the query cache on success", async () => {
+    vi.stubGlobal("fetch", mockJsonResponse(okResponse));
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
+    const setDataSpy = vi.spyOn(queryClient, "setQueryData");
+
+    const { result } = renderHook(() => useRefreshMutation(), { wrapper });
+    await act(async () => result.current.refresh());
+
+    expect(setDataSpy).toHaveBeenCalledWith(["auth"], okResponse);
+  });
+
+  it("clears auth state in the query cache on error", async () => {
+    vi.stubGlobal("fetch", mockServerErrorResponse());
+    const { wrapper, queryClient } = createQueryClientWithWrapper();
+    const setDataSpy = vi.spyOn(queryClient, "setQueryData");
+
+    const { result } = renderHook(() => useRefreshMutation(), { wrapper });
+    await act(async () => result.current.refresh().catch(() => null));
+
+    await waitFor(() => expect(setDataSpy).toHaveBeenCalledWith(["auth"], null));
+  });
+
+  it("enters error state when the refresh endpoint returns a server error", async () => {
+    vi.stubGlobal("fetch", mockServerErrorResponse());
+
+    const { result } = renderHook(() => useRefreshMutation(), { wrapper });
+    await act(async () => result.current.mutate());
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+  });
+});

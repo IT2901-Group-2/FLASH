@@ -55,3 +55,24 @@ export const renderWithQuery = (
 ): RenderResult => {
   return render(ui, { wrapper: createQueryClientWrapper(), ...options });
 };
+
+export const createNextIntlLanguageWrapper = () => {
+  // There is a circular dependency between this file and the useLocale hook,
+  // so it is needed to require it here instead of importing at the top level.
+
+  // I don't like this, but the way next-intl is structured makes it hard to avoid.
+
+  // It could be defined in the `useLanguage` test file, but it is felt wrong to
+  // have it defined in a different place than `wrappers`.
+
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { NextIntlClientProvider } = require("next-intl");
+
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <NextIntlClientProvider locale="en" messages={{}}>
+      {children}
+    </NextIntlClientProvider>
+  );
+  wrapper.displayName = "TestNextIntlWrapper";
+  return wrapper;
+};

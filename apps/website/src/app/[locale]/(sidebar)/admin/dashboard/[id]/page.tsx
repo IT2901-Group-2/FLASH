@@ -52,7 +52,7 @@ const Page = () => {
             icon={<Download />}
             onClick={() => downloadImages({ eventId: id })}
           >
-            Download
+            {c("download")}
           </Button>
           <Button
             data-color="brand-purple"

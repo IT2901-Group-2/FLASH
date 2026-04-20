@@ -1,4 +1,10 @@
 import type { Image } from "@/db";
+import {
+  BatchUpdateImageInput,
+  CreateImageInput,
+  DeleteImageInput,
+  UpdateImageInput,
+} from "@/hooks/useImages";
 
 let _counter = 1;
 const nextId = () => `image-${_counter++}`;
@@ -15,6 +21,8 @@ export const makeImage = (overrides: Partial<Image> = {}): Image => {
     eventId: "event-123",
     userId: "user-123",
     isApproved: null,
+    previewImage:
+      "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAABQBQCdASogACAAPm00lUgkIyIhKAgAgA2JaQAA7MJS5IHjB4zLDA3J/kcpw0UNvpizMgAA/v1gU0XW/gLycFAkFtvekNcR3uBZWSxKpCS/DRKoYDyfFd4K1aODamUYMds9wossRPwW7bY0CxN7V+npngAAAA==",
     createdAt: new Date(),
     updatedAt: new Date(),
     ...overrides,
@@ -32,30 +40,53 @@ export const makeImages = (count: number, overrides: Partial<Image> = {}): Image
 };
 
 /**
+ * Creates a mock response for the uploaded image count endpoint.
+ *
+ * @example
+ * const response = makeUploadedImageCount(10); // { count: 10 }
+ */
+export const makeUploadedImageCount = (count: number = 10) => ({ count });
+
+/**
  * Creates a mock File object suitable for upload tests.
  *
  * @example
- * const file = makeMockFile("photo.jpg", "image/jpeg");
+ * const file = makeMockFile({ name: "photo.jpg", type: "image/jpeg", content: "fake image data" });
  */
-export const makeMockFile = (
+export const makeMockFile = ({
   name = "test-photo.jpg",
   type = "image/jpeg",
-  content = "mock file content"
-): File => {
+  content = "mock file content",
+}: { name?: string; type?: string; content?: BlobPart } = {}): File => {
   return new File([content], name, { type });
+};
+
+/**
+ * Creates an array of mock File objects.
+ *
+ * @example
+ * const files = makeMockFiles(3); // [File, File, File]
+ */
+export const makeMockFiles = (count: number, overrides: Partial<File> = {}): File[] => {
+  return Array.from({ length: count }, (_, i) =>
+    makeMockFile({
+      name: `test-photo-${i + 1}.jpg`,
+      ...overrides,
+    })
+  );
 };
 
 /**
  * Creates a mock FileList containing a single file.
  * Useful for simulating file input events.
  */
-export const makeMockFileList = (file: File): FileList => {
+export const makeMockFileList = (...files: File[]): FileList => {
   return {
-    0: file,
-    length: 1,
-    item: (index: number) => (index === 0 ? file : null),
+    0: files[0],
+    length: files.length,
+    item: (index: number) => (index < files.length ? files[index] : null),
     [Symbol.iterator]: function* () {
-      yield file;
+      yield* files;
     },
   } as FileList;
 };
@@ -66,4 +97,72 @@ export const makeMockFileList = (file: File): FileList => {
  */
 export const resetImageCounter = () => {
   _counter = 1;
+};
+
+/**
+ * Factory functions for creating input objects for image mutations.
+ *
+ * @example
+ * const input = makeCreateImageInput({ eventId: "event-1" });
+ */
+export const makeCreateImageInput = (
+  overrides: Partial<CreateImageInput> = {}
+): CreateImageInput => {
+  return {
+    eventId: "event-123",
+    file: makeMockFile(),
+    ...overrides,
+  };
+};
+
+/**
+ * Factory functions for creating input objects for image mutations.
+ *
+ * @example
+ * const input = makeUpdateImageInput({ eventId: "event-1", imageId: "image-1", data: { isApproved: true } });
+ */
+export const makeUpdateImageInput = (
+  overrides: Partial<UpdateImageInput> = {}
+): UpdateImageInput => {
+  return {
+    eventId: "event-123",
+    imageId: "image-123",
+    data: {
+      isApproved: true,
+    },
+    ...overrides,
+  };
+};
+
+/**
+ * Factory functions for creating input objects for batch image update mutations.
+ *
+ * @example
+ * const input = makeBatchUpdateImageInput({ eventId: "event-1", ids: ["image-1", "image-2"], isApproved: false });
+ */
+export const makeBatchUpdateImageInput = (
+  overrides: Partial<BatchUpdateImageInput> = {}
+): BatchUpdateImageInput => {
+  return {
+    eventId: "event-123",
+    ids: ["image-1", "image-2", "image-3"],
+    isApproved: true,
+    ...overrides,
+  };
+};
+
+/**
+ * Factory functions for creating input objects for image mutations.
+ *
+ * @example
+ * const input = makeDeleteImageInput({ eventId: "event-1", imageId: "image-1" });
+ */
+export const makeDeleteImageInput = (
+  overrides: Partial<DeleteImageInput> = {}
+): DeleteImageInput => {
+  return {
+    eventId: "event-123",
+    imageId: "image-123",
+    ...overrides,
+  };
 };

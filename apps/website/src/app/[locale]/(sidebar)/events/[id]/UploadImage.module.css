@@ -125,14 +125,19 @@
   .previewNavButtonRight {
     width: 2.75rem;
     height: 2.75rem;
+    top: auto;
+    bottom: calc(1rem + env(safe-area-inset-bottom));
+    transform: none;
   }
 
   .previewNavButtonLeft {
-    left: 0.5rem;
+    left: calc(50% - 3rem);
+    right: auto;
   }
 
   .previewNavButtonRight {
-    right: 0.5rem;
+    left: calc(50% + 1.25rem);
+    right: auto;
   }
 
   .desktopOnly {

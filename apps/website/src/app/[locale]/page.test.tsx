@@ -43,7 +43,7 @@ describe("Page", () => {
     renderWithQuery(<Page />);
 
     // Verify the translated text appears in the document
-    expect(screen.getByText("name")).toBeDefined();
-    expect(screen.getByText("description")).toBeDefined();
+    expect(screen.getByText("login.title")).toBeDefined();
+    expect(screen.getByText("login.description")).toBeDefined();
   });
 });

@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { LanguageToggleButton, ThemeToggleButton } from "@/components/ConfigButtons";
 
 export default function Page() {
-  const t = useTranslations("pages.adminLogin");
+  const t = useTranslations("pages.login");
   return (
     <div className={styles.pageWrapper}>
       <LanguageToggleButton />
