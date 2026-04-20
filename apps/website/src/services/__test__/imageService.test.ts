@@ -25,14 +25,14 @@ const mockEvents: (typeof eventTable.$inferInsert)[] = [
     id: "birthday",
     name: "Birthday",
     startDate: new Date(),
-    endDate: new Date(),
+    endDate: new Date(Date.now() + 86_400_000),
     autoApprove: false,
   },
   {
     id: "wedding",
     name: "Wedding",
     startDate: new Date(),
-    endDate: new Date(),
+    endDate: new Date(Date.now() + 86_400_000),
     autoApprove: true,
   },
 ];
@@ -255,12 +255,28 @@ describe("ImageService downloadImage", () => {
   });
 
   it("Should return an empty zip when no zip exists for event", async () => {
+    await imageService["dbService"].db
+      .update(eventTable)
+      .set({
+        startDate: new Date(Date.now() - 2 * 86_400_000),
+        endDate: new Date(Date.now() - 86_400_000),
+      })
+      .where(eq(eventTable.id, "birthday"));
+
     const result = await imageService.downloadImages("birthday").getOrThrow();
     const zip = new AdmZip(result);
     expect(zip.getEntries()).toHaveLength(0);
   });
 
   it("Should return the zip archive when it exists", async () => {
+    await imageService["dbService"].db
+      .update(eventTable)
+      .set({
+        startDate: new Date(Date.now() - 2 * 86_400_000),
+        endDate: new Date(Date.now() - 86_400_000),
+      })
+      .where(eq(eventTable.id, "wedding"));
+
     vi.spyOn(DatabaseService.prototype, "flush").mockImplementation(() => {});
 
     await imageService
@@ -392,6 +408,38 @@ describe("ImageService uploadImage", () => {
 
     const weddingImages = await imageService.getImages("wedding").getOrThrow();
     expect(weddingImages.filter(image => image.userId === "john2")).toHaveLength(3);
+  });
+
+  it("Should return Err when event has ended", async () => {
+    await imageService["dbService"].db
+      .update(eventTable)
+      .set({
+        startDate: new Date(Date.now() - 2 * 86_400_000),
+        endDate: new Date(Date.now() - 86_400_000),
+      }) // yesterday
+      .where(eq(eventTable.id, "wedding"));
+
+    mockedGetEventCookie.mockImplementationOnce(() =>
+      Result.fromAsync(async () => ({ userId: "john2" }) as EventCookie)
+    );
+
+    const result = await imageService.uploadImage("wedding", mockImageData[0]!);
+    Result.assertError(result);
+
+    const error = result.error as HTTPError;
+    expect(error).toBeInstanceOf(HTTPError);
+    expect(error.code).toBe(403);
+    expect(String(error.json ?? error.message)).toContain("Event has ended");
+  });
+
+  it("Should return Err when event is still live", async () => {
+    const result = await imageService.downloadImages("wedding");
+    Result.assertError(result);
+
+    const error = result.error as HTTPError;
+    expect(error).toBeInstanceOf(HTTPError);
+    expect(error.code).toBe(403);
+    expect(String(error.json ?? error.message)).toContain("Event is still live");
   });
 });
 
