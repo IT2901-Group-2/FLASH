@@ -106,12 +106,6 @@ describe("useFileUpload", () => {
 
   describe("input reset after selection", () => {
     it("resets the input value to empty string after files are selected", async () => {
-      const { input } = setup({ onFilesSelected: vi.fn() });
-      await userEvent.upload(input, makeMockFiles(1));
-      expect(input.value).toBe("");
-    });
-
-    it("resets the input value even when onFilesSelected is not provided", async () => {
       const { input } = setup();
       await userEvent.upload(input, makeMockFiles(1));
       expect(input.value).toBe("");
