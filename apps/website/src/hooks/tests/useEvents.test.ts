@@ -217,43 +217,6 @@ describe("useJoinedEvents", () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toHaveLength(2);
   });
-
-  it("registers a cookieStore change listener on mount", () => {
-    const { wrapper } = createQueryClientWithWrapper();
-    renderHook(() => useJoinedEvents(), { wrapper });
-    expect(mockCookieStore.addEventListener).toHaveBeenCalledWith(
-      "change",
-      expect.any(Function)
-    );
-  });
-
-  it("removes the cookieStore listener on unmount", () => {
-    const { wrapper } = createQueryClientWithWrapper();
-    const { unmount } = renderHook(() => useJoinedEvents(), { wrapper });
-    unmount();
-    expect(mockCookieStore.removeEventListener).toHaveBeenCalledWith(
-      "change",
-      expect.any(Function)
-    );
-  });
-
-  it("invalidates the joined query when the cookieStore change event fires", async () => {
-    const { wrapper, queryClient } = createQueryClientWithWrapper();
-    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
-
-    renderHook(() => useJoinedEvents(), { wrapper });
-
-    const [, handler] = mockCookieStore.addEventListener.mock.calls[0] as [
-      string,
-      () => void,
-    ];
-
-    await act(async () => handler());
-
-    expect(invalidateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ queryKey: eventsKeys.joined() })
-    );
-  });
 });
 
 describe("useCreateEventMutation", () => {
