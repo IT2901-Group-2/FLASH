@@ -3,7 +3,7 @@ import { useRef, ChangeEvent } from "react";
 interface UseFileUploadOptions {
   accept?: string;
   multiple?: boolean;
-  onFilesSelected?: (files: FileList) => void;
+  onFilesSelected?: (files: File[]) => void;
 }
 
 /**
@@ -41,7 +41,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
-      onFilesSelected?.(files);
+      onFilesSelected?.(Array.from(files));
     }
     // Reset input value to allow selecting the same file again if needed
     if (event.target) {
@@ -58,6 +58,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
       multiple={multiple}
       style={{ display: "none" }}
       onChange={handleFileChange}
+      data-testid="file-input"
     />
   );
 
