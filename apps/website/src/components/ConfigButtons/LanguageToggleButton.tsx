@@ -50,7 +50,7 @@ const LanguageToggleButton = () => {
       onClick={handleSwitch}
       disabled={isSwitching}
       className={`${styles.button} ${styles.right}`}
-      aria-label={`Current language: ${currentLocale.toUpperCase()}. Switch to ${nextLocale.toUpperCase()}`}
+      aria-label={`Switch to ${nextLocale.toUpperCase()}`}
       aria-busy={isSwitching}
     >
       <Languages size={16} aria-hidden="true" />
