@@ -57,7 +57,7 @@ export const makeMockFile = ({
   name = "test-photo.jpg",
   type = "image/jpeg",
   content = "mock file content",
-} = {}): File => {
+}: { name?: string; type?: string; content?: BlobPart } = {}): File => {
   return new File([content], name, { type });
 };
 
