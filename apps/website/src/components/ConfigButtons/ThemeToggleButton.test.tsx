@@ -17,10 +17,6 @@ vi.mock("@/hooks/useIsMounted", () => ({
 }));
 
 describe("ThemeToggleButton", () => {
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("uses a stable fallback before mounted", () => {
     mockedUseTheme.mockReturnValue({
       resolvedTheme: "dark",

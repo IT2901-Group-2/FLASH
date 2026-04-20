@@ -51,10 +51,6 @@ describe("LanguageToggleButton", () => {
     });
   };
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   it("renders the next locale when current locale is en", () => {
     setupMocks({ locale: "en" });
 
