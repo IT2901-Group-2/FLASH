@@ -6,6 +6,23 @@
   font-family: "Kantumruy Pro", sans-serif;
 }
 
+::-webkit-scrollbar {
+  width: 0.4rem;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
 body {
   background-color: var(--color-background-base);
   color: var(--color-text-base);
