@@ -4,7 +4,6 @@ import {
   makeEvent,
   makeEventStats,
   makeJoinedEvent,
-  mockCookieStore,
   mockJsonResponse,
   mockServerErrorResponse,
   mockUnauthorizedResponse,
