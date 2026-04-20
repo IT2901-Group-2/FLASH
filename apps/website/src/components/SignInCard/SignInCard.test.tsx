@@ -1,5 +1,5 @@
 import { renderWithQuery } from "@test-config";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import SignInCard from "./SignInCard";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
