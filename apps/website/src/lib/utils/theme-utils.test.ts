@@ -1,17 +1,17 @@
-import { afterEach, beforeEach, describe, it, expect, vi } from "vitest";
+import {
+  THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+  THEME_PREF_COOKIE_KEY,
+  THEME_RESOLVED_COOKIE_KEY,
+} from "@/config/theme";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   applyTheme,
   getSystemTheme,
+  isResolvedTheme,
+  isTheme,
   setStoredTheme,
   systemThemeListener,
 } from "./theme-utils";
-import {
-  isResolvedTheme,
-  isTheme,
-  THEME_RESOLVED_COOKIE_KEY,
-  THEME_PREF_COOKIE_KEY,
-  THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
-} from "@/config/theme";
 
 /* Helpers /*
 
@@ -33,8 +33,6 @@ function makeMatchMedia(prefersDark: boolean) {
 /* getSystemTheme */
 
 describe("getSystemTheme", () => {
-  afterEach(() => vi.unstubAllGlobals());
-
   it("returns 'dark' when the OS prefers dark mode", () => {
     const { matchMedia } = makeMatchMedia(true);
     vi.stubGlobal("matchMedia", matchMedia);
@@ -138,8 +136,6 @@ describe("setStoredTheme", () => {
     document.cookie = `${THEME_RESOLVED_COOKIE_KEY}=`;
   });
 
-  afterEach(() => vi.unstubAllGlobals());
-
   it("persists 'light' as the resolved cookie value for the light theme", () => {
     setStoredTheme("light", cookieOptions);
     expect(document.cookie).toContain(`${THEME_RESOLVED_COOKIE_KEY}=light`);
@@ -189,8 +185,6 @@ describe("systemThemeListener", () => {
     document.documentElement.style.colorScheme = "";
     document.cookie = `${THEME_RESOLVED_COOKIE_KEY}=`;
   });
-
-  afterEach(() => vi.unstubAllGlobals());
 
   // Registration
 

@@ -11,25 +11,3 @@ export const THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS = 60 * 60 * 24 * 365;
 
 export type ResolvedTheme = ColorTheme;
 export type Theme = "system" | ResolvedTheme;
-
-const VALID_THEMES: ReadonlySet<Theme> = new Set(["light", "dark", "system"]);
-const VALID_RESOLVED_THEMES: ReadonlySet<ResolvedTheme> = new Set(["light", "dark"]);
-
-/**
- * Type guard for theme preference values.
- * @param value - The stored theme preference.
- * @returns Whether the value is a valid theme preference.
- */
-export const isTheme = (value: unknown): value is Theme => {
-  return typeof value === "string" && VALID_THEMES.has(value as Theme);
-};
-
-/**
- * Type guard for resolved theme values.
- * @param value - The stored resolved theme.
- * @returns Whether the value is a valid resolved theme.
- * Note: Resolved themes should only be "light" or "dark", never "system".
- */
-export const isResolvedTheme = (value: unknown): value is ResolvedTheme => {
-  return typeof value === "string" && VALID_RESOLVED_THEMES.has(value as ResolvedTheme);
-};

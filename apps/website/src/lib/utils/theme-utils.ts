@@ -1,11 +1,28 @@
 import { cookies } from "next/dist/server/request/cookies";
-import {
-  isTheme,
-  THEME_PREF_COOKIE_KEY,
-  type ResolvedTheme,
-  type Theme,
-} from "@/config/theme";
+import { THEME_PREF_COOKIE_KEY, type ResolvedTheme, type Theme } from "@/config/theme";
 import { AsyncResult, Result } from "typescript-result";
+
+const VALID_THEMES: ReadonlySet<Theme> = new Set(["light", "dark", "system"]);
+const VALID_RESOLVED_THEMES: ReadonlySet<ResolvedTheme> = new Set(["light", "dark"]);
+
+/**
+ * Type guard for theme preference values.
+ * @param value - The stored theme preference.
+ * @returns Whether the value is a valid theme preference.
+ */
+export const isTheme = (value: unknown): value is Theme => {
+  return typeof value === "string" && VALID_THEMES.has(value as Theme);
+};
+
+/**
+ * Type guard for resolved theme values.
+ * @param value - The stored resolved theme.
+ * @returns Whether the value is a valid resolved theme.
+ * Note: Resolved themes should only be "light" or "dark", never "system".
+ */
+export const isResolvedTheme = (value: unknown): value is ResolvedTheme => {
+  return typeof value === "string" && VALID_RESOLVED_THEMES.has(value as ResolvedTheme);
+};
 
 /**
  * Persist a resolved theme value as a cookie.

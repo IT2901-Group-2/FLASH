@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  isResolvedTheme,
   THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
   THEME_PREF_COOKIE_KEY,
   THEME_RESOLVED_COOKIE_KEY,
@@ -11,6 +10,7 @@ import {
 import {
   applyTheme,
   getStoredThemePref,
+  isResolvedTheme,
   resolveThemePreference,
   setStoredTheme,
   systemThemeListener,
