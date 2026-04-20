@@ -63,7 +63,7 @@
   width: max-content;
 
   &[data-open="false"] {
-    opacity: 0;
+    display: none;
   }
 }
 
@@ -162,7 +162,8 @@
     width: auto;
 
     &[data-open="false"] {
-      opacity: 1;
+      display: block;
+      opacity: 0;
     }
 
     &[data-open="true"] {
