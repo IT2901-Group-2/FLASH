@@ -382,6 +382,7 @@ export default function Page() {
             icon={<ChevronRight />}
             iconPosition="right"
             className={styles.slideshowButton}
+            onClick={() => router.push(`./${eventId}/slideshow`)}
           >
             {tCommon("actions.slideshow")}
           </Button>
