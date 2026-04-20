@@ -8,15 +8,15 @@ import RememberedEvents from "@/components/RememberedEvents/RememberedEvents";
 import { LanguageToggleButton, ThemeToggleButton } from "@/components/ConfigButtons";
 
 const Page = () => {
-  const t = useTranslations("app");
+  const t = useTranslations("pages");
 
   return (
     <div className={styles.pageWrapper}>
       <LanguageToggleButton />
       <ThemeToggleButton />
       <Logo />
-      <Title align="center" size="large" as="h1" description={t("description")}>
-        {t("name")}
+      <Title align="center" size="large" as="h1" description={t("login.description")}>
+        {t("login.title")}
       </Title>
       <div className={styles.wrapper}>
         <JoinEventCard />

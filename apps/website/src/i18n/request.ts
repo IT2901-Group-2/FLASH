@@ -2,7 +2,7 @@ import { getRequestConfig } from "next-intl/server";
 import { hasLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 
-const messageNamespaces = ["app", "common", "pages", "admin", "guest"] as const;
+const messageNamespaces = ["common", "pages", "admin", "guest"] as const;
 
 /* This file is responsible for loading the correct locale and messages based on request.
  * It uses the `getRequestConfig` function from `next-intl/server` to load the appropriate messages for the requested locale.
