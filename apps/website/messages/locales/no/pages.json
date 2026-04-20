@@ -1,8 +1,8 @@
 {
-  "adminLogin": {
-    "title": "FLASH Admin",
-    "description": "Administrer fotoeventene dine enkelt",
-    "subtitle": "Selvhostet system for administrasjon av fotoeventer"
+  "login": {
+    "title": "FLASH",
+    "description": "Selvhostet system for administrasjon av fotoeventer",
+    "subtitle": "Administrer fotoeventene dine enkelt"
   },
   "joinEvent": {
     "title": "Delta i et event",
