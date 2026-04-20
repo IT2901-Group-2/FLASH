@@ -132,7 +132,7 @@ export const defaultDeleteEventMutationReturn = {
 /**
  * Successful `useEventsQuery` result with the given events.
  */
-export const makeEventsPage = (
+export const mockEventsPage = (
   items: Event[],
   nextCursor: number | null = null
 ): GetEventsPage => ({
@@ -152,7 +152,7 @@ export const makeEventsPage = (
  * });
  */
 export const mockEventsLoaded = (events: Event[]): EventsInfiniteQueryResult =>
-  mockInfiniteQueryResult({ data: mockInfiniteData(makeEventsPage(events)) });
+  mockInfiniteQueryResult({ data: mockInfiniteData(mockEventsPage(events)) });
 
 /**
  * Loading `useEventsQuery` result.
