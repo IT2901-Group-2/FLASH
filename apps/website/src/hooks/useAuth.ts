@@ -1,7 +1,7 @@
 "use client";
 import { makeRequest } from "@/lib/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { z } from "zod";
 import { getAuth } from "@/actions/auth";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -24,18 +24,10 @@ export function useAuth() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
-  const invalidateQuery = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: authKeys.state() });
-  }, [queryClient]);
-
   // Refetch on URL change
-  useEffect(invalidateQuery, [pathname, searchParams, invalidateQuery]);
-
-  // Refetch on `cookieStore` change
   useEffect(() => {
-    cookieStore.addEventListener("change", invalidateQuery);
-    return () => cookieStore.removeEventListener("change", invalidateQuery);
-  }, [invalidateQuery]);
+    queryClient.invalidateQueries({ queryKey: authKeys.state() });
+  }, [pathname, searchParams, queryClient]);
 
   return useQuery({
     queryKey: authKeys.state(),

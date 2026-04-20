@@ -16,10 +16,9 @@
     "toggleCamera": "{open, select, true {Lukk kamera} other {Åpne kamera}}",
     "uploadImage": "Last opp bilde",
     "downloadImages": "Last ned bilder",
-    "slideshow": "Lysbildefremvisning",
+    "slideshow": "Bildefremvisning",
     "createNewEvent": "Lag nytt event",
     "shareEvent": "Del event",
-    "copyLink": "Kopier lenke",
     "moderate": "Moderer"
   },
   "roles": {
@@ -29,7 +28,7 @@
   },
   "navigation": {
     "admin": "Admin",
-    "events": "Events",
+    "events": "Eventer",
     "options": "Valg",
     "dashboard": "Kontrollpanel",
     "language": "Språk",
@@ -56,8 +55,6 @@
     "photos": "Bilder"
   },
   "messages": {
-    "copySuccess": "Kopiert!",
-    "copyFailed": "Klarte ikke å kopiere lenken til utklippstavlen",
     "scanToUploadPhotos": "Skann for å laste opp bilder"
   },
   "slideshow": {

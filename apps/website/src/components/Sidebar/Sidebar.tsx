@@ -21,7 +21,7 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
 
   const { setOpen } = useSidebar();
 
-  const { data: isAdmin } = useAuth();
+  const { data: auth } = useAuth();
   const mounted = useIsMounted();
   const isMobile = useIsMobile();
   const navigation = useRouter();
@@ -50,7 +50,7 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
   return (
     <FlashSidebar className={className} {...rest}>
       <FlashSidebar.Header logo={<Logo />}>FLASH</FlashSidebar.Header>
-      {isAdmin && (
+      {auth?.isAdmin && (
         <FlashSidebar.Group title={t("admin")}>
           <FlashSidebar.Item
             icon={<House />}
