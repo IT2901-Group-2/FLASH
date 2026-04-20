@@ -332,6 +332,7 @@ export default function Page() {
               onClick={() => setPreviewIndex(index)}
             >
               <Image
+                data-testid="image-card"
                 src={`/api/events/${eventId}/images/${image.id}`}
                 alt=""
                 fill

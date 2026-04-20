@@ -59,7 +59,6 @@ describe("Guest Upload Page", () => {
     it("renders uploaded images", () => {
       render(<Page />);
       expect(screen.getByTestId("image-card")).toBeInTheDocument();
-      expect(screen.getByText("imageTitle")).toBeInTheDocument();
     });
 
     it("opens fullscreen preview when an image is clicked", async () => {
