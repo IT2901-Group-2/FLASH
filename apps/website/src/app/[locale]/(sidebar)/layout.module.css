@@ -12,3 +12,7 @@
   min-width: 0;
   overflow: hidden;
 }
+
+.main {
+  overflow-y: scroll;
+}

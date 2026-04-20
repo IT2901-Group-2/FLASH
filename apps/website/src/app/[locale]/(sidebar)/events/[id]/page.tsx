@@ -1,6 +1,14 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, ImageMinus, QrCode, Upload, X } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  ImageMinus,
+  QrCode,
+  Upload,
+  X,
+} from "lucide-react";
 import styles from "./UploadImage.module.css";
 import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
 import { useFileUpload } from "@/hooks/useFileUpload";
@@ -10,6 +18,7 @@ import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 import {
+  useDownloadImagesMutation,
   useImagesQuery,
   useUploadedImageCountQuery,
   useUploadImageMutation,
@@ -22,6 +31,7 @@ export default function Page() {
   const tUpload = useTranslations("guest.event.upload");
   const eventAuth = useEventAuth();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const { mutate: downloadImages } = useDownloadImagesMutation();
 
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
@@ -49,6 +59,9 @@ export default function Page() {
       setJoinLink(new URL(`/join/${joinCode}`, window.location.origin).href))();
   }, [setJoinLink, joinCode]);
 
+  //Event date data
+  const isEnded = eventData ? new Date() > eventData.endDate : false;
+
   // Translation strings
   const eventName =
     eventData?.name ??
@@ -61,8 +74,9 @@ export default function Page() {
       ? Math.max(0, eventData.uploadLimit - userImageCount)
       : undefined;
 
-  const uploadDescription =
-    typeof uploadsRemaining !== "number"
+  const uploadDescription = isEnded
+    ? tCommon("uploads.eventEnded")
+    : typeof uploadsRemaining !== "number"
       ? tCommon("uploads.unlimited.long")
       : uploadsRemaining === 0
         ? tCommon("uploads.none.long")
@@ -245,9 +259,6 @@ export default function Page() {
           />
           {images.length > 1 && (
             <>
-              <button>
-                <ChevronLeft />
-              </button>
               <Button
                 className={styles.previewNavButtonLeft}
                 onClick={prevPreviewImage}
@@ -291,15 +302,15 @@ export default function Page() {
             </Button>
           )}
           <Button
-            icon={<Upload />}
+            icon={isEnded ? <Download /> : <Upload />}
             iconPosition="right"
             data-color="brand-purple"
             variant="primary"
-            onClick={openFilePicker}
+            onClick={isEnded ? () => downloadImages({ eventId }) : openFilePicker}
             loading={isUploading}
             className={styles.desktopOnly}
           >
-            {tCommon("actions.uploadImage")}
+            {isEnded ? tCommon("actions.downloadImages") : tCommon("actions.uploadImage")}
           </Button>
         </PhoneHeader>
         {!isLoading && (isError || !eventData) ? (
@@ -315,10 +326,12 @@ export default function Page() {
             descriptionColor={uploadError ? "danger" : undefined}
             primaryButton={{
               "data-color": "brand-purple",
-              icon: <Upload size={18} />,
+              icon: isEnded ? <Download size={18} /> : <Upload size={18} />,
               iconPosition: "right",
-              text: tCommon("actions.uploadImage"),
-              onClick: openFilePicker,
+              text: isEnded
+                ? tCommon("actions.downloadImages")
+                : tCommon("actions.uploadImage"),
+              onClick: isEnded ? () => downloadImages({ eventId }) : openFilePicker,
               loading: isUploading,
             }}
           />

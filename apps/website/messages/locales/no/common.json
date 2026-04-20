@@ -15,6 +15,7 @@
     "join": "Bli med",
     "toggleCamera": "{open, select, true {Lukk kamera} other {Åpne kamera}}",
     "uploadImage": "Last opp bilde",
+    "downloadImages": "Last ned bilder",
     "slideshow": "Lysbildefremvisning",
     "createNewEvent": "Lag nytt event",
     "shareEvent": "Del event",
@@ -75,6 +76,7 @@
     "unlimited": {
       "short": "Ubegrenset opplasting",
       "long": "Du kan laste opp ubegrenset med bilder"
-    }
+    },
+    "eventEnded" : "Eventet er ferdig"
   }
 }

@@ -13,6 +13,19 @@ export interface UseLanguageReturn {
   switchLocale: () => void;
 }
 
+/**
+ * Custom hook to manage language switching using next-intl.
+ *
+ * @returns An object containing the `list of locales`, the `current locale`, the
+ * `next locale`, and the `switchLocale` function.
+ *
+ * @example
+ * const { currentLocale, switchLocale } = useLanguage();
+ * return (<button onClick={switchLocale}>
+ *   Switch to {currentLocale === 'en' ? 'French' : 'English'}
+ * </button>
+ * );
+ */
 export const useLanguage = (): UseLanguageReturn => {
   const [isPending, startTransition] = useTransition();
   const locale = useLocale();

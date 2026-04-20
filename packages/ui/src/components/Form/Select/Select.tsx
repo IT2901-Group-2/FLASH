@@ -62,14 +62,14 @@ const Select = ({
 
   const { inputProps, errorId, showErrorMsg, size } = useFormField(rest, "select");
 
-  const optionsContainerRef = useRef<HTMLUListElement>(null);
+  const selectContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!context.open) return;
     const handler = (e: MouseEvent) => {
       if (
-        optionsContainerRef.current &&
-        !optionsContainerRef.current.contains(e.target as Node)
+        selectContainerRef.current &&
+        !selectContainerRef.current.contains(e.target as Node)
       )
         context.setOpen(false);
     };
@@ -86,6 +86,7 @@ const Select = ({
           data-error={!!rest.error}
           data-testid="select"
           data-color={color}
+          ref={selectContainerRef}
         >
           <label
             data-testid="mainLabel"
@@ -109,17 +110,13 @@ const Select = ({
               aria-invalid={!!rest.error}
               disabled={disabled}
               className={cl(styles.trigger, context.open && styles.open)}
-              onClick={() => context.setOpen(true)}
+              onClick={() => context.setOpen(o => !o)}
             >
               <span className={styles.triggerValue}>{selectedLabel}</span>
               <ChevronDown className={cl(styles.icon, context.open && styles.iconOpen)} />
             </button>
 
-            <ul
-              data-open={context.open}
-              className={styles.listbox}
-              ref={optionsContainerRef}
-            >
+            <ul data-open={context.open} className={styles.listbox}>
               <label className={cl(formStyles.label, styles.mobileLabel)}>{label}</label>
               {children}
             </ul>
