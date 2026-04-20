@@ -63,9 +63,9 @@ export const flashUiMock = async () => {
     </div>
   ));
 
-  const Dialog = vi.fn(({ children, ...rest }: DialogProps) => (
-    <dialog data-testid="dialog" {...rest}>
-      {children}
+  const Dialog = vi.fn(({ children, closedby, ref, ...rest }: DialogProps) => (
+    <dialog data-testid="dialog" closedby={closedby} ref={ref}>
+      <div {...rest}>{children}</div>
     </dialog>
   ));
 

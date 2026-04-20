@@ -33,6 +33,10 @@ export default async function readResponseError(res: Response): Promise<string> 
 let isRefreshing = false;
 let refreshPromise: Promise<void> | null = null;
 
+/**
+ * Attempts to refresh the access token by making a request to the refresh endpoint.
+ * If the refresh fails, redirects the user to the admin login page.
+ */
 async function refreshAccessToken(): Promise<void> {
   const res = await fetch("/api/auth/refresh", { method: "POST" });
   if (!res.ok) {
@@ -42,6 +46,14 @@ async function refreshAccessToken(): Promise<void> {
   }
 }
 
+/**
+ * Helper function that builds the `RequestInit` object for a fetch request, including
+ * stringifying JSON bodies and setting the appropriate `Content-Type` header.
+ *
+ * @param method The HTTP method to use for the fetch request.
+ * @param data The body to send with the fetch request, either a JSON object or a Blob.
+ * @returns A `RequestInit` object to pass to `fetch()`.
+ */
 async function buildRequest(
   method: HTTPMethod,
   data?: JSONObject | Blob

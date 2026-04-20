@@ -1,16 +1,17 @@
 import { Meta, StoryObj } from "@storybook/react-vite";
 import Sidebar from "./Sidebar";
 import {
+  ArrowLeft,
   Calendar,
-  ChartColumn,
-  Clock4,
-  HardDrive,
+  ChevronRight,
   House,
-  Settings,
+  Languages,
+  Moon,
   SquareDashed,
-  Users,
 } from "lucide-react";
 import { expect, userEvent, within } from "storybook/test";
+
+const EXAMPLE_EVENTS = ["Event 1", "Event 2", "Event 3"];
 
 const meta: Meta<typeof Sidebar> = {
   title: "Building Blocks/Components/Sidebar",
@@ -38,13 +39,62 @@ export default meta;
 
 type Story = StoryObj<typeof Sidebar>;
 
+export const Default: Story = {
+  render: () => (
+    <Sidebar.Provider open={false}>
+      <Sidebar>
+        <Sidebar.Header />
+        <Sidebar.Group title="Admin">
+          <Sidebar.Item icon={<House />} border>
+            Dashboard
+          </Sidebar.Item>
+        </Sidebar.Group>
+        <Sidebar.Group title="Events" hideChildrenWhenClosed icon={<Calendar />} scroll>
+          {EXAMPLE_EVENTS.map((event, key) => (
+            <Sidebar.Item key={key} border>
+              {event} <ChevronRight />
+            </Sidebar.Item>
+          ))}
+        </Sidebar.Group>
+        <Sidebar.Group title="Options" position="bottom">
+          <Sidebar.Item icon={<Languages />}>Language </Sidebar.Item>
+          <Sidebar.Item icon={<Moon />}>Dark Mode</Sidebar.Item>
+        </Sidebar.Group>
+        <Sidebar.Group>
+          <Sidebar.Item icon={<ArrowLeft />} data-color="brand-purple">
+            Exit
+          </Sidebar.Item>
+        </Sidebar.Group>
+      </Sidebar>
+    </Sidebar.Provider>
+  ),
+  play: async ({ canvas, step }) => {
+    const sidebar = canvas.getByTestId("sidebar");
+
+    await step("Sidebar is rendered", async () => {
+      expect(sidebar).toBeInTheDocument();
+    });
+
+    await step("Sidebar is closed by default", async () => {
+      expect(sidebar).toHaveAttribute("data-open", "false");
+    });
+
+    await step("Sidebar opens and closes correctly", async () => {
+      const trigger = canvas.getByTestId("sidebar-trigger");
+
+      await userEvent.click(trigger);
+      expect(sidebar).toHaveAttribute("data-open", "true");
+      await userEvent.click(trigger);
+      expect(sidebar).toHaveAttribute("data-open", "false");
+    });
+  },
+};
+
 export const Simple: Story = {
   render: () => (
     <Sidebar.Provider>
       <Sidebar>
-        <Sidebar.Header>
-          <Sidebar.Trigger />
-        </Sidebar.Header>
+        <Sidebar.Header />
       </Sidebar>
     </Sidebar.Provider>
   ),
@@ -143,123 +193,6 @@ export const GroupPosition: Story = {
       const group = canvas.getByText("TEST TITLE").closest("div");
       const items = within(group!).getAllByText(/Test \d/);
       await expect(items).toHaveLength(3);
-    });
-  },
-};
-
-export const FullExample: Story = {
-  render: () => (
-    <Sidebar.Provider>
-      <Sidebar>
-        <Sidebar.Header style={{ height: "5rem" }} />
-        <Sidebar.Group title="MAIN" position="top">
-          <Sidebar.Item icon={<House />}>Desktop</Sidebar.Item>
-          <Sidebar.Item icon={<Calendar />}>Event</Sidebar.Item>
-          <Sidebar.Item icon={<ChartColumn />}>Analytics</Sidebar.Item>
-          <Sidebar.Item icon={<Users />}>Users</Sidebar.Item>
-          <Sidebar.Item icon={<Clock4 />}>Timeline</Sidebar.Item>
-        </Sidebar.Group>
-        <Sidebar.Group position="bottom">
-          <Sidebar.Item icon={<Settings />}>Settings</Sidebar.Item>
-          <Sidebar.Item icon={<HardDrive />}>Storage</Sidebar.Item>
-        </Sidebar.Group>
-        <Sidebar.Footer style={{ height: "5rem" }} />
-      </Sidebar>
-    </Sidebar.Provider>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Sidebar renders with all sections", async () => {
-      const sidebar = canvas.getByTestId("sidebar");
-      await expect(sidebar).toBeInTheDocument();
-    });
-
-    await step("Main group title is visible", async () => {
-      const mainTitle = canvas.getByText("MAIN");
-      await expect(mainTitle).toBeInTheDocument();
-    });
-
-    await step("All main navigation items are rendered", async () => {
-      await expect(canvas.getByText("Desktop")).toBeInTheDocument();
-      await expect(canvas.getByText("Event")).toBeInTheDocument();
-      await expect(canvas.getByText("Analytics")).toBeInTheDocument();
-      await expect(canvas.getByText("Users")).toBeInTheDocument();
-      await expect(canvas.getByText("Timeline")).toBeInTheDocument();
-    });
-
-    await step("Bottom group items are rendered", async () => {
-      await expect(canvas.getByText("Settings")).toBeInTheDocument();
-      await expect(canvas.getByText("Storage")).toBeInTheDocument();
-    });
-
-    await step("Groups have correct position attributes", async () => {
-      const mainGroup = canvas.getByText("MAIN").closest("[data-position]");
-      await expect(mainGroup).toHaveAttribute("data-position", "top");
-    });
-
-    await step("All items have unique icons", async () => {
-      const desktopItem = canvas
-        .getByText("Desktop")
-        .closest('button, a, [role="button"]');
-      const eventItem = canvas.getByText("Event").closest('button, a, [role="button"]');
-      const settingsItem = canvas
-        .getByText("Settings")
-        .closest('button, a, [role="button"]');
-
-      await expect(desktopItem?.querySelector("svg")).toBeInTheDocument();
-      await expect(eventItem?.querySelector("svg")).toBeInTheDocument();
-      await expect(settingsItem?.querySelector("svg")).toBeInTheDocument();
-    });
-
-    await step("Navigation items are interactive", async () => {
-      const desktopItem = canvas
-        .getByText("Desktop")
-        .closest('button, a, [role="button"]');
-      await userEvent.click(desktopItem!);
-
-      const analyticsItem = canvas
-        .getByText("Analytics")
-        .closest('button, a, [role="button"]');
-      await userEvent.click(analyticsItem!);
-    });
-
-    await step("Bottom items are interactive", async () => {
-      const settingsItem = canvas
-        .getByText("Settings")
-        .closest('button, a, [role="button"]');
-      await userEvent.click(settingsItem!);
-
-      const storageItem = canvas
-        .getByText("Storage")
-        .closest('button, a, [role="button"]');
-      await userEvent.click(storageItem!);
-    });
-
-    await step("Keyboard navigation works across all items", async () => {
-      const firstItem = canvas.getByText("Desktop").closest('button, a, [role="button"]');
-      (firstItem as HTMLButtonElement)?.focus();
-
-      await expect(firstItem).toHaveFocus();
-
-      await userEvent.keyboard("{Enter}");
-    });
-
-    await step("Items have accessible names", async () => {
-      const items = [
-        canvas.getByText("Desktop"),
-        canvas.getByText("Event"),
-        canvas.getByText("Analytics"),
-        canvas.getByText("Users"),
-        canvas.getByText("Timeline"),
-        canvas.getByText("Settings"),
-        canvas.getByText("Storage"),
-      ];
-
-      for (const item of items) {
-        const button = item.closest('button, a, [role="button"]');
-        await expect(button).toHaveAccessibleName();
-      }
     });
   },
 };

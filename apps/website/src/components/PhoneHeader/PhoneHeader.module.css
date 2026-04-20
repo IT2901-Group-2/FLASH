@@ -92,6 +92,10 @@
   min-width: 0;
 }
 
+.sidebarTrigger {
+  display: none;
+}
+
 @media screen and (max-width: 768px) {
   .container {
     padding-inline: 1rem;
@@ -99,5 +103,8 @@
 
   .titleBlock > *:last-child {
     display: none;
+  }
+  .sidebarTrigger {
+    display: block;
   }
 }

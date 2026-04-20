@@ -12,6 +12,9 @@ import {
   getEventStatsSchema,
 } from "@/db";
 import z from "zod";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useCallback, useEffect } from "react";
+import { getJoinedEvents } from "@/actions/joinedEvents";
 
 /**
  * Serializes an `GetEvents` object into a URL query string (e.g. `?status=active&archived=false`).
@@ -54,6 +57,7 @@ export const eventsKeys = {
     [...eventsKeys.all, eventId, "code", role] as const,
   byCode: (code?: string) => [...eventsKeys.all, "by-code", code] as const,
   stats: (eventId?: string) => [...eventsKeys.all, "stats", eventId] as const,
+  joined: () => [...eventsKeys.all, "joined"] as const,
 };
 
 /**
@@ -105,6 +109,34 @@ export function useEventStatsQuery(eventId?: string) {
     queryKey: eventsKeys.stats(eventId),
     queryFn: () => makeRequest(getEventStatsSchema, `/api/events/${eventId}/stats`),
     enabled: !!eventId,
+  });
+}
+
+/**
+ * Fetches a list of all currently joined events.
+ * Event cookies are accessed on the server.
+ */
+export function useJoinedEvents() {
+  const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  const invalidateQuery = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: eventsKeys.joined() });
+  }, [queryClient]);
+
+  // Refetch on URL change
+  useEffect(invalidateQuery, [pathname, searchParams, invalidateQuery]);
+
+  // Refetch on `cookieStore` change
+  useEffect(() => {
+    cookieStore.addEventListener("change", invalidateQuery);
+    return () => cookieStore.removeEventListener("change", invalidateQuery);
+  }, [invalidateQuery]);
+
+  return useQuery({
+    queryKey: eventsKeys.joined(),
+    queryFn: getJoinedEvents,
   });
 }
 

@@ -1,21 +1,29 @@
 "use client";
-import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
-import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
-import { useFileUpload } from "@/hooks/useFileUpload";
+import { useEffect, useRef, useState } from "react";
 import {
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  ImageMinus,
+  QrCode,
+  Upload,
+  X,
+} from "lucide-react";
+import styles from "./UploadImage.module.css";
+import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
+import { useFileUpload } from "@/hooks/useFileUpload";
+import { useTranslations } from "next-intl";
+import { useParams, useRouter } from "next/navigation";
+import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+import { useEventAuth } from "@/providers/EventAuthContext";
+import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
+import {
+  useDownloadImagesMutation,
   useImagesQuery,
   useUploadedImageCountQuery,
   useUploadImageMutation,
 } from "@/hooks/useImages";
-import { getAdminDashboardEventRoute, getModerateEventRoute, routes } from "@/lib/routes";
-import { useEventAuth } from "@/providers/EventAuthContext";
-import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
-import { ChevronLeft, ChevronRight, ImageMinus, QrCode, Upload, X } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import styles from "./UploadImage.module.css";
 
 export default function Page() {
   const router = useRouter();
@@ -23,10 +31,10 @@ export default function Page() {
   const tUpload = useTranslations("guest.event.upload");
   const eventAuth = useEventAuth();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const { mutate: downloadImages } = useDownloadImagesMutation();
 
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
-  const locale = useLocale();
   const { data, isLoading, isError } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined
   );
@@ -51,6 +59,9 @@ export default function Page() {
       setJoinLink(new URL(`/join/${joinCode}`, window.location.origin).href))();
   }, [setJoinLink, joinCode]);
 
+  //Event date data
+  const isEnded = eventData ? new Date() > eventData.endDate : false;
+
   // Translation strings
   const eventName =
     eventData?.name ??
@@ -63,16 +74,13 @@ export default function Page() {
       ? Math.max(0, eventData.uploadLimit - userImageCount)
       : undefined;
 
-  const uploadDescription =
-    typeof uploadsRemaining !== "number"
-      ? tUpload("descriptionUnlimited")
+  const uploadDescription = isEnded
+    ? tCommon("uploads.eventEnded")
+    : typeof uploadsRemaining !== "number"
+      ? tCommon("uploads.unlimited.long")
       : uploadsRemaining === 0
-        ? tUpload("descriptionNone")
-        : tUpload("descriptionRemaining", { count: uploadsRemaining });
-
-  const backHref = eventAuth.isModerator
-    ? getAdminDashboardEventRoute(eventId)
-    : routes.root;
+        ? tCommon("uploads.none.long")
+        : tCommon("uploads.remaining.long", { count: uploadsRemaining });
 
   const { openFilePicker, FileInput } = useFileUpload({
     multiple: false,
@@ -251,9 +259,6 @@ export default function Page() {
           />
           {images.length > 1 && (
             <>
-              <button>
-                <ChevronLeft />
-              </button>
               <Button
                 className={styles.previewNavButtonLeft}
                 onClick={prevPreviewImage}
@@ -276,7 +281,6 @@ export default function Page() {
           title={eventName}
           username={eventAuth?.nickname ?? ""}
           description={uploadDescription}
-          backHref={backHref}
         >
           <Button
             icon={<QrCode />}
@@ -292,21 +296,21 @@ export default function Page() {
               iconPosition="right"
               data-color="brand-purple"
               variant="primary"
-              onClick={() => router.push(getModerateEventRoute(locale, eventId))}
+              onClick={() => router.push(`./${eventId}/moderate`)}
             >
               {tCommon("actions.moderate")}
             </Button>
           )}
           <Button
-            icon={<Upload />}
+            icon={isEnded ? <Download /> : <Upload />}
             iconPosition="right"
             data-color="brand-purple"
             variant="primary"
-            onClick={openFilePicker}
+            onClick={isEnded ? () => downloadImages({ eventId }) : openFilePicker}
             loading={isUploading}
             className={styles.desktopOnly}
           >
-            {tCommon("actions.uploadImage")}
+            {isEnded ? tCommon("actions.downloadImages") : tCommon("actions.uploadImage")}
           </Button>
         </PhoneHeader>
         {!isLoading && (isError || !eventData) ? (
@@ -322,10 +326,12 @@ export default function Page() {
             descriptionColor={uploadError ? "danger" : undefined}
             primaryButton={{
               "data-color": "brand-purple",
-              icon: <Upload size={18} />,
+              icon: isEnded ? <Download size={18} /> : <Upload size={18} />,
               iconPosition: "right",
-              text: tCommon("actions.uploadImage"),
-              onClick: openFilePicker,
+              text: isEnded
+                ? tCommon("actions.downloadImages")
+                : tCommon("actions.uploadImage"),
+              onClick: isEnded ? () => downloadImages({ eventId }) : openFilePicker,
               loading: isUploading,
             }}
           />

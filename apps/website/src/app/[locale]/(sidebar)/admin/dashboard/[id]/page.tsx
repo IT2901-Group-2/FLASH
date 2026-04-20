@@ -1,7 +1,7 @@
 "use client";
 
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
-import { ArrowLeft, ArrowRight, Share, Play } from "lucide-react";
+import { ArrowLeft, ArrowRight, Share, Play, Download } from "lucide-react";
 import { useParams } from "next/navigation";
 import { Button, Card, Dialog, Title } from "@flash/ui";
 import styles from "./page.module.css";
@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { ReviewStep } from "@/components/EventDialogs/Steps";
 import { useRef } from "react";
 import { useTranslations } from "next-intl";
-import { getAdminDashboardEventsRoute } from "@/lib/routes";
+import { useDownloadImagesMutation } from "@/hooks/useImages";
 
 const Page = () => {
   const qrCodeRef = useRef<HTMLDialogElement>(null);
@@ -19,6 +19,7 @@ const Page = () => {
   const { id, locale } = useParams<{ id: string; locale: string }>();
   const { data: joinCode } = useEventCodeQuery(id, "moderator");
   const { data = [], status } = useEventsQuery({ id: [id?.toString() || ""] });
+  const { mutate: downloadImages } = useDownloadImagesMutation();
   const eventData = data[0];
   if (!eventData) return;
 
@@ -40,11 +41,19 @@ const Page = () => {
         <div className={styles.headerItem}>
           <ArrowLeft
             className={styles.back}
-            onClick={() => navigation.push(getAdminDashboardEventsRoute())}
+            onClick={() => navigation.push("/admin/dashboard")}
           />
           <Title description={eventData?.description}>{eventData?.name}</Title>
         </div>
         <Card className={styles.card}>
+          <Button
+            data-color="brand-purple"
+            variant="secondary"
+            icon={<Download />}
+            onClick={() => downloadImages({ eventId: id })}
+          >
+            Download
+          </Button>
           <Button
             data-color="brand-purple"
             icon={<Share />}

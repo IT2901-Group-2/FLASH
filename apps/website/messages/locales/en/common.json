@@ -15,6 +15,7 @@
     "join": "Join Event",
     "toggleCamera": "{open, select, true {Close camera} other {Open camera}}",
     "uploadImage": "Upload Image",
+    "downloadImages": "Download Images",
     "slideshow": "Slideshow",
     "createNewEvent": "Create New Event",
     "shareEvent": "Share Event",
@@ -27,14 +28,14 @@
     "admin": "Admin"
   },
   "navigation": {
-    "main": "Main",
-    "config": "Config",
-    "desktop": "Desktop",
+    "admin": "Admin",
     "events": "Events",
-    "settings": "Settings",
-    "storage": "Storage",
+    "options": "Options",
+    "dashboard": "Dashboard",
+    "language": "Language",
     "darkMode": "Dark mode",
-    "lightMode": "Light mode"
+    "lightMode": "Light mode",
+    "back": "Back"
   },
   "fields": {
     "password": "Password",
@@ -62,5 +63,20 @@
   "slideshow": {
     "viewProgress": "{index} of {total}",
     "noApproved": "No approved images"
+  },
+  "uploads": {
+    "remaining": {
+      "short": "{count, plural, one {# upload} other {# uploads}} remaining",
+      "long": "You can upload {count, plural, one {# photo} other {# photos}}"
+    },
+    "none": {
+      "short": "Upload limit reached",
+      "long": "You have no uploads remaining"
+    },
+    "unlimited": {
+      "short": "Unlimited uploads",
+      "long": "You can upload unlimited photos"
+    },
+    "eventEnded" : "The event has ended"
   }
 }

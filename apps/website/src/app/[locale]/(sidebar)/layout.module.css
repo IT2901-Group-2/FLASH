@@ -1,0 +1,18 @@
+.layout {
+  display: flex;
+  position: relative;
+  height: 100dvh;
+  overflow-y: scroll;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.main {
+  overflow-y: scroll;
+}
