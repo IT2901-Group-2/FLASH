@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ActionCard, ImageCard, SegmentedControl } from "@flash/ui";
+import { ActionCard, SegmentedControl } from "@flash/ui";
+import { ImageCard } from "@/components/ImageCard";
 import { ModerateHeader } from "@/components/ModerateHeader";
 import { useImagesQuery } from "@/hooks/useImages";
 import { useImageSelection } from "./useImageSelection";
@@ -120,7 +121,6 @@ export default function ModeratePage() {
             {images.map((image, index) => (
               <ImageCard
                 key={image.id}
-                variant="preview2"
                 src={`/api/events/${eventId}/images/${image.id}`}
                 alt={t("imageAlt", { index: index + 1, total: images.length })}
                 title={t("imageTitle", { index: index + 1 })}

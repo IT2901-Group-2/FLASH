@@ -1,0 +1,93 @@
+.imageCard {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  border: none;
+  border-radius: 0;
+  contain: layout style;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 128px;
+}
+
+.imageCard[role="button"] {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.imageCard[role="button"]:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-dialog);
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  overflow: hidden;
+}
+
+.image {
+  object-fit: cover;
+  transition: opacity 0.2s ease;
+}
+
+.selected .image {
+  opacity: 0.5;
+}
+
+.pending .image {
+  opacity: 0.5;
+}
+
+.rejected .image {
+  filter: brightness(0.2);
+}
+
+.statusLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--color-primary-base);
+  border-top: 1px solid var(--color-border-base);
+}
+
+.statusIcon {
+  display: flex;
+  flex-shrink: 0;
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--color-text-base);
+  }
+}
+
+.statusText {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-base);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.moderateCheckBadge {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-background-base);
+
+  svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 18px;
+    height: 18px;
+    color: var(--color-text-base);
+  }
+}

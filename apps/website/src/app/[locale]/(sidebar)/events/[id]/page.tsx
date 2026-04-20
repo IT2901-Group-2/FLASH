@@ -6,11 +6,11 @@ import {
   ActionCard,
   Button,
   Dialog,
-  ImageCard,
   QRDisplay,
   SegmentedControl,
   Title,
 } from "@flash/ui";
+import { ImageCard } from "@/components/ImageCard";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
@@ -398,7 +398,6 @@ export default function Page() {
           {displayedImages.map((image, index) => (
             <ImageCard
               key={image.id}
-              variant="preview2"
               src={`/api/events/${eventId}/images/${image.id}`}
               alt={tUpload("imageAlt", {
                 index: index + 1,
