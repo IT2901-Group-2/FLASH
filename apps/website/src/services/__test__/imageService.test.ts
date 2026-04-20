@@ -414,7 +414,7 @@ describe("ImageService uploadImage", () => {
     expect(String(error.json ?? error.message)).toContain("Upload limit reached");
 
     const weddingImages = await imageService.getImages("wedding").getOrThrow();
-    expect(weddingImages.filter(image => image.userId === "john2")).toHaveLength(2);
+    expect(weddingImages.items.filter(image => image.userId === "john2")).toHaveLength(2);
   });
 
   it("Should allow upload when user is below event upload limit", async () => {
@@ -436,7 +436,7 @@ describe("ImageService uploadImage", () => {
     Result.assertOk(await imageService["storage"].read(`${uploadedImage.id}.webp`));
 
     const weddingImages = await imageService.getImages("wedding").getOrThrow();
-    expect(weddingImages.filter(image => image.userId === "john2")).toHaveLength(3);
+    expect(weddingImages.items.filter(image => image.userId === "john2")).toHaveLength(3);
   });
 
   it("Should return Err when event has ended", async () => {

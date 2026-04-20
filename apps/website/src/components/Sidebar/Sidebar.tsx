@@ -35,7 +35,10 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
     },
     rememberedEvents.length > 0
   );
-  const events = rememberedEvents.length > 0 ? eventData : [];
+  const events =
+    rememberedEvents.length > 0
+      ? (eventData?.pages?.flatMap(page => page.items) ?? [])
+      : [];
 
   const handleRedirect = (href: string) => {
     if (isMobile) setOpen(false);
