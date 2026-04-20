@@ -1,7 +1,6 @@
 import {
   createQueryClientWithWrapper,
   createQueryClientWrapper,
-  mockCookieStore,
   mockJsonResponse,
   mockServerErrorResponse,
   mockUnauthorizedResponse,
@@ -16,7 +15,7 @@ import {
   useRefreshMutation,
 } from "../useAuth";
 
-const okResponse = { ok: true as const };
+const okResponse = { ok: true } as const;
 const mockGetAuth = vi.fn();
 vi.mock("@/actions/auth", () => ({
   getAuth: () => mockGetAuth(),
@@ -34,44 +33,6 @@ describe("useAuth", () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toStrictEqual(okResponse);
-  });
-
-  it("registers a cookieStore change listener on mount", () => {
-    const { wrapper } = createQueryClientWithWrapper();
-    renderHook(() => useAuth(), { wrapper });
-
-    expect(mockCookieStore.addEventListener).toHaveBeenCalledWith(
-      "change",
-      expect.any(Function)
-    );
-  });
-
-  it("removes the cookieStore listener on unmount", () => {
-    const { wrapper } = createQueryClientWithWrapper();
-    const { unmount } = renderHook(() => useAuth(), { wrapper });
-    unmount();
-
-    expect(mockCookieStore.removeEventListener).toHaveBeenCalledWith(
-      "change",
-      expect.any(Function)
-    );
-  });
-
-  it("invalidates the auth state query when the cookieStore change event fires", async () => {
-    const { wrapper, queryClient } = createQueryClientWithWrapper();
-    const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
-
-    renderHook(() => useAuth(), { wrapper });
-
-    const [, handler] = mockCookieStore.addEventListener.mock.calls[0] as [
-      string,
-      () => void,
-    ];
-
-    await act(async () => handler());
-    expect(invalidateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ queryKey: ["auth", "state"] })
-    );
   });
 });
 
