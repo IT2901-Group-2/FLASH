@@ -86,10 +86,18 @@
   margin-top: 1.5rem;
 }
 
-.sectionTitle {
+.sectionTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
   margin: 1rem 0;
   padding: 0 1rem;
-  width: 100%;
+}
+
+.sectionTitle {
+  margin: 0;
+  padding: 0;
 }
 
 .grid {
@@ -110,7 +118,7 @@
     padding: 1em 1em 0.3em;
   }
 
-  .sectionTitle {
+  .sectionTitleRow {
     padding: 0 1rem;
   }
 }
@@ -140,6 +148,13 @@
 
   .desktopOnly {
     display: none !important;
+  }
+
+  .slideshowButton {
+    height: 2.4rem !important;
+    padding-inline: 0.75rem 0.3rem !important;
+    gap: 0.1rem !important;
+    font-size: var(--font-size-small) !important;
   }
 
   .sectionTitle[data-size] {

@@ -376,9 +376,16 @@ export default function Page() {
         </SegmentedControl>
       )}
 
-      <Title as="h2" className={styles.sectionTitle}>
-        {isShowingUserTab ? tUpload("tabs.userPhotos") : tUpload("tabs.allPhotos")}
-      </Title>
+      <div className={styles.sectionTitleRow}>
+        <Title as="h2" className={styles.sectionTitle}>
+          {isShowingUserTab ? tUpload("tabs.userPhotos") : tUpload("tabs.allPhotos")}
+        </Title>
+        {!isShowingUserTab && (
+          <Button variant="secondary" icon={<ChevronRight />} iconPosition="right" className={styles.slideshowButton}>
+            {tCommon("actions.slideshow")}
+          </Button>
+        )}
+      </div>
 
       {!isLoading && displayedImages.length === 0 ? (
         <div role="status" className={styles.emptyState}>
