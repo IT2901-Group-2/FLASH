@@ -53,7 +53,7 @@
               "unlimited": "Uendelig"
             },
             "error": {
-              "required": "Velg en opplasningsgrense",
+              "required": "Velg en opplastningsgrense",
               "min": "Nedre grense er 1"
             }
           },

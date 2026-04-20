@@ -1,6 +1,4 @@
 {
   "name": "FLASH",
-  "adminName": "FLASH Admin",
-  "description": "Administrer fotoeventene dine enkelt",
-  "subtitle": "Selvhostet system for administrasjon av fotoeventer"
+  "description": "Administrer fotoeventene dine enkelt"
 }

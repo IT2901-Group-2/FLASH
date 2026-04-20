@@ -9,8 +9,8 @@
     "description": "Skriv inn eventkoden eller skann QR-koden for å bli med"
   },
   "dashboard": {
-    "title": "FLASH Admin",
-    "description": "Administrer fotoeventene dine enkelt",
+    "title": "Eventer",
+    "description": "Administrer eventene dine enkelt",
     "filter": {
       "search": {
         "title": "Søk"
