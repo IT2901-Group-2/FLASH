@@ -1,7 +1,12 @@
 {
-  "home": {
-    "title": "Hallo verden!",
-    "about": "Om oss"
+  "adminLogin": {
+    "title": "FLASH Admin",
+    "description": "Administrer fotoeventene dine enkelt",
+    "subtitle": "Selvhostet system for administrasjon av fotoeventer"
+  },
+  "joinEvent": {
+    "title": "Delta i et event",
+    "description": "Skriv inn eventkoden eller skann QR-koden for å bli med"
   },
   "dashboard": {
     "title": "FLASH Admin",
@@ -31,12 +36,8 @@
       }
     }
   },
-  "joinEvent": {
-    "title": "Delta i et event",
-    "description": "Skriv inn eventkoden eller skann QR-koden for å bli med"
-  },
-  "adminEvents": {
-    "title": "Eventer",
-    "description": "Administrer eventene dine"
+  "home": {
+    "title": "Hallo verden!",
+    "about": "Om oss"
   }
 }
