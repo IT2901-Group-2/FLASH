@@ -77,24 +77,23 @@ export class ImageService {
     eventId: string,
     { id, approval }: GetImagesParams = {}
   ): AsyncResult<Image[], Error> {
-    return this.getVisibleToUserId(eventId).mapCatching(
-      visibleToUserId => () =>
-        this.dbService.db
-          .select()
-          .from(imageTable)
-          .where(
-            and(
-              eq(imageTable.eventId, eventId),
-              id !== undefined ? inArray(imageTable.id, id) : undefined,
-              approval !== undefined && approval !== "pending"
-                ? eq(imageTable.isApproved, approval === "approved")
-                : undefined,
-              approval === "pending" ? isNull(imageTable.isApproved) : undefined,
-              visibleToUserId !== undefined
-                ? eq(imageTable.userId, visibleToUserId)
-                : undefined
-            )
+    return this.getVisibleToUserId(eventId).mapCatching(visibleToUserId =>
+      this.dbService.db
+        .select()
+        .from(imageTable)
+        .where(
+          and(
+            eq(imageTable.eventId, eventId),
+            id !== undefined ? inArray(imageTable.id, id) : undefined,
+            approval !== undefined && approval !== "pending"
+              ? eq(imageTable.isApproved, approval === "approved")
+              : undefined,
+            approval === "pending" ? isNull(imageTable.isApproved) : undefined,
+            visibleToUserId !== undefined
+              ? eq(imageTable.userId, visibleToUserId)
+              : undefined
           )
+        )
     );
   }
 
