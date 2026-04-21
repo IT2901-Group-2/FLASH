@@ -9,7 +9,7 @@ import {
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import Page from "./page";
-import { useImagesQuery } from "@/hooks/useImages";
+import { useImagesQuery, useMyImagesQuery } from "@/hooks/useImages";
 import userEvent from "@testing-library/user-event";
 import { PhoneHeaderProps } from "@/components/PhoneHeader/PhoneHeader";
 import { useFileUpload } from "@/hooks/useFileUpload";
@@ -30,6 +30,7 @@ vi.mock("@/components/PhoneHeader/PhoneHeader", () => ({
 describe("Guest Upload Page", () => {
   beforeEach(() => {
     vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoaded([makeImage()]));
+    vi.mocked(useMyImagesQuery).mockReturnValue(mockImagesLoaded([makeImage()]));
   });
 
   describe("render and hook setup", () => {
@@ -51,10 +52,11 @@ describe("Guest Upload Page", () => {
 
     it("uses image query hook", () => {
       render(<Page />);
+      // uploadsArePrivate defaults to false, so no polling interval is set.
       expect(useImagesQuery).toHaveBeenCalledWith(
         "event-123",
         { approval: "approved" },
-        expect.any(Number)
+        undefined
       );
     });
   });

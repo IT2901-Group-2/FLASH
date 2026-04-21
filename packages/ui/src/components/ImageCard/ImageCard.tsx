@@ -68,6 +68,9 @@ export interface ImageCardProps extends React.HTMLAttributes<HTMLDivElement> {
  * An image card component that can be customized to show different state and
  * perform different types of actions.
  *
+ * @deprecated Use `ImageCard` from `apps/website/src/components/ImageCard` instead.
+ * This component will be removed in a future release.
+ *
  * > _Last updated: `2026-02-07`_
  */
 export const ImageCard = ({
