@@ -77,10 +77,8 @@ export class ImageService {
     eventId: string,
     { id, approval }: GetImagesParams = {}
   ): AsyncResult<Image[], Error> {
-    return Result.genCatching(this, async function* () {
-      const visibleToUserId = yield* this.getVisibleToUserId(eventId);
-
-      return yield* Result.try(() =>
+    return this.getVisibleToUserId(eventId).mapCatching(
+      visibleToUserId => () =>
         this.dbService.db
           .select()
           .from(imageTable)
@@ -97,8 +95,7 @@ export class ImageService {
                 : undefined
             )
           )
-      );
-    });
+    );
   }
 
   /**
@@ -113,10 +110,8 @@ export class ImageService {
     eventId: string,
     imageId: string
   ): AsyncResult<Buffer<ArrayBufferLike>, Error> {
-    return Result.genCatching(this, async function* () {
-      const visibleToUserId = yield* this.getVisibleToUserId(eventId);
-
-      const rows = yield* Result.try(() =>
+    return this.getVisibleToUserId(eventId)
+      .mapCatching(visibleToUserId =>
         this.dbService.db
           .select()
           .from(imageTable)
@@ -130,15 +125,14 @@ export class ImageService {
             )
           )
           .limit(1)
-      );
-
-      yield* getFirstRow(
-        rows,
-        `Image with id ${imageId} does not exist on event with id ${eventId}`
-      );
-
-      return yield* this.storage.read(`${imageId}.webp`);
-    });
+      )
+      .map(rows =>
+        getFirstRow(
+          rows,
+          `Image with id ${imageId} does not exist on event with id ${eventId}`
+        )
+      )
+      .map(() => this.storage.read(`${imageId}.webp`));
   }
 
   /**
@@ -445,20 +439,15 @@ export class ImageService {
 
   private getVisibleToUserId(eventId: string): AsyncResult<string | undefined, Error> {
     return Result.genCatching(this, async function* () {
-      const cookieResult = await getEventCookie(eventId, JWT_SECRET).getOrNull();
-      if (!cookieResult) return undefined;
-
-      const { userId, isModerator } = cookieResult;
+      const { userId, isModerator } = yield* getEventCookie(eventId, JWT_SECRET);
       const isAdmin = await verifyAccessToken()
         .then(() => true)
         .catch(() => false);
-      const isPrivileged = isAdmin || isModerator;
-
-      const events = yield* eventService.getEvents({ id: [eventId] });
-      const event = events[0];
-      if (!event) return undefined;
-
-      return event.uploadsArePrivate && !isPrivileged ? userId : undefined;
+      if (isAdmin || isModerator) {
+        return undefined;
+      }
+      const [event] = yield* eventService.getEvents({ id: [eventId] });
+      return event?.uploadsArePrivate === true ? userId : undefined;
     });
   }
 }
