@@ -25,7 +25,7 @@
         "missingNickname": "Please enter a nickname.",
         "nicknameTaken": "Nickname is already taken.",
         "joinFailed": "Unable to join event. Please try again.",
-        "invalidQr": "Not a valid QR code. Plase try again."
+        "invalidQr": "Not a valid QR code. Please try again."
       },
       "nickname": {
         "title": "Welcome to",

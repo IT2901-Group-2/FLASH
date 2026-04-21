@@ -9,7 +9,7 @@ export default function Layout({ children }: LayoutProps<"/[locale]/admin">) {
       <header className={styles.header}>
         <FlashSidebar.Trigger />
       </header>
-      <section className={styles.main}>{children}</section>
+      <section className={styles.section}>{children}</section>
     </>
   );
 }

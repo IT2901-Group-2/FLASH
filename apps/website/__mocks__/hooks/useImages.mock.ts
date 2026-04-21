@@ -6,6 +6,7 @@ import {
   BatchUpdateImageInput,
   CreateImageInput,
   DeleteImageInput,
+  DownloadImagesInput,
   UpdateImageInput,
 } from "@/hooks/useImages";
 import { mockQueryResult } from "./useQuery.mock";
@@ -114,6 +115,16 @@ export const defaultUploadedImageCountQueryReturn = {
   isLoading: false,
   isError: false,
 } as UseQueryResult<{ count: number }>;
+
+export const defaultDownloadImagesMutationReturn = {
+  mutateAsync: vi.fn().mockResolvedValue(undefined),
+  mutate: vi.fn(),
+  status: "idle",
+  isPending: false,
+  isSuccess: false,
+  isError: false,
+  reset: vi.fn(),
+} as unknown as UseMutationResult<void, Error, DownloadImagesInput>;
 
 // ---------------------------------------------------------------------------
 // State builders

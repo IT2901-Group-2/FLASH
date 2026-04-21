@@ -8,13 +8,17 @@ import { vi } from "vitest";
  * vi.stubGlobal("fetch", mockJsonResponse([event1, event2]));
  */
 export const mockJsonResponse = <T>(body: T, status = 200) => {
+  // I have no idea why there needs to be a double vi.fn()
+  // here but I get syntax errors without it
   return vi.fn(
-    async () =>
-      new Response(JSON.stringify(body), {
-        status,
-        headers: { "Content-Type": "application/json" },
-      })
-  ) as unknown as typeof fetch;
+    vi.fn(
+      async () =>
+        new Response(JSON.stringify(body), {
+          status,
+          headers: { "Content-Type": "application/json" },
+        })
+    ) as unknown as typeof fetch
+  );
 };
 
 /**

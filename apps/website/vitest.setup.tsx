@@ -17,9 +17,16 @@
 
 import { cleanup } from "@testing-library/react";
 import { afterEach, beforeEach, vi } from "vitest";
-import { mockRouter, resetMockRouter } from "./__mocks__/router.mock";
-import { flashUiMock, imageCardMock, resetEventCounter, resetImageCounter } from "@test-config";
 import {
+  flashUiMock,
+  imageCardMock,
+  resetEventCounter,
+  resetImageCounter,
+  resetMockRouter,
+  resetMockCookieStore,
+  mockCookieStore,
+  useTranslations,
+  useLocale,
   redirect,
   useParams,
   usePathname,
@@ -28,7 +35,8 @@ import {
   notFound,
   Image,
   Link,
-} from "./__mocks__/next";
+  permanentRedirect,
+} from "@test-config";
 
 /**
  * Spreads the real module so non-mocked exports keep working.
@@ -41,8 +49,8 @@ vi.mock("next-intl", async importOriginal => {
   const actual = await importOriginal<typeof import("next-intl")>();
   return {
     ...actual,
-    useTranslations: vi.fn(() => (key: string) => key),
-    useLocale: vi.fn(() => "en"),
+    useTranslations,
+    useLocale,
   };
 });
 
@@ -76,6 +84,14 @@ vi.mock("@flash/ui", () => flashUiMock());
 vi.mock("@/components/ImageCard", () => imageCardMock());
 
 /**
+ * Mocks the cookieStore global with a simple object of vi.fn() methods.
+ */
+Object.defineProperty(global, "cookieStore", {
+  value: mockCookieStore,
+  writable: true,
+});
+
+/**
  * Factory contains ONLY vi.fn() calls - no reference to any imported variable.
  *
  * Vitest hoists vi.mock() above all imports, so using an imported value here
@@ -89,6 +105,7 @@ vi.mock("next/navigation", () => ({
   useParams,
   redirect,
   notFound,
+  permanentRedirect,
 }));
 
 /**
@@ -107,16 +124,7 @@ globalThis.fetch = mockFetch;
  */
 beforeEach(async () => {
   resetMockRouter();
-
-  // Clear router call history so each test starts from a clean slate.
-  // Tests that need to assert on router calls can do so without interference
-  // from previous tests.
-  mockRouter.push.mockClear();
-  mockRouter.replace.mockClear();
-  mockRouter.back.mockClear();
-  mockRouter.forward.mockClear();
-  mockRouter.refresh.mockClear();
-  mockRouter.prefetch.mockClear();
+  resetMockCookieStore();
 
   // Reset fetch so each test controls its own responses.
   mockFetch.mockReset();
@@ -127,9 +135,12 @@ beforeEach(async () => {
 
   // Reset all mocks
   vi.resetAllMocks();
+
+  // Unstub any globals that were stubbed in a test
+  vi.unstubAllGlobals();
 });
 
-// ─── afterEach: unmount React trees ─────────────────────────────────────────
+// Unmount React trees
 afterEach(() => {
   cleanup();
 });

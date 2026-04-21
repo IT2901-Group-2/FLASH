@@ -7,13 +7,13 @@
   border-radius: var(--radius-16);
   border: 0.1rem solid var(--color-border-base);
   background-color: var(--color-primary-base);
-  color: var(--color-text-secondary);
+  color: var(--color-text-base);
 
   cursor: pointer;
   font-size: var(--font-size-large);
 
   &:focus-within {
-    border-color: var(--color-border-dark);
+    border-color: var(--color-border-light);
   }
 
   [data-error="true"] & {
@@ -40,6 +40,8 @@
 
   width: 100%;
   background-color: transparent;
+
+  color: var(--color-text-base);
 }
 
 .listbox {
@@ -55,7 +57,7 @@
   display: flex;
   flex-direction: column;
 
-  border: inherit;
+  border: 0.1rem solid var(--color-border-base);
 
   background-color: inherit;
   border-radius: var(--radius-16);
@@ -63,7 +65,11 @@
   width: max-content;
 
   &[data-open="false"] {
-    opacity: 0;
+    display: none;
+  }
+
+  &:hover {
+    border-color: var(--color-border-light);
   }
 }
 
@@ -162,7 +168,8 @@
     width: auto;
 
     &[data-open="false"] {
-      opacity: 1;
+      display: block;
+      opacity: 0;
     }
 
     &[data-open="true"] {

@@ -12,6 +12,11 @@ export default defineConfig({
     coverage: {
       provider: "istanbul",
     },
+    server: {
+      deps: {
+        inline: ["next-intl"],
+      },
+    },
   },
   resolve: {
     tsconfigPaths: true,
