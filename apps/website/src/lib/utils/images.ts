@@ -17,7 +17,7 @@ export function getImageSrc(
     Object.entries(params).map(obj => obj.map(String))
   );
 
-  const queryString = searchParams.size > 0 ? `?${searchParams.toString}` : "";
+  const queryString = searchParams.size > 0 ? `?${searchParams.toString()}` : "";
 
   return `/api/events/${eventId}/images/${imageId}${queryString}`;
 }
