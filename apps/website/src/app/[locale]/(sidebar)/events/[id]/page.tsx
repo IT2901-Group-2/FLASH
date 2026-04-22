@@ -151,9 +151,7 @@ export default function Page() {
         images={images}
         previewIndex={previewIndex}
         setPreviewIndex={setPreviewIndex}
-        getImageAlt={(index, total) =>
-          tUpload("imageAlt", { index: index + 1, total })
-        }
+        getImageAlt={(index, total) => tUpload("imageAlt", { index: index + 1, total })}
       />
 
       <div className={styles.pageWrapper}>
