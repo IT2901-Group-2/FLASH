@@ -8,6 +8,7 @@ import { useImagesQuery } from "@/hooks/useImages";
 import { useImageSelection } from "./useImageSelection";
 import { useTranslations } from "next-intl";
 import styles from "./Moderate.module.css";
+import { ImagePreview } from "../ImagePreview";
 
 type Tab = "pending" | "approved" | "rejected";
 
@@ -17,6 +18,7 @@ export default function ModeratePage() {
   const t = useTranslations("guest.event.moderate");
 
   const [activeTab, setActiveTab] = useState<Tab>("pending");
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
 
   const { data: images = [], isLoading } = useImagesQuery(eventId, {
     approval: activeTab,
@@ -125,7 +127,9 @@ export default function ModeratePage() {
                 alt={t("imageAlt", { index: index + 1, total: images.length })}
                 title={t("imageTitle", { index: index + 1 })}
                 state={selectMode && selectedIds.has(image.id) ? "selected" : "default"}
-                onClick={() => handleImageClick(image.id)}
+                onClick={() =>
+                  selectMode ? handleImageClick(image.id) : setPreviewIndex(index)
+                }
                 data-testid={image.id}
                 placeholder={image.previewImage}
               />
@@ -133,6 +137,15 @@ export default function ModeratePage() {
           </div>
         )}
       </div>
+
+      <ImagePreview
+        eventId={eventId}
+        images={images}
+        previewIndex={previewIndex}
+        setPreviewIndex={setPreviewIndex}
+        getImageAlt={(index, total) => t("imageAlt", { index: index + 1, total })}
+      />
+
       {/* The error banner/sonnar/toast is just a placeholder for now,
       and is to be implemented as a component later */}
       {bulkError && (
