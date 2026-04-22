@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   _: Request,
-  { params }: RouteContext<"/api/events/[eventId]/images/mine">
+  { params }: RouteContext<"/api/events/[eventId]/images/my">
 ): Promise<NextResponse> {
   const { eventId } = await params;
 

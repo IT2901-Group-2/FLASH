@@ -74,7 +74,7 @@ export const imagesKeys = {
   list: (eventId?: string, params?: GetImagesParams) =>
     [...imagesKeys.event(eventId), "list", toImagesSearchParams(params)] as const,
   uploaded: (eventId?: string) => [...imagesKeys.event(eventId), "uploaded"] as const,
-  mine: (eventId?: string) => [...imagesKeys.event(eventId), "mine"] as const,
+  my: (eventId?: string) => [...imagesKeys.event(eventId), "my"] as const,
 };
 
 /**
@@ -107,8 +107,8 @@ export function useMyImagesQuery(
   refetchInterval?: number
 ) {
   return useQuery({
-    queryKey: imagesKeys.mine(eventId),
-    queryFn: () => makeRequest(imageArraySchema, `/api/events/${eventId}/images/mine`),
+    queryKey: imagesKeys.my(eventId),
+    queryFn: () => makeRequest(imageArraySchema, `/api/events/${eventId}/images/my`),
     enabled: !!eventId && enabled,
     refetchInterval,
   });
