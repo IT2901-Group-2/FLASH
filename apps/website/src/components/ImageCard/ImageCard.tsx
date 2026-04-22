@@ -56,14 +56,9 @@ export const ImageCard = ({
         state === "rejected" && styles.rejected
       )}
       onClick={onClick}
-      role={onClick ? "button" : undefined}
-      tabIndex={onClick ? 0 : undefined}
-      aria-pressed={
-        onClick && (state === "selected" || state === "default")
-          ? state === "selected"
-          : undefined
-      }
-      onKeyDown={onClick ? handleKeyDown : undefined}
+      role="button"
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
       {...rest}
     >
       <div className={styles.imageWrapper}>
