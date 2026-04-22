@@ -39,7 +39,7 @@ export const ImageCard = ({
     (e: React.KeyboardEvent<HTMLDivElement>) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        onClick?.(e as unknown as React.MouseEvent<HTMLDivElement>);
+        e.currentTarget.click();
       }
     },
     [onClick]

@@ -423,16 +423,12 @@ export class ImageService {
    * @returns A result containing the list of `Image` objects or an error.
    */
   getImagesByUser(eventId: string): AsyncResult<Image[], Error> {
-    return Result.genCatching(this, function* () {
-      const userId = yield* this.getAuthenticatedUserId(eventId);
-
-      return yield* Result.try(() =>
-        this.dbService.db
-          .select()
-          .from(imageTable)
-          .where(and(eq(imageTable.eventId, eventId), eq(imageTable.userId, userId)))
-      );
-    });
+    return this.getAuthenticatedUserId(eventId).mapCatching(userId =>
+      this.dbService.db
+        .select()
+        .from(imageTable)
+        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.userId, userId)))
+    );
   }
 
   /**
