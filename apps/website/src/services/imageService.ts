@@ -382,6 +382,11 @@ export class ImageService {
     );
   }
 
+  /**
+   * Retrieves the authenticated user's ID from the event cookie.
+   * @param eventId The id of the event.
+   * @returns A result containing the user ID, or a 403 error if the user is not logged in.
+   */
   private getAuthenticatedUserId(eventId: string): AsyncResult<string, Error> {
     return getEventCookie(eventId, JWT_SECRET)
       .mapError(
