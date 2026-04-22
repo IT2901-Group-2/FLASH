@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Button } from "@flash/ui";
 import Image from "next/image";
 import type { Image as EventImage } from "@/db";
-import styles from "./UploadImage.module.css";
+import styles from "./ImagePreview.module.css";
 
 interface ImagePreviewProps {
   eventId: string;

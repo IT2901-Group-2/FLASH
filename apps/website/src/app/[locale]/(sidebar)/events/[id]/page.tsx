@@ -15,7 +15,7 @@ import {
   useUploadedImageCountQuery,
   useUploadImageMutation,
 } from "@/hooks/useImages";
-import { ImagePreview } from "./ImagePreview";
+import { ImagePreview } from "./components/ImagePreview";
 
 export default function Page() {
   const router = useRouter();

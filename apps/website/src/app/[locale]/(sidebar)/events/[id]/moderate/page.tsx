@@ -8,7 +8,7 @@ import { useImagesQuery } from "@/hooks/useImages";
 import { useImageSelection } from "./useImageSelection";
 import { useTranslations } from "next-intl";
 import styles from "./Moderate.module.css";
-import { ImagePreview } from "../ImagePreview";
+import { ImagePreview } from "../components/ImagePreview";
 
 type Tab = "pending" | "approved" | "rejected";
 
