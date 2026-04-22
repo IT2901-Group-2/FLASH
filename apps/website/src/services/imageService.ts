@@ -102,7 +102,12 @@ export class ImageService {
     );
   }
 
-  // TODO: jsdoc
+  /**
+   * Returns the "ORDER BY" clause to use in order to get the desired image size.
+   *
+   * @param param The desired width and height of the image.
+   * @returns An SQL statement to use in an "ORDER BY" clause.
+   */
   private getSizeOrder({ width, height }: GetImageParams): SQL | null {
     if (width !== undefined && height !== undefined) {
       return asc(
@@ -127,6 +132,7 @@ export class ImageService {
    *
    * @param eventId The id of the event the image belongs to.
    * @param imageId The id of the image to download.
+   * @param params The desired width and height of the image.
    * @returns A result containing the downloaded image as a `Buffer` or an error
    */
   downloadImage(
@@ -170,7 +176,14 @@ export class ImageService {
     });
   }
 
-  // TODO: jsdoc
+  /**
+   * Attempts to resize and save the image in all the desired image sizes.
+   * The image will never be enlarged.
+   *
+   * @param imageId The id of the image to save.
+   * @param sharpImage The image to save loaded into a `sharp` pipeline.
+   * @returns A result containing the actual sizes the image was saved as or an error.
+   */
   private saveImage(
     imageId: string,
     sharpImage: Sharp
