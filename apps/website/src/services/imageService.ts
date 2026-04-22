@@ -4,7 +4,7 @@ import { getEventCookie } from "@/lib/utils/eventCookie";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { getFirstRow } from "@/lib/utils/sql";
 import { FileStorage } from "@flash/file-storage";
-import { and, eq, inArray, isNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, SQL, sql } from "drizzle-orm";
 import { DatabaseService, dbService } from "./databaseService";
 import { AsyncResult, Result } from "typescript-result";
 import {
@@ -18,6 +18,8 @@ import {
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
 import AdmZip from "adm-zip";
+import { on } from "stream";
+import { once } from "process";
 
 const uid = new ShortUniqueId();
 
@@ -101,6 +103,25 @@ export class ImageService {
     );
   }
 
+  // TODO: jsdoc
+  private getSizeOrder(width?: number, height?: number): SQL | null {
+    if (width !== undefined && height !== undefined) {
+      return asc(
+        sql`abs(${imageSizesTable.width} * ${imageSizesTable.height} - ${width * height})`
+      );
+    }
+
+    if (width !== undefined) {
+      return asc(sql`abs(${imageSizesTable.width} - ${width})`);
+    }
+
+    if (height !== undefined) {
+      return asc(sql`abs(${imageSizesTable.height} - ${height})`);
+    }
+
+    return null;
+  }
+
   /**
    * Downloads the image with the specified id.
    * Will fail if the image does not exist or does not belong to the specified event.
@@ -111,22 +132,44 @@ export class ImageService {
    */
   downloadImage(
     eventId: string,
-    imageId: string
+    imageId: string,
+    width?: number,
+    height?: number
   ): AsyncResult<Buffer<ArrayBufferLike>, Error> {
-    return Result.try(() =>
-      this.dbService.db
-        .select()
-        .from(imageTable)
-        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
-        .limit(1)
-    )
-      .map(rows =>
+    return Result.gen(this, function* () {
+      yield* Result.try(() =>
+        this.dbService.db
+          .select()
+          .from(imageTable)
+          .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
+          .limit(1)
+      ).map(rows =>
         getFirstRow(
           rows,
           `Image with id ${imageId} does not exist on event with id ${eventId}`
         )
-      )
-      .map(() => this.storage.read(`${imageId}.webp`));
+      );
+
+      const sortOrder = this.getSizeOrder(width, height);
+      if (sortOrder === null) {
+        return this.storage.read(`${imageId}.webp`);
+      }
+
+      return Result.try(() =>
+        this.dbService.db
+          .select()
+          .from(imageSizesTable)
+          .where(eq(imageSizesTable.imageId, imageId))
+          .orderBy(sortOrder)
+          .limit(1)
+      ).map(([row]) =>
+        this.storage.read(
+          row === undefined
+            ? `${imageId}.webp`
+            : `${imageId}-${row.width}x${row.height}.webp`
+        )
+      );
+    });
   }
 
   // TODO: jsdoc
