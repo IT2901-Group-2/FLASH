@@ -57,7 +57,8 @@ export default function Page() {
   const uploadsArePrivate = eventData?.uploadsArePrivate ?? false;
 
   const [activeTab, setActiveTab] = useState<"all" | "user">("all");
-  const isShowingUserTab = !uploadsArePrivate || activeTab === "user";
+  const showTabs = uploadsArePrivate || !!eventAuth.isModerator;
+  const isShowingUserTab = !showTabs || activeTab === "user";
 
   // Image Data
   const { data: imagesData } = useImagesQuery(
@@ -376,7 +377,7 @@ export default function Page() {
         </div>
       </div>
 
-      {uploadsArePrivate && (
+      {showTabs && (
         <SegmentedControl
           fill
           className={styles.tabContainer}
