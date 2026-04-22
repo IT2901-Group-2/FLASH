@@ -19,7 +19,6 @@ export interface ImageCardProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
   state?: ImageCardState;
   placeholder?: string;
-  onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
   ref?: React.Ref<HTMLDivElement>;
 }
 
