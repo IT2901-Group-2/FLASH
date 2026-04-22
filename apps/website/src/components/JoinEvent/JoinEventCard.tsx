@@ -1,6 +1,6 @@
 "use client";
 import { TextAlignStart } from "lucide-react";
-import { Card, Input, Button, Title, DropdownControl } from "@flash/ui";
+import { Card, Button, Title, DropdownControl, TextField } from "@flash/ui";
 import { useTranslations } from "next-intl";
 import styles from "./JoinEventCard.module.css";
 import { QrCode } from "lucide-react";
@@ -65,7 +65,7 @@ const JoinEventCard = () => {
           label={t("tabs.enterCode")}
           content={
             <form className={styles.content} onSubmit={handleSubmit}>
-              <Input
+              <TextField
                 data-color="brand-purple"
                 label={c("fields.eventCode")}
                 placeholder={t("fields.eventCode.placeholder")}
