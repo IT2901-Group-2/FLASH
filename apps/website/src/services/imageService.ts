@@ -1,4 +1,4 @@
-import { JWT_SECRET, storage } from "@/config";
+import { JWT_SECRET, storage, MAX_IMAGE_SIZE } from "@/config";
 import { HTTPError } from "@/lib/utils/error";
 import { getEventCookie } from "@/lib/utils/eventCookie";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
@@ -24,8 +24,6 @@ export class ImageService {
     this.dbService = dbService;
     this.storage = storage;
   }
-
-  static readonly MAX_IMAGE_SIZE = 12 * 1024 * 1024;
   /**
    * Validates the image metadata using `sharp`.
    * Checks that `sharp` is able to open the image file and that the size of the image does not exceed `ImageService.MAX_IMAGE_SIZE`.
@@ -39,7 +37,7 @@ export class ImageService {
         return Result.error(new Error("Unable to determine image size"));
       }
 
-      if (meta.size > ImageService.MAX_IMAGE_SIZE) {
+      if (meta.size > MAX_IMAGE_SIZE) {
         return Result.error(new Error("Image exceeded the max image size"));
       }
 
