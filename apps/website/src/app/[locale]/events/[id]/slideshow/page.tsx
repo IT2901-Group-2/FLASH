@@ -104,7 +104,7 @@ const Page = () => {
             size="xsmall"
             description={t("viewProgress", {
               index: Math.min(viewIndex + 1, imageData?.length ?? 0),
-              total: imageStats?.pendingImages ?? 0,
+              total: imageStats?.approvedImages ?? 0,
             })}
           >
             {eventData?.name}
