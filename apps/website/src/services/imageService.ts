@@ -12,6 +12,7 @@ import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
 import AdmZip from "adm-zip";
 import { verifyAccessToken } from "@/lib/utils/auth";
+import { eventService } from "./eventService";
 
 const uid = new ShortUniqueId();
 
@@ -76,7 +77,7 @@ export class ImageService {
     eventId: string,
     { id, approval }: GetImagesParams = {}
   ): AsyncResult<Image[], Error> {
-    return Result.try(() =>
+    return this.getVisibleToUserId(eventId).mapCatching(visibleToUserId =>
       this.dbService.db
         .select()
         .from(imageTable)
@@ -87,7 +88,10 @@ export class ImageService {
             approval !== undefined && approval !== "pending"
               ? eq(imageTable.isApproved, approval === "approved")
               : undefined,
-            approval === "pending" ? isNull(imageTable.isApproved) : undefined
+            approval === "pending" ? isNull(imageTable.isApproved) : undefined,
+            visibleToUserId !== undefined
+              ? eq(imageTable.userId, visibleToUserId)
+              : undefined
           )
         )
     );
@@ -105,13 +109,22 @@ export class ImageService {
     eventId: string,
     imageId: string
   ): AsyncResult<Buffer<ArrayBufferLike>, Error> {
-    return Result.try(() =>
-      this.dbService.db
-        .select()
-        .from(imageTable)
-        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
-        .limit(1)
-    )
+    return this.getVisibleToUserId(eventId)
+      .mapCatching(visibleToUserId =>
+        this.dbService.db
+          .select()
+          .from(imageTable)
+          .where(
+            and(
+              eq(imageTable.eventId, eventId),
+              eq(imageTable.id, imageId),
+              visibleToUserId !== undefined
+                ? eq(imageTable.userId, visibleToUserId)
+                : undefined
+            )
+          )
+          .limit(1)
+      )
       .map(rows =>
         getFirstRow(
           rows,
@@ -415,6 +428,25 @@ export class ImageService {
       );
 
       return yield* this.getUploadedImageCountByUser(eventId, userId);
+    });
+  }
+  /**
+   * Returns the userId to filter images by based on whether the event's uploads
+   * are private and whether the requesting user has elevated privileges.
+   * Returns `undefined` if all images are visible (i.e. public or privileged user).
+   */
+
+  private getVisibleToUserId(eventId: string): AsyncResult<string | undefined, Error> {
+    return Result.genCatching(this, async function* () {
+      const { userId, isModerator } = yield* getEventCookie(eventId, JWT_SECRET);
+      const isAdmin = await verifyAccessToken()
+        .then(() => true)
+        .catch(() => false);
+      if (isAdmin || isModerator) {
+        return undefined;
+      }
+      const [event] = yield* eventService.getEvents({ id: [eventId] });
+      return event?.uploadsArePrivate === true ? userId : undefined;
     });
   }
 }

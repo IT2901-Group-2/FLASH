@@ -4,6 +4,7 @@ import { Result } from "typescript-result";
 import { parseRequestBody, parseSearchParams } from "@/lib/utils/validation";
 import { getImagesParamsSchema, updateImagesSchema } from "@/db";
 import { errorResponse } from "@/lib/utils/error";
+import { withAuth } from "@/lib/utils/withAuth";
 
 export async function GET(
   req: NextRequest,
@@ -22,9 +23,15 @@ export async function PATCH(
 ): Promise<NextResponse> {
   const { eventId } = await params;
 
-  return parseRequestBody(req, updateImagesSchema)
-    .map(({ ids, isApproved }) => imageService.updateImages(eventId, ids, { isApproved }))
-    .fold(images => NextResponse.json(images), errorResponse);
+  return withAuth(
+    () =>
+      parseRequestBody(req, updateImagesSchema)
+        .map(({ ids, isApproved }) =>
+          imageService.updateImages(eventId, ids, { isApproved })
+        )
+        .fold(images => NextResponse.json(images), errorResponse),
+    { level: "moderator", eventId }
+  );
 }
 
 export async function POST(
