@@ -60,4 +60,20 @@ describe("SignInCard", () => {
       expect(screen.getByTestId("input")).toHaveValue("secret123");
     });
   });
+
+  describe("form submission", () => {
+    it("shows an error if the password is empty", async () => {
+      renderWithQuery(<SignInCard />);
+      await userEvent.click(screen.getByRole("button", { name: "actions.signIn" }));
+      expect(screen.getByText("error.noCredentials")).toBeInTheDocument();
+    });
+
+    it("clears the error when the user starts typing", async () => {
+      renderWithQuery(<SignInCard />);
+      await userEvent.click(screen.getByRole("button", { name: "actions.signIn" }));
+      expect(screen.getByText("error.noCredentials")).toBeInTheDocument();
+      await userEvent.type(screen.getByTestId("input"), "s");
+      expect(screen.queryByText("error.noCredentials")).not.toBeInTheDocument();
+    });
+  });
 });
