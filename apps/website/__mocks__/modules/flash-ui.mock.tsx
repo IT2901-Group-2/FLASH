@@ -106,6 +106,9 @@ export const flashUiMock = async () => {
   );
 
   const Input = vi.fn(({ ...props }: InputProps) => {
+    throw new Error(
+      "Deprecated component: Input. Please use TextField or Textarea instead."
+    );
     const id = useId();
     return <input id={id} data-testid="input" {...props} />;
   });
