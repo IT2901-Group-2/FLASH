@@ -66,11 +66,14 @@ const RememberedEvents = () => {
   );
 
   useEffect(() => {
-    if (eventIDs.length === 0) return;
-    if (!eventsData) return;
-    if (isFetchingNextPage) return;
-    if (hasLoadedAllJoinedEvents) return;
-    if (!hasNextPage) return;
+    if (
+      eventIDs.length === 0 ||
+      !eventsData ||
+      isFetchingNextPage ||
+      hasLoadedAllJoinedEvents ||
+      !hasNextPage
+    )
+      return;
 
     void fetchNextPage();
   }, [
