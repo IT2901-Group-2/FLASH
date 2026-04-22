@@ -47,6 +47,17 @@ export const getImagesParamsSchema = z.object({
     .optional(),
 });
 
+export const getImageParamsSchema = z.object({
+  width: z
+    .tuple([z.coerce.number().positive()])
+    .transform(([int]) => int)
+    .optional(),
+  height: z
+    .tuple([z.coerce.number().positive()])
+    .transform(([int]) => int)
+    .optional(),
+});
+
 export const getImageSchema = z.object({
   id: z.string(),
   eventId: z.string(),
@@ -70,6 +81,7 @@ export const updateImagesSchema = z.object({
 export const uploadedImageCountSchema = z.object({ count: z.number().nonnegative() });
 
 export type Image = typeof imageTable.$inferSelect;
+export type GetImageParams = z.infer<typeof getImageParamsSchema>;
 export type GetImagesParams = z.infer<typeof getImagesParamsSchema>;
 export type UpdateImage = z.infer<typeof updateImageSchema>;
 export type UpdateImages = z.infer<typeof updateImagesSchema>;

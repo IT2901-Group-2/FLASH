@@ -4,11 +4,12 @@ import { getEventCookie } from "@/lib/utils/eventCookie";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { getFirstRow } from "@/lib/utils/sql";
 import { FileStorage } from "@flash/file-storage";
-import { and, asc, desc, eq, inArray, isNull, SQL, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull, SQL, sql } from "drizzle-orm";
 import { DatabaseService, dbService } from "./databaseService";
 import { AsyncResult, Result } from "typescript-result";
 import {
   eventTable,
+  GetImageParams,
   GetImagesParams,
   Image,
   imageSizesTable,
@@ -18,8 +19,6 @@ import {
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
 import AdmZip from "adm-zip";
-import { on } from "stream";
-import { once } from "process";
 
 const uid = new ShortUniqueId();
 
@@ -104,7 +103,7 @@ export class ImageService {
   }
 
   // TODO: jsdoc
-  private getSizeOrder(width?: number, height?: number): SQL | null {
+  private getSizeOrder({ width, height }: GetImageParams): SQL | null {
     if (width !== undefined && height !== undefined) {
       return asc(
         sql`abs(${imageSizesTable.width} * ${imageSizesTable.height} - ${width * height})`
@@ -133,8 +132,7 @@ export class ImageService {
   downloadImage(
     eventId: string,
     imageId: string,
-    width?: number,
-    height?: number
+    params: GetImageParams = {}
   ): AsyncResult<Buffer<ArrayBufferLike>, Error> {
     return Result.gen(this, function* () {
       yield* Result.try(() =>
@@ -150,7 +148,7 @@ export class ImageService {
         )
       );
 
-      const sortOrder = this.getSizeOrder(width, height);
+      const sortOrder = this.getSizeOrder(params);
       if (sortOrder === null) {
         return this.storage.read(`${imageId}.webp`);
       }
