@@ -67,7 +67,7 @@ const Page = () => {
     }
 
     const remaining = imageData.length - (viewIndex + 1);
-    if (remaining <= PREFETCH_THRESHOLD) return;
+    if (remaining > PREFETCH_THRESHOLD) return;
     prefetchedForLengthRef.current = imageData.length;
     void fetchNextPage();
   }, [fetchNextPage, hasNextPage, imageData.length, isFetchingNextPage, viewIndex]);
