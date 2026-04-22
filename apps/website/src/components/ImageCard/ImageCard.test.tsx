@@ -3,6 +3,11 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ImageCard } from "./ImageCard";
 
+vi.mock("next-intl", () => ({
+  useTranslations: () => (key: string) =>
+    ({ pending: "Pending...", rejected: "Rejected" })[key] ?? key,
+}));
+
 const base = { src: "/test-image.jpg", alt: "Test image", title: "Test Title" };
 
 describe("ImageCard", () => {
