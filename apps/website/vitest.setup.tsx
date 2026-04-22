@@ -81,7 +81,7 @@ vi.mock("next/link", () => ({ default: Link }));
  */
 vi.mock("@flash/ui", () => flashUiMock());
 
-vi.mock("@/components/ImageCard", () => imageCardMock());
+vi.mock("@/components/ImageCard/ImageCard", () => imageCardMock());
 
 /**
  * Mocks the cookieStore global with a simple object of vi.fn() methods.

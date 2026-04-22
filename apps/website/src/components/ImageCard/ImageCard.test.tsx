@@ -3,6 +3,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ImageCard } from "./ImageCard";
 
+vi.unmock("@/components/ImageCard/ImageCard");
+
 vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) =>
     ({ pending: "Pending...", rejected: "Rejected" })[key] ?? key,
