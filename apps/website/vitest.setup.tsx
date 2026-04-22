@@ -36,6 +36,7 @@ import {
   Link,
   permanentRedirect,
 } from "@test-config";
+import { themeHookMock } from "./__mocks__/hooks/useTheme.mock";
 
 /**
  * Spreads the real module so non-mocked exports keep working.
@@ -79,6 +80,14 @@ vi.mock("next/link", () => ({ default: Link }));
  * own package.
  */
 vi.mock("@flash/ui", () => flashUiMock());
+
+/**
+ * Mocks the useTheme hook globally with a default resolvedTheme of "light".
+ *
+ * Override the default return value per test with
+ * vi.mocked(useTheme).mockReturnValue(...)
+ */
+vi.mock("@/hooks/useTheme", () => themeHookMock());
 
 /**
  * Mocks the cookieStore global with a simple object of vi.fn() methods.
