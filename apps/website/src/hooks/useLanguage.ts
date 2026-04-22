@@ -11,13 +11,15 @@ export interface UseLanguageReturn {
   currentLocale: string;
   nextLocale: string | undefined;
   switchLocale: () => void;
+  isSwitching: boolean;
 }
 
 /**
  * Custom hook to manage language switching using next-intl.
  *
  * @returns An object containing the `list of locales`, the `current locale`, the
- * `next locale`, and the `switchLocale` function.
+ * `next locale`, the `switchLocale` function, and a flag indicating if a switch
+ * is in progress.
  *
  * @example
  * const { currentLocale, switchLocale } = useLanguage();
@@ -55,5 +57,6 @@ export const useLanguage = (): UseLanguageReturn => {
     currentLocale,
     nextLocale,
     switchLocale,
+    isSwitching: isPending,
   };
 };

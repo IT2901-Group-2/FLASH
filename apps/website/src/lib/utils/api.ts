@@ -37,8 +37,6 @@ let refreshPromise: Promise<void> | null = null;
 async function refreshAccessToken(): Promise<void> {
   const res = await fetch("/api/auth/refresh", { method: "POST" });
   if (!res.ok) {
-    const locale = document.cookie.match(/NEXT_LOCALE=([^;]+)/)?.[1] ?? "en";
-    window.location.href = `/${locale}/admin`;
     throw new Error(await readResponseError(res));
   }
 }
@@ -90,7 +88,7 @@ export async function makeRequest<T>(
   data?: JSONObject | Blob
 ): Promise<T> {
   const requestInit = await buildRequest(method, data);
-  const response = await fetch(endpoint, requestInit);
+  let response = await fetch(endpoint, requestInit);
 
   // On 401, attempt a single token refresh then retry
   if (response.status === 401) {
@@ -106,11 +104,7 @@ export async function makeRequest<T>(
     // All concurrent 401s wait for the same refresh
     await refreshPromise;
 
-    const retryResponse = await fetch(endpoint, requestInit);
-    if (!retryResponse.ok) {
-      throw new Error(await readResponseError(retryResponse));
-    }
-    return z.parseAsync(schema, await retryResponse.json().catch(() => undefined));
+    response = await fetch(endpoint, requestInit);
   }
 
   if (!response.ok) {

@@ -1,13 +1,7 @@
 "use client";
-import { useState, useCallback } from "react";
-import { useSearchParams } from "next/navigation";
 import { Languages } from "lucide-react";
-import { useLocale } from "next-intl";
-import { usePathname, useRouter } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
 import styles from "./ConfigButtons.module.css";
-
-type Locale = (typeof routing.locales)[number];
+import { useLanguage } from "@/hooks/useLanguage";
 
 /**
  * Renders a button allowing users to switch between available locales.
@@ -19,42 +13,19 @@ type Locale = (typeof routing.locales)[number];
  * > _Last updated: `2026-03-18`_
  */
 const LanguageToggleButton = () => {
-  const [isSwitching, setIsSwitching] = useState(false);
-  const locale = useLocale();
-  const pathname = usePathname();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const currentLocale = routing.locales.includes(locale as Locale)
-    ? (locale as Locale)
-    : routing.defaultLocale;
-
-  const nextLocale = routing.locales.find(l => l !== currentLocale);
-
-  const handleSwitch = useCallback(() => {
-    if (isSwitching || !nextLocale) return;
-
-    setIsSwitching(true);
-
-    const query = searchParams.toString();
-    const href = query ? `${pathname}?${query}` : pathname;
-    router.replace(href, { locale: nextLocale });
-    router.refresh();
-  }, [isSwitching, nextLocale, pathname, router, searchParams]);
-
-  if (!nextLocale) return null;
+  const { isSwitching, nextLocale, switchLocale } = useLanguage();
 
   return (
     <button
       type="button"
-      onClick={handleSwitch}
+      onClick={switchLocale}
       disabled={isSwitching}
       className={`${styles.button} ${styles.right}`}
-      aria-label={`Switch to ${nextLocale.toUpperCase()}`}
+      aria-label={`Switch to ${nextLocale?.toUpperCase()}`}
       aria-busy={isSwitching}
     >
       <Languages size={16} aria-hidden="true" />
-      <span lang={nextLocale}>{nextLocale.toUpperCase()}</span>
+      <span lang={nextLocale}>{nextLocale?.toUpperCase()}</span>
     </button>
   );
 };
