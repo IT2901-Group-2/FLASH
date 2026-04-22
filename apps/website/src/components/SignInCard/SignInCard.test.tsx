@@ -18,17 +18,17 @@ describe("SignInCard", () => {
 
     it("renders a password input", () => {
       renderWithQuery(<SignInCard />);
-      expect(screen.getByTestId("input")).toBeInTheDocument();
+      expect(screen.getByTestId("text-field")).toBeInTheDocument();
     });
 
     it("renders the password input as type password", () => {
       renderWithQuery(<SignInCard />);
-      expect(screen.getByTestId("input")).toHaveAttribute("type", "password");
+      expect(screen.getByTestId("text-field")).toHaveAttribute("type", "password");
     });
 
     it("renders the password input with the correct aria-label", () => {
       renderWithQuery(<SignInCard />);
-      expect(screen.getByTestId("input")).toHaveAttribute(
+      expect(screen.getByTestId("text-field")).toHaveAttribute(
         "aria-label",
         "fields.password"
       );
@@ -51,13 +51,13 @@ describe("SignInCard", () => {
   describe("password input", () => {
     it("starts with an empty value", () => {
       renderWithQuery(<SignInCard />);
-      expect(screen.getByTestId("input")).toHaveValue("");
+      expect(screen.getByTestId("text-field")).toHaveValue("");
     });
 
     it("updates the value as the user types", async () => {
       renderWithQuery(<SignInCard />);
-      await userEvent.type(screen.getByTestId("input"), "secret123");
-      expect(screen.getByTestId("input")).toHaveValue("secret123");
+      await userEvent.type(screen.getByTestId("text-field"), "secret123");
+      expect(screen.getByTestId("text-field")).toHaveValue("secret123");
     });
   });
 
@@ -68,11 +68,18 @@ describe("SignInCard", () => {
       expect(screen.getByText("error.noCredentials")).toBeInTheDocument();
     });
 
+    it("shows an error if the password is wrong", async () => {
+      renderWithQuery(<SignInCard />);
+      await userEvent.type(screen.getByTestId("text-field"), "wrongpassword");
+      await userEvent.click(screen.getByRole("button", { name: "actions.signIn" }));
+      expect(screen.getByText("error.invalidCredentials")).toBeInTheDocument();
+    });
+
     it("clears the error when the user starts typing", async () => {
       renderWithQuery(<SignInCard />);
       await userEvent.click(screen.getByRole("button", { name: "actions.signIn" }));
       expect(screen.getByText("error.noCredentials")).toBeInTheDocument();
-      await userEvent.type(screen.getByTestId("input"), "s");
+      await userEvent.type(screen.getByTestId("text-field"), "s");
       expect(screen.queryByText("error.noCredentials")).not.toBeInTheDocument();
     });
   });
