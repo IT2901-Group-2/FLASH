@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ActionCard, SegmentedControl } from "@flash/ui";
-import { ImageCard } from "@/components/ImageCard";
+import { ImageCard } from "@/components/ImageCard/ImageCard";
 import { ModerateHeader } from "@/components/ModerateHeader";
 import { useImagesQuery } from "@/hooks/useImages";
 import { useImageSelection } from "./useImageSelection";

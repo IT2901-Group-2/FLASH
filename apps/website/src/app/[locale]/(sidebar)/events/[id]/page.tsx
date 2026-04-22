@@ -18,7 +18,7 @@ import {
   SegmentedControl,
   Title,
 } from "@flash/ui";
-import { ImageCard } from "@/components/ImageCard";
+import { ImageCard } from "@/components/ImageCard/ImageCard";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
