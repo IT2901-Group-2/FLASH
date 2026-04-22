@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { CircleCheckBig, CircleX, Timer } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cl } from "@/utils/className";
 import styles from "./ImageCard.module.css";
 
@@ -31,6 +32,7 @@ export const ImageCard = ({
   placeholder,
   ...rest
 }: ImageCardProps) => {
+  const t = useTranslations("common.imageStatus");
   return (
     <div
       data-state={state}
@@ -82,7 +84,7 @@ export const ImageCard = ({
             {state === "pending" ? <Timer /> : <CircleX />}
           </span>
           <span className={styles.statusText}>
-            {state === "pending" ? "Pending..." : "Rejected"}
+            {state === "pending" ? t("pending") : t("rejected")}
           </span>
         </div>
       )}
