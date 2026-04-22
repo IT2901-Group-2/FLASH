@@ -5,3 +5,4 @@ export * from "./useQuery.mock";
 export * from "./useLanguage.mock";
 export * from "./useFileUpload.mock";
 export * from "./useTheme.mock";
+export * from "./useIsMounted.mock";
