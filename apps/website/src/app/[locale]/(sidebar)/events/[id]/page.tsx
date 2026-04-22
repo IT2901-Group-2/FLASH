@@ -150,12 +150,31 @@ export default function Page() {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setPreviewIndex(null);
+        return;
+      }
+
+      if (images.length <= 1) return;
+
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        setPreviewIndex(currentIndex =>
+          currentIndex === null ? null : (currentIndex + 1) % images.length
+        );
+      }
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        setPreviewIndex(currentIndex =>
+          currentIndex === null
+            ? null
+            : (currentIndex - 1 + images.length) % images.length
+        );
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [previewIndex]);
+  }, [images.length, previewIndex]);
 
   useEffect(() => {
     if (previewIndex === null) return;
