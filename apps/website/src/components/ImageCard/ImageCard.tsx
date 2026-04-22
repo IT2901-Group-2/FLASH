@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { CircleCheckBig, CircleX, Timer } from "lucide-react";
+import { useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { cl } from "@/utils/className";
 import styles from "./ImageCard.module.css";
@@ -33,6 +34,17 @@ export const ImageCard = ({
   ...rest
 }: ImageCardProps) => {
   const t = useTranslations("common.imageStatus");
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onClick?.(e as unknown as React.MouseEvent<HTMLDivElement>);
+      }
+    },
+    [onClick]
+  );
+
   return (
     <div
       data-state={state}
@@ -51,16 +63,7 @@ export const ImageCard = ({
           ? state === "selected"
           : undefined
       }
-      onKeyDown={
-        onClick
-          ? e => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                onClick(e as unknown as React.MouseEvent<HTMLDivElement>);
-              }
-            }
-          : undefined
-      }
+      onKeyDown={onClick ? handleKeyDown : undefined}
       {...rest}
     >
       <div className={styles.imageWrapper}>
