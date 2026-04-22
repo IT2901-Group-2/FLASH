@@ -97,15 +97,24 @@ describe("Guest Upload Page", () => {
       await userEvent.click(firstThumbnail);
 
       let preview = screen.getByRole("dialog").querySelector("img");
-      expect(preview).toHaveAttribute("src", expect.stringContaining("/api/events/event-123/images/image-1"));
+      expect(preview).toHaveAttribute(
+        "src",
+        expect.stringContaining("/api/events/event-123/images/image-1")
+      );
 
       await userEvent.keyboard("{ArrowRight}");
       preview = screen.getByRole("dialog").querySelector("img");
-      expect(preview).toHaveAttribute("src", expect.stringContaining("/api/events/event-123/images/image-2"));
+      expect(preview).toHaveAttribute(
+        "src",
+        expect.stringContaining("/api/events/event-123/images/image-2")
+      );
 
       await userEvent.keyboard("{ArrowLeft}");
       preview = screen.getByRole("dialog").querySelector("img");
-      expect(preview).toHaveAttribute("src", expect.stringContaining("/api/events/event-123/images/image-1"));
+      expect(preview).toHaveAttribute(
+        "src",
+        expect.stringContaining("/api/events/event-123/images/image-1")
+      );
     });
 
     it("wraps preview to last image when pressing ArrowLeft on first image", async () => {
@@ -126,7 +135,10 @@ describe("Guest Upload Page", () => {
 
       await userEvent.keyboard("{ArrowLeft}");
       const preview = screen.getByRole("dialog").querySelector("img");
-      expect(preview).toHaveAttribute("src", expect.stringContaining("/api/events/event-123/images/image-3"));
+      expect(preview).toHaveAttribute(
+        "src",
+        expect.stringContaining("/api/events/event-123/images/image-3")
+      );
     });
   });
 
