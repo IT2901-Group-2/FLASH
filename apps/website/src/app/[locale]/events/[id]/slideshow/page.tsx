@@ -22,7 +22,7 @@ import { useIdle } from "@/hooks/useIdle";
 import { useInterval } from "@/hooks/useInterval";
 import { useTranslations } from "next-intl";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import { SLIDE_DURATION } from "@/config";
+import { SLIDE_DURATION } from "@/config/images";
 
 const Page = () => {
   const router = useRouter();

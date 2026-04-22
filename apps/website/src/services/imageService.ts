@@ -1,4 +1,4 @@
-import { JWT_SECRET, storage, MAX_IMAGE_SIZE } from "@/config";
+import { JWT_SECRET, MAX_IMAGE_SIZE, storage } from "@/config";
 import { HTTPError } from "@/lib/utils/error";
 import { getEventCookie } from "@/lib/utils/eventCookie";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
