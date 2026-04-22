@@ -68,7 +68,7 @@ export const ImageCard = ({
           alt={alt}
           className={styles.image}
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          {...(placeholder ? { placeholder: "blur", blurDataURL: placeholder } : {})}
+          {...(placeholder && { placeholder: "blur", blurDataURL: placeholder })}
         />
         {state === "selected" && (
           <div className={styles.moderateCheckBadge} aria-hidden="true">

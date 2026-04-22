@@ -8,16 +8,16 @@
   contain: layout style;
   content-visibility: auto;
   contain-intrinsic-size: auto 128px;
-}
 
-.imageCard[role="button"] {
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
+  &[role="button"] {
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
 
-.imageCard[role="button"]:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-dialog);
+  &[role="button"]:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-dialog);
+  }
 }
 
 .imageWrapper {
@@ -30,18 +30,15 @@
 .image {
   object-fit: cover;
   transition: opacity 0.2s ease;
-}
 
-.selected .image {
-  opacity: 0.5;
-}
+  .selected &,
+  .pending & {
+    opacity: 0.5;
+  }
 
-.pending .image {
-  opacity: 0.5;
-}
-
-.rejected .image {
-  filter: brightness(0.2);
+  .rejected & {
+    filter: brightness(0.2);
+  }
 }
 
 .statusLabel {
