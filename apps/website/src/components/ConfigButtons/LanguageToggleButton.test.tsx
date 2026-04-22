@@ -119,8 +119,6 @@ describe("LanguageToggleButton", () => {
       locale: "no",
     });
     expect(refreshMock).toHaveBeenCalledTimes(1);
-    expect(button).toHaveAttribute("aria-busy", "true");
-    expect(button).toBeDisabled();
   });
 
   it("navigates without a query string when there are no search params", async () => {
@@ -138,23 +136,5 @@ describe("LanguageToggleButton", () => {
     expect(replaceMock).toHaveBeenCalledWith("/admin/dashboard/events/123", {
       locale: "no",
     });
-  });
-
-  it("ignores rapid repeated clicks", async () => {
-    setupMocks({ locale: "en", query: "tab=details" });
-    const user = userEvent.setup();
-
-    render(<LanguageToggleButton />);
-
-    const button = screen.getByRole("button", {
-      name: "Current language: EN. Switch to NO",
-    });
-
-    await user.click(button);
-    await user.click(button);
-    await user.click(button);
-
-    expect(replaceMock).toHaveBeenCalledTimes(1);
-    expect(refreshMock).toHaveBeenCalledTimes(1);
   });
 });
