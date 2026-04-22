@@ -10,12 +10,23 @@ export default function SignInCard() {
   const navigate = useRouter();
   const t = useTranslations("admin.login.card");
   const c = useTranslations("common");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const { mutate: login, isPending } = useLoginMutation();
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    login({ password }, { onSuccess: () => navigate.push("/admin/dashboard") });
+    if (!password.trim()) {
+      setError(t("error.noCredentials"));
+      return;
+    }
+    login(
+      { password },
+      {
+        onSuccess: () => navigate.push("/admin/dashboard"),
+        onError: () => setError(t("error.invalidCredentials")),
+      }
+    );
   };
 
   return (
@@ -34,13 +45,14 @@ export default function SignInCard() {
           className={styles.inputComponent}
           aria-label={c("fields.password")}
           label={c("fields.password")}
-          required
           type="password"
           id="passwordField"
           visualSize="medium"
           placeholder={c("fields.passwordPlaceholder")}
           value={password}
           onChange={e => setPassword(e.target.value)}
+          error={error}
+          onKeyDown={() => setError("")}
         />
         <Button
           className={styles.buttonComponent}
