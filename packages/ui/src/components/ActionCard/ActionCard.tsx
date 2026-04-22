@@ -65,11 +65,15 @@ export const ActionCard = ({
       {(secondaryButton || primaryButton) && (
         <div className={styles.buttonsContainer}>
           {secondaryButton && (
-            <Button {...secondaryButton} variant="secondary">
+            <Button {...secondaryButton} variant="secondary" fill>
               {secondaryButton.text}
             </Button>
           )}
-          {primaryButton && <Button {...primaryButton}>{primaryButton.text}</Button>}
+          {primaryButton && (
+            <Button {...primaryButton} fill>
+              {primaryButton.text}
+            </Button>
+          )}
         </div>
       )}
     </Card>

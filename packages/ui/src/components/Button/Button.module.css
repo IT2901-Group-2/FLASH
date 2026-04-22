@@ -4,7 +4,7 @@
   align-items: center;
 
   gap: 0.625rem;
-  width: max-content;
+  min-width: max-content;
   height: 3rem;
   padding: 1rem 1.25rem;
   border-radius: var(--radius-full);
