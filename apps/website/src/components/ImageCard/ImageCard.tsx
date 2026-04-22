@@ -42,7 +42,7 @@ export const ImageCard = ({
         e.currentTarget.click();
       }
     },
-    [onClick]
+    []
   );
 
   return (
