@@ -56,6 +56,14 @@ export const renderWithQuery = (
   return render(ui, { wrapper: createQueryClientWrapper(), ...options });
 };
 
+/**
+ * Creates a wrapper that provides the next-intl context with a default locale.
+ * Use this for components that use next-intl hooks but don't need to assert on
+ * locale-specific behavior.
+ *
+ * @example
+ * render(<MyComponent />, { wrapper: createNextIntlLanguageWrapper() });
+ */
 export const createNextIntlLanguageWrapper = () => {
   // There is a circular dependency between this file and the useLocale hook,
   // so it is needed to require it here instead of importing at the top level.
@@ -75,4 +83,18 @@ export const createNextIntlLanguageWrapper = () => {
   );
   wrapper.displayName = "TestNextIntlWrapper";
   return wrapper;
+};
+
+/**
+ * Renders a component wrapped in the next-intl context with a default locale.
+ * Shorthand for components that use next-intl hooks but don't need to assert on
+ *
+ * @example
+ * const { getByText } = renderWithNextIntl(<MyComponent />);
+ */
+export const renderWithNextIntl = (
+  ui: React.ReactElement,
+  options?: Omit<RenderOptions, "wrapper">
+): RenderResult => {
+  return render(ui, { wrapper: createNextIntlLanguageWrapper(), ...options });
 };
