@@ -64,12 +64,13 @@ export default function Page() {
   const { data: imagesData } = useImagesQuery(
     eventId,
     { approval: "approved" },
-    isShowingUserTab ? undefined : PHOTOS_REFETCH_INTERVAL
+    !isShowingUserTab,
+    PHOTOS_REFETCH_INTERVAL
   );
   const { data: myImagesData } = useMyImagesQuery(
     eventId,
-    true,
-    isShowingUserTab ? PHOTOS_REFETCH_INTERVAL : undefined
+    isShowingUserTab,
+    PHOTOS_REFETCH_INTERVAL
   );
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 

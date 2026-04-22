@@ -83,6 +83,7 @@ export const imagesKeys = {
 export function useImagesQuery(
   eventId?: string,
   params?: GetImagesParams,
+  enabled?: boolean,
   refetchInterval?: number
 ) {
   return useQuery({
@@ -92,7 +93,7 @@ export function useImagesQuery(
         imageArraySchema,
         `/api/events/${eventId}/images${toImagesSearchParams(params)}`
       ),
-    enabled: !!eventId,
+    enabled: enabled !== false && !!eventId,
     refetchInterval,
   });
 }
