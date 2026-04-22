@@ -57,12 +57,17 @@ const Page = () => {
   const prefetchedForLengthRef = useRef<number>(-1);
 
   useEffect(() => {
-    if (!hasNextPage || isFetchingNextPage || imageData.length === 0) return;
+    if (
+      !hasNextPage ||
+      isFetchingNextPage ||
+      imageData.length === 0 ||
+      prefetchedForLengthRef.current >= imageData.length
+    ) {
+      return;
+    }
 
     const remaining = imageData.length - (viewIndex + 1);
-    if (remaining > PREFETCH_THRESHOLD) return;
-    if (prefetchedForLengthRef.current === imageData.length) return;
-
+    if (remaining <= PREFETCH_THRESHOLD) return;
     prefetchedForLengthRef.current = imageData.length;
     void fetchNextPage();
   }, [fetchNextPage, hasNextPage, imageData.length, isFetchingNextPage, viewIndex]);
