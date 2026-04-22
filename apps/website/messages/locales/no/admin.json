@@ -98,6 +98,10 @@
       "description": "Skriv inn påloggingsinformasjonen din for å få tilgang til administrasjonspanelet",
       "links": {
         "guestAccessPrefix": "Ikke en administrator? Delta i et event som en"
+      },
+      "error": {
+        "noCredentials": "Vennligst skriv inn et passord",
+        "invalidCredentials": "Ugyldig passord"
       }
     }
   }
