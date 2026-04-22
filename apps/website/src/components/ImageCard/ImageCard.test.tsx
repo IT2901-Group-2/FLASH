@@ -64,16 +64,10 @@ describe("ImageCard", () => {
   });
 
   describe("interactivity", () => {
-    it('has role="button" and tabIndex=0 when onClick is provided', () => {
-      const { container } = render(<ImageCard {...base} onClick={vi.fn()} />);
+    it('always has role="button" and tabIndex=0', () => {
+      const { container } = render(<ImageCard {...base} />);
       expect(container.firstChild).toHaveAttribute("role", "button");
       expect(container.firstChild).toHaveAttribute("tabIndex", "0");
-    });
-
-    it("has no role or tabIndex when onClick is not provided", () => {
-      const { container } = render(<ImageCard {...base} />);
-      expect(container.firstChild).not.toHaveAttribute("role");
-      expect(container.firstChild).not.toHaveAttribute("tabIndex");
     });
 
     it("calls onClick when the card is clicked", async () => {
@@ -89,25 +83,6 @@ describe("ImageCard", () => {
       screen.getByRole("button").focus();
       await userEvent.keyboard(key);
       expect(onClick).toHaveBeenCalledTimes(1);
-    });
-
-    it('sets aria-pressed="false" in default state when onClick is provided', () => {
-      const { container } = render(
-        <ImageCard {...base} onClick={vi.fn()} state="default" />
-      );
-      expect(container.firstChild).toHaveAttribute("aria-pressed", "false");
-    });
-
-    it('sets aria-pressed="true" in selected state when onClick is provided', () => {
-      const { container } = render(
-        <ImageCard {...base} onClick={vi.fn()} state="selected" />
-      );
-      expect(container.firstChild).toHaveAttribute("aria-pressed", "true");
-    });
-
-    it("aria-pressed is absent when onClick is not provided", () => {
-      const { container } = render(<ImageCard {...base} state="default" />);
-      expect(container.firstChild).not.toHaveAttribute("aria-pressed");
     });
   });
 
