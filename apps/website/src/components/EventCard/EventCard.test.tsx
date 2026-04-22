@@ -22,10 +22,6 @@ describe("EventCard", () => {
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
-    vi.mocked(useImagesQuery).mockReturnValue({
-      data: { pages: [{ items: [], nextCursor: null }], pageParams: [undefined] },
-    } as never);
-    vi.mocked(useDeleteEventMutation).mockReturnValue({ mutate: vi.fn() } as never);
   });
 
   test("renders event name and formatted date", () => {
