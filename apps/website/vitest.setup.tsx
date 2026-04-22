@@ -35,8 +35,8 @@ import {
   Image,
   Link,
   permanentRedirect,
+  themeHookMock,
 } from "@test-config";
-import { themeHookMock } from "./__mocks__/hooks/useTheme.mock";
 
 /**
  * Spreads the real module so non-mocked exports keep working.
