@@ -1,18 +1,10 @@
 import { render, screen } from "@testing-library/react";
-import { IScannerProps, Scanner } from "@yudiel/react-qr-scanner";
+import { Scanner } from "@yudiel/react-qr-scanner";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import QrScanner from "./QRScanner";
+import { qrScannerMock } from "@test-config";
 
-vi.mock("@yudiel/react-qr-scanner", () => ({
-  Scanner: vi.fn(({ constraints, components, sound }: IScannerProps) => (
-    <div
-      data-testid="qr-scanner"
-      data-sound={sound}
-      data-facing-mode={(constraints as MediaTrackConstraints | undefined)?.facingMode}
-      data-finder={String(components?.finder)}
-    />
-  )),
-}));
+vi.mock("@yudiel/react-qr-scanner", () => qrScannerMock());
 
 /**
  * Spy on navigator.mediaDevices.getUserMedia so we can assert the cleanup
