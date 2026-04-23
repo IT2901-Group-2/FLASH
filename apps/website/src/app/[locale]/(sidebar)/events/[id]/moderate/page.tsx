@@ -9,6 +9,7 @@ import { useImagesQuery } from "@/hooks/useImages";
 import { useImageSelection } from "./useImageSelection";
 import { useTranslations } from "next-intl";
 import styles from "./Moderate.module.css";
+import { getImageSrc } from "@/lib/utils/images";
 
 type Tab = "pending" | "approved" | "rejected";
 
@@ -121,7 +122,8 @@ export default function ModeratePage() {
             {images.map((image, index) => (
               <ImageCard
                 key={image.id}
-                src={`/api/events/${eventId}/images/${image.id}`}
+                loader={({ width }) => getImageSrc(eventId, image.id, { width })}
+                src={getImageSrc(eventId, image.id)}
                 alt={t("imageAlt", { index: index + 1, total: images.length })}
                 title={t("imageTitle", { index: index + 1 })}
                 state={selectMode && selectedIds.has(image.id) ? "selected" : "default"}
