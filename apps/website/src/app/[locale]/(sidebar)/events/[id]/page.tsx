@@ -263,7 +263,10 @@ export default function Page() {
     previewIndex !== null && displayedImages[previewIndex]
       ? {
           src: getImageSrc(eventId, displayedImages[previewIndex].id),
-          alt: tUpload("imageAlt", { index: previewIndex + 1, total: displayedImages.length }),
+          alt: tUpload("imageAlt", {
+            index: previewIndex + 1,
+            total: displayedImages.length,
+          }),
         }
       : null;
 
@@ -446,7 +449,10 @@ export default function Page() {
             <ImageCard
               key={image.id}
               src={getImageSrc(eventId, image.id, { width: 200, height: 200 })}
-              alt={tUpload("imageAlt", { index: index + 1, total: displayedImages.length })}
+              alt={tUpload("imageAlt", {
+                index: index + 1,
+                total: displayedImages.length,
+              })}
               title={tUpload("imageTitle", { index: index + 1 })}
               data-image-id={image.id}
               placeholder={image.previewImage}
