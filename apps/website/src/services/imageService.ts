@@ -78,6 +78,22 @@ export class ImageService {
   }
 
   /**
+   * Returns the filepath the image based on the given parameters.
+   *
+   * @param imageId The id of the image.
+   * @param width The width of the image.
+   * @param height The height of the image.
+   * @returns A filepath.
+   */
+  private getImagePath(imageId: string, width: number, height: number): string {
+    if (width === 0 && height === 0) {
+      return `${imageId}.webp`;
+    }
+
+    return `${imageId}-${width}x${height}.webp`;
+  }
+
+  /**
    * Returns a list of all images associated with the specified event.
    *
    * @param eventId The id of the event.
@@ -391,10 +407,17 @@ export class ImageService {
         await this.removeImageFromZip(eventId, imageId).getOrThrow();
       })
       .map(row =>
-        this.getImageSizes(eventId, imageId)
+        Result.try(() =>
+          this.dbService.db
+            .select({ width: imageSizesTable.width, height: imageSizesTable.height })
+            .from(imageTable)
+            .rightJoin(imageSizesTable, eq(imageTable.id, imageSizesTable.imageId))
+            .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
+            .limit(1)
+        )
           .map(sizes =>
             Result.all(
-              ...sizes.map(([width, height]) =>
+              ...sizes.map(({ width, height }) =>
                 this.storage.rm(this.getImagePath(imageId, width, height))
               )
             )
@@ -437,51 +460,6 @@ export class ImageService {
     });
   }
 
-  // TODO: jsdoc
-  private getBiggestImageSize(
-    eventId: string,
-    imageId: string
-  ): AsyncResult<{ width: number; height: number }, Error> {
-    return Result.try(() =>
-      this.dbService.db
-        .select({ width: imageSizesTable.width, height: imageSizesTable.height })
-        .from(imageTable)
-        .rightJoin(imageSizesTable, eq(imageTable.id, imageSizesTable.imageId))
-        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
-        .orderBy(desc(sql`${imageSizesTable.width} * ${imageSizesTable.height}`))
-        .limit(1)
-    ).map(rows =>
-      getFirstRow(
-        rows,
-        `Image with id ${imageId} does not exist on event with id ${eventId}`
-      )
-    );
-  }
-
-  // TODO: jsdoc
-  private getImageSizes(
-    eventId: string,
-    imageId: string
-  ): AsyncResult<[number, number][], Error> {
-    return Result.try(() =>
-      this.dbService.db
-        .select({ width: imageSizesTable.width, height: imageSizesTable.height })
-        .from(imageTable)
-        .rightJoin(imageSizesTable, eq(imageTable.id, imageSizesTable.imageId))
-        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
-        .limit(1)
-    ).map(rows => rows.map(({ width, height }) => [width, height]));
-  }
-
-  // TODO: jsdoc
-  private getImagePath(imageId: string, width: number, height: number): string {
-    if (width === 0 && height === 0) {
-      return `${imageId}.webp`;
-    }
-
-    return `${imageId}-${width}x${height}.webp`;
-  }
-
   /**
    * Adds a single image to the zip archive for the specified event.
    * Creates a new zip if one does not already exist.
@@ -491,21 +469,36 @@ export class ImageService {
    * @returns A result containing void or an error.
    */
   private addImageToZip(eventId: string, imageId: string): AsyncResult<void, Error> {
-    return this.getBiggestImageSize(eventId, imageId).mapCatching(({ width, height }) =>
-      this.withZipLock(eventId, () =>
-        this.storage
-          .read(`${eventId}.zip`)
-          .recover(() => Result.ok(undefined))
-          .map(zip => new AdmZip(zip))
-          .map(zip =>
-            this.storage
-              .read(this.getImagePath(imageId, width, height))
-              .map(buffer => zip.addFile(`${imageId}.webp`, buffer))
-              .map(() => this.storage.write(`${eventId}.zip`, zip.toBuffer()))
-          )
-          .getOrThrow()
+    return Result.try(() =>
+      this.dbService.db
+        .select({ width: imageSizesTable.width, height: imageSizesTable.height })
+        .from(imageTable)
+        .rightJoin(imageSizesTable, eq(imageTable.id, imageSizesTable.imageId))
+        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
+        .orderBy(desc(sql`${imageSizesTable.width} * ${imageSizesTable.height}`))
+        .limit(1)
+    )
+      .map(rows =>
+        getFirstRow(
+          rows,
+          `Image with id ${imageId} does not exist on event with id ${eventId}`
+        )
       )
-    );
+      .mapCatching(({ width, height }) =>
+        this.withZipLock(eventId, () =>
+          this.storage
+            .read(`${eventId}.zip`)
+            .recover(() => Result.ok(undefined))
+            .map(zip => new AdmZip(zip))
+            .map(zip =>
+              this.storage
+                .read(this.getImagePath(imageId, width, height))
+                .map(buffer => zip.addFile(`${imageId}.webp`, buffer))
+                .map(() => this.storage.write(`${eventId}.zip`, zip.toBuffer()))
+            )
+            .getOrThrow()
+        )
+      );
   }
 
   /**
