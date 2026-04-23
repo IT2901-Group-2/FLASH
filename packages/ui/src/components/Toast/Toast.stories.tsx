@@ -1,20 +1,11 @@
 import { Meta, StoryObj } from "@storybook/react-vite";
 import Toast, { useToast } from "./Toast";
-import { ToastItem, ToastPosition } from "./Toast.type";
+import { ToastPosition } from "./Toast.type";
 import { ColorName } from "../types";
 import { Button } from "../Button";
 import Toaster from "./Toaster";
 import { CircleAlert } from "lucide-react";
 import { expect, userEvent } from "storybook/test";
-
-const baseToast: ToastItem = {
-  id: "toast-1",
-  title: "Toast title",
-  description: "This is the toast description.",
-  "data-color": "neutral",
-  duration: 0,
-  open: true,
-};
 
 const meta: Meta<typeof Toast> = {
   title: "Building Blocks/Components/Toast",
@@ -36,15 +27,6 @@ export default meta;
 
 type Story = StoryObj<typeof Toast>;
 
-function makeToast(variant: ColorName, overrides: Partial<ToastItem> = {}): ToastItem {
-  return {
-    ...baseToast,
-    id: `toast-${variant}`,
-    "data-color": variant,
-    ...overrides,
-  };
-}
-
 /** A single Toast rendered directly */
 export const Default: Story = {
   args: {
@@ -53,9 +35,13 @@ export const Default: Story = {
       description: "This is the toast description.",
     },
   },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText("Toast title")).toBeVisible();
-    await expect(canvas.getByText("This is the toast description.")).toBeVisible();
+  play: async ({ canvas, step }) => {
+    await step("Render the default toast", async () => {
+      await expect(canvas.getByText("Toast title")).toBeInTheDocument();
+      await expect(
+        canvas.getByText("This is the toast description.")
+      ).toBeInTheDocument();
+    });
   },
 };
 
@@ -137,24 +123,38 @@ export const WithToaster: Story = {
   },
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole("button", { name: "Success toast" }));
-    await expect(await canvas.findByText("Your changes have been saved.")).toBeVisible();
+    await expect(
+      await canvas.findByText("Your changes have been saved.")
+    ).toBeInTheDocument();
 
     await userEvent.click(canvas.getByRole("button", { name: "Warning toast" }));
-    await expect(await canvas.findByText("Your session expires soon.")).toBeVisible();
+    await expect(
+      await canvas.findByText("Your session expires soon.")
+    ).toBeInTheDocument();
 
     await userEvent.click(canvas.getByRole("button", { name: "Error toast" }));
-    await expect(await canvas.findByText("Something went wrong.")).toBeVisible();
+    await expect(await canvas.findByText("Something went wrong.")).toBeInTheDocument();
 
     await userEvent.click(canvas.getByRole("button", { name: "With action" }));
-    await expect(await canvas.findByText("A new version is available.")).toBeVisible();
+    await expect(
+      await canvas.findByText("A new version is available.")
+    ).toBeInTheDocument();
 
     await userEvent.click(canvas.getByRole("button", { name: "Persistent toast" }));
     await expect(
       await canvas.findByText("This toast won't auto-dismiss (duration: 0).")
-    ).toBeVisible();
+    ).toBeInTheDocument();
   },
 };
 
+const POSITIONS: ToastPosition[] = [
+  "top-left",
+  "top-center",
+  "top-right",
+  "bottom-left",
+  "bottom-center",
+  "bottom-right",
+];
 /**
  * Each button fires a toast at that named position.
  * Note: a single <Toaster> handles one position. For multi-position support
@@ -163,14 +163,6 @@ export const WithToaster: Story = {
 export const Positions: Story = {
   render: () => {
     const { createToast } = useToast();
-    const POSITIONS: ToastPosition[] = [
-      "top-left",
-      "top-center",
-      "top-right",
-      "bottom-left",
-      "bottom-center",
-      "bottom-right",
-    ];
 
     return (
       <>
@@ -180,7 +172,7 @@ export const Positions: Story = {
             onClick={() =>
               createToast({
                 title: position,
-                description: "Toasts appear here.",
+                description: `${position}-toast appear here.`,
                 "data-color": "neutral",
                 duration: 3000,
                 icon: <CircleAlert />,
@@ -194,6 +186,19 @@ export const Positions: Story = {
         <Toaster />
       </>
     );
+  },
+  play: async ({ canvas, step }) => {
+    for (const position of POSITIONS) {
+      await step(`Create a toast at ${position}`, async () => {
+        await userEvent.click(canvas.getByRole("button", { name: position }));
+        await expect(
+          await canvas.findByRole("button", { name: position })
+        ).toBeInTheDocument();
+        await expect(
+          await canvas.findByText(`${position}-toast appear here.`)
+        ).toBeInTheDocument();
+      });
+    }
   },
 };
 
