@@ -156,7 +156,7 @@ export const Positions: Story = {
                 title: position,
                 description: "Toasts appear here.",
                 "data-color": "neutral",
-                duration: 10000,
+                duration: 3000,
                 icon: <CircleAlert />,
                 position,
               })
