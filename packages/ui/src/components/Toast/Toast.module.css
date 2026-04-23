@@ -1,29 +1,3 @@
-/* ─── Entrance animations ─────────────────────────────────────────── */
-
-@keyframes toastSlideInFromTop {
-  from {
-    opacity: 0;
-    transform: translateY(-0.5rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes toastSlideInFromBottom {
-  from {
-    opacity: 0;
-    transform: translateY(0.5rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ─── Toaster container ───────────────────────────────────────────── */
-
 .toaster {
   position: fixed;
   z-index: 9999;
@@ -31,80 +5,73 @@
   flex-direction: column;
   gap: 0.5rem;
   padding: 1rem;
-  /* Clicks pass through the empty container area but land on toasts */
   pointer-events: none;
-}
 
-.toaster > * {
-  pointer-events: auto;
-}
+  > * {
+    pointer-events: auto;
+  }
 
-/* Top positions – newest toast at top, stacks downward */
-.toaster[data-position="top-left"] {
-  top: 0;
-  left: 0;
-  align-items: flex-start;
-}
+  &[data-position^="top"] .toast {
+    animation: toastSlideInFromTop 0.2s ease-out both;
+  }
 
-.toaster[data-position="top-center"] {
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  align-items: center;
-}
+  &[data-position^="bottom"] .toast {
+    animation: toastSlideInFromBottom 0.2s ease-out both;
+  }
 
-.toaster[data-position="top-right"] {
-  top: 0;
-  right: 0;
-  align-items: flex-end;
-}
+  &[data-position="top-left"] {
+    top: 0;
+    left: 0;
+    align-items: flex-start;
+  }
 
-/* Bottom positions – column-reverse so newest toast sits closest to edge */
-.toaster[data-position="bottom-left"] {
-  bottom: 0;
-  left: 0;
-  flex-direction: column-reverse;
-  align-items: flex-start;
-}
+  &[data-position="top-center"] {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    align-items: center;
+  }
 
-.toaster[data-position="bottom-center"] {
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  flex-direction: column-reverse;
-  align-items: center;
-}
+  &[data-position="top-right"] {
+    top: 0;
+    right: 0;
+    align-items: flex-end;
+  }
 
-.toaster[data-position="bottom-right"] {
-  bottom: 0;
-  right: 0;
-  flex-direction: column-reverse;
-  align-items: flex-end;
-}
+  &[data-position="bottom-left"] {
+    bottom: 0;
+    left: 0;
+    flex-direction: column-reverse;
+    align-items: flex-start;
+  }
 
-/* Animate toasts based on which edge they enter from */
-.toaster[data-position^="top"] .toast {
-  animation: toastSlideInFromTop 0.2s ease-out both;
-}
+  &[data-position="bottom-center"] {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    flex-direction: column-reverse;
+    align-items: center;
+  }
 
-.toaster[data-position^="bottom"] .toast {
-  animation: toastSlideInFromBottom 0.2s ease-out both;
+  &[data-position="bottom-right"] {
+    bottom: 0;
+    right: 0;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+  }
 }
-
-/* ─── Individual toast ────────────────────────────────────────────── */
 
 .toast {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
   width: clamp(15rem, 25%, 25rem);
-  min-width: 240px;
-  max-width: 360px;
+
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   background: var(--color-base);
   color: var(--color-text-base);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-dialog);
   position: relative;
 }
 
@@ -182,5 +149,27 @@
   > svg {
     width: 100%;
     height: 100%;
+  }
+}
+
+@keyframes toastSlideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastSlideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
