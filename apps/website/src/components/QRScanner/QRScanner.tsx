@@ -5,7 +5,7 @@ import styles from "./QRScanner.module.css";
 const QrScanner = ({ ...props }: IScannerProps) => {
   useEffect(() => {
     return () => {
-      // Runs when component unmounts — kills the camera
+      // Runs when component unmounts. Kills the camera
       navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
         stream.getTracks().forEach(track => track.stop());
       });
@@ -28,7 +28,7 @@ const QrScanner = ({ ...props }: IScannerProps) => {
           finder: false,
         }}
       />
-      <div className={styles.finder} />
+      <div className={styles.finder} data-testid="finder-overlay" />
     </div>
   );
 };
