@@ -26,6 +26,9 @@ import {
 import Image from "next/image";
 import { getUploadErrorMessageDescriptor } from "@/utils/fileUploadErrorMessages";
 import { getImageSrc } from "@/lib/utils/images";
+import { MAX_IMAGE_SIZE } from "@/config/images";
+
+const maxFileSizeInMb = Math.ceil(MAX_IMAGE_SIZE / (1024 * 1024)); //TODO: Move this to a more appropriate location
 
 export default function Page() {
   const router = useRouter();
@@ -104,7 +107,9 @@ export default function Page() {
           ),
           new Promise(resolve => setTimeout(resolve, 650)),
         ]);
-        const uploadErrorDescriptor = getUploadErrorMessageDescriptor(results);
+        const uploadErrorDescriptor = getUploadErrorMessageDescriptor(results, {
+          maxFileSize: maxFileSizeInMb,
+        });
 
         if (uploadErrorDescriptor) {
           setUploadError(

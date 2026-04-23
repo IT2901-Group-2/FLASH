@@ -29,8 +29,13 @@ const UPLOAD_ERROR_PATTERNS = [
 type PatternErrorKey = (typeof UPLOAD_ERROR_PATTERNS)[number]["key"];
 
 export type UploadErrorMessageDescriptor =
-  | { key: PatternErrorKey }
+  | { key: "errors.uploadFailedTooLarge"; values: { maxFileSize: number } }
+  | { key: Exclude<PatternErrorKey, "errors.uploadFailedTooLarge"> }
   | { key: "errors.uploadFailed"; values: { count: number } };
+
+type UploadErrorMessageOptions = {
+  maxFileSize: number;
+};
 
 /**
  * Checks if a PromiseSettledResult is a rejected promise with an error message that matches the given pattern.
@@ -48,13 +53,17 @@ const matchesRejectedError = (
   pattern.test(result.reason.message);
 
 /**
- * Analyzes an array of PromiseSettledResult objects from file upload attempts and returns an appropriate error message descriptor.
- * If any of the rejected results match known error patterns, the corresponding message key is returned.
- * If there are rejected results but none match known patterns, a generic upload failed message with the count of failures is returned.
- * If there are no rejected results, null is returned.
+ * Analyzes an array of PromiseSettledResult objects from a file upload attempt and returns
+ * an appropriate error message descriptor.
+ *
+ * - If any of the rejected results match known error patterns, the corresponding message key is returned.
+ * - If there are rejected results but none match known patterns, a generic upload failed message
+ * with the count of failures is returned.
+ * - If there are no rejected results, null is returned (This resets any currently displayed error message).
  */
 export const getUploadErrorMessageDescriptor = (
-  results: PromiseSettledResult<unknown>[]
+  results: PromiseSettledResult<unknown>[],
+  options: UploadErrorMessageOptions
 ): UploadErrorMessageDescriptor | null => {
   const failures = results.filter(r => r.status === "rejected");
 
@@ -64,7 +73,16 @@ export const getUploadErrorMessageDescriptor = (
     failures.some(result => matchesRejectedError(result, pattern))
   );
 
-  return matched
-    ? { key: matched.key }
-    : { key: "errors.uploadFailed", values: { count: failures.length } };
+  if (!matched) {
+    return { key: "errors.uploadFailed", values: { count: failures.length } };
+  }
+
+  if (matched.key === "errors.uploadFailedTooLarge") {
+    return {
+      key: matched.key,
+      values: { maxFileSize: options.maxFileSize },
+    };
+  }
+
+  return { key: matched.key };
 };

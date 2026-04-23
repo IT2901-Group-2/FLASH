@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { getUploadErrorMessageDescriptor } from "./fileUploadErrorMessages";
 
+const options = { maxFileSize: 12 };
+
 const fulfilled = (value: unknown = null): PromiseFulfilledResult<unknown> => ({
   status: "fulfilled",
   value,
@@ -15,7 +17,7 @@ describe("getUploadErrorMessageDescriptor", () => {
   it("returns null when all uploads succeed", () => {
     const results: PromiseSettledResult<unknown>[] = [fulfilled(), fulfilled()];
 
-    expect(getUploadErrorMessageDescriptor(results)).toBeNull();
+    expect(getUploadErrorMessageDescriptor(results, options)).toBeNull();
   });
 
   it("returns upload limit message when a failure indicates limit was reached", () => {
@@ -24,7 +26,7 @@ describe("getUploadErrorMessageDescriptor", () => {
       rejected(new Error("Upload limit reached for this event")),
     ];
 
-    expect(getUploadErrorMessageDescriptor(results)).toEqual({
+    expect(getUploadErrorMessageDescriptor(results, options)).toEqual({
       key: "errors.uploadLimitReached",
     });
   });
@@ -34,8 +36,9 @@ describe("getUploadErrorMessageDescriptor", () => {
       rejected(new Error("Input image exceeds pixel limit")),
     ];
 
-    expect(getUploadErrorMessageDescriptor(results)).toEqual({
+    expect(getUploadErrorMessageDescriptor(results, options)).toEqual({
       key: "errors.uploadFailedTooLarge",
+      values: { maxFileSize: 12 },
     });
   });
 
@@ -44,7 +47,7 @@ describe("getUploadErrorMessageDescriptor", () => {
       rejected(new Error("Unsupported image format")),
     ];
 
-    expect(getUploadErrorMessageDescriptor(results)).toEqual({
+    expect(getUploadErrorMessageDescriptor(results, options)).toEqual({
       key: "errors.uploadFailedUnsupportedFormat",
     });
   });
@@ -54,7 +57,7 @@ describe("getUploadErrorMessageDescriptor", () => {
       rejected(new Error("Failed to fetch")),
     ];
 
-    expect(getUploadErrorMessageDescriptor(results)).toEqual({
+    expect(getUploadErrorMessageDescriptor(results, options)).toEqual({
       key: "errors.uploadFailedNetwork",
     });
   });
@@ -66,7 +69,7 @@ describe("getUploadErrorMessageDescriptor", () => {
       fulfilled(),
     ];
 
-    expect(getUploadErrorMessageDescriptor(results)).toEqual({
+    expect(getUploadErrorMessageDescriptor(results, options)).toEqual({
       key: "errors.uploadFailed",
       values: { count: 2 },
     });
@@ -78,8 +81,9 @@ describe("getUploadErrorMessageDescriptor", () => {
       rejected(new Error("Input image exceeds pixel limit")),
     ];
 
-    expect(getUploadErrorMessageDescriptor(results)).toEqual({
+    expect(getUploadErrorMessageDescriptor(results, options)).toEqual({
       key: "errors.uploadFailedTooLarge",
+      values: { maxFileSize: 12 },
     });
   });
 });
