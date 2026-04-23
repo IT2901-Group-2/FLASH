@@ -24,6 +24,7 @@ import {
   useUploadImageMutation,
 } from "@/hooks/useImages";
 import Image from "next/image";
+import { getUploadErrorMessageDescriptor } from "@/utils/fileUploadErrorMessages";
 
 export default function Page() {
   const router = useRouter();
@@ -82,6 +83,8 @@ export default function Page() {
         ? tCommon("uploads.none.long")
         : tCommon("uploads.remaining.long", { count: uploadsRemaining });
 
+  // If/when this page is refactored and this function is extracted as its own util, the contents of
+  // utils/fileUploadErrorMessages should possible be integrated into the new util as well
   const { openFilePicker, FileInput } = useFileUpload({
     multiple: false,
     onFilesSelected: async files => {
@@ -100,21 +103,14 @@ export default function Page() {
           ),
           new Promise(resolve => setTimeout(resolve, 650)),
         ]);
-        const successfulUploads = results.filter(r => r.status === "fulfilled").length;
-        const failureCount = results.length - successfulUploads;
+        const uploadErrorDescriptor = getUploadErrorMessageDescriptor(results);
 
-        const hasUploadLimitError = results.some(
-          (result): result is PromiseRejectedResult =>
-            result.status === "rejected" &&
-            result.reason instanceof Error &&
-            /upload\s+limit\s+reached/i.test(result.reason.message)
-        );
-
-        if (failureCount > 0) {
+        if (uploadErrorDescriptor) {
           setUploadError(
-            hasUploadLimitError
-              ? tUpload("errors.uploadLimitReached")
-              : tUpload("errors.uploadFailed", { count: failureCount })
+            tUpload(
+              uploadErrorDescriptor.key,
+              "values" in uploadErrorDescriptor ? uploadErrorDescriptor.values : undefined
+            )
           );
         }
       } finally {
