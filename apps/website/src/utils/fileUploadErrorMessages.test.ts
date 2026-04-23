@@ -31,7 +31,7 @@ describe("getUploadErrorMessageDescriptor", () => {
 
   it("returns too large message when a failure indicates file size issue", () => {
     const results: PromiseSettledResult<unknown>[] = [
-      rejected(new Error("Payload too large")),
+      rejected(new Error("Input image exceeds pixel limit")),
     ];
 
     expect(getUploadErrorMessageDescriptor(results)).toEqual({
@@ -75,7 +75,7 @@ describe("getUploadErrorMessageDescriptor", () => {
   it("prioritizes messages according to priority when multiple errors occur", () => {
     const results: PromiseSettledResult<unknown>[] = [
       rejected(new Error("Failed to fetch")),
-      rejected(new Error("Payload too large")),
+      rejected(new Error("Input image exceeds pixel limit")),
     ];
 
     expect(getUploadErrorMessageDescriptor(results)).toEqual({

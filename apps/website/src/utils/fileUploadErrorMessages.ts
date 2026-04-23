@@ -2,13 +2,19 @@
  * Utility functions for file upload error messages
  * If the file upload implementation on events/[id] is extracted into its own util,
  * this code should possibly be integrated there as well
+ *
+ * Upload error messages are currently prioritized as follows (Highest to lowest):
+ *  1. Upload limit reached
+ *  2. File too large
+ *  3. Unsupported file format
+ *  4. Network error
  */
 
 const UPLOAD_ERROR_PATTERNS = [
   { key: "errors.uploadLimitReached", pattern: /upload\s+limit\s+reached/i },
   {
     key: "errors.uploadFailedTooLarge",
-    pattern: /todo/i,
+    pattern: /input\s+image\s+exceeds\s+pixel\s+limit|file\s+too\s+large/i,
   },
   {
     key: "errors.uploadFailedUnsupportedFormat",
