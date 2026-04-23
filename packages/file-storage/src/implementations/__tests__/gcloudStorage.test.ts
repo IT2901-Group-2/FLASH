@@ -11,7 +11,7 @@ import {
 import { GenericContainer, StartedTestContainer } from "testcontainers";
 import { Bucket, Storage, File } from "@google-cloud/storage";
 import { Result } from "typescript-result";
-import { GcloudStorage } from "./gcloudStorage";
+import { GcloudStorage } from "../gcloudStorage";
 import { randomUUID } from "crypto";
 
 let container: StartedTestContainer;

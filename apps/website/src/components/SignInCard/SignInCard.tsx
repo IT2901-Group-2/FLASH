@@ -1,4 +1,4 @@
-import { Button, Card, Input, Title } from "@flash/ui";
+import { Button, Card, TextField, Title } from "@flash/ui";
 import styles from "./SignInCard.module.css";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -41,13 +41,12 @@ export default function SignInCard() {
         {t("heading")}
       </Title>
       <form onSubmit={handleSubmit} className={styles.content}>
-        <Input
+        <TextField
           className={styles.inputComponent}
           aria-label={c("fields.password")}
           label={c("fields.password")}
           type="password"
           id="passwordField"
-          visualSize="medium"
           placeholder={c("fields.passwordPlaceholder")}
           value={password}
           onChange={e => setPassword(e.target.value)}
