@@ -53,6 +53,7 @@ export function ToastProvider({
         "data-color": toast["data-color"] ?? "neutral",
         duration: toast.duration ?? 5000,
         open: toast.open ?? true,
+        position: toast.position ?? "bottom-right",
         onOpenChange: toast.onOpenChange,
       };
 

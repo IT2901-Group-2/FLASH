@@ -14,13 +14,14 @@ export type ToastAction = {
 };
 
 export type ToastItem = {
-  id: string;
-  title?: React.ReactNode;
+  id?: string;
+  title: React.ReactNode;
   description?: React.ReactNode;
   action?: ToastAction;
   "data-color"?: ColorName;
   duration?: number;
-  open: boolean;
+  open?: boolean;
+  position?: ToastPosition;
   onOpenChange?: (open: boolean) => void;
 };
 

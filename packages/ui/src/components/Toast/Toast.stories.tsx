@@ -61,7 +61,7 @@ export const WithToaster: Story = {
 
     return (
       <>
-        <Toaster position="bottom-right" />
+        <Toaster />
         <Button
           onClick={() =>
             createToast({
@@ -156,13 +156,14 @@ export const Positions: Story = {
                 description: "Toasts appear here.",
                 "data-color": "neutral",
                 duration: 3000,
+                position,
               })
             }
           >
             {position}
           </Button>
         ))}
-        <Toaster position="top-right" />
+        <Toaster />
       </>
     );
   },
@@ -208,7 +209,7 @@ export const AutoDismiss: Story = {
 
     return (
       <>
-        <Toaster position="bottom-right" />
+        <Toaster />
         {[1000, 2000, 3000, 5000].map(ms => (
           <Button
             key={ms}

@@ -1,12 +1,17 @@
 import { useToast } from "./Toast.context";
 import Toast from "./Toast";
-import { ToastPosition } from "./Toast.type";
 import styles from "./Toast.module.css";
+import { ToastItem, ToastPosition } from "./Toast.type";
+import { useMemo } from "react";
 
-export type ToasterProps = {
-  /** Where on the screen toasts should appear. Defaults to "bottom-right". */
-  position?: ToastPosition;
-};
+const POSITION_ORDER: ToastPosition[] = [
+  "top-left",
+  "top-center",
+  "top-right",
+  "bottom-left",
+  "bottom-center",
+  "bottom-right",
+] as const;
 
 /**
  * Drop a single <Toaster /> anywhere in your component tree (inside ToastProvider)
@@ -19,20 +24,46 @@ export type ToasterProps = {
  *   <Toaster position="bottom-right" />
  * </Toast.Provider>
  */
-export const Toaster = ({ position = "bottom-right" }: ToasterProps) => {
+export const Toaster = () => {
   const { toasts, dismissToast, removeToast } = useToast();
 
+  const groupedToasts = useMemo(() => {
+    return toasts.reduce<Record<string, ToastItem[]>>((acc, toast) => {
+      const position = toast.position;
+      if (!position) return acc;
+
+      (acc[position] ||= []).push(toast);
+      return acc;
+    }, {});
+  }, [toasts]);
+
+  console.log(groupedToasts);
+
   return (
-    <div className={styles.toaster} data-position={position} aria-label="Notifications">
-      {toasts.map(toast => (
-        <Toast
-          key={toast.id}
-          toast={toast}
-          onDismiss={() => dismissToast(toast.id)}
-          onRemove={() => removeToast(toast.id)}
-        />
-      ))}
-    </div>
+    <>
+      {POSITION_ORDER.map(position => {
+        const items = groupedToasts[position];
+        if (!items?.length) return null;
+
+        return (
+          <div
+            key={position}
+            className={styles.toaster}
+            data-position={position}
+            aria-label="Notifications"
+          >
+            {items.map(toast => (
+              <Toast
+                key={toast.id}
+                toast={toast}
+                onDismiss={() => dismissToast(toast.id!)}
+                onRemove={() => removeToast(toast.id!)}
+              />
+            ))}
+          </div>
+        );
+      })}
+    </>
   );
 };
 
