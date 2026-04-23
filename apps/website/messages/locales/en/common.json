@@ -61,6 +61,10 @@
     "viewProgress": "{index} of {total}",
     "noApproved": "No approved images"
   },
+  "imageStatus": {
+    "pending": "Pending...",
+    "rejected": "Rejected"
+  },
   "uploads": {
     "remaining": {
       "short": "{count, plural, one {# upload} other {# uploads}} remaining",

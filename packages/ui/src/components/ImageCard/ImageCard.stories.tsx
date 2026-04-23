@@ -504,6 +504,39 @@ export const Preview2Selected: Story = {
   },
 };
 
+export const Preview2Pending: Story = {
+  args: {
+    variant: "preview2",
+    src: SAMPLE_IMAGE,
+    alt: "Pending moderate image",
+    title: "img-003",
+    state: "pending",
+    onClick: fn(),
+  },
+  play: async ({ canvasElement }) => {
+    const card = canvasElement.querySelector('[data-variant="preview2"]');
+
+    await expect(card).toBeInTheDocument();
+    await expect(card).toHaveAttribute("data-state", "pending");
+  },
+};
+
+export const Preview2Rejected: Story = {
+  args: {
+    variant: "preview2",
+    src: SAMPLE_IMAGE,
+    alt: "Rejected moderate image",
+    title: "img-004",
+    state: "rejected",
+  },
+  play: async ({ canvasElement }) => {
+    const card = canvasElement.querySelector('[data-variant="preview2"]');
+
+    await expect(card).toBeInTheDocument();
+    await expect(card).toHaveAttribute("data-state", "rejected");
+  },
+};
+
 // Complex State with Icon
 export const ComplexCard: Story = {
   args: {
