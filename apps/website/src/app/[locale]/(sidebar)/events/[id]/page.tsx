@@ -227,7 +227,7 @@ export default function Page() {
   const previewImage =
     previewIndex !== null && images[previewIndex]
       ? {
-          src: getImageSrc(eventId, images[previewIndex].id),
+          id: images[previewIndex].id,
           alt: tUpload("imageAlt", { index: previewIndex + 1, total: images.length }),
         }
       : null;
@@ -266,7 +266,8 @@ export default function Page() {
         >
           <Image
             fill
-            src={previewImage.src}
+            loader={({ width }) => getImageSrc(eventId, previewImage.id, { width })}
+            src={getImageSrc(eventId, previewImage.id)}
             alt={previewImage.alt}
             className={styles.previewFullscreenImage}
             sizes="100vw"
