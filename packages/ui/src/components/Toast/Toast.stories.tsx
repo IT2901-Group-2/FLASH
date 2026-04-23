@@ -4,6 +4,7 @@ import { ToastItem, ToastPosition } from "./Toast.type";
 import { ColorName } from "../types";
 import { Button } from "../Button";
 import Toaster from "./Toaster";
+import { CircleAlert } from "lucide-react";
 
 const baseToast: ToastItem = {
   id: "toast-1",
@@ -155,7 +156,8 @@ export const Positions: Story = {
                 title: position,
                 description: "Toasts appear here.",
                 "data-color": "neutral",
-                duration: 3000,
+                duration: 10000,
+                icon: <CircleAlert />,
                 position,
               })
             }

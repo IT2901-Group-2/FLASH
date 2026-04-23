@@ -46,15 +46,12 @@ export function ToastProvider({
     (toast: CreateToastInput) => {
       const id = toast.id ?? createToastId();
       const nextToast: ToastItem = {
+        ...toast,
         id,
-        title: toast.title,
-        description: toast.description,
-        action: toast.action,
         "data-color": toast["data-color"] ?? "neutral",
         duration: toast.duration ?? 5000,
         open: toast.open ?? true,
         position: toast.position ?? "bottom-right",
-        onOpenChange: toast.onOpenChange,
       };
 
       setToasts(current => {

@@ -8,20 +8,12 @@ import Toaster from "./Toaster";
 
 export type ToastProps = React.HTMLAttributes<HTMLDivElement> & {
   toast: ToastItem;
-  icon?: React.ReactNode;
   onOpenChange?: (open: boolean) => void;
   onDismiss?: () => void;
   onRemove?: () => void;
 };
 
-const Toast = ({
-  toast,
-  icon,
-  onOpenChange,
-  onDismiss,
-  onRemove,
-  ...props
-}: ToastProps) => {
+const Toast = ({ toast, onOpenChange, onDismiss, onRemove, ...props }: ToastProps) => {
   const [open, setOpen] = useControllableState<boolean>({
     value: toast.open,
     defaultValue: true,
@@ -60,16 +52,18 @@ const Toast = ({
       data-open={open}
       className={styles.toast}
     >
-      {icon && <span className={styles.icon}>{icon}</span>}
-      {toast.title && <span className={styles.title}>{toast.title}</span>}
-      {toast.description && (
-        <span className={styles.description}>{toast.description}</span>
-      )}
-      {toast.action && (
-        <button onClick={toast.action.onClick} className={styles.action}>
-          {toast.action.label}
-        </button>
-      )}
+      {toast.icon && <span className={styles.icon}>{toast.icon}</span>}
+      <div className={styles.text}>
+        {toast.title && <span className={styles.title}>{toast.title}</span>}
+        {toast.description && (
+          <span className={styles.description}>{toast.description}</span>
+        )}
+        {toast.action && (
+          <button onClick={toast.action.onClick} className={styles.action}>
+            {toast.action.label}
+          </button>
+        )}
+      </div>
       <button
         type="button"
         aria-label="Dismiss toast"

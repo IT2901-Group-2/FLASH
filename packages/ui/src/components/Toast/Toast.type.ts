@@ -22,6 +22,7 @@ export type ToastItem = {
   duration?: number;
   open?: boolean;
   position?: ToastPosition;
+  icon?: React.ReactNode;
   onOpenChange?: (open: boolean) => void;
 };
 
