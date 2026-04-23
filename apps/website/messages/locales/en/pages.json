@@ -1,8 +1,8 @@
 {
-  "adminLogin": {
-    "title": "FLASH Admin",
-    "description": "Manage your photo events with ease",
-    "subtitle": "Self-hosted Photo Event Management System"
+  "login": {
+    "title": "FLASH",
+    "description": "Self-hosted system for managing photo events",
+    "subtitle": "Manage your photo events with ease"
   },
   "joinEvent": {
     "title": "Join an Event",

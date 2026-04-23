@@ -1,5 +1,5 @@
 "use client";
-import { Button, Card, Input, Title } from "@flash/ui";
+import { Button, Card, TextField, Title } from "@flash/ui";
 import styles from "./nickname.module.css";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -62,7 +62,7 @@ export default function Page() {
           >
             {eventName ? `${tNickname("title")} ${eventName}` : tNickname("title")}
           </Title>
-          <Input
+          <TextField
             aria-label={cFields("nickname")}
             label={cFields("nickname")}
             placeholder={tNickname("placeholder")}

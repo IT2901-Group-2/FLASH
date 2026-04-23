@@ -19,6 +19,8 @@ import {
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
 import AdmZip from "adm-zip";
+import { verifyAccessToken } from "@/lib/utils/auth";
+import { eventService } from "./eventService";
 
 const uid = new ShortUniqueId();
 
@@ -85,7 +87,7 @@ export class ImageService {
     eventId: string,
     { id, approval }: GetImagesParams = {}
   ): AsyncResult<Image[], Error> {
-    return Result.try(() =>
+    return this.getVisibleToUserId(eventId).mapCatching(visibleToUserId =>
       this.dbService.db
         .select()
         .from(imageTable)
@@ -96,7 +98,10 @@ export class ImageService {
             approval !== undefined && approval !== "pending"
               ? eq(imageTable.isApproved, approval === "approved")
               : undefined,
-            approval === "pending" ? isNull(imageTable.isApproved) : undefined
+            approval === "pending" ? isNull(imageTable.isApproved) : undefined,
+            visibleToUserId !== undefined
+              ? eq(imageTable.userId, visibleToUserId)
+              : undefined
           )
         )
     );
@@ -141,18 +146,28 @@ export class ImageService {
     params: GetImageParams = {}
   ): AsyncResult<Buffer<ArrayBufferLike>, Error> {
     return Result.gen(this, function* () {
-      yield* Result.try(() =>
-        this.dbService.db
-          .select()
-          .from(imageTable)
-          .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
-          .limit(1)
-      ).map(rows =>
-        getFirstRow(
-          rows,
-          `Image with id ${imageId} does not exist on event with id ${eventId}`
+      yield* this.getVisibleToUserId(eventId)
+        .mapCatching(visibleToUserId =>
+          this.dbService.db
+            .select()
+            .from(imageTable)
+            .where(
+              and(
+                eq(imageTable.eventId, eventId),
+                eq(imageTable.id, imageId),
+                visibleToUserId !== undefined
+                  ? eq(imageTable.userId, visibleToUserId)
+                  : undefined
+              )
+            )
+            .limit(1)
         )
-      );
+        .map(rows =>
+          getFirstRow(
+            rows,
+            `Image with id ${imageId} does not exist on event with id ${eventId}`
+          )
+        );
 
       const sortOrder = this.getSizeOrder(params);
       if (sortOrder === null) {
@@ -225,16 +240,21 @@ export class ImageService {
         () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
       );
 
-      const { autoApprove, uploadLimit } = yield* Result.try(() =>
+      const { autoApprove, uploadLimit, endDate } = yield* Result.try(() =>
         this.dbService.db
           .select({
             autoApprove: eventTable.autoApprove,
             uploadLimit: eventTable.uploadLimit,
+            endDate: eventTable.endDate,
           })
           .from(eventTable)
           .where(eq(eventTable.id, eventId))
           .limit(1)
       ).map(rows => getFirstRow(rows, `Event with id ${eventId} does not exist`));
+
+      if (new Date() > endDate) {
+        throw new HTTPError("Event has ended, uploads are closed", 403);
+      }
 
       const count = yield* this.getUploadedImageCountByUser(eventId, userId);
 
@@ -400,9 +420,29 @@ export class ImageService {
    * @returns A result containing the zip archive as a `Buffer` or an error.
    */
   downloadImages(eventId: string): AsyncResult<Buffer, Error> {
-    return this.storage.read(`${eventId}.zip`).recover(() => {
-      const zip = new AdmZip();
-      return Result.ok(zip.toBuffer());
+    return Result.genCatching(this, function* () {
+      const isAdmin = yield* Result.fromAsyncCatching(
+        verifyAccessToken()
+          .then(() => true)
+          .catch(() => false)
+      );
+
+      const { endDate } = yield* Result.try(() =>
+        this.dbService.db
+          .select({ endDate: eventTable.endDate })
+          .from(eventTable)
+          .where(eq(eventTable.id, eventId))
+          .limit(1)
+      ).map(rows => getFirstRow(rows, `Event with id ${eventId} does not exist`));
+
+      if (new Date() < endDate && !isAdmin) {
+        throw new HTTPError("Event is still live, downloads are not yet available", 403);
+      }
+
+      return this.storage.read(`${eventId}.zip`).recover(() => {
+        const zip = new AdmZip();
+        return Result.ok(zip.toBuffer());
+      });
     });
   }
 
@@ -490,6 +530,25 @@ export class ImageService {
       );
 
       return yield* this.getUploadedImageCountByUser(eventId, userId);
+    });
+  }
+  /**
+   * Returns the userId to filter images by based on whether the event's uploads
+   * are private and whether the requesting user has elevated privileges.
+   * Returns `undefined` if all images are visible (i.e. public or privileged user).
+   */
+
+  private getVisibleToUserId(eventId: string): AsyncResult<string | undefined, Error> {
+    return Result.genCatching(this, async function* () {
+      const { userId, isModerator } = yield* getEventCookie(eventId, JWT_SECRET);
+      const isAdmin = await verifyAccessToken()
+        .then(() => true)
+        .catch(() => false);
+      if (isAdmin || isModerator) {
+        return undefined;
+      }
+      const [event] = yield* eventService.getEvents({ id: [eventId] });
+      return event?.uploadsArePrivate === true ? userId : undefined;
     });
   }
 }

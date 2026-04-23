@@ -7,3 +7,5 @@ export const useSearchParams = vi.fn(() => new URLSearchParams());
 export const useParams = vi.fn(() => ({ id: "event-123" }));
 export const redirect = vi.fn();
 export const notFound = vi.fn();
+
+export const permanentRedirect = vi.fn();

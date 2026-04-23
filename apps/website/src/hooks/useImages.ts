@@ -4,7 +4,7 @@ import {
   UpdateImage,
   uploadedImageCountSchema,
 } from "@/db";
-import { makeRequest } from "@/lib/utils/api";
+import readResponseError, { makeRequest } from "@/lib/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import z from "zod";
 
@@ -27,6 +27,10 @@ export type BatchUpdateImageInput = {
   eventId: string;
   ids: string[];
   isApproved: boolean;
+};
+
+export type DownloadImagesInput = {
+  eventId: string;
 };
 
 /**
@@ -171,6 +175,26 @@ export function useDeleteImageMutation() {
       makeRequest(getImageSchema, `/api/events/${eventId}/images/${imageId}`, "DELETE"),
     onSuccess: async (_data, { eventId }) => {
       await queryClient.invalidateQueries({ queryKey: imagesKeys.event(eventId) });
+    },
+  });
+}
+
+/**
+ * Downloads all images for the given event as a zip file.
+ */
+export function useDownloadImagesMutation() {
+  return useMutation({
+    mutationFn: async ({ eventId }: DownloadImagesInput) => {
+      const response = await fetch(`/api/events/${eventId}/images/download`);
+      if (!response.ok) {
+        throw new Error(await readResponseError(response));
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.click();
+      URL.revokeObjectURL(url);
     },
   });
 }
