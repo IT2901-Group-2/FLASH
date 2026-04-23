@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { ToastProvider, useToast } from "./Toast.context";
 import { X } from "lucide-react";
 import styles from "./Toast.module.css";
-import Toaster from "./Toaster";
 import { Button } from "../Button";
 
 export type ToastProps = React.HTMLAttributes<HTMLDivElement> & {
@@ -79,7 +78,6 @@ const Toast = ({ toast, onOpenChange, onDismiss, onRemove, ...props }: ToastProp
 };
 
 Toast.Provider = ToastProvider;
-Toast.Toaster = Toaster;
 
 export { useToast };
 export default Toast;
