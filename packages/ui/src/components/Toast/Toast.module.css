@@ -68,10 +68,11 @@
   gap: 0.5rem;
   width: clamp(15rem, 25%, 25rem);
 
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 0.75rem;
   border-radius: 0.5rem;
   background: var(--color-base);
   color: var(--color-text-base);
+  border: 0.1rem solid var(--color-border-base);
   box-shadow: var(--shadow-dialog);
   position: relative;
 }
@@ -88,7 +89,7 @@
 
   .description {
     font-size: var(--font-size-medium);
-    color: var(--color-text-tertiary);
+    color: var(--color-text-light);
   }
 
   .actions {
@@ -121,24 +122,6 @@
     width: 100%;
     height: 100%;
   }
-}
-
-.description {
-  font-size: var(--font-size-medium);
-  color: var(--color-text-tertiary);
-}
-
-.actions {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.button {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: var(--font-size-small);
 }
 
 .close {
