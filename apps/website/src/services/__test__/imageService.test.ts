@@ -6,7 +6,7 @@ import fs from "fs/promises";
 import { ImageService } from "../imageService";
 import { FSStorage } from "@flash/file-storage";
 import { DatabaseService } from "../databaseService";
-import { EventCookie, eventTable, imageTable, userTable } from "@/db";
+import { EventCookie, eventTable, imageSizesTable, imageTable, userTable } from "@/db";
 import { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import { Result } from "typescript-result";
 import { getEventCookie } from "@/lib/utils/eventCookie";
@@ -107,10 +107,13 @@ beforeEach(async () => {
 
   await dbService.db.insert(eventTable).values(mockEvents);
   await dbService.db.insert(userTable).values(mockUsers);
-  await dbService.db.insert(imageTable).values(mockImages);
+  const imageData = await dbService.db.insert(imageTable).values(mockImages).returning();
+  await dbService.db
+    .insert(imageSizesTable)
+    .values(imageData.map(({ id }) => ({ imageId: id, width: 0, height: 0 })));
   await Promise.all(
     mockImages.map(({ id, imageData }) =>
-      storage.write(`${id}.webp`, imageData).getOrThrow()
+      storage.write(`${id}-0x0.webp`, imageData).getOrThrow()
     )
   );
 });
@@ -382,7 +385,7 @@ describe("ImageService uploadImage", () => {
 
     expect(image1.eventId).toBe("wedding");
     expect(image1.isApproved).toBe(true);
-    Result.assertOk(await imageService["storage"].read(`${image1.id}.webp`));
+    Result.assertOk(await imageService["storage"].read(`${image1.id}-15x15.webp`));
     expect(flush).toHaveBeenCalledOnce();
 
     const image2 = await imageService
@@ -391,7 +394,7 @@ describe("ImageService uploadImage", () => {
 
     expect(image2.eventId).toBe("birthday");
     expect(image2.isApproved).toBeNull();
-    Result.assertOk(await imageService["storage"].read(`${image2.id}.webp`));
+    Result.assertOk(await imageService["storage"].read(`${image2.id}-15x15.webp`));
     expect(flush).toHaveBeenCalledTimes(2);
   });
 
@@ -445,7 +448,7 @@ describe("ImageService uploadImage", () => {
 
     expect(uploadedImage.userId).toBe("john2");
     expect(uploadedImage.eventId).toBe("wedding");
-    Result.assertOk(await imageService["storage"].read(`${uploadedImage.id}.webp`));
+    Result.assertOk(await imageService["storage"].read(`${uploadedImage.id}-15x15.webp`));
 
     const weddingImages = await imageService.getImages("wedding").getOrThrow();
     expect(weddingImages.filter(image => image.userId === "john2")).toHaveLength(3);
