@@ -3,13 +3,6 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ImageCard } from "./ImageCard";
 
-vi.unmock("@/components/ImageCard/ImageCard");
-
-vi.mock("next-intl", () => ({
-  useTranslations: () => (key: string) =>
-    ({ pending: "Pending...", rejected: "Rejected" })[key] ?? key,
-}));
-
 const base = { src: "/test-image.jpg", alt: "Test image", title: "Test Title" };
 
 describe("ImageCard", () => {
@@ -31,22 +24,22 @@ describe("ImageCard", () => {
       expect(container.firstChild).toHaveAttribute("data-state", "selected");
     });
 
-    it('renders "Pending..." status label when state is pending', () => {
+    it('renders "pending" status label when state is pending', () => {
       render(<ImageCard {...base} state="pending" />);
-      expect(screen.getByText("Pending...")).toBeInTheDocument();
+      expect(screen.getByText("pending")).toBeInTheDocument();
     });
 
-    it('renders "Rejected" status label when state is rejected', () => {
+    it('renders "rejected" status label when state is rejected', () => {
       render(<ImageCard {...base} state="rejected" />);
-      expect(screen.getByText("Rejected")).toBeInTheDocument();
+      expect(screen.getByText("rejected")).toBeInTheDocument();
     });
 
     it.each(["default", "approved", "loading"] as const)(
       'renders no status label for "%s" state',
       state => {
         render(<ImageCard {...base} state={state} />);
-        expect(screen.queryByText("Pending...")).toBeNull();
-        expect(screen.queryByText("Rejected")).toBeNull();
+        expect(screen.queryByText("pending")).toBeNull();
+        expect(screen.queryByText("rejected")).toBeNull();
       }
     );
 

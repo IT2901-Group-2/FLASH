@@ -18,11 +18,8 @@ type MockImageCardProps = Omit<ImageCardProps, "title"> & { title?: string };
  * `data-testid="image-card"` and `data-state`, wires up `onClick`, and
  * renders `title` as visible text so translation-key assertions keep working.
  *
- * The mock is registered globally in `vitest.setup.tsx` — you never need to
- * call `vi.mock("@/components/ImageCard/ImageCard")` in a test file yourself.
- *
  * @example
- * // The factory is already called for you in vitest.setup.tsx:
+ * // Add to each test file that renders a component using ImageCard:
  * vi.mock("@/components/ImageCard/ImageCard", () => imageCardMock());
  *
  * @example

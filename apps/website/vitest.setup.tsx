@@ -19,7 +19,6 @@ import { cleanup } from "@testing-library/react";
 import { afterEach, beforeEach, vi } from "vitest";
 import {
   flashUiMock,
-  imageCardMock,
   resetEventCounter,
   resetImageCounter,
   resetMockRouter,
@@ -80,8 +79,6 @@ vi.mock("next/link", () => ({ default: Link }));
  * own package.
  */
 vi.mock("@flash/ui", () => flashUiMock());
-
-vi.mock("@/components/ImageCard/ImageCard", () => imageCardMock());
 
 /**
  * Mocks the cookieStore global with a simple object of vi.fn() methods.

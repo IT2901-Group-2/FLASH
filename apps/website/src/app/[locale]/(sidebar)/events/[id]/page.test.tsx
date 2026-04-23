@@ -2,6 +2,7 @@ import {
   eventAuthMock,
   eventHooksMock,
   imageHooksMock,
+  imageCardMock,
   makeImage,
   mockImagesLoaded,
   fileUploadHookMock,
@@ -18,6 +19,7 @@ vi.mock("@/hooks/useEvents", () => eventHooksMock());
 vi.mock("@/hooks/useImages", () => imageHooksMock());
 vi.mock("@/providers/EventAuthContext", () => eventAuthMock());
 vi.mock("@/hooks/useFileUpload", () => fileUploadHookMock());
+vi.mock("@/components/ImageCard/ImageCard", () => imageCardMock());
 
 vi.mock("@/components/PhoneHeader/PhoneHeader", () => ({
   PhoneHeader: vi.fn(({ children, ...rest }: PhoneHeaderProps) => (
