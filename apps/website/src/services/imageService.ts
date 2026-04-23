@@ -185,7 +185,7 @@ export class ImageService {
   private saveImage(
     imageId: string,
     sharpImage: Sharp
-  ): AsyncResult<[number, number][], Error> {
+  ): AsyncResult<[[number, number], ...[number, number][]], Error> {
     return Result.try(() => sharpImage.metadata()).map(({ width, height }) =>
       Result.try(() => sharpImage.clone().toBuffer())
         .map(buff => this.storage.write(`${imageId}-${width}x${height}.webp`, buff))
@@ -271,16 +271,12 @@ export class ImageService {
       )
         .map(rows =>
           getFirstRow(rows, "Failed to upload image").map(image =>
-            imageSizes.length > 0
-              ? Result.try(() =>
-                  this.dbService.db
-                    .insert(imageSizesTable)
-                    .values(
-                      imageSizes.map(([width, height]) => ({ imageId, width, height }))
-                    )
-                    .returning()
-                ).map(rows => getFirstRow(rows).map(() => image))
-              : image
+            Result.try(() =>
+              this.dbService.db
+                .insert(imageSizesTable)
+                .values(imageSizes.map(([width, height]) => ({ imageId, width, height })))
+                .returning()
+            ).map(rows => getFirstRow(rows).map(() => image))
           )
         )
         .onSuccess(async image => {
@@ -394,7 +390,17 @@ export class ImageService {
         this.dbService.flush();
         await this.removeImageFromZip(eventId, imageId).getOrThrow();
       })
-      .map(row => this.storage.rm(`${row.id}.webp`).map(() => row));
+      .map(row =>
+        this.getImageSizes(eventId, imageId)
+          .map(sizes =>
+            Result.all(
+              ...sizes.map(([width, height]) =>
+                this.storage.rm(`${imageId}-${width}x${height}.webp`)
+              )
+            )
+          )
+          .map(() => row)
+      );
   }
 
   /**
@@ -450,6 +456,21 @@ export class ImageService {
         `Image with id ${imageId} does not exist on event with id ${eventId}`
       )
     );
+  }
+
+  // TODO: jsdoc
+  private getImageSizes(
+    eventId: string,
+    imageId: string
+  ): AsyncResult<[number, number][], Error> {
+    return Result.try(() =>
+      this.dbService.db
+        .select({ width: imageSizesTable.width, height: imageSizesTable.height })
+        .from(imageTable)
+        .rightJoin(imageSizesTable, eq(imageTable.id, imageSizesTable.imageId))
+        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
+        .limit(1)
+    ).map(rows => rows.map(({ width, height }) => [width, height]));
   }
 
   /**
