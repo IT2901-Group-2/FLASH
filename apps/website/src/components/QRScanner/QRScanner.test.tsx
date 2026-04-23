@@ -1,8 +1,8 @@
+import { qrScannerMock } from "@test-config";
 import { render, screen } from "@testing-library/react";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import QrScanner from "./QRScanner";
-import { qrScannerMock } from "@test-config";
 
 vi.mock("@yudiel/react-qr-scanner", () => qrScannerMock());
 
