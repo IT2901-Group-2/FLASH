@@ -9,6 +9,26 @@ import type { ImageCardProps } from "@/components/ImageCard/ImageCard";
 // title renders as visible text so translation-key assertions work.
 type MockImageCardProps = Omit<ImageCardProps, "title"> & { title?: string };
 
+/**
+ * @module image-card.mock
+ *
+ * Provides a drop-in mock factory for the local `ImageCard` component.
+ *
+ * The component is replaced with a minimal HTML equivalent that exposes
+ * `data-testid="image-card"` and `data-state`, wires up `onClick`, and
+ * renders `title` as visible text so translation-key assertions keep working.
+ *
+ * The mock is registered globally in `vitest.setup.tsx` — you never need to
+ * call `vi.mock("@/components/ImageCard/ImageCard")` in a test file yourself.
+ *
+ * @example
+ * // The factory is already called for you in vitest.setup.tsx:
+ * vi.mock("@/components/ImageCard/ImageCard", () => imageCardMock());
+ *
+ * @example
+ * // Assert on rendered state in a test:
+ * expect(screen.getByTestId("image-card")).toHaveAttribute("data-state", "selected");
+ */
 export const imageCardMock = () => {
   const ImageCard = vi.fn(
     ({ src, alt, title, state = "default", onClick, ...props }: MockImageCardProps) => (
