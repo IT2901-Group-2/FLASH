@@ -5,6 +5,7 @@ import { ColorName } from "../types";
 import { Button } from "../Button";
 import Toaster from "./Toaster";
 import { CircleAlert } from "lucide-react";
+import { expect, userEvent } from "storybook/test";
 
 const baseToast: ToastItem = {
   id: "toast-1",
@@ -47,7 +48,14 @@ function makeToast(variant: ColorName, overrides: Partial<ToastItem> = {}): Toas
 /** A single Toast rendered directly */
 export const Default: Story = {
   args: {
-    toast: makeToast("neutral"),
+    toast: {
+      title: "Toast title",
+      description: "This is the toast description.",
+    },
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText("Toast title")).toBeVisible();
+    await expect(canvas.getByText("This is the toast description.")).toBeVisible();
   },
 };
 
@@ -127,6 +135,24 @@ export const WithToaster: Story = {
       </>
     );
   },
+  play: async ({ canvas }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "Success toast" }));
+    await expect(await canvas.findByText("Your changes have been saved.")).toBeVisible();
+
+    await userEvent.click(canvas.getByRole("button", { name: "Warning toast" }));
+    await expect(await canvas.findByText("Your session expires soon.")).toBeVisible();
+
+    await userEvent.click(canvas.getByRole("button", { name: "Error toast" }));
+    await expect(await canvas.findByText("Something went wrong.")).toBeVisible();
+
+    await userEvent.click(canvas.getByRole("button", { name: "With action" }));
+    await expect(await canvas.findByText("A new version is available.")).toBeVisible();
+
+    await userEvent.click(canvas.getByRole("button", { name: "Persistent toast" }));
+    await expect(
+      await canvas.findByText("This toast won't auto-dismiss (duration: 0).")
+    ).toBeVisible();
+  },
 };
 
 /**
@@ -189,11 +215,11 @@ export const AllVariants: Story = {
         {variants.map(variant => (
           <Toast
             key={variant}
-            toast={makeToast(variant, {
+            toast={{
               title: `${variant[0].toUpperCase()}${variant.slice(1)} toast`,
               description: `Variant: ${variant}`,
               duration: 0,
-            })}
+            }}
           />
         ))}
       </div>
