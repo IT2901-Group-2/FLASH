@@ -43,6 +43,13 @@
       "when": 1776085442127,
       "tag": "0005_familiar_silverclaw",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1776626050407,
+      "tag": "0006_messy_demogoblin",
+      "breakpoints": true
     }
   ]
 }

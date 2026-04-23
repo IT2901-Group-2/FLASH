@@ -16,6 +16,8 @@ import {
   useUploadImageMutation,
 } from "@/hooks/useImages";
 import { ImagePreview } from "./components/ImagePreview";
+import Image from "next/image";
+import { getImageSrc } from "@/lib/utils/images";
 
 export default function Page() {
   const router = useRouter();
@@ -121,6 +123,108 @@ export default function Page() {
   }, [eventAuth, router]);
 
   const handleImagePreview = (index: number) => setPreviewIndex(index);
+
+  useEffect(() => {
+    if (previewIndex === null) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const previousOverscrollBehavior = document.body.style.overscrollBehavior;
+
+    document.body.style.overflow = "hidden";
+    document.body.style.overscrollBehavior = "none";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.body.style.overscrollBehavior = previousOverscrollBehavior;
+    };
+  }, [previewIndex]);
+
+  useEffect(() => {
+    if (previewIndex === null) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setPreviewIndex(null);
+        return;
+      }
+
+      if (images.length <= 1) return;
+
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        setPreviewIndex(currentIndex =>
+          currentIndex === null ? null : (currentIndex + 1) % images.length
+        );
+      }
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        setPreviewIndex(currentIndex =>
+          currentIndex === null
+            ? null
+            : (currentIndex - 1 + images.length) % images.length
+        );
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [images.length, previewIndex]);
+
+  useEffect(() => {
+    if (previewIndex === null) return;
+    if (images.length === 0) {
+      setPreviewIndex(null);
+      return;
+    }
+
+    if (previewIndex > images.length - 1) {
+      setPreviewIndex(images.length - 1);
+    }
+  }, [images.length, previewIndex]);
+
+  const handleImagePreview = (index: number) => setPreviewIndex(index);
+
+  const closePreview = () => setPreviewIndex(null);
+
+  const nextPreviewImage = () => {
+    if (previewIndex === null || images.length === 0) return;
+    setPreviewIndex((previewIndex + 1) % images.length);
+  };
+
+  const prevPreviewImage = () => {
+    if (previewIndex === null || images.length === 0) return;
+    setPreviewIndex((previewIndex - 1 + images.length) % images.length);
+  };
+
+  const handlePreviewTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    touchStartX.current = event.touches[0]?.clientX ?? null;
+  };
+
+  const handlePreviewTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (touchStartX.current === null) return;
+    const endX = event.changedTouches[0]?.clientX;
+    if (typeof endX !== "number") return;
+
+    const deltaX = endX - touchStartX.current;
+    touchStartX.current = null;
+
+    if (Math.abs(deltaX) < 40) return;
+
+    if (deltaX > 0) {
+      prevPreviewImage();
+    } else {
+      nextPreviewImage();
+    }
+  };
+
+  const previewImage =
+    previewIndex !== null && images[previewIndex]
+      ? {
+          src: getImageSrc(eventId, images[previewIndex].id),
+          alt: tUpload("imageAlt", { index: previewIndex + 1, total: images.length }),
+        }
+      : null;
 
   return (
     <>
@@ -238,7 +342,7 @@ export default function Page() {
             <ImageCard
               key={image.id}
               variant="preview2"
-              src={`/api/events/${eventId}/images/${image.id}`}
+              src={getImageSrc(eventId, image.id, { width: 200, height: 200 })}
               alt={tUpload("imageAlt", { index: index + 1, total: images.length })}
               title={tUpload("imageTitle", { index: index + 1 })}
               data-image-id={image.id}
