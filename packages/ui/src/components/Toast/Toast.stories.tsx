@@ -14,7 +14,7 @@ const meta: Meta<typeof Toast> = {
   argTypes: {},
   decorators: [
     Story => (
-      <Toast.Provider onToastsChange={console.log}>
+      <Toast.Provider>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <Story />
         </div>
