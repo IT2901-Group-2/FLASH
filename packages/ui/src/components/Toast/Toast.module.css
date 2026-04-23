@@ -72,7 +72,7 @@
   border-radius: 0.5rem;
   background: var(--color-base);
   color: var(--color-text-base);
-  border: 0.1rem solid var(--color-border-base);
+  border: 0.1rem solid var(--color-border-light);
   box-shadow: var(--shadow-dialog);
   position: relative;
 }
@@ -81,6 +81,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  width: 100%;
 
   .title {
     font-weight: var(--font-weight-bold);
@@ -90,12 +91,6 @@
   .description {
     font-size: var(--font-size-medium);
     color: var(--color-text-light);
-  }
-
-  .actions {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
   }
 }
 

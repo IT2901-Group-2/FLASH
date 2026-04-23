@@ -5,6 +5,7 @@ import { ToastProvider, useToast } from "./Toast.context";
 import { X } from "lucide-react";
 import styles from "./Toast.module.css";
 import Toaster from "./Toaster";
+import { Button } from "../Button";
 
 export type ToastProps = React.HTMLAttributes<HTMLDivElement> & {
   toast: ToastItem;
@@ -59,9 +60,9 @@ const Toast = ({ toast, onOpenChange, onDismiss, onRemove, ...props }: ToastProp
           <span className={styles.description}>{toast.description}</span>
         )}
         {toast.action && (
-          <button onClick={toast.action.onClick} className={styles.action}>
+          <Button onClick={toast.action.onClick} size="xsmall" fill>
             {toast.action.label}
-          </button>
+          </Button>
         )}
       </div>
       <button
