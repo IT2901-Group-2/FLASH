@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/": ["drizzle/**/*"],
   },
+  //!!! TEMP FIX !!!
+  images: {unoptimized: true}
 };
 
 const withNextIntl = createNextIntlPlugin();
