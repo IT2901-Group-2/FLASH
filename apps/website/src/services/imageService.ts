@@ -35,7 +35,7 @@ export class ImageService {
   }
 
   static readonly MAX_IMAGE_SIZE = 12 * 1024 * 1024;
-  static readonly TARGET_IMAGE_SIZES: number[] = [250];
+  static readonly TARGET_IMAGE_SIZES: number[] = [250, 500, 1000, 2000];
 
   /**
    * Validates the image metadata using `sharp`.
