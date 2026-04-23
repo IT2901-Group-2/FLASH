@@ -90,7 +90,7 @@ describe("Guest Upload Page", () => {
     });
 
     it("navigates preview with ArrowRight and ArrowLeft", async () => {
-      vi.mocked(useImagesQuery).mockReturnValue(
+      vi.mocked(useMyImagesQuery).mockReturnValue(
         mockImagesLoaded([
           makeImage({ id: "image-1" }),
           makeImage({ id: "image-2" }),
@@ -127,7 +127,7 @@ describe("Guest Upload Page", () => {
     });
 
     it("wraps preview to last image when pressing ArrowLeft on first image", async () => {
-      vi.mocked(useImagesQuery).mockReturnValue(
+      vi.mocked(useMyImagesQuery).mockReturnValue(
         mockImagesLoaded([
           makeImage({ id: "image-1" }),
           makeImage({ id: "image-2" }),
