@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { eventService } from "@/services/eventService";
 import { updateEventSchema } from "@/db";
 import { errorResponse } from "@/lib/utils/error";
+import { withAuth } from "@/lib/utils/withAuth";
 
 export async function PATCH(
   req: NextRequest,
@@ -10,9 +11,11 @@ export async function PATCH(
 ): Promise<NextResponse> {
   const { eventId } = await params;
 
-  return parseRequestBody(req, updateEventSchema)
-    .map(data => eventService.updateEvent(eventId, data))
-    .fold(event => NextResponse.json(event), errorResponse);
+  return withAuth(() =>
+    parseRequestBody(req, updateEventSchema)
+      .map(data => eventService.updateEvent(eventId, data))
+      .fold(event => NextResponse.json(event), errorResponse)
+  );
 }
 
 export async function DELETE(
@@ -21,7 +24,9 @@ export async function DELETE(
 ): Promise<NextResponse> {
   const { eventId } = await params;
 
-  return eventService
-    .deleteEvent(eventId)
-    .fold(event => NextResponse.json(event), errorResponse);
+  return withAuth(() =>
+    eventService
+      .deleteEvent(eventId)
+      .fold(event => NextResponse.json(event), errorResponse)
+  );
 }

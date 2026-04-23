@@ -22,6 +22,7 @@ import { useIdle } from "@/hooks/useIdle";
 import { useInterval } from "@/hooks/useInterval";
 import { useTranslations } from "next-intl";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import { getImageSrc } from "@/lib/utils/images";
 
 const Page = () => {
   const INTERVAL = 10 * 1000;
@@ -63,7 +64,7 @@ const Page = () => {
         {image && (
           <Image
             fill
-            src={`/api/events/${id}/images/${image.id}`}
+            src={getImageSrc(id, image.id)}
             alt=""
             role="img"
             className={styles.image}

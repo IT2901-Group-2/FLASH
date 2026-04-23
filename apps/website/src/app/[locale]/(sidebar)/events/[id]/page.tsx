@@ -33,6 +33,7 @@ import {
   useUploadImageMutation,
 } from "@/hooks/useImages";
 import Image from "next/image";
+import { getImageSrc } from "@/lib/utils/images";
 
 const EVENT_REFETCH_INTERVAL = 120_000; // 2 minutes
 
@@ -185,12 +186,31 @@ export default function Page() {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setPreviewIndex(null);
+        return;
+      }
+
+      if (displayedImages.length <= 1) return;
+
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        setPreviewIndex(currentIndex =>
+          currentIndex === null ? null : (currentIndex + 1) % displayedImages.length
+        );
+      }
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        setPreviewIndex(currentIndex =>
+          currentIndex === null
+            ? null
+            : (currentIndex - 1 + displayedImages.length) % displayedImages.length
+        );
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [previewIndex]);
+  }, [displayedImages.length, previewIndex]);
 
   useEffect(() => {
     if (previewIndex === null) return;
@@ -242,11 +262,8 @@ export default function Page() {
   const previewImage =
     previewIndex !== null && displayedImages[previewIndex]
       ? {
-          src: `/api/events/${eventId}/images/${displayedImages[previewIndex].id}`,
-          alt: tUpload("imageAlt", {
-            index: previewIndex + 1,
-            total: displayedImages.length,
-          }),
+          src: getImageSrc(eventId, displayedImages[previewIndex].id),
+          alt: tUpload("imageAlt", { index: previewIndex + 1, total: displayedImages.length }),
         }
       : null;
 
@@ -326,7 +343,6 @@ export default function Page() {
             data-color="brand-purple"
             variant="secondary"
             onClick={() => dialogRef.current?.showModal()}
-            className={eventAuth.isModerator ? styles.desktopOnly : undefined}
           />
           {eventAuth.isModerator && (
             <Button
@@ -335,6 +351,7 @@ export default function Page() {
               data-color="brand-purple"
               variant="primary"
               onClick={() => router.push(`./${eventId}/moderate`)}
+              className={styles.desktopOnly}
             >
               {tCommon("actions.moderate")}
             </Button>
@@ -374,6 +391,18 @@ export default function Page() {
               onClick: isEnded ? () => downloadImages({ eventId }) : openFilePicker,
               loading: isUploading,
             }}
+            secondaryButton={
+              eventAuth.isModerator
+                ? {
+                    icon: <ImageMinus />,
+                    iconPosition: "right",
+                    "data-color": "brand-purple",
+                    variant: "secondary",
+                    text: "Moderate",
+                    onClick: () => router.push(`./${eventId}/moderate`),
+                  }
+                : undefined
+            }
           />
         </div>
       </div>
@@ -416,11 +445,8 @@ export default function Page() {
           {displayedImages.map((image, index) => (
             <ImageCard
               key={image.id}
-              src={`/api/events/${eventId}/images/${image.id}`}
-              alt={tUpload("imageAlt", {
-                index: index + 1,
-                total: displayedImages.length,
-              })}
+              src={getImageSrc(eventId, image.id, { width: 200, height: 200 })}
+              alt={tUpload("imageAlt", { index: index + 1, total: displayedImages.length })}
               title={tUpload("imageTitle", { index: index + 1 })}
               data-image-id={image.id}
               placeholder={image.previewImage}

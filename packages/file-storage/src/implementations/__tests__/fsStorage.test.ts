@@ -1,5 +1,5 @@
 import { jest, describe, it, afterEach, expect, beforeEach } from "@jest/globals";
-import { FSStorage } from "./fsStorage";
+import { FSStorage } from "../fsStorage";
 import upath from "upath";
 import { tmpdir } from "os";
 import fs from "fs";
