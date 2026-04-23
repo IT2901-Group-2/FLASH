@@ -170,7 +170,7 @@ export class ImageService {
         )
       )
       .map(({ width, height }) =>
-        this.storage.read(`${imageId}-${width}x${height}.webp`)
+        this.storage.read(this.getImagePath(imageId, width, height))
       );
   }
 
@@ -188,7 +188,7 @@ export class ImageService {
   ): AsyncResult<[[number, number], ...[number, number][]], Error> {
     return Result.try(() => sharpImage.metadata()).map(({ width, height }) =>
       Result.try(() => sharpImage.clone().toBuffer())
-        .map(buff => this.storage.write(`${imageId}-${width}x${height}.webp`, buff))
+        .map(buff => this.storage.write(this.getImagePath(imageId, width, height), buff))
         .map(() =>
           Result.all(
             ...ImageService.TARGET_IMAGE_SIZES.filter(
@@ -201,7 +201,7 @@ export class ImageService {
                   .toBuffer({ resolveWithObject: true })
               ).map(({ data, info: { width, height } }) =>
                 this.storage
-                  .write(`${imageId}-${width}x${height}.webp`, data)
+                  .write(this.getImagePath(imageId, width, height), data)
                   .map(() => [width, height])
               )
             )
@@ -395,7 +395,7 @@ export class ImageService {
           .map(sizes =>
             Result.all(
               ...sizes.map(([width, height]) =>
-                this.storage.rm(`${imageId}-${width}x${height}.webp`)
+                this.storage.rm(this.getImagePath(imageId, width, height))
               )
             )
           )
@@ -473,6 +473,15 @@ export class ImageService {
     ).map(rows => rows.map(({ width, height }) => [width, height]));
   }
 
+  // TODO: jsdoc
+  private getImagePath(imageId: string, width: number, height: number): string {
+    if (width === 0 && height === 0) {
+      return `${imageId}.webp`;
+    }
+
+    return `${imageId}-${width}x${height}.webp`;
+  }
+
   /**
    * Adds a single image to the zip archive for the specified event.
    * Creates a new zip if one does not already exist.
@@ -490,7 +499,7 @@ export class ImageService {
           .map(zip => new AdmZip(zip))
           .map(zip =>
             this.storage
-              .read(`${imageId}-${width}x${height}.webp`)
+              .read(this.getImagePath(imageId, width, height))
               .map(buffer => zip.addFile(`${imageId}.webp`, buffer))
               .map(() => this.storage.write(`${eventId}.zip`, zip.toBuffer()))
           )
