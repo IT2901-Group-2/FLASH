@@ -113,7 +113,7 @@ beforeEach(async () => {
     .values(imageData.map(({ id }) => ({ imageId: id, width: 0, height: 0 })));
   await Promise.all(
     mockImages.map(({ id, imageData }) =>
-      storage.write(`${id}-0x0.webp`, imageData).getOrThrow()
+      storage.write(`${id}.webp`, imageData).getOrThrow()
     )
   );
 });
