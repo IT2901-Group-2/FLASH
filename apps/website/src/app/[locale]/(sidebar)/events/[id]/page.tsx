@@ -34,7 +34,7 @@ import {
 } from "@/hooks/useImages";
 import Image from "next/image";
 import { getImageSrc } from "@/lib/utils/images";
-import { EVENT_REFETCH_INTERVAL, PHOTOS_REFETCH_INTERVAL } from "@/config";
+import { EVENT_REFETCH_INTERVAL, PHOTOS_REFETCH_INTERVAL } from "@/config/images";
 
 export default function Page() {
   const router = useRouter();
