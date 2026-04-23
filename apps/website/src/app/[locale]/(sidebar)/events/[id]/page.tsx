@@ -16,7 +16,6 @@ import {
   useUploadImageMutation,
 } from "@/hooks/useImages";
 import { ImagePreview } from "./components/ImagePreview";
-import Image from "next/image";
 import { getImageSrc } from "@/lib/utils/images";
 
 export default function Page() {
@@ -182,49 +181,6 @@ export default function Page() {
       setPreviewIndex(images.length - 1);
     }
   }, [images.length, previewIndex]);
-
-  const handleImagePreview = (index: number) => setPreviewIndex(index);
-
-  const closePreview = () => setPreviewIndex(null);
-
-  const nextPreviewImage = () => {
-    if (previewIndex === null || images.length === 0) return;
-    setPreviewIndex((previewIndex + 1) % images.length);
-  };
-
-  const prevPreviewImage = () => {
-    if (previewIndex === null || images.length === 0) return;
-    setPreviewIndex((previewIndex - 1 + images.length) % images.length);
-  };
-
-  const handlePreviewTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
-    touchStartX.current = event.touches[0]?.clientX ?? null;
-  };
-
-  const handlePreviewTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
-    if (touchStartX.current === null) return;
-    const endX = event.changedTouches[0]?.clientX;
-    if (typeof endX !== "number") return;
-
-    const deltaX = endX - touchStartX.current;
-    touchStartX.current = null;
-
-    if (Math.abs(deltaX) < 40) return;
-
-    if (deltaX > 0) {
-      prevPreviewImage();
-    } else {
-      nextPreviewImage();
-    }
-  };
-
-  const previewImage =
-    previewIndex !== null && images[previewIndex]
-      ? {
-          src: getImageSrc(eventId, images[previewIndex].id),
-          alt: tUpload("imageAlt", { index: previewIndex + 1, total: images.length }),
-        }
-      : null;
 
   return (
     <>
