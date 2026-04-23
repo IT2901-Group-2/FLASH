@@ -77,7 +77,7 @@ export default function Page() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
-  const displayedImages = isShowingUserTab ? (myImagesData ?? []) : (imagesData ?? []);
+  const displayedImages = (isShowingUserTab ? myImagesData : imagesData) ?? [];
 
   const handleTabChange = (val: string) => {
     if (val === "all" || val === "user") setActiveTab(val);
