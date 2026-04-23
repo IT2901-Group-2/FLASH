@@ -21,7 +21,7 @@ const POSITION_ORDER: ToastPosition[] = [
  * // In your app root:
  * <Toast.Provider>
  *   <App />
- *   <Toaster position="bottom-right" />
+ *   <Toaster />
  * </Toast.Provider>
  */
 export const Toaster = () => {
