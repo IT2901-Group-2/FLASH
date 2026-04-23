@@ -15,7 +15,7 @@ const POSITION_ORDER: ToastPosition[] = [
 
 /**
  * Drop a single <Toaster /> anywhere in your component tree (inside ToastProvider)
- * and all toasts created via `useToast().createToast(...)` will appear here, stacked.
+ * and all toasts created via the `useToast()` hook will appear here, stacked.
  *
  * @example
  * // In your app root:

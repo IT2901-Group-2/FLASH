@@ -49,7 +49,7 @@ export function ToastProvider({
         ...toast,
         id,
         "data-color": toast["data-color"] ?? "neutral",
-        duration: toast.duration ?? 5000,
+        duration: toast.duration ?? 3000,
         open: toast.open ?? true,
         position: toast.position ?? "bottom-right",
       };
