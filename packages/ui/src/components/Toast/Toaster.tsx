@@ -37,8 +37,6 @@ export const Toaster = () => {
     }, {});
   }, [toasts]);
 
-  console.log(groupedToasts);
-
   return (
     <>
       {POSITION_ORDER.map(position => {
