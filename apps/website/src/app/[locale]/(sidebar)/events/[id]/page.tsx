@@ -25,6 +25,7 @@ import {
 } from "@/hooks/useImages";
 import Image from "next/image";
 import { getUploadErrorMessageDescriptor } from "@/utils/fileUploadErrorMessages";
+import { getImageSrc } from "@/lib/utils/images";
 
 export default function Page() {
   const router = useRouter();
@@ -146,12 +147,31 @@ export default function Page() {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setPreviewIndex(null);
+        return;
+      }
+
+      if (images.length <= 1) return;
+
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        setPreviewIndex(currentIndex =>
+          currentIndex === null ? null : (currentIndex + 1) % images.length
+        );
+      }
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        setPreviewIndex(currentIndex =>
+          currentIndex === null
+            ? null
+            : (currentIndex - 1 + images.length) % images.length
+        );
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [previewIndex]);
+  }, [images.length, previewIndex]);
 
   useEffect(() => {
     if (previewIndex === null) return;
@@ -203,7 +223,7 @@ export default function Page() {
   const previewImage =
     previewIndex !== null && images[previewIndex]
       ? {
-          src: `/api/events/${eventId}/images/${images[previewIndex].id}`,
+          src: getImageSrc(eventId, images[previewIndex].id),
           alt: tUpload("imageAlt", { index: previewIndex + 1, total: images.length }),
         }
       : null;
@@ -356,7 +376,7 @@ export default function Page() {
             <ImageCard
               key={image.id}
               variant="preview2"
-              src={`/api/events/${eventId}/images/${image.id}`}
+              src={getImageSrc(eventId, image.id, { width: 200, height: 200 })}
               alt={tUpload("imageAlt", { index: index + 1, total: images.length })}
               title={tUpload("imageTitle", { index: index + 1 })}
               data-image-id={image.id}
