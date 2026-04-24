@@ -99,7 +99,7 @@ export const WithToaster: Story = {
               title: "Heads up",
               description: "A new version is available.",
               "data-color": "neutral",
-              duration: 100000,
+              duration: 4000,
               action: { label: "Update", onClick: () => alert("Updating…") },
             })
           }
