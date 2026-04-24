@@ -13,6 +13,10 @@ import userEvent from "@testing-library/user-event";
 
 vi.mock("@/hooks/useImages", () => imageHooksMock());
 vi.mock("@/components/ImageCard/ImageCard", () => imageCardMock());
+vi.mock("@flash/ui", async importOriginal => {
+  const actual = await importOriginal<typeof import("@flash/ui")>();
+  return { ...actual, useToast: () => ({ createToast: vi.fn() }) };
+});
 
 vi.mock("@/components/ModerateHeader", () => ({
   ModerateHeader: ({
