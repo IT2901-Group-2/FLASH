@@ -47,13 +47,14 @@
   align-items: center;
   gap: 0.5rem;
   width: clamp(15rem, 25%, 25rem);
-
   padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
+
+  border-radius: var(--radius-8);
   background: var(--color-base);
   color: var(--color-text-base);
   border: 0.1rem solid var(--color-border-light);
   box-shadow: var(--shadow-dialog);
+
   position: relative;
 }
 
