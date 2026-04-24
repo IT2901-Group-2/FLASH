@@ -11,52 +11,32 @@
     pointer-events: auto;
   }
 
-  &[data-position^="top"] .toast {
-    animation: toastSlideInFromTop 0.2s ease-out both;
-  }
-
-  &[data-position^="bottom"] .toast {
-    animation: toastSlideInFromBottom 0.2s ease-out both;
-  }
-
-  &[data-position="top-left"] {
+  &[data-position^="top"] {
     top: 0;
+    .toast {
+      animation: toastSlideInFromTop 0.2s ease-out both;
+    }
+  }
+
+  &[data-position^="bottom"] {
+    bottom: 0;
+    flex-direction: column-reverse;
+    .toast {
+      animation: toastSlideInFromBottom 0.2s ease-out both;
+    }
+  }
+
+  &[data-position$="left"] {
     left: 0;
     align-items: flex-start;
   }
-
-  &[data-position="top-center"] {
-    top: 0;
+  &[data-position$="center"] {
     left: 50%;
     transform: translateX(-50%);
     align-items: center;
   }
-
-  &[data-position="top-right"] {
-    top: 0;
+  &[data-position$="right"] {
     right: 0;
-    align-items: flex-end;
-  }
-
-  &[data-position="bottom-left"] {
-    bottom: 0;
-    left: 0;
-    flex-direction: column-reverse;
-    align-items: flex-start;
-  }
-
-  &[data-position="bottom-center"] {
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    flex-direction: column-reverse;
-    align-items: center;
-  }
-
-  &[data-position="bottom-right"] {
-    bottom: 0;
-    right: 0;
-    flex-direction: column-reverse;
     align-items: flex-end;
   }
 }
