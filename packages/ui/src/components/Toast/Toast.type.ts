@@ -25,7 +25,10 @@ export type ToastItem = {
    * onClick action
    * */
   action?: ToastAction;
-  /** Color of the toast */
+  /**
+   * Color of the toast
+   * @default "neutral"
+   */
   "data-color"?: ColorName;
   /**
    * How long the toast will be displayed to the user in milliseconds.
