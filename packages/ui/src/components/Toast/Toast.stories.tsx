@@ -223,6 +223,7 @@ export const AllVariants: Story = {
             toast={{
               title: `${variant[0].toUpperCase()}${variant.slice(1)} toast`,
               description: `Variant: ${variant}`,
+              "data-color": variant,
               duration: 0,
             }}
           />
