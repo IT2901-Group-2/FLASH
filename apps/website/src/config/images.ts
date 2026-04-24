@@ -1,12 +1,9 @@
 export const BATCH_IMAGE_LIMIT = 100;
 
-export const MAX_IMAGE_SIZE = Number(process.env.MAX_IMAGE_SIZE ?? 12 * 1024 * 1024);
-
-export const SLIDE_DURATION = Number(process.env.SLIDE_DURATION ?? 10 * 1000);
-
-export const EVENT_REFETCH_INTERVAL = Number(
-  process.env.EVENT_REFETCH_INTERVAL ?? 120_000
-);
-export const PHOTOS_REFETCH_INTERVAL = Number(
-  process.env.PHOTOS_REFETCH_INTERVAL ?? 12_000
-);
+export const MAX_IMAGE_SIZE =
+  parseInt(process.env.MAX_IMAGE_SIZE ?? "") || 12 * 1024 * 1024;
+export const SLIDE_DURATION = parseInt(process.env.SLIDE_DURATION ?? "") || 10_000;
+export const EVENT_REFETCH_INTERVAL =
+  parseInt(process.env.EVENT_REFETCH_INTERVAL ?? "") || 120_000;
+export const PHOTOS_REFETCH_INTERVAL =
+  parseInt(process.env.PHOTOS_REFETCH_INTERVAL ?? "") || 12_000;
