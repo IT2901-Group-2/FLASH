@@ -84,6 +84,11 @@
       }
     },
     "upload": {
+      "tabs": {
+        "allPhotos": "Alle bilder",
+        "userPhotos": "Dine bilder"
+      },
+      "userPhotosEmptyState": "Du har ikke lastet opp noen bilder ennå",
       "loadingEvent": "Laster event...",
       "eventFallbackName": "Event",
       "eventLoadFailed": "Kunne ikke laste eventdetaljer for denne lenken.",

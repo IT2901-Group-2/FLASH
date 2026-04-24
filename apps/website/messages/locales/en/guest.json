@@ -84,6 +84,11 @@
       }
     },
     "upload": {
+      "tabs": {
+        "allPhotos": "All Photos",
+        "userPhotos": "Your Photos"
+      },
+      "userPhotosEmptyState": "You haven't uploaded any photos yet",
       "loadingEvent": "Loading event...",
       "eventFallbackName": "Event",
       "eventLoadFailed": "Could not load event details for this link.",
