@@ -15,7 +15,7 @@ type Tab = "pending" | "approved" | "rejected";
 
 export default function ModeratePage() {
   const router = useRouter();
-  const { id: eventId, locale } = useParams<{ id: string; locale: string }>();
+  const { id: eventId } = useParams<{ id: string }>();
   const t = useTranslations("guest.event.moderate");
   const { createToast } = useToast();
 
