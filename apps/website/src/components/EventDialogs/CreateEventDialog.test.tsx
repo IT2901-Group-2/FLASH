@@ -26,69 +26,86 @@ vi.mock("./Steps", () => ({
   ),
 }));
 
+function setupMutation() {
+  vi.mocked(useCreateEventMutation).mockReturnValue(defaultCreateEventMutationReturn);
+}
+
+function renderDialog(onClose = vi.fn()) {
+  return {
+    onClose,
+    ...render(<CreateEventDialog onClose={onClose} />),
+  };
+}
+
 describe("CreateEventDialog", () => {
   beforeEach(() => {
-    vi.mocked(useCreateEventMutation).mockReturnValue(defaultCreateEventMutationReturn);
+    setupMutation();
   });
 
   describe("initial render", () => {
     it("starts on step 1", () => {
-      render(<CreateEventDialog />);
+      renderDialog();
       expect(screen.getByTestId("step-1")).toBeInTheDocument();
       expect(screen.queryByTestId("step-2")).not.toBeInTheDocument();
     });
 
     it("renders a Cancel button on the first step", () => {
-      render(<CreateEventDialog />);
+      renderDialog();
       expect(screen.getByText("cancel")).toBeInTheDocument();
     });
 
     it("does NOT render a Previous button on the first step", () => {
-      render(<CreateEventDialog />);
+      renderDialog();
       expect(screen.queryByText("previous")).not.toBeInTheDocument();
     });
 
     it("renders a Next button on the first step", () => {
-      render(<CreateEventDialog />);
+      renderDialog();
       expect(screen.getByText("next")).toBeInTheDocument();
     });
 
     it("does NOT render a Create button on the first step", () => {
-      render(<CreateEventDialog />);
+      renderDialog();
       expect(screen.queryByText("create")).not.toBeInTheDocument();
     });
   });
 
   describe("navigation", () => {
     it("advances to step 2 when Next is clicked and validation passes", async () => {
-      render(<CreateEventDialog />);
+      renderDialog();
 
       await userEvent.click(screen.getByText("next"));
-      expect(screen.getByTestId("step-2")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByTestId("step-2")).toBeInTheDocument();
+      });
     });
 
     it("shows Previous and Create on the last step", async () => {
-      render(<CreateEventDialog />);
+      renderDialog();
 
       await userEvent.click(screen.getByText("next"));
-      expect(screen.getByText("previous")).toBeInTheDocument();
-      expect(screen.getByText("create")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText("previous")).toBeInTheDocument();
+        expect(screen.getByText("create")).toBeInTheDocument();
+      });
     });
 
     it("goes back to step 1 when Previous is clicked", async () => {
-      render(<CreateEventDialog />);
+      renderDialog();
 
       await userEvent.click(screen.getByText("next"));
       await waitFor(() => screen.getByText("previous"));
 
       await userEvent.click(screen.getByText("previous"));
-      expect(screen.getByTestId("step-1")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByTestId("step-1")).toBeInTheDocument();
+      });
     });
   });
 
   describe("review step", () => {
     async function advanceToReview() {
-      render(<CreateEventDialog />);
+      renderDialog();
 
       await userEvent.click(screen.getByText("next"));
       await waitFor(() => screen.getByText("create"));
@@ -122,42 +139,45 @@ describe("CreateEventDialog", () => {
 
   describe("handleClose", () => {
     it("calls onClose when Cancel is clicked", async () => {
-      const onClose = vi.fn();
-      render(<CreateEventDialog onClose={onClose} />);
+      const { onClose } = renderDialog();
       await userEvent.click(screen.getByText("cancel"));
       expect(onClose).toHaveBeenCalledOnce();
     });
 
     it("resets back to step 1 after close", async () => {
-      render(<CreateEventDialog />);
+      renderDialog();
 
       await userEvent.click(screen.getByText("next"));
       await waitFor(() => screen.getByTestId("step-2"));
 
       await userEvent.click(screen.getByText("cancel"));
-      expect(screen.queryByTestId("step-2")).not.toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.queryByTestId("step-2")).not.toBeInTheDocument();
+      });
     });
   });
 
   describe("ProgressDots", () => {
     it("passes the correct maxValue (steps + review)", () => {
-      render(<CreateEventDialog />);
+      renderDialog();
       const dots = screen.getByTestId("progress-dots");
       expect(dots).toHaveAttribute("data-max-value", "3");
     });
 
     it("starts at step 1 (value = 1)", () => {
-      render(<CreateEventDialog />);
+      renderDialog();
       const dots = screen.getByTestId("progress-dots");
       expect(dots).toHaveAttribute("data-value", "1");
     });
 
     it("advances the dot value when navigating forward", async () => {
-      render(<CreateEventDialog />);
+      renderDialog();
 
       await userEvent.click(screen.getByText("next"));
-      const dots = screen.getByTestId("progress-dots");
-      expect(dots).toHaveAttribute("data-value", "2");
+      await waitFor(() => {
+        const dots = screen.getByTestId("progress-dots");
+        expect(dots).toHaveAttribute("data-value", "2");
+      });
     });
   });
 });
