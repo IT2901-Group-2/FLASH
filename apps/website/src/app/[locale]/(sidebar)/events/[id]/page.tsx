@@ -54,18 +54,6 @@ export default function Page() {
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
   const loadMoreRef = useRef<HTMLDivElement>(null);
-  const hasUserScrolledRef = useRef(false);
-
-  useEffect(() => {
-    const onScroll = () => {
-      if (window.scrollY > 0) {
-        hasUserScrolledRef.current = true;
-      }
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   // Auto-fetch the next page when the user scrolls near the end of the current list.
   useEffect(() => {
@@ -78,7 +66,6 @@ export default function Page() {
       entries => {
         const entry = entries[0];
         if (!entry?.isIntersecting || isFetchingNextPage) return;
-        if (!hasUserScrolledRef.current) return;
         void fetchNextPage();
       },
       {
@@ -91,16 +78,6 @@ export default function Page() {
     observer.observe(target);
     return () => observer.disconnect();
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
-
-  // If the first page doesn't fill the viewport, keep fetching until it does or no pages remain.
-  useEffect(() => {
-    if (hasNextPage !== true || isFetchingNextPage) return;
-
-    const viewportNotFilled = document.documentElement.scrollHeight <= window.innerHeight;
-    if (!viewportNotFilled) return;
-
-    void fetchNextPage();
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage, images.length]);
 
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
