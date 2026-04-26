@@ -34,10 +34,7 @@ import {
 } from "@/hooks/useImages";
 import Image from "next/image";
 import { getImageSrc } from "@/lib/utils/images";
-
-const EVENT_REFETCH_INTERVAL = 120_000; // 2 minutes
-
-const PHOTOS_REFETCH_INTERVAL = 12_000; // 12 sec
+import { EVENT_REFETCH_INTERVAL, PHOTOS_REFETCH_INTERVAL } from "@/config/images";
 
 export default function Page() {
   const router = useRouter();
