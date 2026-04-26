@@ -11,6 +11,7 @@ describe("getJoinedEvents", () => {
   it("returns events with userId stripped out", async () => {
     vi.mocked(getEventCookies).mockReturnValue(
       Result.try(async () =>
+        // To see that `isModerator` does not effect it
         [true, false].map(bool => ({
           userId: "user-1",
           ...makeJoinedEvent({ isModerator: bool }),
