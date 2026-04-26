@@ -3,7 +3,7 @@
 import { ArrowLeft, Calendar, House, Languages, Moon, Sun } from "lucide-react";
 import { Sidebar as FlashSidebar, useSidebar } from "@flash/ui";
 import { useTranslations } from "next-intl";
-import { HTMLAttributes } from "react";
+import { HTMLAttributes, useEffect, useMemo } from "react";
 import { useTheme } from "@/hooks/useTheme";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { useRouter } from "next/navigation";
@@ -29,16 +29,51 @@ export const Sidebar = ({ className, ...rest }: HTMLAttributes<HTMLDivElement>) 
   const { resolvedTheme, toggleTheme } = useTheme();
 
   const { data: rememberedEvents = [] } = useJoinedEvents();
-  const { data: eventData } = useEventsQuery(
-    {
-      id: rememberedEvents.map(e => e.eventId),
-    },
-    rememberedEvents.length > 0
+  const eventIDs = useMemo(
+    () => rememberedEvents.map(event => event.eventId),
+    [rememberedEvents]
   );
-  const events =
-    rememberedEvents.length > 0
-      ? (eventData?.pages?.flatMap(page => page.items) ?? [])
-      : [];
+  const {
+    data: eventData,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useEventsQuery(
+    {
+      id: eventIDs,
+    },
+    eventIDs.length > 0
+  );
+  const events = useMemo(
+    () => eventData?.pages?.flatMap(page => page.items) ?? [],
+    [eventData]
+  );
+  const loadedEventIds = useMemo(() => new Set(events.map(event => event.id)), [events]);
+  const hasLoadedAllJoinedEvents = useMemo(
+    () => eventIDs.every(id => loadedEventIds.has(id)),
+    [eventIDs, loadedEventIds]
+  );
+
+  useEffect(() => {
+    if (
+      eventIDs.length === 0 ||
+      !eventData ||
+      isFetchingNextPage ||
+      hasLoadedAllJoinedEvents ||
+      !hasNextPage
+    ) {
+      return;
+    }
+
+    void fetchNextPage();
+  }, [
+    eventIDs.length,
+    eventData,
+    hasNextPage,
+    isFetchingNextPage,
+    hasLoadedAllJoinedEvents,
+    fetchNextPage,
+  ]);
 
   const handleRedirect = (href: string) => {
     if (isMobile) setOpen(false);
