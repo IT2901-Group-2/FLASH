@@ -14,7 +14,7 @@ import {
   resolveThemePreference,
   setStoredTheme,
   systemThemeListener,
-} from "@/lib/utils/theme-utils";
+} from "@/utils/theme-utils";
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 
 const COOKIE_OPTIONS = {
