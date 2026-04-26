@@ -37,7 +37,6 @@ describe("getAuth", () => {
     vi.mocked(signRefreshToken).mockReturnValue("new-refresh" as never);
 
     const result = await getAuth();
-
     expect(result).toEqual({ isAdmin: true });
   });
 
