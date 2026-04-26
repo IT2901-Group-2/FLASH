@@ -42,11 +42,8 @@ const Page = () => {
 
   const { data: imageData } = useImagesQuery(
     id,
-
     { approval: "approved" },
-
     true,
-
     SLIDE_DURATION
   );
   const [viewIndex, setViewIndex, { paused, toggle }] = useInterval(
