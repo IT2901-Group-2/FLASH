@@ -68,6 +68,9 @@ export interface ImageCardProps extends React.HTMLAttributes<HTMLDivElement> {
  * An image card component that can be customized to show different state and
  * perform different types of actions.
  *
+ * @deprecated Use `ImageCard` from `apps/website/src/components/ImageCard` instead.
+ * This component will be removed in a future release.
+ *
  * > _Last updated: `2026-02-07`_
  */
 export const ImageCard = ({
@@ -133,12 +136,14 @@ export const ImageCard = ({
             <Loader size={size} />
           </div>
         )}
-        {state === "rejected" && (
+        {state === "rejected" && variant !== "preview2" && (
           <div className={styles.rejectedOverlay}>
             <X className={styles.rejectedIcon} />
           </div>
         )}
-        {state === "pending" && <div className={styles.pendingOverlay}></div>}
+        {state === "pending" && variant !== "preview2" && (
+          <div className={styles.pendingOverlay}></div>
+        )}
         <img src={src} alt={alt} className={styles.image} />
         {variant === "preview2" && state === "selected" && (
           <div className={styles.moderateCheckBadge} aria-hidden="true">
@@ -146,6 +151,16 @@ export const ImageCard = ({
           </div>
         )}
       </div>
+      {variant === "preview2" && (state === "pending" || state === "rejected") && (
+        <div className={styles.preview2StatusLabel}>
+          <span className={styles.preview2StatusIcon}>
+            {state === "pending" ? <Timer /> : <CircleX />}
+          </span>
+          <span className={styles.preview2StatusText}>
+            {state === "pending" ? "Pending..." : "Rejected"}
+          </span>
+        </div>
+      )}
       <div className={styles.titleBox}>
         {state === "pending" && (
           <h3 className={styles.title}>

@@ -41,7 +41,12 @@ const Page = () => {
   const { data: joinCode } = useEventCodeQuery(id, "guest");
   const { data: imageStats } = useEventStatsQuery(id);
 
-  const { data: imageData } = useImagesQuery(id, { approval: "pending" }, INTERVAL);
+  const { data: imageData } = useImagesQuery(
+    id,
+    { approval: "approved" },
+    true,
+    INTERVAL
+  );
   const [viewIndex, setViewIndex, { paused, toggle }] = useInterval(
     imageData?.length ?? 0,
     INTERVAL
