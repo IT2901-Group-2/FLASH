@@ -65,7 +65,6 @@ describe("RememberedEvents", () => {
         );
 
         render(<RememberedEvents />);
-
         // Translation key echoed back: "remaining.short" with count 7
         expect(screen.getByText("remaining.short")).toBeInTheDocument();
       });
@@ -77,7 +76,6 @@ describe("RememberedEvents", () => {
         );
 
         render(<RememberedEvents />);
-
         expect(screen.getByText("none.short")).toBeInTheDocument();
       });
 
@@ -88,23 +86,18 @@ describe("RememberedEvents", () => {
         );
 
         render(<RememberedEvents />);
-
         expect(screen.getByText("none.short")).toBeInTheDocument();
       });
 
       it("shows unlimited.short when uploadLimit is null", () => {
         withRememberedEvent({ uploadLimit: null });
-
         render(<RememberedEvents />);
-
         expect(screen.getByText("unlimited.short")).toBeInTheDocument();
       });
 
       it("shows unlimited.short when uploadLimit is undefined", () => {
         withRememberedEvent({ uploadLimit: undefined });
-
         render(<RememberedEvents />);
-
         expect(screen.getByText("unlimited.short")).toBeInTheDocument();
       });
 
@@ -113,7 +106,6 @@ describe("RememberedEvents", () => {
         vi.mocked(useUploadedImageCountQuery).mockReturnValue(mockQueryResult({}));
 
         render(<RememberedEvents />);
-
         // 5 remaining (5 - 0)
         expect(screen.getByText("remaining.short")).toBeInTheDocument();
       });
