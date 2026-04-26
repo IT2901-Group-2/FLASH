@@ -34,10 +34,8 @@ const Page = () => {
   const events = data?.pages.flatMap(page => page.items) ?? [];
 
   useEffect(() => {
-    if (hasNextPage !== true) return;
-
     const target = loadMoreRef.current;
-    if (!target) return;
+    if (!hasNextPage || !target) return;
 
     const observer = new IntersectionObserver(
       entries => {
