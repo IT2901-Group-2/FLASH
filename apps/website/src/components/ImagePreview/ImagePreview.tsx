@@ -88,7 +88,7 @@ export const ImagePreview = forwardRef<ImagePreviewHandle, ImagePreviewProps>(
 
     if (previewIndex === null || images.length === 0 || !isValidIndex) return null;
 
-    const currentImage = images[previewIndex];
+    const currentImage = images[previewIndex as number]!;
     const eventId = currentImage.eventId;
     const altText = `Image ${previewIndex + 1} of ${images.length}`;
 
