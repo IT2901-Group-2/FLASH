@@ -14,7 +14,8 @@ const UPLOAD_ERROR_PATTERNS = [
   { key: "errors.uploadLimitReached", pattern: /upload\s+limit\s+reached/i },
   {
     key: "errors.uploadFailedTooLarge",
-    pattern: /input\s+image\s+exceeds\s+pixel\s+limit|file\s+too\s+large/i,
+    pattern:
+      /(input\s+image\s+exceeds\s+pixel\s+limit|file\s+too\s+large|function_payload_too_large|request\s+entity\s+too\s+large|payload\s+too\s+large)/i,
   },
   {
     key: "errors.uploadFailedUnsupportedFormat",
