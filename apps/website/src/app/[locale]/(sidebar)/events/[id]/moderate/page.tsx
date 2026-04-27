@@ -157,14 +157,6 @@ export default function ModeratePage() {
 
       <ImagePreview ref={imagePreviewRef} images={images} />
 
-      {/* The error banner/sonnar/toast is just a placeholder for now,
-      and is to be implemented as a component later */}
-      {bulkError && (
-        <div role="alert" className={styles.errorBanner}>
-          {bulkError}
-        </div>
-      )}
-
       {selectedIds.size > 0 && (
         <div className={styles.actionCardContainer}>
           <ActionCard
