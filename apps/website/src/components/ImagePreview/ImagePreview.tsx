@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Button } from "@flash/ui";
 import Image from "next/image";
@@ -28,6 +28,22 @@ export const ImagePreview = forwardRef<ImagePreviewHandle, ImagePreviewProps>(
       []
     );
 
+    const closePreview = () => setPreviewIndex(null);
+
+    const nextPreviewImage = useCallback(() => {
+      setPreviewIndex((prev) => {
+        if (prev === null || images.length === 0) return prev;
+        return (prev + 1) % images.length;
+      });
+    }, [images.length]);
+
+    const prevPreviewImage = useCallback(() => {
+      setPreviewIndex((prev) => {
+        if (prev === null || images.length === 0) return prev;
+        return (prev - 1 + images.length) % images.length;
+      });
+    }, [images.length]);
+
     useEffect(() => {
       if (previewIndex === null) return;
       const bodyLockedClass = styles.bodyLocked;
@@ -46,24 +62,18 @@ export const ImagePreview = forwardRef<ImagePreviewHandle, ImagePreviewProps>(
       const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === "Escape") {
           setPreviewIndex(null);
+        } else if (event.key === "ArrowRight") {
+          event.preventDefault();
+          nextPreviewImage();
+        } else if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          prevPreviewImage();
         }
       };
 
       window.addEventListener("keydown", handleKeyDown);
       return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [previewIndex]);
-
-    const closePreview = () => setPreviewIndex(null);
-
-    const nextPreviewImage = () => {
-      if (previewIndex === null || images.length === 0) return;
-      setPreviewIndex((previewIndex + 1) % images.length);
-    };
-
-    const prevPreviewImage = () => {
-      if (previewIndex === null || images.length === 0) return;
-      setPreviewIndex((previewIndex - 1 + images.length) % images.length);
-    };
+    }, [previewIndex, nextPreviewImage, prevPreviewImage]);
 
     const handlePreviewTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
       touchStartX.current = event.touches[0]?.clientX ?? null;
