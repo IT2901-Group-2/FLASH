@@ -34,7 +34,7 @@ export default function ModeratePage() {
 
   const [activeTab, setActiveTab] = useState<Tab>("pending");
 
-  const { data: images = [], isLoading } = useImagesQuery(
+  const { data: imagesPages, isLoading } = useImagesQuery(
     eventId,
     {
       approval: activeTab,
@@ -42,6 +42,7 @@ export default function ModeratePage() {
     undefined,
     PHOTOS_REFETCH_INTERVAL
   );
+  const images = imagesPages?.pages.flatMap(page => page.items) ?? [];
 
   const {
     selectMode,
