@@ -15,7 +15,7 @@ import {
   useUploadedImageCountQuery,
   useUploadImageMutation,
 } from "@/hooks/useImages";
-import { ImagePreview } from "./components/ImagePreview";
+import { ImagePreview } from "@/components/ImagePreview/ImagePreview";
 import { getImageSrc } from "@/lib/utils/images";
 
 export default function Page() {
