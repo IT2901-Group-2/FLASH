@@ -4,9 +4,9 @@ import { routing } from "@/i18n/routing";
 
 const messageNamespaces = ["common", "pages", "admin", "guest"] as const;
 
-/* This file is responsible for loading the correct locale and messages based on request.
- * It uses the `getRequestConfig` function from `next-intl/server` to load the appropriate messages for the requested locale.
- * The `hasLocale` function is used to check if the requested locale is supported, and if not, it falls back to the default locale defined in the routing configuration.
+/**
+ * This file is responsible for loading the correct locale and messages
+ * based on request.
  */
 export default getRequestConfig(async ({ requestLocale }) => {
   const requested = await requestLocale;
