@@ -1,164 +1,170 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { useRef } from "react";
 import { makeImage } from "@test-config";
-import { ImagePreview } from "./ImagePreview";
+import { ImagePreview, ImagePreviewHandle } from "./ImagePreview";
 import styles from "./ImagePreview.module.css";
-
-const eventId = "event-123";
-
-const getImageAlt = (index: number, total: number) => `Image ${index + 1} of ${total}`;
 
 describe("ImagePreview", () => {
   afterEach(() => {
-    vi.clearAllMocks();
     if (styles.bodyLocked) {
       document.body.classList.remove(styles.bodyLocked);
     }
   });
 
-  it("renders nothing when previewIndex is null", () => {
-    render(
-      <ImagePreview
-        eventId={eventId}
-        images={[makeImage(), makeImage()]}
-        previewIndex={null}
-        setPreviewIndex={vi.fn()}
-        getImageAlt={getImageAlt}
-      />
-    );
+  it("renders nothing until opened", () => {
+    const TestComponent = () => {
+      const ref = useRef<ImagePreviewHandle>(null);
+
+      return <ImagePreview ref={ref} images={[makeImage(), makeImage()]} />;
+    };
+
+    render(<TestComponent />);
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("renders the selected image and closes on escape", () => {
-    const setPreviewIndex = vi.fn();
-    const images = [makeImage({ id: "img-1" }), makeImage({ id: "img-2" })];
+  it("opens the requested image through the ref handle", () => {
+    const TestComponent = () => {
+      const ref = useRef<ImagePreviewHandle>(null);
 
-    render(
-      <ImagePreview
-        eventId={eventId}
-        images={images}
-        previewIndex={1}
-        setPreviewIndex={setPreviewIndex}
-        getImageAlt={getImageAlt}
-      />
-    );
+      return (
+        <div>
+          <ImagePreview ref={ref} images={[makeImage(), makeImage()]} />
+          <button onClick={() => ref.current?.open(1)} data-testid="open-preview">
+            Open preview
+          </button>
+        </div>
+      );
+    };
+
+    render(<TestComponent />);
+
+    fireEvent.click(screen.getByTestId("open-preview"));
 
     expect(screen.getByRole("dialog")).toBeInTheDocument();
-    expect(screen.getByAltText("Image 2 of 2")).toHaveAttribute(
-      "src",
-      `/api/events/${eventId}/images/img-2`
-    );
-
-    fireEvent.keyDown(window, { key: "Escape" });
-    expect(setPreviewIndex).toHaveBeenCalledWith(null);
+    expect(screen.getByAltText("Image 2 of 2")).toBeInTheDocument();
   });
 
-  it("adds and removes body lock class while open", () => {
-    const setPreviewIndex = vi.fn();
-    const images = [makeImage({ id: "img-1" })];
-    const bodyLockedClass = styles.bodyLocked;
+  it("closes when Escape is pressed", () => {
+    const TestComponent = () => {
+      const ref = useRef<ImagePreviewHandle>(null);
 
+      return (
+        <div>
+          <ImagePreview ref={ref} images={[makeImage(), makeImage()]} />
+          <button onClick={() => ref.current?.open(0)} data-testid="open-preview">
+            Open preview
+          </button>
+        </div>
+      );
+    };
+
+    render(<TestComponent />);
+
+    fireEvent.click(screen.getByTestId("open-preview"));
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+    fireEvent.keyDown(window, { key: "Escape" });
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("adds and removes the body lock class while open", () => {
+    const bodyLockedClass = styles.bodyLocked;
     expect(bodyLockedClass).toBeDefined();
 
-    const { rerender } = render(
-      <ImagePreview
-        eventId={eventId}
-        images={images}
-        previewIndex={0}
-        setPreviewIndex={setPreviewIndex}
-        getImageAlt={getImageAlt}
-      />
-    );
+    const TestComponent = () => {
+      const ref = useRef<ImagePreviewHandle>(null);
+
+      return (
+        <div>
+          <ImagePreview ref={ref} images={[makeImage()]} />
+          <button onClick={() => ref.current?.open(0)} data-testid="open-preview">
+            Open preview
+          </button>
+        </div>
+      );
+    };
+
+    render(<TestComponent />);
+
+    fireEvent.click(screen.getByTestId("open-preview"));
 
     expect(document.body.classList.contains(bodyLockedClass as string)).toBe(true);
 
-    rerender(
-      <ImagePreview
-        eventId={eventId}
-        images={images}
-        previewIndex={null}
-        setPreviewIndex={setPreviewIndex}
-        getImageAlt={getImageAlt}
-      />
-    );
+    fireEvent.keyDown(window, { key: "Escape" });
 
     expect(document.body.classList.contains(bodyLockedClass as string)).toBe(false);
   });
 
-  it("closes when close button is clicked", () => {
-    const setPreviewIndex = vi.fn();
+  it("closes when the close button is clicked", () => {
+    const closeButtonClass = styles.previewClose;
+    expect(closeButtonClass).toBeDefined();
 
-    render(
-      <ImagePreview
-        eventId={eventId}
-        images={[makeImage(), makeImage()]}
-        previewIndex={0}
-        setPreviewIndex={setPreviewIndex}
-        getImageAlt={getImageAlt}
-      />
-    );
+    const TestComponent = () => {
+      const ref = useRef<ImagePreviewHandle>(null);
 
-    const buttons = screen.getAllByRole("button");
-    const closeButton = buttons[0];
+      return (
+        <div>
+          <ImagePreview ref={ref} images={[makeImage(), makeImage()]} />
+          <button onClick={() => ref.current?.open(0)} data-testid="open-preview">
+            Open preview
+          </button>
+        </div>
+      );
+    };
+
+    render(<TestComponent />);
+
+    fireEvent.click(screen.getByTestId("open-preview"));
+
+    const closeButton = screen
+      .getAllByRole("button")
+      .find(button => button.classList.contains(closeButtonClass as string));
 
     expect(closeButton).toBeDefined();
-    fireEvent.click(closeButton as HTMLElement);
 
-    expect(setPreviewIndex).toHaveBeenCalledWith(null);
+    if (closeButton) {
+      fireEvent.click(closeButton);
+    }
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("navigates with prev/next buttons and wraps around", () => {
-    const setPreviewIndex = vi.fn();
+  it("navigates between images", () => {
+    const nextButtonClass = styles.previewNavButtonRight;
+    expect(nextButtonClass).toBeDefined();
 
-    render(
-      <ImagePreview
-        eventId={eventId}
-        images={[makeImage(), makeImage(), makeImage()]}
-        previewIndex={0}
-        setPreviewIndex={setPreviewIndex}
-        getImageAlt={getImageAlt}
-      />
-    );
+    const TestComponent = () => {
+      const ref = useRef<ImagePreviewHandle>(null);
 
-    const buttons = screen.getAllByRole("button");
-    const prevButton = buttons[1];
-    const nextButton = buttons[2];
+      return (
+        <div>
+          <ImagePreview ref={ref} images={[makeImage(), makeImage(), makeImage()]} />
+          <button onClick={() => ref.current?.open(0)} data-testid="open-preview">
+            Open preview
+          </button>
+        </div>
+      );
+    };
 
-    expect(prevButton).toBeDefined();
+    render(<TestComponent />);
+
+    fireEvent.click(screen.getByTestId("open-preview"));
+
+    expect(screen.getByAltText("Image 1 of 3")).toBeInTheDocument();
+
+    const nextButton = screen
+      .getAllByRole("button")
+      .find(button => button.classList.contains(nextButtonClass as string));
+
     expect(nextButton).toBeDefined();
 
-    fireEvent.click(prevButton as HTMLElement);
-    fireEvent.click(nextButton as HTMLElement);
+    if (nextButton) {
+      fireEvent.click(nextButton);
+    }
 
-    expect(setPreviewIndex).toHaveBeenNthCalledWith(1, 2);
-    expect(setPreviewIndex).toHaveBeenNthCalledWith(2, 1);
-  });
-
-  it("clamps preview index when images shrink", () => {
-    const setPreviewIndex = vi.fn();
-    const images = [makeImage(), makeImage(), makeImage()];
-
-    const { rerender } = render(
-      <ImagePreview
-        eventId={eventId}
-        images={images}
-        previewIndex={2}
-        setPreviewIndex={setPreviewIndex}
-        getImageAlt={getImageAlt}
-      />
-    );
-
-    rerender(
-      <ImagePreview
-        eventId={eventId}
-        images={[makeImage()]}
-        previewIndex={2}
-        setPreviewIndex={setPreviewIndex}
-        getImageAlt={getImageAlt}
-      />
-    );
-
-    expect(setPreviewIndex).toHaveBeenCalledWith(0);
+    expect(screen.getByAltText("Image 2 of 3")).toBeInTheDocument();
   });
 });

@@ -24,7 +24,7 @@ import {
   useUploadedImageCountQuery,
   useUploadImageMutation,
 } from "@/hooks/useImages";
-import { ImagePreview } from "@/components/ImagePreview/ImagePreview";
+import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
 import { getImageSrc } from "@/lib/utils/images";
 import { EVENT_REFETCH_INTERVAL, PHOTOS_REFETCH_INTERVAL } from "@/config/images";
 
@@ -34,6 +34,7 @@ export default function Page() {
   const tUpload = useTranslations("guest.event.upload");
   const eventAuth = useEventAuth();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const imagePreviewRef = useRef<ImagePreviewHandle>(null);
   const { mutate: downloadImages } = useDownloadImagesMutation();
 
   // Event Data
@@ -52,7 +53,6 @@ export default function Page() {
 
   const handleTabChange = (val: string) => {
     if (val === "all" || val === "user") setActiveTab(val);
-    setPreviewIndex(null);
   };
 
   // Image Data
@@ -72,7 +72,6 @@ export default function Page() {
 
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const { mutateAsync: uploadImage } = useUploadImageMutation();
 
   // Join Code
@@ -177,13 +176,7 @@ export default function Page() {
         </div>
       </Dialog>
 
-      <ImagePreview
-        eventId={eventId}
-        images={displayedImages}
-        previewIndex={previewIndex}
-        setPreviewIndex={setPreviewIndex}
-        getImageAlt={(index, total) => tUpload("imageAlt", { index: index + 1, total })}
-      />
+      <ImagePreview ref={imagePreviewRef} images={displayedImages} />
 
       <div className={styles.pageWrapper}>
         <PhoneHeader
@@ -314,7 +307,7 @@ export default function Page() {
                     ? "rejected"
                     : undefined
               }
-              onClick={() => setPreviewIndex(index)}
+              onClick={() => imagePreviewRef.current?.open(index)}
             />
           ))}
         </div>

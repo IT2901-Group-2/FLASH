@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Button } from "@flash/ui";
 import Image from "next/image";
@@ -6,21 +6,25 @@ import type { Image as EventImage } from "@/db";
 import styles from "./ImagePreview.module.css";
 
 interface ImagePreviewProps {
-  eventId: string;
   images: EventImage[];
-  previewIndex: number | null;
-  setPreviewIndex: React.Dispatch<React.SetStateAction<number | null>>;
-  getImageAlt: (index: number, total: number) => string;
 }
 
-export function ImagePreview({
-  eventId,
-  images,
-  previewIndex,
-  setPreviewIndex,
-  getImageAlt,
-}: ImagePreviewProps) {
-  const touchStartX = useRef<number | null>(null);
+export interface ImagePreviewHandle {
+  open: (index: number) => void;
+}
+
+export const ImagePreview = forwardRef<ImagePreviewHandle, ImagePreviewProps>(
+  ({ images }, ref) => {
+    const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+    const touchStartX = useRef<number | null>(null);
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        open: (index: number) => setPreviewIndex(index),
+      }),
+      []
+    );
 
   useEffect(() => {
     if (previewIndex === null) return;
@@ -94,9 +98,13 @@ export function ImagePreview({
 
   if (previewIndex === null || !images[previewIndex]) return null;
 
+  const currentImage = images[previewIndex];
+  const eventId = currentImage.eventId;
+  const altText = `Image ${previewIndex + 1} of ${images.length}`;
+
   const previewImage = {
-    src: `/api/events/${eventId}/images/${images[previewIndex].id}`,
-    alt: getImageAlt(previewIndex, images.length),
+    src: `/api/events/${eventId}/images/${currentImage.id}`,
+    alt: altText,
   };
 
   return (
@@ -138,4 +146,5 @@ export function ImagePreview({
       )}
     </div>
   );
-}
+  }
+);
