@@ -9,7 +9,10 @@
     "lint": "eslint --max-warnings 0",
     "format": "prettier --write src/",
     "format:check": "prettier --check src/",
-    "test": "vitest --coverage",
+    "test": "test:component && test:e2e",
+    "test:component": "vitest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:report": "playwright show-report",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
