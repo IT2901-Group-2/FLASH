@@ -75,6 +75,7 @@
         "home": "Home",
         "goTo": "Go to"
       },
+      "bulkUpdateFailed": "{count, plural, one {# photo could not be updated.} other {# photos could not be updated.}}",
       "imageStates": {
         "pending": "Pending...",
         "loading": "Loading...",

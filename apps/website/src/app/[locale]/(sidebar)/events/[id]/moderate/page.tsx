@@ -1,45 +1,61 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ActionCard, SegmentedControl } from "@flash/ui";
+import { ActionCard, SegmentedControl, Title, useToast } from "@flash/ui";
 import { ImageCard } from "@/components/ImageCard/ImageCard";
 import { ModerateHeader } from "@/components/ModerateHeader";
 import { useImagesQuery } from "@/hooks/useImages";
 import { useImageSelection } from "./useImageSelection";
 import { useTranslations } from "next-intl";
 import styles from "./Moderate.module.css";
+import { CircleAlert } from "lucide-react";
+import { PHOTOS_REFETCH_INTERVAL } from "@/config/images";
 import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
 
 type Tab = "pending" | "approved" | "rejected";
 
 export default function ModeratePage() {
   const router = useRouter();
-  const { id: eventId, locale } = useParams<{ id: string; locale: string }>();
+  const { id: eventId } = useParams<{ id: string }>();
   const t = useTranslations("guest.event.moderate");
+  const { createToast } = useToast();
+
+  const handleError = useCallback(
+    (count: number) =>
+      createToast({
+        title: t("bulkUpdateFailed", { count }),
+        "data-color": "primary",
+        icon: <CircleAlert style={{ color: "var(--color-danger-base)" }} />,
+        position: "top-center",
+        duration: 7000,
+      }),
+    [createToast, t]
+  );
   const imagePreviewRef = useRef<ImagePreviewHandle>(null);
 
   const [activeTab, setActiveTab] = useState<Tab>("pending");
 
-  const { data: imagesPages, isLoading } = useImagesQuery(eventId, {
-    approval: activeTab,
-  });
+  const { data: imagesPages, isLoading } = useImagesQuery(
+    eventId,
+    {
+      approval: activeTab,
+    },
+    undefined,
+    PHOTOS_REFETCH_INTERVAL
+  );
   const images = imagesPages?.pages.flatMap(page => page.items) ?? [];
-
-  // TODO: Replace with actual moderator check when JWT auth is implemented
-  // const isModerator = checkModeratorAccess(token);
 
   const {
     selectMode,
     selectedIds,
     allSelected,
-    bulkError,
     handleSelectToggle,
     handleSelectAllToggle,
     handleImageClick,
     handleBulkApprove,
     handleBulkReject,
-  } = useImageSelection(images, eventId);
+  } = useImageSelection(images, eventId, { onError: handleError });
 
   const BUTTON_COLOR = "brand-purple" as const;
 
@@ -79,10 +95,6 @@ export default function ModeratePage() {
         onSelectToggle={handleSelectToggle}
         allSelected={allSelected}
         onSelectAll={handleSelectAllToggle}
-        breadcrumbItems={[
-          { label: t("breadcrumb.event"), href: `/${locale}/${eventId}` },
-          { label: t("breadcrumb.moderate") },
-        ]}
       />
 
       <div className={styles.content}>
@@ -112,7 +124,9 @@ export default function ModeratePage() {
               />
             </SegmentedControl>
           </div>
-          <h2 className={styles.sectionHeading}>{t(`headings.${activeTab}`)}</h2>
+          <Title as="h2" size="medium" weight="bold" className={styles.sectionHeading}>
+            {t(`headings.${activeTab}`)}
+          </Title>
         </div>
 
         {!isLoading && images.length === 0 ? (
@@ -142,14 +156,6 @@ export default function ModeratePage() {
       </div>
 
       <ImagePreview ref={imagePreviewRef} images={images} />
-
-      {/* The error banner/sonnar/toast is just a placeholder for now,
-      and is to be implemented as a component later */}
-      {bulkError && (
-        <div role="alert" className={styles.errorBanner}>
-          {bulkError}
-        </div>
-      )}
 
       {selectedIds.size > 0 && (
         <div className={styles.actionCardContainer}>
