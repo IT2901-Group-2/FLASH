@@ -5,7 +5,7 @@ test.use({
 });
 
 test("test", async ({ page }) => {
-  await page.routeFromHAR("apps/website/e2e/hars/create-event-sad.har", {
+  await page.routeFromHAR("e2e/hars/create-event-sad.har", {
     url: "**/api/**",
   });
   await page.goto("http://localhost:3000/no");
