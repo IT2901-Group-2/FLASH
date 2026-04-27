@@ -3,12 +3,13 @@ import { Plus, SortAsc, SortDesc } from "lucide-react";
 import { Button, Loader, Select, TextField, Title } from "@flash/ui";
 import styles from "./page.module.css";
 import CreateEventCard from "@/components/EventDialogs/CreateEventDialog";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useEventsQuery } from "@/hooks/useEvents";
 import EventCard from "@/components/EventCard/EventCard";
 import { useRouter } from "next/navigation";
 import { GetEventsParams } from "@/db";
+import { useLoadMore } from "@/hooks/useLoadMore";
 
 const EVENTS_PAGE_SIZE = 12;
 
@@ -22,40 +23,19 @@ const Page = () => {
   const [sortOrder, setSortOrder] = useState<GetEventsParams["order"]>("descending");
   const [archived, setArchived] = useState<GetEventsParams["archived"]>(false);
 
-  const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    useEventsQuery({
-      name: searchName,
-      order: sortOrder,
-      sortBy,
-      status,
-      archived,
-      pageSize: EVENTS_PAGE_SIZE,
-    });
+  const eventsQuery = useEventsQuery({
+    name: searchName,
+    order: sortOrder,
+    sortBy,
+    status,
+    archived,
+    pageSize: EVENTS_PAGE_SIZE,
+  });
+  const { data, isLoading, hasNextPage, isFetchingNextPage } = eventsQuery;
   const events = data?.pages.flatMap(page => page.items) ?? [];
 
-  useEffect(() => {
-    const target = loadMoreRef.current;
-    if (!hasNextPage || !target) return;
-
-    const observer = new IntersectionObserver(
-      entries => {
-        const entry = entries[0];
-        if (!entry?.isIntersecting || isFetchingNextPage) return;
-        void fetchNextPage();
-      },
-      {
-        root: null,
-        rootMargin: "200px 0px",
-        threshold: 0,
-      }
-    );
-
-    observer.observe(target);
-    return () => observer.disconnect();
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
-
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const loadMoreRef = useRef<HTMLDivElement>(null);
+  const loadMoreRef = useLoadMore(eventsQuery);
 
   const handleStatus = (status: GetEventsParams["status"] | "archived") => {
     if (status === "archived") {
