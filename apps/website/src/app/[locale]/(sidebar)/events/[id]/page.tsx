@@ -1,7 +1,11 @@
 "use client";
 import { ImageCard } from "@/components/ImageCard/ImageCard";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
-import { MAX_IMAGE_SIZE } from "@/config/images";
+import {
+  EVENT_REFETCH_INTERVAL,
+  MAX_IMAGE_SIZE,
+  PHOTOS_REFETCH_INTERVAL,
+} from "@/config/images";
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import {
@@ -41,7 +45,6 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./UploadImage.module.css";
 
 const maxFileSizeInMb = Math.ceil(MAX_IMAGE_SIZE / (1024 * 1024)); //TODO: Move this to a more appropriate location
-import { EVENT_REFETCH_INTERVAL, PHOTOS_REFETCH_INTERVAL } from "@/config/images";
 
 export default function Page() {
   return (
