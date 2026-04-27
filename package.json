@@ -10,6 +10,7 @@
     "format": "pnpm -r --if-present format",
     "format:check": "pnpm -r --if-present format:check",
     "test": "pnpm -r --if-present test",
+    "test:e2e": "pnpm -r --if-present test:e2e",
     "storybook": "pnpm --filter ui storybook",
     "storybook:build": "pnpm --filter ui build-storybook",
     "docker": "docker build . -t flash"
