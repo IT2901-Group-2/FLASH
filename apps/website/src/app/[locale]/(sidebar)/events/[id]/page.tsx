@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Download, ImageMinus, QrCode, Upload } from "lucide-react";
+import { ChevronRight, Download, ImageMinus, QrCode, Upload } from "lucide-react";
 import styles from "./UploadImage.module.css";
 import {
   ActionCard,
@@ -50,6 +50,11 @@ export default function Page() {
   const showTabs = uploadsArePrivate || !!eventAuth.isModerator;
   const isShowingUserTab = !showTabs || activeTab === "user";
 
+  const handleTabChange = (val: string) => {
+    if (val === "all" || val === "user") setActiveTab(val);
+    setPreviewIndex(null);
+  };
+
   // Image Data
   const { data: imagesData } = useImagesQuery(
     eventId,
@@ -62,6 +67,7 @@ export default function Page() {
     isShowingUserTab,
     PHOTOS_REFETCH_INTERVAL
   );
+  const displayedImages = (isShowingUserTab ? myImagesData : imagesData) ?? [];
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -149,65 +155,6 @@ export default function Page() {
 
   const handleImagePreview = (index: number) => setPreviewIndex(index);
 
-  useEffect(() => {
-    if (previewIndex === null) return;
-
-    const previousOverflow = document.body.style.overflow;
-    const previousOverscrollBehavior = document.body.style.overscrollBehavior;
-
-    document.body.style.overflow = "hidden";
-    document.body.style.overscrollBehavior = "none";
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.body.style.overscrollBehavior = previousOverscrollBehavior;
-    };
-  }, [previewIndex]);
-
-  useEffect(() => {
-    if (previewIndex === null) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setPreviewIndex(null);
-        return;
-      }
-
-      if (displayedImages.length <= 1) return;
-
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        setPreviewIndex(currentIndex =>
-          currentIndex === null ? null : (currentIndex + 1) % displayedImages.length
-        );
-      }
-
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        setPreviewIndex(currentIndex =>
-          currentIndex === null
-            ? null
-            : (currentIndex - 1 + displayedImages.length) % displayedImages.length
-        );
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [displayedImages.length, previewIndex]);
-
-  useEffect(() => {
-    if (previewIndex === null) return;
-    if (displayedImages.length === 0) {
-      setPreviewIndex(null);
-      return;
-    }
-
-    if (previewIndex > displayedImages.length - 1) {
-      setPreviewIndex(displayedImages.length - 1);
-    }
-  }, [displayedImages.length, previewIndex]);
-
   return (
     <>
       <FileInput />
@@ -234,7 +181,7 @@ export default function Page() {
 
       <ImagePreview
         eventId={eventId}
-        images={images}
+        images={displayedImages}
         previewIndex={previewIndex}
         setPreviewIndex={setPreviewIndex}
         getImageAlt={(index, total) => tUpload("imageAlt", { index: index + 1, total })}
