@@ -3,15 +3,12 @@ import {
   imageHooksMock,
   makeEvent,
   makeEventStats,
-  makeImage,
   mockEventStatsLoaded,
-  mockImagesLoaded,
   renderWithQuery,
 } from "@test-config";
-import { afterEach, describe, expect, test, vi } from "vitest";
-import { cleanup, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { screen } from "@testing-library/react";
 import EventCard from "./EventCard";
-import { useImagesQuery } from "@/hooks/useImages";
 import userEvent from "@testing-library/user-event";
 import { useDeleteEventMutation, useEventStatsQuery } from "@/hooks/useEvents";
 
@@ -19,12 +16,7 @@ vi.mock("@/hooks/useImages", () => imageHooksMock());
 vi.mock("@/hooks/useEvents", () => eventHooksMock());
 
 describe("EventCard", () => {
-  afterEach(() => {
-    cleanup();
-    vi.restoreAllMocks();
-  });
-
-  test("renders event name and formatted date", () => {
+  it("renders event name and formatted date", () => {
     const dateSpy = vi
       .spyOn(Date.prototype, "toLocaleString")
       .mockReturnValue("Feb 25, 2026, 10:00 AM");
@@ -43,13 +35,13 @@ describe("EventCard", () => {
     expect(screen.getByText("Feb 25, 2026, 10:00 AM")).toBeDefined();
   });
 
-  test("shows upload limit when present", () => {
+  it("shows upload limit when present", () => {
     const data = makeEvent();
     renderWithQuery(<EventCard data={data} />);
     expect(screen.getByText("uploadLimit.perPerson")).toBeDefined();
   });
 
-  test("shows no photo limit when upload limit is missing", () => {
+  it("shows no photo limit when upload limit is missing", () => {
     const data = makeEvent({
       uploadLimit: undefined,
     });
@@ -57,7 +49,7 @@ describe("EventCard", () => {
     expect(screen.getByText("uploadLimit.none")).toBeDefined();
   });
 
-  test("renders summary labels", () => {
+  it("renders summary labels", () => {
     const data = makeEvent();
     renderWithQuery(<EventCard data={data} />);
     expect(screen.getByText("summary.totalPhotos")).toBeDefined();
@@ -65,14 +57,7 @@ describe("EventCard", () => {
     expect(screen.getByText("summary.pending")).toBeDefined();
   });
 
-  test("renders image counters from fetched images", () => {
-    vi.mocked(useImagesQuery).mockReturnValue(
-      mockImagesLoaded([
-        makeImage({ isApproved: true }),
-        makeImage({ isApproved: true }),
-        makeImage({ isApproved: null }),
-      ])
-    );
+  it("renders image counters from fetched images", () => {
     vi.mocked(useEventStatsQuery).mockReturnValue(
       mockEventStatsLoaded(makeEventStats({ pendingImages: 1, approvedImages: 2 }))
     );
@@ -84,17 +69,29 @@ describe("EventCard", () => {
     expect(screen.getByTestId("event-pending-photos").textContent).toContain("1");
   });
 
-  test("edits the event", async () => {
+  it("opens the dialog to edit the event", async () => {
     const data = makeEvent();
     renderWithQuery(<EventCard data={data} />);
     await userEvent.click(screen.getByTestId("edit-button"));
     expect(screen.getByTestId("edit-event-dialog")).toBeInTheDocument();
   });
 
-  test("delets the event", async () => {
+  it("opens the delete dialog and delets the event", async () => {
+    const data = makeEvent();
+    renderWithQuery(<EventCard data={data} />);
+
+    await userEvent.click(screen.getByTestId("delete-button"));
+    expect(useDeleteEventMutation().mutate).not.toHaveBeenCalledOnce();
+
+    await userEvent.click(screen.getByText("delete"));
+    expect(useDeleteEventMutation().mutate).toHaveBeenCalledOnce();
+  });
+
+  it("opens the delete dialog and doesa not delets the event", async () => {
     const data = makeEvent();
     renderWithQuery(<EventCard data={data} />);
     await userEvent.click(screen.getByTestId("delete-button"));
-    expect(useDeleteEventMutation).toHaveBeenCalledOnce();
+    await userEvent.click(screen.getAllByText("cancel")[0]!);
+    expect(useDeleteEventMutation().mutate).not.toHaveBeenCalledOnce();
   });
 });
