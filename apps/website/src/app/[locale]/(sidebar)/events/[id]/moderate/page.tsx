@@ -11,6 +11,8 @@ import { useTranslations } from "next-intl";
 import styles from "./Moderate.module.css";
 import { CircleAlert } from "lucide-react";
 
+const PHOTOS_REFETCH_INTERVAL = 12_000;
+
 type Tab = "pending" | "approved" | "rejected";
 
 export default function ModeratePage() {
@@ -33,9 +35,14 @@ export default function ModeratePage() {
 
   const [activeTab, setActiveTab] = useState<Tab>("pending");
 
-  const { data: images = [], isLoading } = useImagesQuery(eventId, {
-    approval: activeTab,
-  });
+  const { data: images = [], isLoading } = useImagesQuery(
+    eventId,
+    {
+      approval: activeTab,
+    },
+    undefined,
+    PHOTOS_REFETCH_INTERVAL
+  );
 
   const {
     selectMode,
