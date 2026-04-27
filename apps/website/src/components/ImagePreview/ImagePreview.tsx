@@ -24,16 +24,13 @@ export function ImagePreview({
 
   useEffect(() => {
     if (previewIndex === null) return;
+    const bodyLockedClass = styles.bodyLocked;
+    if (!bodyLockedClass) return;
 
-    const previousOverflow = document.body.style.overflow;
-    const previousOverscrollBehavior = document.body.style.overscrollBehavior;
-
-    document.body.style.overflow = "hidden";
-    document.body.style.overscrollBehavior = "none";
+    document.body.classList.add(bodyLockedClass);
 
     return () => {
-      document.body.style.overflow = previousOverflow;
-      document.body.style.overscrollBehavior = previousOverscrollBehavior;
+      document.body.classList.remove(bodyLockedClass);
     };
   }, [previewIndex]);
 

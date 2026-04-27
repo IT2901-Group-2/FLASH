@@ -8,6 +8,11 @@
   align-items: center;
 }
 
+.bodyLocked {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 .previewFullscreenImage {
   object-fit: contain;
 }
