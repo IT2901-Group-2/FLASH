@@ -19,7 +19,7 @@ const QrScanner = ({ ...props }: IScannerProps) => {
         {...props}
         sound={"/flash.wav"}
         constraints={{
-          facingMode: "enviorment",
+          facingMode: "environment",
           aspectRatio: 1,
           width: 640,
           height: 640,
