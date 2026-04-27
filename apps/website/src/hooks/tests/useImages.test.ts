@@ -7,6 +7,7 @@ import {
   makeImage,
   makeUpdateImageInput,
   makeUploadedImageCount,
+  mockImagePage,
   mockJsonResponse,
   mockServerErrorResponse,
 } from "@test-config";
@@ -29,17 +30,17 @@ beforeEach(() => {
 
 describe("useImagesQuery", () => {
   it("returns images on a successful response", async () => {
-    const images = [makeImage(), makeImage()];
+    const images = mockImagePage([makeImage(), makeImage()]);
     vi.stubGlobal("fetch", mockJsonResponse(images));
 
     const { result } = renderHook(() => useImagesQuery("ev-1"), { wrapper });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(result.current.data).toStrictEqual(images);
+    expect(result.current.data?.pages[0]).toStrictEqual(images);
   });
 
   it("calls the correct URL for an event", async () => {
-    const fetchMock = mockJsonResponse([makeImage()]);
+    const fetchMock = mockJsonResponse(mockImagePage([makeImage()]));
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(() => useImagesQuery("ev-42"), { wrapper });
@@ -49,7 +50,7 @@ describe("useImagesQuery", () => {
   });
 
   it("appends query string when params are provided", async () => {
-    const fetchMock = mockJsonResponse([]);
+    const fetchMock = mockJsonResponse(mockImagePage([]));
     vi.stubGlobal("fetch", fetchMock);
 
     const { result } = renderHook(

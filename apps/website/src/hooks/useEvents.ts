@@ -1,10 +1,16 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { makeRequest } from "@/lib/utils/api";
 import {
   CreateEvent,
   getEventCodeSchema,
+  getEventsPageSchema,
   GetEventCodeParams,
   GetEventsParams,
   getEventSchema,
@@ -32,6 +38,8 @@ function toEventsSearchParams(params?: GetEventsParams): string {
   if (params.archived !== undefined) sp.append("archived", params.archived.toString());
   if (params.sortBy !== undefined) sp.append("sortBy", params.sortBy);
   if (params.order !== undefined) sp.append("order", params.order);
+  if (params.cursor !== undefined) sp.append("cursor", params.cursor.toString());
+  if (params.pageSize !== undefined) sp.append("pageSize", params.pageSize.toString());
 
   const qs = sp.toString();
   return qs ? `?${qs}` : "";
@@ -61,17 +69,22 @@ export const eventsKeys = {
 };
 
 /**
- * Fetches a list of events, optionally filtered by the provided query params.
+ * Fetches events with cursor pagination for infinite scrolling/loading.
  */
 export function useEventsQuery(
   params?: GetEventsParams,
   enabled: boolean = true,
   refetchInterval?: number
 ) {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: eventsKeys.list(params),
-    queryFn: () =>
-      makeRequest(z.array(getEventSchema), `/api/events${toEventsSearchParams(params)}`),
+    initialPageParam: params?.cursor,
+    queryFn: ({ pageParam }) =>
+      makeRequest(
+        getEventsPageSchema,
+        `/api/events${toEventsSearchParams({ ...params, cursor: pageParam })}`
+      ),
+    getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
     enabled,
     refetchInterval,
   });

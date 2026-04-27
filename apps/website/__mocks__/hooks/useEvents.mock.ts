@@ -1,9 +1,23 @@
 import { vi } from "vitest";
-import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
-import type { CreateEvent, Event, EventStats, UpdateEvent } from "@/db";
+import type {
+  InfiniteData,
+  UseInfiniteQueryResult,
+  UseMutationResult,
+  UseQueryResult,
+} from "@tanstack/react-query";
+import type { CreateEvent, Event, EventStats, GetEventsPage, UpdateEvent } from "@/db";
 import { makeEvent } from "../factories/event.factory";
-import { mockQueryResult } from "./useQuery.mock";
+import {
+  mockInfiniteData,
+  mockInfiniteQueryResult,
+  mockQueryResult,
+} from "./useQuery.mock";
 import { JoinedEvent } from "@/actions/joinedEvents";
+
+type EventsInfiniteQueryResult = UseInfiniteQueryResult<
+  InfiniteData<GetEventsPage, unknown>,
+  Error
+>;
 
 // ---------------------------------------------------------------------------
 // Default return values
@@ -14,10 +28,13 @@ import { JoinedEvent } from "@/actions/joinedEvents";
  * In tests, prefer `mockEventsLoaded` / `mockEventsLoading` / `mockEventsError`.
  */
 export const defaultEventsQueryReturn = {
-  data: undefined as Event[] | undefined,
+  data: undefined,
   isLoading: false,
   isError: false,
-} as UseQueryResult<Event[]>;
+  hasNextPage: false,
+  isFetchingNextPage: false,
+  fetchNextPage: vi.fn(),
+} as unknown as EventsInfiniteQueryResult;
 
 /**
  * Idle default for `useEventCodeQuery`. Used internally by `eventHooksMock()`.
@@ -114,6 +131,17 @@ export const defaultDeleteEventMutationReturn = {
 
 /**
  * Successful `useEventsQuery` result with the given events.
+ */
+export const mockEventsPage = (
+  items: Event[],
+  nextCursor: number | null = null
+): GetEventsPage => ({
+  items,
+  nextCursor,
+});
+
+/**
+ * Successful `useEventsQuery` result with the given events.
  * @example
  * beforeEach(() => {
  *   vi.mocked(useEventsQuery)
@@ -123,8 +151,8 @@ export const defaultDeleteEventMutationReturn = {
  *    );
  * });
  */
-export const mockEventsLoaded = (events: Event[]): UseQueryResult<Event[]> =>
-  mockQueryResult({ data: events });
+export const mockEventsLoaded = (events: Event[]): EventsInfiniteQueryResult =>
+  mockInfiniteQueryResult({ data: mockInfiniteData(mockEventsPage(events)) });
 
 /**
  * Loading `useEventsQuery` result.
@@ -133,8 +161,8 @@ export const mockEventsLoaded = (events: Event[]): UseQueryResult<Event[]> =>
  * @example
  * vi.mocked(useEventsQuery).mockReturnValue(mockEventsLoading());
  */
-export const mockEventsLoading = (): UseQueryResult<Event[]> =>
-  mockQueryResult({ isLoading: true });
+export const mockEventsLoading = (): EventsInfiniteQueryResult =>
+  mockInfiniteQueryResult({ isLoading: true });
 
 /**
  * Failed `useEventsQuery` result.
@@ -144,8 +172,8 @@ export const mockEventsLoading = (): UseQueryResult<Event[]> =>
  * @example
  * vi.mocked(useEventsQuery).mockReturnValue(mockEventsError(new Error("500")));
  */
-export const mockEventsError = (error?: Error): UseQueryResult<Event[]> =>
-  mockQueryResult({ error, isError: true });
+export const mockEventsError = (error?: Error): EventsInfiniteQueryResult =>
+  mockInfiniteQueryResult({ error, isError: true });
 
 /**
  * Successful `useEventStatsQuery` result with the given stats.
