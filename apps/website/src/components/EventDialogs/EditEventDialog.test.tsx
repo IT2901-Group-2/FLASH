@@ -67,14 +67,12 @@ describe("UpdateEventDialog", () => {
   describe("navigation", () => {
     it("advances to step 2 when Next is clicked and validation passes", async () => {
       render(<EditEventDialog event={event} />);
-
       await userEvent.click(screen.getByText("next"));
       expect(screen.getByTestId("step-2")).toBeInTheDocument();
     });
 
     it("shows Previous and Create on the last step", async () => {
       render(<EditEventDialog event={event} />);
-
       await userEvent.click(screen.getByText("next"));
 
       expect(screen.getByText("previous")).toBeInTheDocument();
@@ -89,6 +87,19 @@ describe("UpdateEventDialog", () => {
 
       await userEvent.click(screen.getByText("previous"));
       expect(screen.getByTestId("step-1")).toBeInTheDocument();
+    });
+  });
+
+  describe("saving", () => {
+    it("saves normaly", async () => {
+      vi.mocked(useUpdateEventMutation().mutateAsync).mockReturnValue(
+        Promise.resolve(makeEvent())
+      );
+      render(<EditEventDialog event={event} />);
+
+      await userEvent.click(screen.getByText("next"));
+      await waitFor(() => userEvent.click(screen.getByText("save")));
+      expect(useUpdateEventMutation().mutateAsync).toHaveBeenCalledOnce();
     });
   });
 
@@ -113,19 +124,15 @@ describe("UpdateEventDialog", () => {
   });
 
   describe("ProgressDots", () => {
-    it("has the correct value and maxValue", () => {
+    it("has the correct value and maxValue", async () => {
       render(<EditEventDialog event={event} />);
       const dots = screen.getByTestId("progress-dots");
 
       expect(dots).toHaveAttribute("data-value", "1");
       expect(dots).toHaveAttribute("data-max-value", "2");
-    });
-
-    it("advances the dot value when navigating forward", async () => {
-      render(<EditEventDialog event={event} />);
 
       await userEvent.click(screen.getByText("next"));
-      const dots = screen.getByTestId("progress-dots");
+
       expect(dots).toHaveAttribute("data-value", "2");
     });
   });
