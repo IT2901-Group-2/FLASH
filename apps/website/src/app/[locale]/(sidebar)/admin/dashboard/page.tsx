@@ -9,27 +9,33 @@ import { useEventsQuery } from "@/hooks/useEvents";
 import EventCard from "@/components/EventCard/EventCard";
 import { useRouter } from "next/navigation";
 import { GetEventsParams } from "@/db";
+import { useLoadMore } from "@/hooks/useLoadMore";
+
+const EVENTS_PAGE_SIZE = 12;
 
 const Page = () => {
   const t = useTranslations("pages.dashboard");
   const c = useTranslations("common.actions");
   const navigation = useRouter();
-
   const [searchName, setSearchName] = useState<GetEventsParams["name"]>("");
   const [status, setStatus] = useState<GetEventsParams["status"]>(undefined);
   const [sortBy, setSortBy] = useState<GetEventsParams["sortBy"]>("name");
   const [sortOrder, setSortOrder] = useState<GetEventsParams["order"]>("descending");
   const [archived, setArchived] = useState<GetEventsParams["archived"]>(false);
 
-  const { data, isLoading } = useEventsQuery({
+  const eventsQuery = useEventsQuery({
     name: searchName,
     order: sortOrder,
     sortBy,
     status,
     archived,
+    pageSize: EVENTS_PAGE_SIZE,
   });
+  const { data, isLoading, hasNextPage, isFetchingNextPage } = eventsQuery;
+  const events = data?.pages.flatMap(page => page.items) ?? [];
 
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const loadMoreRef = useLoadMore(eventsQuery);
 
   const handleStatus = (status: GetEventsParams["status"] | "archived") => {
     if (status === "archived") {
@@ -102,7 +108,7 @@ const Page = () => {
             <Loader size="3xlarge" />
           </div>
         ) : (
-          data?.map(event => (
+          events.map(event => (
             <EventCard
               key={event.id}
               data={event}
@@ -110,6 +116,14 @@ const Page = () => {
             />
           ))
         )}
+        {hasNextPage ? (
+          <div ref={loadMoreRef} className={styles.loadMoreSentinel} />
+        ) : null}
+        {isFetchingNextPage ? (
+          <div className={styles.loadingContainer} data-testid="loading-more-spinner">
+            <Loader size="large" />
+          </div>
+        ) : null}
       </div>
     </>
   );

@@ -71,15 +71,6 @@
   text-align: center;
 }
 
-.emptyState {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 50dvh;
-  color: var(--color-neutral-600);
-  font-weight: 500;
-}
-
 .tabContainer {
   width: 100%;
   padding: 0 1rem;
@@ -100,22 +91,9 @@
   padding: 0;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: auto;
-  gap: 3px;
-  padding: 0.3em 0.3em calc(10rem + env(safe-area-inset-bottom));
-}
-
 @media (width >= 768px) {
   .mobileOnly {
     display: none;
-  }
-
-  .grid {
-    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
-    padding: 0.3em 1em 0.3em;
   }
 
   .sectionTitleRow {

@@ -144,21 +144,21 @@ describe("ImageService getImages", () => {
     expect(
       await imageService
         .getImages("birthday")
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-1", "image-2"]));
 
     expect(
       await imageService
         .getImages("wedding")
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-3", "image-4", "image-5"]));
 
     expect(
       await imageService
         .getImages("funeral")
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set([]));
   });
@@ -167,14 +167,14 @@ describe("ImageService getImages", () => {
     expect(
       await imageService
         .getImages("birthday", { id: ["image-1", "image-20", "image-4"] })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-1"]));
 
     expect(
       await imageService
         .getImages("wedding", { id: ["image-5", "image-4", "image-1"] })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-4", "image-5"]));
   });
@@ -183,28 +183,28 @@ describe("ImageService getImages", () => {
     expect(
       await imageService
         .getImages("birthday", { approval: "approved" })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-2"]));
 
     expect(
       await imageService
         .getImages("birthday", { approval: "pending" })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-1"]));
 
     expect(
       await imageService
         .getImages("wedding", { approval: "pending" })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set([]));
 
     expect(
       await imageService
         .getImages("wedding", { approval: "approved" })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-3", "image-5"]));
   });
@@ -216,7 +216,7 @@ describe("ImageService getImages", () => {
           id: ["image-5", "image-4", "image-1"],
           approval: "rejected",
         })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-4"]));
 
@@ -226,10 +226,39 @@ describe("ImageService getImages", () => {
           id: ["image-5", "image-4", "image-1"],
           approval: "approved",
         })
-        .map(rows => new Set(rows.map(row => row.id)))
+        .map(page => new Set(page.items.map(row => row.id)))
         .getOrThrow()
     ).toStrictEqual(new Set(["image-5"]));
   });
+  it("Should return at most pageSize items and nextCursor when more rows exist", async () => {
+    const page = await imageService.getImages("wedding", { pageSize: 2 }).getOrThrow();
+
+    expect(page.items).toHaveLength(2);
+    expect(page.nextCursor).toBe(2);
+  });
+
+  it("Should return the correct next page using cursor offset", async () => {
+    const firstPage = await imageService
+      .getImages("wedding", { pageSize: 2 })
+      .getOrThrow();
+    const secondPage = await imageService
+      .getImages("wedding", { cursor: firstPage.nextCursor ?? 0, pageSize: 2 })
+      .getOrThrow();
+
+    expect(firstPage.items).toHaveLength(2);
+    expect(secondPage.items).toHaveLength(1);
+
+    const firstIds = new Set(firstPage.items.map(i => i.id));
+    const secondIds = new Set(secondPage.items.map(i => i.id));
+
+    // Ensure cursor pagination partitions the same dataset without overlap.
+    expect([...firstIds].some(id => secondIds.has(id))).toBe(false);
+    expect(new Set([...firstIds, ...secondIds])).toStrictEqual(
+      new Set(["image-3", "image-4", "image-5"])
+    );
+    expect(secondPage.nextCursor).toBeNull();
+  });
+
   it("Should return Err when cookie retrieval fails", async () => {
     mockedGetEventCookie.mockImplementationOnce(() =>
       Result.fromAsync(async () => Result.error(new Error("Not authenticated")))
@@ -423,7 +452,7 @@ describe("ImageService uploadImage", () => {
     expect(String(error.json ?? error.message)).toContain("Upload limit reached");
 
     const weddingImages = await imageService.getImages("wedding").getOrThrow();
-    expect(weddingImages.filter(image => image.userId === "john2")).toHaveLength(2);
+    expect(weddingImages.items.filter(image => image.userId === "john2")).toHaveLength(2);
   });
 
   it("Should allow upload when user is below event upload limit", async () => {
@@ -451,7 +480,7 @@ describe("ImageService uploadImage", () => {
     Result.assertOk(await imageService["storage"].read(`${uploadedImage.id}-15x15.webp`));
 
     const weddingImages = await imageService.getImages("wedding").getOrThrow();
-    expect(weddingImages.filter(image => image.userId === "john2")).toHaveLength(3);
+    expect(weddingImages.items.filter(image => image.userId === "john2")).toHaveLength(3);
   });
 
   it("Should return Err when event has ended", async () => {

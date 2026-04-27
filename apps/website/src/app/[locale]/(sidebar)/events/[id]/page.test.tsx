@@ -57,7 +57,7 @@ describe("Guest Upload Page", () => {
       // uploadsArePrivate defaults to false, so no polling interval is set.
       expect(useImagesQuery).toHaveBeenCalledWith(
         "event-123",
-        { approval: "approved" },
+        { approval: "approved", pageSize: 12 },
         false,
         expect.any(Number)
       );

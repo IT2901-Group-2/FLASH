@@ -1,4 +1,4 @@
-import { JWT_SECRET, storage } from "@/config";
+import { JWT_SECRET, MAX_IMAGE_SIZE, storage } from "@/config";
 import { HTTPError } from "@/lib/utils/error";
 import { getEventCookie } from "@/lib/utils/eventCookie";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
@@ -9,12 +9,14 @@ import { DatabaseService, dbService } from "./databaseService";
 import { AsyncResult, Result } from "typescript-result";
 import {
   eventTable,
+  GetImagesPage,
   GetImageParams,
   GetImagesParams,
   Image,
   imageSizesTable,
   imageTable,
   UpdateImage,
+  GetMyImagesParams,
 } from "@/db";
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
@@ -34,7 +36,6 @@ export class ImageService {
     this.storage = storage;
   }
 
-  static readonly MAX_IMAGE_SIZE = 12 * 1024 * 1024;
   static readonly TARGET_IMAGE_SIZES: number[] = [250, 500, 1000, 2000];
 
   /**
@@ -50,7 +51,7 @@ export class ImageService {
         return Result.error(new Error("Unable to determine image size"));
       }
 
-      if (meta.size > ImageService.MAX_IMAGE_SIZE) {
+      if (meta.size > MAX_IMAGE_SIZE) {
         return Result.error(new Error("Image exceeded the max image size"));
       }
 
@@ -101,26 +102,36 @@ export class ImageService {
    */
   getImages(
     eventId: string,
-    { id, approval }: GetImagesParams = {}
-  ): AsyncResult<Image[], Error> {
-    return this.getVisibleToUserId(eventId).mapCatching(visibleToUserId =>
-      this.dbService.db
-        .select()
-        .from(imageTable)
-        .where(
-          and(
-            eq(imageTable.eventId, eventId),
-            id !== undefined ? inArray(imageTable.id, id) : undefined,
-            approval !== undefined && approval !== "pending"
-              ? eq(imageTable.isApproved, approval === "approved")
-              : undefined,
-            approval === "pending" ? isNull(imageTable.isApproved) : undefined,
-            visibleToUserId !== undefined
-              ? eq(imageTable.userId, visibleToUserId)
-              : undefined
+    { id, approval, cursor, pageSize = 20 }: GetImagesParams = {}
+  ): AsyncResult<GetImagesPage, Error> {
+    const offset = cursor ?? 0;
+
+    return this.getVisibleToUserId(eventId)
+      .mapCatching(visibleToUserId =>
+        this.dbService.db
+          .select()
+          .from(imageTable)
+          .where(
+            and(
+              eq(imageTable.eventId, eventId),
+              id !== undefined ? inArray(imageTable.id, id) : undefined,
+              approval !== undefined && approval !== "pending"
+                ? eq(imageTable.isApproved, approval === "approved")
+                : undefined,
+              approval === "pending" ? isNull(imageTable.isApproved) : undefined,
+              visibleToUserId !== undefined
+                ? eq(imageTable.userId, visibleToUserId)
+                : undefined
+            )
           )
-        )
-    );
+          .orderBy(imageTable.createdAt)
+          .offset(offset)
+          .limit(pageSize + 1)
+      )
+      .map(rows => ({
+        items: rows.slice(0, pageSize),
+        nextCursor: rows.length > pageSize ? offset + pageSize : null,
+      }));
   }
 
   /**
@@ -566,13 +577,23 @@ export class ImageService {
    * @param eventId The id of the event.
    * @returns A result containing the list of `Image` objects or an error.
    */
-  getImagesByUser(eventId: string): AsyncResult<Image[], Error> {
-    return this.getAuthenticatedUserId(eventId).mapCatching(userId =>
-      this.dbService.db
-        .select()
-        .from(imageTable)
-        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.userId, userId)))
-    );
+  getImagesByUser(
+    eventId: string,
+    { cursor = 0, pageSize = 20 }: GetMyImagesParams = {}
+  ): AsyncResult<GetImagesPage, Error> {
+    return this.getAuthenticatedUserId(eventId)
+      .mapCatching(userId =>
+        this.dbService.db
+          .select()
+          .from(imageTable)
+          .where(and(eq(imageTable.eventId, eventId), eq(imageTable.userId, userId)))
+          .offset(cursor)
+          .limit(pageSize + 1)
+      )
+      .map(rows => ({
+        items: rows.slice(0, pageSize),
+        nextCursor: rows.length > pageSize ? cursor + pageSize : null,
+      }));
   }
 
   /**
@@ -603,7 +624,9 @@ export class ImageService {
       if (isAdmin || isModerator) {
         return undefined;
       }
-      const [event] = yield* eventService.getEvents({ id: [eventId] });
+      const {
+        items: [event],
+      } = yield* eventService.getEvents({ id: [eventId] });
       return event?.uploadsArePrivate === true ? userId : undefined;
     });
   }

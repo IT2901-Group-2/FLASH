@@ -1,4 +1,4 @@
-import { RefAttributes, useEffect, useState } from "react";
+import { RefAttributes, useState } from "react";
 import { Button, Dialog, ProgressDots } from "@flash/ui";
 import { useTranslations } from "next-intl";
 import { useUpdateEventMutation } from "@/hooks/useEvents";
@@ -29,10 +29,6 @@ export const EditEventDialog = ({
     mode: "onChange",
   });
 
-  useEffect(() => {
-    methods.reset(event);
-  }, [event, methods]);
-
   const isOnFirstStep = currentStepIndex === 0;
   const isOnLastStep = currentStepIndex === FORM_STEPS.length - 1;
   const currentStep = FORM_STEPS[currentStepIndex]!;
@@ -55,7 +51,7 @@ export const EditEventDialog = ({
   };
 
   const handleClose = () => {
-    methods.reset();
+    methods.reset(methods.getValues());
     setCurrentStepIndex(0);
     setFormKey(i => i + 1);
     onClose?.();
