@@ -4,8 +4,10 @@ import {
   makeEvent,
   makeImages,
   mockEventsLoaded,
-  mockImagesLoaded,
+  mockInfiniteData,
+  mockInfiniteQueryResult,
   mockRouter,
+  mockImagePage,
 } from "@test-config";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -21,8 +23,12 @@ const mockToggle = vi.fn();
 const mockSetViewIndex = vi.fn();
 const mockPause = vi.fn();
 const mockResume = vi.fn();
+const mockFetchNextPage = vi.fn();
 let mockPaused = false;
 let mockViewIndex = 0;
+let mockHasNextPage = false;
+let mockIsFetchingNextPage = false;
+let mockImageData = makeImages(3);
 
 vi.mock("@/hooks/useInterval", () => ({
   useInterval: () => [
@@ -56,11 +62,21 @@ describe("Slideshow Page", () => {
     mockIsIdle = false;
     mockPaused = false;
     mockViewIndex = 0;
+    mockHasNextPage = false;
+    mockIsFetchingNextPage = false;
     mockFullscreenActive = false;
+    mockImageData = makeImages(3);
     vi.clearAllMocks();
 
     vi.mocked(useEventsQuery).mockReturnValue(mockEventsLoaded([makeEvent()]));
-    vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoaded(makeImages(3)));
+    vi.mocked(useImagesQuery).mockImplementation(() =>
+      mockInfiniteQueryResult({
+        data: mockInfiniteData(mockImagePage(mockImageData)),
+        hasNextPage: mockHasNextPage,
+        isFetchingNextPage: mockIsFetchingNextPage,
+        fetchNextPage: mockFetchNextPage,
+      })
+    );
   });
 
   describe("image display", () => {
@@ -159,6 +175,36 @@ describe("Slideshow Page", () => {
       const fullScreenButton = screen.getByTestId("fullscreen-button");
       expect(fullScreenButton.querySelector(".lucide-shrink")).toBeTruthy();
       expect(fullScreenButton.querySelector(".lucide-expand")).toBeNull();
+    });
+  });
+
+  describe("infinite prefetch", () => {
+    it("prefetches the next page when approaching the end of loaded images", () => {
+      mockHasNextPage = true;
+      mockViewIndex = 2;
+
+      render(<Page />);
+
+      expect(mockFetchNextPage).toHaveBeenCalledTimes(1);
+    });
+
+    it("does not prefetch when there is no next page", () => {
+      mockHasNextPage = false;
+      mockViewIndex = 1;
+
+      render(<Page />);
+
+      expect(mockFetchNextPage).not.toHaveBeenCalled();
+    });
+
+    it("does not prefetch while already fetching next page", () => {
+      mockHasNextPage = true;
+      mockIsFetchingNextPage = true;
+      mockViewIndex = 1;
+
+      render(<Page />);
+
+      expect(mockFetchNextPage).not.toHaveBeenCalled();
     });
   });
 

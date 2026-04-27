@@ -10,7 +10,6 @@ import {
   SegmentedControl,
   Title,
 } from "@flash/ui";
-import { ImageCard } from "@/components/ImageCard/ImageCard";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
@@ -25,8 +24,10 @@ import {
   useUploadImageMutation,
 } from "@/hooks/useImages";
 import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
-import { getImageSrc } from "@/lib/utils/images";
 import { EVENT_REFETCH_INTERVAL, PHOTOS_REFETCH_INTERVAL } from "@/config/images";
+import { PhotoList } from "@/components/PhotoList/PhotoList";
+
+const IMAGE_PAGE_SIZE = 12;
 
 export default function Page() {
   const router = useRouter();
@@ -44,9 +45,8 @@ export default function Page() {
     undefined,
     EVENT_REFETCH_INTERVAL
   );
-  const eventData = data?.[0];
+  const eventData = data?.pages[0]?.items[0];
   const uploadsArePrivate = eventData?.uploadsArePrivate ?? false;
-
   const [activeTab, setActiveTab] = useState<"all" | "user">("all");
   const showTabs = uploadsArePrivate || !!eventAuth.isModerator;
   const isShowingUserTab = !showTabs || activeTab === "user";
@@ -55,19 +55,23 @@ export default function Page() {
     if (val === "all" || val === "user") setActiveTab(val);
   };
 
-  // Image Data
-  const { data: imagesData } = useImagesQuery(
+  const myImagesQuery = useMyImagesQuery(
     eventId,
-    { approval: "approved" },
-    !isShowingUserTab,
-    PHOTOS_REFETCH_INTERVAL
-  );
-  const { data: myImagesData } = useMyImagesQuery(
-    eventId,
+    { pageSize: IMAGE_PAGE_SIZE },
     isShowingUserTab,
     PHOTOS_REFETCH_INTERVAL
   );
-  const displayedImages = (isShowingUserTab ? myImagesData : imagesData) ?? [];
+
+  const imagesQuery = useImagesQuery(
+    eventId,
+    { approval: "approved", pageSize: IMAGE_PAGE_SIZE },
+    !isShowingUserTab,
+    PHOTOS_REFETCH_INTERVAL
+  );
+
+  const activeQuery = isShowingUserTab ? myImagesQuery : imagesQuery;
+  const displayedImages = activeQuery.data?.pages.flatMap(page => page.items) ?? [];
+
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -282,36 +286,14 @@ export default function Page() {
           </Button>
         )}
       </div>
-
-      {!isLoading && displayedImages.length === 0 ? (
-        <div role="status" className={styles.emptyState}>
-          {isShowingUserTab ? tUpload("userPhotosEmptyState") : tUpload("emptyState")}
-        </div>
-      ) : (
-        <div className={styles.grid}>
-          {displayedImages.map((image, index) => (
-            <ImageCard
-              key={image.id}
-              src={getImageSrc(eventId, image.id, { width: 200, height: 200 })}
-              alt={tUpload("imageAlt", {
-                index: index + 1,
-                total: displayedImages.length,
-              })}
-              title={tUpload("imageTitle", { index: index + 1 })}
-              data-image-id={image.id}
-              placeholder={image.previewImage}
-              state={
-                image.isApproved === null
-                  ? "pending"
-                  : image.isApproved === false
-                    ? "rejected"
-                    : undefined
-              }
-              onClick={() => imagePreviewRef.current?.open(index)}
-            />
-          ))}
-        </div>
-      )}
+      <PhotoList
+        eventId={eventId}
+        query={isShowingUserTab ? myImagesQuery : imagesQuery}
+        loadingText={
+          isShowingUserTab ? tUpload("userPhotosEmptyState") : tUpload("emptyState")
+        }
+        onClick={(index) => imagePreviewRef.current?.open(index)}
+      />
     </>
   );
 }

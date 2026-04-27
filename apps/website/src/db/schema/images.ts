@@ -45,6 +45,17 @@ export const getImagesParamsSchema = z.object({
     .tuple([z.enum(["pending", "approved", "rejected"])])
     .transform(([str]) => str)
     .optional(),
+  cursor: z
+    .tuple([z.string()])
+    .transform(([str]) => Number.parseInt(str, 10))
+    .pipe(z.number().int().nonnegative())
+    .optional(),
+  pageSize: z
+    .tuple([z.string()])
+    .transform(([str]) => Number.parseInt(str, 10))
+    .pipe(z.number().int().positive().max(100))
+    .prefault(["20"])
+    .optional(),
 });
 
 export const getImageParamsSchema = z.object({
@@ -55,6 +66,20 @@ export const getImageParamsSchema = z.object({
   height: z
     .tuple([z.coerce.number().positive()])
     .transform(([int]) => int)
+    .optional(),
+});
+
+export const getMyImagesParamsSchema = z.object({
+  cursor: z
+    .tuple([z.string()])
+    .transform(([str]) => Number.parseInt(str, 10))
+    .pipe(z.number().int().nonnegative())
+    .optional(),
+  pageSize: z
+    .tuple([z.string()])
+    .transform(([str]) => Number.parseInt(str, 10))
+    .pipe(z.number().int().positive().max(100))
+    .prefault(["20"])
     .optional(),
 });
 
@@ -78,10 +103,17 @@ export const updateImagesSchema = z.object({
   isApproved: z.boolean(),
 });
 
+export const getImagesPageSchema = z.object({
+  items: z.array(getImageSchema),
+  nextCursor: z.number().nullable(),
+});
+
 export const uploadedImageCountSchema = z.object({ count: z.number().nonnegative() });
 
 export type Image = typeof imageTable.$inferSelect;
 export type GetImageParams = z.infer<typeof getImageParamsSchema>;
 export type GetImagesParams = z.infer<typeof getImagesParamsSchema>;
+export type GetMyImagesParams = z.infer<typeof getMyImagesParamsSchema>;
 export type UpdateImage = z.infer<typeof updateImageSchema>;
 export type UpdateImages = z.infer<typeof updateImagesSchema>;
+export type GetImagesPage = z.infer<typeof getImagesPageSchema>;
