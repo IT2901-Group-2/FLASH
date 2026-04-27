@@ -37,9 +37,6 @@ export default function ModeratePage() {
     approval: activeTab,
   });
 
-  // TODO: Replace with actual moderator check when JWT auth is implemented
-  // const isModerator = checkModeratorAccess(token);
-
   const {
     selectMode,
     selectedIds,
