@@ -354,6 +354,6 @@ describe("useDeleteEventMutation", () => {
   });
 });
 
-describe("useJoinMutation", () => {
-  it("no idea how to test this hook", ({ skip }) => skip);
+describe("useJoinMutation", ({ skip }) => {
+  skip("no idea how to test this hook");
 });
