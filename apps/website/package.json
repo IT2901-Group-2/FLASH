@@ -62,8 +62,10 @@
     "eslint": "^9.39.4",
     "eslint-config-next": "16.1.4",
     "happy-dom": "^20.8.9",
+    "monocart-reporter": "^2.10.1",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3",
+    "v8-to-istanbul": "^9.3.0",
     "vitest": "^4.1.3"
   }
 }

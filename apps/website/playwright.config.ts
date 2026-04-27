@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import type { CoverageReportOptions } from "monocart-reporter";
 
 /**
  * Read environment variables from file.
@@ -22,7 +23,24 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: "html",
+  reporter: [
+    ["html"],
+    [
+      "monocart-reporter",
+      {
+        name: "E2E Coverage Report",
+        outputFile: "apps/website/coverage/index.html",
+        coverage: {
+          entryFilter: (entry: { url: string }) => entry.url.includes("localhost:3000"),
+          sourceFilter: (sourcePath: string) => sourcePath.includes("/src/"),
+          reports: ["v8", "html", "lcov", "text-summary"],
+          outputDir: "coverage",
+        },
+      } as CoverageReportOptions,
+    ],
+  ],
+
+  timeout: 10 * 1000,
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
