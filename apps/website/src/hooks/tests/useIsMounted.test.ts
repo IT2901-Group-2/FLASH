@@ -16,7 +16,6 @@ describe("useIsMounted", () => {
   });
 
   it("should return false ...", ({ skip }) => {
-    // No good ways to test the server-side behavior of this hook
-    skip();
+    skip("No good ways to test the server-side behavior of this hook");
   });
 });

@@ -55,9 +55,7 @@ describe("useImagesQuery", () => {
 
     const { result } = renderHook(
       () => useImagesQuery("ev-1", { approval: "pending", id: ["img-b", "img-a"] }),
-      {
-        wrapper,
-      }
+      { wrapper }
     );
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -103,9 +101,7 @@ describe("useUploadedImageCountQuery", () => {
     const count = makeUploadedImageCount();
     vi.stubGlobal("fetch", mockJsonResponse(count));
 
-    const { result } = renderHook(() => useUploadedImageCountQuery("ev-1"), {
-      wrapper,
-    });
+    const { result } = renderHook(() => useUploadedImageCountQuery("ev-1"), { wrapper });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toStrictEqual(count);
@@ -115,9 +111,7 @@ describe("useUploadedImageCountQuery", () => {
     const fetchMock = mockJsonResponse(makeUploadedImageCount());
     vi.stubGlobal("fetch", fetchMock);
 
-    const { result } = renderHook(() => useUploadedImageCountQuery("ev-99"), {
-      wrapper,
-    });
+    const { result } = renderHook(() => useUploadedImageCountQuery("ev-99"), { wrapper });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(fetchMock.mock.calls[0]?.[0]).toContain("/api/events/ev-99/uploaded");
