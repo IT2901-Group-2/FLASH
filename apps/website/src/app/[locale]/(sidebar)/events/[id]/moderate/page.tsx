@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ActionCard, SegmentedControl, Title, useToast } from "@flash/ui";
 import { ImageCard } from "@/components/ImageCard/ImageCard";
@@ -156,7 +156,6 @@ export default function ModeratePage() {
       </div>
 
       <ImagePreview ref={imagePreviewRef} images={images} />
-
 
       {selectedIds.size > 0 && (
         <div className={styles.actionCardContainer}>
