@@ -44,7 +44,7 @@ describe("QRScanner", () => {
       const scanner = screen.getByTestId("qr-scanner");
 
       expect(scanner).toHaveAttribute("data-sound", "/flash.wav");
-      expect(scanner).toHaveAttribute("data-facing-mode", "enviorment");
+      expect(scanner).toHaveAttribute("data-facing-mode", "environment");
     });
 
     it("forwards additional props to Scanner", () => {
