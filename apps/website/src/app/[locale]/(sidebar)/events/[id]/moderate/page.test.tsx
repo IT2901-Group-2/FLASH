@@ -67,9 +67,19 @@ describe("ModeratePage", () => {
     it("updates the displayed images to match the selected status when switching tabs ", async () => {
       renderWithQuery(<ModeratePage />);
 
-      expect(useImagesQuery).toHaveBeenCalledWith("event-123", { approval: "pending" }, undefined, PHOTOS_REFETCH_INTERVAL);
+      expect(useImagesQuery).toHaveBeenCalledWith(
+        "event-123",
+        { approval: "pending" },
+        undefined,
+        PHOTOS_REFETCH_INTERVAL
+      );
       await userEvent.click(screen.getByText("tabs.approved"));
-      expect(useImagesQuery).toHaveBeenCalledWith("event-123", { approval: "approved" }, undefined, PHOTOS_REFETCH_INTERVAL);
+      expect(useImagesQuery).toHaveBeenCalledWith(
+        "event-123",
+        { approval: "approved" },
+        undefined,
+        PHOTOS_REFETCH_INTERVAL
+      );
     });
 
     it("cannot switch tabs while in select mode", async () => {
