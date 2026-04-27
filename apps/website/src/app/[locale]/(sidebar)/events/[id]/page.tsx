@@ -1,7 +1,23 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { ChevronRight, Download, ImageMinus, QrCode, Upload } from "lucide-react";
-import styles from "./UploadImage.module.css";
+import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
+import PhoneHeader from "@/components/PhoneHeader/PhoneHeader";
+import { PhotoList } from "@/components/PhotoList/PhotoList";
+import {
+  EVENT_REFETCH_INTERVAL,
+  MAX_IMAGE_SIZE,
+  PHOTOS_REFETCH_INTERVAL,
+} from "@/config/images";
+import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+import { useFileUpload } from "@/hooks/useFileUpload";
+import {
+  useDownloadImagesMutation,
+  useImagesQuery,
+  useMyImagesQuery,
+  useUploadImageMutation,
+  useUploadedImageCountQuery,
+} from "@/hooks/useImages";
+import { useEventAuth } from "@/providers/EventAuthContext";
+import { getUploadErrorMessageDescriptor } from "@/utils/fileUploadErrorMessages";
 import {
   ActionCard,
   Button,
@@ -9,22 +25,20 @@ import {
   QRDisplay,
   SegmentedControl,
   Title,
+  useToast,
 } from "@flash/ui";
-import { useFileUpload } from "@/hooks/useFileUpload";
+import {
+  ChevronRight,
+  Download,
+  ImageMinus,
+  OctagonAlert,
+  QrCode,
+  Upload,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
-import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
-import { useFileUpload } from "@/hooks/useFileUpload";
-import {
-  useDownloadImagesMutation,
-  useImagesQuery,
-  useMyImagesQuery,
-  useUploadedImageCountQuery,
-  useUploadImageMutation,
-} from "@/hooks/useImages";
-import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
-import { EVENT_REFETCH_INTERVAL, PHOTOS_REFETCH_INTERVAL } from "@/config/images";
-import { PhotoList } from "@/components/PhotoList/PhotoList";
+import { useEffect, useRef, useState } from "react";
+import styles from "./UploadImage.module.css";
 
 const IMAGE_PAGE_SIZE = 12;
 const maxFileSizeInMb = Math.ceil(MAX_IMAGE_SIZE / (1024 * 1024)); //TODO: Move this to a more appropriate location
@@ -38,6 +52,7 @@ export default function Page() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const imagePreviewRef = useRef<ImagePreviewHandle>(null);
   const { mutate: downloadImages } = useDownloadImagesMutation();
+  const { mutateAsync: uploadImage } = useUploadImageMutation();
 
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
@@ -76,7 +91,6 @@ export default function Page() {
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
   const [isUploading, setIsUploading] = useState(false);
-  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
 
   const showUploadErrorToast = (message: string) => {
     createToast({
@@ -88,13 +102,6 @@ export default function Page() {
       duration: 5000,
     });
   };
-
-  const handleTabChange = (val: string) => {
-    if (val === "all" || val === "user") setActiveTab(val);
-    setPreviewIndex(null);
-  };
-  const touchStartX = useRef<number | null>(null);
-  const { mutateAsync: uploadImage } = useUploadImageMutation();
 
   // Join Code
   const { data: joinCode } = useEventCodeQuery(eventId, "guest");
