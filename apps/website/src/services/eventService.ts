@@ -8,6 +8,7 @@ import {
   eventStatsTable,
   eventTable,
   GetEventCodeParams,
+  GetEventsPage,
   GetEventsParams,
   UpdateEvent,
   userTable,
@@ -42,8 +43,11 @@ export class EventService {
     archived,
     sortBy,
     order,
-  }: GetEventsParams = {}): AsyncResult<Event[], Error> {
+    cursor,
+    pageSize = 20,
+  }: GetEventsParams = {}): AsyncResult<GetEventsPage, Error> {
     const now = new Date();
+    const offset = cursor ?? 0;
 
     const sortOrder = order === "descending" ? desc : asc;
     const sortColumnMap: Record<NonNullable<GetEventsParams["sortBy"]>, SQLiteColumn> = {
@@ -56,8 +60,8 @@ export class EventService {
       updatedAt: eventTable.updatedAt,
     };
 
-    return Result.try(() => {
-      const baseQuery = this.dbService.db
+    return Result.try(() =>
+      this.dbService.db
         .select()
         .from(eventTable)
         .where(
@@ -71,12 +75,14 @@ export class EventService {
               : undefined,
             status === "finished" ? lt(eventTable.endDate, now) : undefined
           )
-        );
-
-      return sortBy === undefined
-        ? baseQuery
-        : baseQuery.orderBy(sortOrder(sortColumnMap[sortBy]));
-    });
+        )
+        .orderBy(sortBy !== undefined ? sortOrder(sortColumnMap[sortBy]) : eventTable.id)
+        .offset(offset)
+        .limit(pageSize + 1)
+    ).map(rows => ({
+      items: rows.slice(0, pageSize),
+      nextCursor: rows.length > pageSize ? offset + pageSize : null,
+    }));
   }
 
   /**

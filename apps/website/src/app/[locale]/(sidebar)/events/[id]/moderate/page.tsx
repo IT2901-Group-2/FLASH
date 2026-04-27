@@ -19,9 +19,10 @@ export default function ModeratePage() {
 
   const [activeTab, setActiveTab] = useState<Tab>("pending");
 
-  const { data: images = [], isLoading } = useImagesQuery(eventId, {
+  const { data: imagesPages, isLoading } = useImagesQuery(eventId, {
     approval: activeTab,
   });
+  const images = imagesPages?.pages.flatMap(page => page.items) ?? [];
 
   // TODO: Replace with actual moderator check when JWT auth is implemented
   // const isModerator = checkModeratorAccess(token);

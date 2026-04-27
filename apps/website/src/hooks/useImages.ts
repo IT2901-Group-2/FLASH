@@ -1,11 +1,18 @@
 import {
   getImageSchema,
+  getImagesPageSchema,
   GetImagesParams,
+  GetMyImagesParams,
   UpdateImage,
   uploadedImageCountSchema,
 } from "@/db";
 import readResponseError, { makeRequest } from "@/lib/utils/api";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+  useQuery,
+} from "@tanstack/react-query";
 import z from "zod";
 
 const imageArraySchema = z.array(getImageSchema);
@@ -55,6 +62,12 @@ function toImagesSearchParams(params?: GetImagesParams): string {
   if (params.approval !== undefined) {
     sp.append("approval", params.approval);
   }
+  if (params.cursor !== undefined) {
+    sp.append("cursor", params.cursor.toString());
+  }
+  if (params.pageSize !== undefined) {
+    sp.append("pageSize", params.pageSize.toString());
+  }
 
   const qs = sp.toString();
   return qs ? `?${qs}` : "";
@@ -74,11 +87,12 @@ export const imagesKeys = {
   list: (eventId?: string, params?: GetImagesParams) =>
     [...imagesKeys.event(eventId), "list", toImagesSearchParams(params)] as const,
   uploaded: (eventId?: string) => [...imagesKeys.event(eventId), "uploaded"] as const,
-  my: (eventId?: string) => [...imagesKeys.event(eventId), "my"] as const,
+  my: (eventId?: string, params?: GetImagesParams) =>
+    [...imagesKeys.event(eventId), "my", toImagesSearchParams(params)] as const,
 };
 
 /**
- * Fetches a list of images for the given event, optionally filtered by the provided query params.
+ * Fetches event images with cursor pagination for infinite loading.
  */
 export function useImagesQuery(
   eventId?: string,
@@ -86,13 +100,18 @@ export function useImagesQuery(
   enabled?: boolean,
   refetchInterval?: number
 ) {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: imagesKeys.list(eventId, params),
-    queryFn: () =>
+    initialPageParam: params?.cursor,
+    queryFn: ({ pageParam }) =>
       makeRequest(
-        imageArraySchema,
-        `/api/events/${eventId}/images${toImagesSearchParams(params)}`
+        getImagesPageSchema,
+        `/api/events/${eventId}/images${toImagesSearchParams({
+          ...params,
+          cursor: pageParam,
+        })}`
       ),
+    getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
     enabled: enabled !== false && !!eventId,
     refetchInterval,
   });
@@ -104,12 +123,19 @@ export function useImagesQuery(
  */
 export function useMyImagesQuery(
   eventId?: string,
+  params?: GetMyImagesParams,
   enabled = true,
   refetchInterval?: number
 ) {
-  return useQuery({
-    queryKey: imagesKeys.my(eventId),
-    queryFn: () => makeRequest(imageArraySchema, `/api/events/${eventId}/images/my`),
+  return useInfiniteQuery({
+    queryKey: imagesKeys.my(eventId, params),
+    initialPageParam: params?.cursor,
+    queryFn: ({ pageParam }) =>
+      makeRequest(
+        getImagesPageSchema,
+        `/api/events/${eventId}/images/my${toImagesSearchParams({ ...params, cursor: pageParam })}`
+      ),
+    getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
     enabled: !!eventId && enabled,
     refetchInterval,
   });

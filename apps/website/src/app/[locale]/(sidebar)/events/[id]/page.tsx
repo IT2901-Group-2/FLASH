@@ -38,6 +38,16 @@ import {
   Upload,
   X,
 } from "lucide-react";
+import styles from "./UploadImage.module.css";
+import {
+  ActionCard,
+  Button,
+  Dialog,
+  QRDisplay,
+  SegmentedControl,
+  Title,
+} from "@flash/ui";
+import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
@@ -45,6 +55,9 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./UploadImage.module.css";
 
 const maxFileSizeInMb = Math.ceil(MAX_IMAGE_SIZE / (1024 * 1024)); //TODO: Move this to a more appropriate location
+import { PhotoList } from "@/components/PhotoList/PhotoList";
+
+const IMAGE_PAGE_SIZE = 12;
 
 export default function Page() {
   return (
@@ -71,25 +84,29 @@ function UploadPageContent() {
     undefined,
     EVENT_REFETCH_INTERVAL
   );
-  const eventData = data?.[0];
+  const eventData = data?.pages[0]?.items[0];
   const uploadsArePrivate = eventData?.uploadsArePrivate ?? false;
-
   const [activeTab, setActiveTab] = useState<"all" | "user">("all");
   const showTabs = uploadsArePrivate || !!eventAuth.isModerator;
   const isShowingUserTab = !showTabs || activeTab === "user";
 
-  // Image Data
-  const { data: imagesData } = useImagesQuery(
+  const myImagesQuery = useMyImagesQuery(
     eventId,
-    { approval: "approved" },
-    !isShowingUserTab,
-    PHOTOS_REFETCH_INTERVAL
-  );
-  const { data: myImagesData } = useMyImagesQuery(
-    eventId,
+    { pageSize: IMAGE_PAGE_SIZE },
     isShowingUserTab,
     PHOTOS_REFETCH_INTERVAL
   );
+
+  const imagesQuery = useImagesQuery(
+    eventId,
+    { approval: "approved", pageSize: IMAGE_PAGE_SIZE },
+    !isShowingUserTab,
+    PHOTOS_REFETCH_INTERVAL
+  );
+
+  const activeQuery = isShowingUserTab ? myImagesQuery : imagesQuery;
+  const displayedImages = activeQuery.data?.pages.flatMap(page => page.items) ?? [];
+
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
   const [isUploading, setIsUploading] = useState(false);
@@ -453,36 +470,14 @@ function UploadPageContent() {
           </Button>
         )}
       </div>
-
-      {!isLoading && displayedImages.length === 0 ? (
-        <div role="status" className={styles.emptyState}>
-          {isShowingUserTab ? tUpload("userPhotosEmptyState") : tUpload("emptyState")}
-        </div>
-      ) : (
-        <div className={styles.grid}>
-          {displayedImages.map((image, index) => (
-            <ImageCard
-              key={image.id}
-              src={getImageSrc(eventId, image.id, { width: 200, height: 200 })}
-              alt={tUpload("imageAlt", {
-                index: index + 1,
-                total: displayedImages.length,
-              })}
-              title={tUpload("imageTitle", { index: index + 1 })}
-              data-image-id={image.id}
-              placeholder={image.previewImage}
-              state={
-                image.isApproved === null
-                  ? "pending"
-                  : image.isApproved === false
-                    ? "rejected"
-                    : undefined
-              }
-              onClick={() => handleImagePreview(index)}
-            />
-          ))}
-        </div>
-      )}
+      <PhotoList
+        eventId={eventId}
+        query={isShowingUserTab ? myImagesQuery : imagesQuery}
+        loadingText={
+          isShowingUserTab ? tUpload("userPhotosEmptyState") : tUpload("emptyState")
+        }
+        onClick={handleImagePreview}
+      />
     </>
   );
 }
