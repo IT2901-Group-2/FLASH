@@ -6,6 +6,7 @@ export const defaultLanguageReturn: UseLanguageReturn = {
   currentLocale: "en",
   nextLocale: "no",
   switchLocale: vi.fn(),
+  isSwitching: false,
 };
 
 /**

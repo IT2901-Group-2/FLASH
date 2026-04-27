@@ -154,13 +154,17 @@
 /* preview2 variant */
 
 .imageCard[data-variant="preview2"] {
+  contain: layout style;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 128px;
+  aspect-ratio: 3 / 4;
   border: none;
   border-radius: 0;
   width: unset;
   height: unset;
 
   .imageWrapper {
-    height: 100%;
+    flex: 1;
   }
   .titleBox {
     display: none;
@@ -176,6 +180,51 @@
   }
 }
 
+.imageCard[data-variant="preview2"].pending {
+  background-color: transparent;
+  box-shadow: none;
+
+  .image {
+    opacity: 0.5;
+  }
+}
+
+.imageCard[data-variant="preview2"].rejected {
+  background-color: transparent;
+  box-shadow: none;
+
+  .image {
+    filter: brightness(0.2);
+  }
+}
+
+.preview2StatusLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--color-primary-base);
+  border-top: 1px solid var(--color-border-base);
+}
+
+.preview2StatusIcon {
+  display: flex;
+  flex-shrink: 0;
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--color-text-base);
+  }
+}
+
+.preview2StatusText {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-base);
+  line-height: 1;
+  white-space: nowrap;
+}
+
 .moderateCheckBadge {
   position: absolute;
   bottom: 0.5rem;
@@ -183,17 +232,14 @@
   width: 1.5rem;
   height: 1.5rem;
   border-radius: var(--radius-full);
-  background-color: var(--color-background-light);
-  /* TODO: Implement with variable when shadow color is added */
-  box-shadow: var(--shadow-dialog);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-
+  background-color: var(--color-background-base);
   svg {
-    width: 14px;
-    height: 14px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 18px;
+    height: 18px;
     color: var(--color-text-base);
   }
 }

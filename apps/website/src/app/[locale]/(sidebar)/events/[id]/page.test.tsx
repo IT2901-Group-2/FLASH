@@ -2,6 +2,7 @@ import {
   eventAuthMock,
   eventHooksMock,
   imageHooksMock,
+  imageCardMock,
   makeImage,
   mockImagesLoaded,
   fileUploadHookMock,
@@ -9,7 +10,7 @@ import {
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import Page from "./page";
-import { useImagesQuery } from "@/hooks/useImages";
+import { useImagesQuery, useMyImagesQuery } from "@/hooks/useImages";
 import userEvent from "@testing-library/user-event";
 import { PhoneHeaderProps } from "@/components/PhoneHeader/PhoneHeader";
 import { useFileUpload } from "@/hooks/useFileUpload";
@@ -18,6 +19,7 @@ vi.mock("@/hooks/useEvents", () => eventHooksMock());
 vi.mock("@/hooks/useImages", () => imageHooksMock());
 vi.mock("@/providers/EventAuthContext", () => eventAuthMock());
 vi.mock("@/hooks/useFileUpload", () => fileUploadHookMock());
+vi.mock("@/components/ImageCard/ImageCard", () => imageCardMock());
 
 vi.mock("@/components/PhoneHeader/PhoneHeader", () => ({
   PhoneHeader: vi.fn(({ children, ...rest }: PhoneHeaderProps) => (
@@ -30,6 +32,7 @@ vi.mock("@/components/PhoneHeader/PhoneHeader", () => ({
 describe("Guest Upload Page", () => {
   beforeEach(() => {
     vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoaded([makeImage()]));
+    vi.mocked(useMyImagesQuery).mockReturnValue(mockImagesLoaded([makeImage()]));
   });
 
   describe("render and hook setup", () => {
@@ -51,7 +54,13 @@ describe("Guest Upload Page", () => {
 
     it("uses image query hook", () => {
       render(<Page />);
-      expect(useImagesQuery).toHaveBeenCalledWith("event-123", { approval: "approved" });
+      // uploadsArePrivate defaults to false, so no polling interval is set.
+      expect(useImagesQuery).toHaveBeenCalledWith(
+        "event-123",
+        { approval: "approved" },
+        false,
+        expect.any(Number)
+      );
     });
   });
 
@@ -81,7 +90,7 @@ describe("Guest Upload Page", () => {
     });
 
     it("navigates preview with ArrowRight and ArrowLeft", async () => {
-      vi.mocked(useImagesQuery).mockReturnValue(
+      vi.mocked(useMyImagesQuery).mockReturnValue(
         mockImagesLoaded([
           makeImage({ id: "image-1" }),
           makeImage({ id: "image-2" }),
@@ -118,7 +127,7 @@ describe("Guest Upload Page", () => {
     });
 
     it("wraps preview to last image when pressing ArrowLeft on first image", async () => {
-      vi.mocked(useImagesQuery).mockReturnValue(
+      vi.mocked(useMyImagesQuery).mockReturnValue(
         mockImagesLoaded([
           makeImage({ id: "image-1" }),
           makeImage({ id: "image-2" }),

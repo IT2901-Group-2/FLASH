@@ -1,4 +1,4 @@
-import { JWT_SECRET, storage } from "@/config";
+import { JWT_SECRET, MAX_IMAGE_SIZE, storage } from "@/config";
 import { HTTPError } from "@/lib/utils/error";
 import { getEventCookie } from "@/lib/utils/eventCookie";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
@@ -34,7 +34,6 @@ export class ImageService {
     this.storage = storage;
   }
 
-  static readonly MAX_IMAGE_SIZE = 12 * 1024 * 1024;
   static readonly TARGET_IMAGE_SIZES: number[] = [250];
 
   /**
@@ -50,7 +49,7 @@ export class ImageService {
         return Result.error(new Error("Unable to determine image size"));
       }
 
-      if (meta.size > ImageService.MAX_IMAGE_SIZE) {
+      if (meta.size > MAX_IMAGE_SIZE) {
         return Result.error(new Error("Image exceeded the max image size"));
       }
 
@@ -498,6 +497,19 @@ export class ImageService {
   }
 
   /**
+   * Retrieves the authenticated user's ID from the event cookie.
+   * @param eventId The id of the event.
+   * @returns A result containing the user ID, or a 403 error if the user is not logged in.
+   */
+  private getAuthenticatedUserId(eventId: string): AsyncResult<string, Error> {
+    return getEventCookie(eventId, JWT_SECRET)
+      .mapError(
+        () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
+      )
+      .map(({ userId }) => userId);
+  }
+
+  /**
    * Returns the number of images uploaded by the specified user in the specified event.
    * @param eventId The id of the event.
    * @param userId The id of the user.
@@ -518,6 +530,22 @@ export class ImageService {
   }
 
   /**
+   * Returns all images uploaded by the currently authenticated user in the given event,
+   * regardless of approval status.
+   *
+   * @param eventId The id of the event.
+   * @returns A result containing the list of `Image` objects or an error.
+   */
+  getImagesByUser(eventId: string): AsyncResult<Image[], Error> {
+    return this.getAuthenticatedUserId(eventId).mapCatching(userId =>
+      this.dbService.db
+        .select()
+        .from(imageTable)
+        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.userId, userId)))
+    );
+  }
+
+  /**
    * Returns the number of images uploaded by the currently authenticated user in the given event.
    *
    * @param eventId The id of the event.
@@ -525,9 +553,7 @@ export class ImageService {
    */
   getUploadedImageCount(eventId: string): AsyncResult<number, Error> {
     return Result.genCatching(this, function* () {
-      const { userId } = yield* getEventCookie(eventId, JWT_SECRET).mapError(
-        () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
-      );
+      const userId = yield* this.getAuthenticatedUserId(eventId);
 
       return yield* this.getUploadedImageCountByUser(eventId, userId);
     });

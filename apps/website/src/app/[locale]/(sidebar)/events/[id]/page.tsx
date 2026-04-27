@@ -2,7 +2,15 @@
 import { useEffect, useRef, useState } from "react";
 import { Download, ImageMinus, QrCode, Upload } from "lucide-react";
 import styles from "./UploadImage.module.css";
-import { ActionCard, Button, Dialog, ImageCard, QRDisplay } from "@flash/ui";
+import {
+  ActionCard,
+  Button,
+  Dialog,
+  QRDisplay,
+  SegmentedControl,
+  Title,
+} from "@flash/ui";
+import { ImageCard } from "@/components/ImageCard/ImageCard";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
@@ -12,11 +20,13 @@ import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 import {
   useDownloadImagesMutation,
   useImagesQuery,
+  useMyImagesQuery,
   useUploadedImageCountQuery,
   useUploadImageMutation,
 } from "@/hooks/useImages";
 import { ImagePreview } from "@/components/ImagePreview/ImagePreview";
 import { getImageSrc } from "@/lib/utils/images";
+import { EVENT_REFETCH_INTERVAL, PHOTOS_REFETCH_INTERVAL } from "@/config/images";
 
 export default function Page() {
   const router = useRouter();
@@ -29,13 +39,29 @@ export default function Page() {
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
   const { data, isLoading, isError } = useEventsQuery(
-    eventId ? { id: [eventId] } : undefined
+    eventId ? { id: [eventId] } : undefined,
+    undefined,
+    EVENT_REFETCH_INTERVAL
   );
   const eventData = data?.[0];
+  const uploadsArePrivate = eventData?.uploadsArePrivate ?? false;
+
+  const [activeTab, setActiveTab] = useState<"all" | "user">("all");
+  const showTabs = uploadsArePrivate || !!eventAuth.isModerator;
+  const isShowingUserTab = !showTabs || activeTab === "user";
 
   // Image Data
-  const { data: imagesData } = useImagesQuery(eventId, { approval: "approved" });
-  const images = imagesData ?? [];
+  const { data: imagesData } = useImagesQuery(
+    eventId,
+    { approval: "approved" },
+    !isShowingUserTab,
+    PHOTOS_REFETCH_INTERVAL
+  );
+  const { data: myImagesData } = useMyImagesQuery(
+    eventId,
+    isShowingUserTab,
+    PHOTOS_REFETCH_INTERVAL
+  );
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -147,12 +173,12 @@ export default function Page() {
         return;
       }
 
-      if (images.length <= 1) return;
+      if (displayedImages.length <= 1) return;
 
       if (event.key === "ArrowRight") {
         event.preventDefault();
         setPreviewIndex(currentIndex =>
-          currentIndex === null ? null : (currentIndex + 1) % images.length
+          currentIndex === null ? null : (currentIndex + 1) % displayedImages.length
         );
       }
 
@@ -161,26 +187,26 @@ export default function Page() {
         setPreviewIndex(currentIndex =>
           currentIndex === null
             ? null
-            : (currentIndex - 1 + images.length) % images.length
+            : (currentIndex - 1 + displayedImages.length) % displayedImages.length
         );
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [images.length, previewIndex]);
+  }, [displayedImages.length, previewIndex]);
 
   useEffect(() => {
     if (previewIndex === null) return;
-    if (images.length === 0) {
+    if (displayedImages.length === 0) {
       setPreviewIndex(null);
       return;
     }
 
-    if (previewIndex > images.length - 1) {
-      setPreviewIndex(images.length - 1);
+    if (previewIndex > displayedImages.length - 1) {
+      setPreviewIndex(displayedImages.length - 1);
     }
-  }, [images.length, previewIndex]);
+  }, [displayedImages.length, previewIndex]);
 
   return (
     <>
@@ -254,9 +280,11 @@ export default function Page() {
         {!isLoading && (isError || !eventData) ? (
           <p className={styles.errorText}>{tUpload("eventLoadFailed")}</p>
         ) : null}
-        <p role="alert" className={`${styles.errorText} ${styles.desktopOnly}`}>
-          {uploadError ?? ""}
-        </p>
+        {uploadError && (
+          <p role="alert" className={`${styles.errorText} ${styles.desktopOnly}`}>
+            {uploadError}
+          </p>
+        )}
         <div className={styles.mobileOnly}>
           <ActionCard
             data-testid="action-card"
@@ -288,21 +316,59 @@ export default function Page() {
         </div>
       </div>
 
-      {!isLoading && images.length === 0 ? (
+      {showTabs && (
+        <SegmentedControl
+          fill
+          className={styles.tabContainer}
+          value={activeTab}
+          onChange={handleTabChange}
+        >
+          <SegmentedControl.Item value="all" label={tUpload("tabs.allPhotos")} />
+          <SegmentedControl.Item value="user" label={tUpload("tabs.userPhotos")} />
+        </SegmentedControl>
+      )}
+
+      <div className={styles.sectionTitleRow}>
+        <Title as="h2" className={styles.sectionTitle}>
+          {isShowingUserTab ? tUpload("tabs.userPhotos") : tUpload("tabs.allPhotos")}
+        </Title>
+        {!isShowingUserTab && (
+          <Button
+            variant="secondary"
+            icon={<ChevronRight />}
+            iconPosition="right"
+            className={styles.slideshowButton}
+            onClick={() => router.push(`./${eventId}/slideshow`)}
+          >
+            {tCommon("actions.slideshow")}
+          </Button>
+        )}
+      </div>
+
+      {!isLoading && displayedImages.length === 0 ? (
         <div role="status" className={styles.emptyState}>
-          {tUpload("emptyState")}
+          {isShowingUserTab ? tUpload("userPhotosEmptyState") : tUpload("emptyState")}
         </div>
       ) : (
         <div className={styles.grid}>
-          {images.map((image, index) => (
+          {displayedImages.map((image, index) => (
             <ImageCard
               key={image.id}
-              variant="preview2"
               src={getImageSrc(eventId, image.id, { width: 200, height: 200 })}
-              alt={tUpload("imageAlt", { index: index + 1, total: images.length })}
+              alt={tUpload("imageAlt", {
+                index: index + 1,
+                total: displayedImages.length,
+              })}
               title={tUpload("imageTitle", { index: index + 1 })}
               data-image-id={image.id}
               placeholder={image.previewImage}
+              state={
+                image.isApproved === null
+                  ? "pending"
+                  : image.isApproved === false
+                    ? "rejected"
+                    : undefined
+              }
               onClick={() => handleImagePreview(index)}
             />
           ))}

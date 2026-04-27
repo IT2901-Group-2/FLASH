@@ -61,6 +61,10 @@
     "viewProgress": "{index} av {total}",
     "noApproved": "Ingen godkjente bilder"
   },
+  "imageStatus": {
+    "pending": "Ventende...",
+    "rejected": "Avvist"
+  },
   "uploads": {
     "remaining": {
       "short": "{count, plural, one {# opplasting} other {# opplastinger}} gjenstår",
