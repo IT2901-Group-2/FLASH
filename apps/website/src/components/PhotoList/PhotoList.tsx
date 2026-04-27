@@ -1,9 +1,9 @@
-import { GetImagesPage } from "@/db";
+import { GetImagesPage, Image } from "@/db";
 import { useLoadMore } from "@/hooks/useLoadMore";
 import { InfiniteData, UseInfiniteQueryResult } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { FC } from "react";
-import ImageCard from "../ImageCard/ImageCard";
+import ImageCard, { ImageCardState } from "../ImageCard/ImageCard";
 import { getImageSrc } from "@/lib/utils/images";
 import styles from "./PhotoList.module.css";
 
@@ -11,6 +11,7 @@ export type PhotoListProps = {
   eventId: string;
   query: UseInfiniteQueryResult<InfiniteData<GetImagesPage>>;
   loadingText: string;
+  setState?: (image: Image) => ImageCardState | undefined;
   onClick?: (_: { id: string; index: number }) => void;
 };
 
@@ -18,6 +19,7 @@ export const PhotoList: FC<PhotoListProps> = ({
   eventId,
   query,
   loadingText,
+  setState,
   onClick,
 }) => {
   const tUpload = useTranslations("guest.event.upload");
@@ -45,15 +47,9 @@ export const PhotoList: FC<PhotoListProps> = ({
             total: images.length,
           })}
           title={tUpload("imageTitle", { index: index + 1 })}
-          data-image-id={image.id}
+          data-testid={image.id}
           placeholder={image.previewImage}
-          state={
-            image.isApproved === null
-              ? "pending"
-              : image.isApproved === false
-                ? "rejected"
-                : undefined
-          }
+          state={setState && setState(image)}
           onClick={() => onClick && onClick({ id: image.id, index })}
         />
       ))}

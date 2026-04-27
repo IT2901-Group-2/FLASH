@@ -70,14 +70,14 @@ describe("ModeratePage", () => {
       expect(useImagesQuery).toHaveBeenCalledWith(
         "event-123",
         { approval: "pending" },
-        undefined,
+        true,
         PHOTOS_REFETCH_INTERVAL
       );
       await userEvent.click(screen.getByText("tabs.approved"));
       expect(useImagesQuery).toHaveBeenCalledWith(
         "event-123",
         { approval: "approved" },
-        undefined,
+        true,
         PHOTOS_REFETCH_INTERVAL
       );
     });

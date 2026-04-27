@@ -134,6 +134,9 @@ export default function ModeratePage() {
           onClick={({ id, index }) =>
             selectMode ? handleImageClick(id) : imagePreviewRef.current?.open(index)
           }
+          setState={({ id }) =>
+            selectMode && selectedIds.has(id) ? "selected" : "default"
+          }
         />
       </div>
 

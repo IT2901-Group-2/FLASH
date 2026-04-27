@@ -293,6 +293,9 @@ export default function Page() {
           isShowingUserTab ? tUpload("userPhotosEmptyState") : tUpload("emptyState")
         }
         onClick={({ index }) => imagePreviewRef.current?.open(index)}
+        setState={({ isApproved }) =>
+          isApproved === null ? "pending" : isApproved === false ? "rejected" : undefined
+        }
       />
     </>
   );
