@@ -33,6 +33,7 @@ import {
   ChevronRight,
   Download,
   ImageMinus,
+  OctagonAlert,
   QrCode,
   Upload,
   X,
@@ -49,15 +50,6 @@ const IMAGE_PAGE_SIZE = 12;
 const maxFileSizeInMb = Math.ceil(MAX_IMAGE_SIZE / (1024 * 1024)); //TODO: Move this to a more appropriate location
 
 export default function Page() {
-  return (
-    <Toast.Provider>
-      <UploadPageContent />
-      <Toaster />
-    </Toast.Provider>
-  );
-}
-
-function UploadPageContent() {
   const router = useRouter();
   const tCommon = useTranslations("common");
   const tUpload = useTranslations("guest.event.upload");
@@ -104,7 +96,9 @@ function UploadPageContent() {
   const showUploadErrorToast = (message: string) => {
     createToast({
       id: "upload-error-toast",
-      title: message,
+      title: tUpload("errors.uploadFailed"),
+      description: message,
+      icon: <OctagonAlert />,
       "data-color": "danger",
       duration: 5000,
     });

@@ -32,7 +32,7 @@ type PatternErrorKey = (typeof UPLOAD_ERROR_PATTERNS)[number]["key"];
 export type UploadErrorMessageDescriptor =
   | { key: "errors.uploadFailedTooLarge"; values: { maxFileSize: number } }
   | { key: Exclude<PatternErrorKey, "errors.uploadFailedTooLarge"> }
-  | { key: "errors.uploadFailed"; values: { count: number } };
+  | { key: "errors.uploadFailedUnknown"; values: { count: number } };
 
 type UploadErrorMessageOptions = {
   maxFileSize: number;
@@ -61,6 +61,10 @@ const matchesRejectedError = (
  * - If there are rejected results but none match known patterns, a generic upload failed message
  * with the count of failures is returned.
  * - If there are no rejected results, null is returned (This resets any currently displayed error message).
+ *
+ * @param results - An array of PromiseSettledResult objects representing the outcomes of file upload attempts.
+ * @param options - Additional options needed for constructing certain error messages (e.g. max file size).
+ * @returns An UploadErrorMessageDescriptor describing the appropriate error message to display, or null if there are no errors.
  */
 export const getUploadErrorMessageDescriptor = (
   results: PromiseSettledResult<unknown>[],
@@ -75,7 +79,7 @@ export const getUploadErrorMessageDescriptor = (
   );
 
   if (!matched) {
-    return { key: "errors.uploadFailed", values: { count: failures.length } };
+    return { key: "errors.uploadFailedUnknown", values: { count: failures.length } };
   }
 
   if (matched.key === "errors.uploadFailedTooLarge") {

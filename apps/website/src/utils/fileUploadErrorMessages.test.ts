@@ -70,7 +70,7 @@ describe("getUploadErrorMessageDescriptor", () => {
     ];
 
     expect(getUploadErrorMessageDescriptor(results, options)).toEqual({
-      key: "errors.uploadFailed",
+      key: "errors.uploadFailedUnknown",
       values: { count: 2 },
     });
   });
