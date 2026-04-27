@@ -87,7 +87,7 @@ describe("EventCard", () => {
     expect(useDeleteEventMutation().mutate).toHaveBeenCalledOnce();
   });
 
-  it("opens the delete dialog and doesa not delets the event", async () => {
+  it("opens the delete dialog and does not delete the event", async () => {
     const data = makeEvent();
     renderWithQuery(<EventCard data={data} />);
     await userEvent.click(screen.getByTestId("delete-button"));
