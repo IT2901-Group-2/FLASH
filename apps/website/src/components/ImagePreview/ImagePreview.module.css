@@ -1,0 +1,68 @@
+.previewPage {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bodyLocked {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.previewFullscreenImage {
+  object-fit: contain;
+}
+
+.previewClose {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+}
+
+.previewNavButtonLeft,
+.previewNavButtonRight {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.previewNavButtonLeft {
+  left: 1rem;
+}
+
+.previewNavButtonRight {
+  right: 1rem;
+}
+
+@media (width < 768px) {
+  .previewClose {
+    right: 0.75rem;
+    top: 0.75rem;
+    width: 3rem;
+    height: 3rem;
+    padding: 0.4rem;
+  }
+
+  .previewNavButtonLeft,
+  .previewNavButtonRight {
+    width: 2.75rem;
+    height: 2.75rem;
+    top: auto;
+    bottom: calc(1rem + env(safe-area-inset-bottom));
+    transform: none;
+  }
+
+  .previewNavButtonLeft {
+    left: calc(50% - 3rem);
+    right: auto;
+  }
+
+  .previewNavButtonRight {
+    left: calc(50% + 1.25rem);
+    right: auto;
+  }
+}
