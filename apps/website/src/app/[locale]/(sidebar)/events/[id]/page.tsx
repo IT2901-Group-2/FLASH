@@ -292,7 +292,7 @@ export default function Page() {
         loadingText={
           isShowingUserTab ? tUpload("userPhotosEmptyState") : tUpload("emptyState")
         }
-        onClick={(index) => imagePreviewRef.current?.open(index)}
+        onClick={index => imagePreviewRef.current?.open(index)}
       />
     </>
   );
