@@ -47,7 +47,6 @@ export const PhotoList: FC<PhotoListProps> = ({
             total: images.length,
           })}
           title={tUpload("imageTitle", { index: index + 1 })}
-          data-testid={image.id}
           placeholder={image.previewImage}
           state={setState && setState(image)}
           onClick={() => onClick && onClick({ id: image.id, index })}
