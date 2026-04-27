@@ -6,7 +6,7 @@ import {
   renderWithQuery,
 } from "@test-config";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import ModeratePage from "./page";
 import { useBatchUpdateImageMutation, useImagesQuery } from "@/hooks/useImages";
 import { PHOTOS_REFETCH_INTERVAL } from "@/config/images";
@@ -100,6 +100,24 @@ describe("ModeratePage", () => {
       vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoaded([]));
       renderWithQuery(<ModeratePage />);
       expect(screen.getByText("emptyState.pending")).toBeDefined();
+    });
+
+    it("opens image preview when clicking an image outside select mode", async () => {
+      renderWithQuery(<ModeratePage />);
+
+      expect(screen.queryByRole("dialog")).toBeNull();
+      await userEvent.click(screen.getByTestId("image-1"));
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
+    });
+
+    it("closes image preview when pressing Escape", async () => {
+      renderWithQuery(<ModeratePage />);
+
+      await userEvent.click(screen.getByTestId("image-1"));
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+      fireEvent.keyDown(window, { key: "Escape" });
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
   });
 

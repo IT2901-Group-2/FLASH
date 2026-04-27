@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useRef, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ActionCard, SegmentedControl, Title, useToast } from "@flash/ui";
 import { ImageCard } from "@/components/ImageCard/ImageCard";
@@ -11,6 +11,7 @@ import { useTranslations } from "next-intl";
 import styles from "./Moderate.module.css";
 import { CircleAlert } from "lucide-react";
 import { PHOTOS_REFETCH_INTERVAL } from "@/config/images";
+import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
 
 type Tab = "pending" | "approved" | "rejected";
 
@@ -31,6 +32,7 @@ export default function ModeratePage() {
       }),
     [createToast, t]
   );
+  const imagePreviewRef = useRef<ImagePreviewHandle>(null);
 
   const [activeTab, setActiveTab] = useState<Tab>("pending");
 
@@ -140,7 +142,11 @@ export default function ModeratePage() {
                 alt={t("imageAlt", { index: index + 1, total: images.length })}
                 title={t("imageTitle", { index: index + 1 })}
                 state={selectMode && selectedIds.has(image.id) ? "selected" : "default"}
-                onClick={() => handleImageClick(image.id)}
+                onClick={() =>
+                  selectMode
+                    ? handleImageClick(image.id)
+                    : imagePreviewRef.current?.open(index)
+                }
                 data-testid={image.id}
                 placeholder={image.previewImage}
               />
@@ -148,6 +154,16 @@ export default function ModeratePage() {
           </div>
         )}
       </div>
+
+      <ImagePreview ref={imagePreviewRef} images={images} />
+
+      {/* The error banner/sonnar/toast is just a placeholder for now,
+      and is to be implemented as a component later */}
+      {bulkError && (
+        <div role="alert" className={styles.errorBanner}>
+          {bulkError}
+        </div>
+      )}
 
       {selectedIds.size > 0 && (
         <div className={styles.actionCardContainer}>
