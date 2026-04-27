@@ -98,7 +98,11 @@
       "imageTitle": "Bilde {index}",
       "errors": {
         "uploadUnavailable": "Kan ikke laste opp bilder for dette eventet.",
-        "uploadFailed": "{count, plural, one {Kunne ikke laste opp bilde} other {Noen bilder kunne ikke lastes opp}}",
+        "uploadFailedTitle": "Opplasting mislyktes",
+        "uploadFailedUnknown": "{count, plural, one {Noe gikk galt. Prøv igjen.} other {Noen bilder kunne ikke lastes opp. Prøv igjen.}}",
+        "uploadFailedTooLarge": "Filen er for stor. Maks filstørrelse er {maxFileSize} MB.",
+        "uploadFailedUnsupportedFormat": "Filformatet støttes ikke.",
+        "uploadFailedNetwork": "Sjekk internettforbindelsen din og prøv igjen.",
         "uploadLimitReached": "Du har nådd opplastingsgrensen for dette eventet."
       }
     }

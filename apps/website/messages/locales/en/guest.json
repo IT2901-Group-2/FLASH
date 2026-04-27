@@ -98,7 +98,11 @@
       "imageTitle": "Photo {index}",
       "errors": {
         "uploadUnavailable": "Unable to upload images for this event.",
-        "uploadFailed": "{count, plural, one {Could not upload photo} other {Some photos could not be uploaded}}",
+        "uploadFailedTitle": "Upload Failed",
+        "uploadFailedUnknown": "{count, plural, one {Something went wrong. Please try again.} other {Some photos could not be uploaded. Please try again.}}",
+        "uploadFailedTooLarge": "The file is too large. Max file size is {maxFileSize} MB.",
+        "uploadFailedUnsupportedFormat": "The file format is not supported.",
+        "uploadFailedNetwork": "Please check your internet connection and try again.",
         "uploadLimitReached": "You have reached this event's image upload limit."
       }
     }
