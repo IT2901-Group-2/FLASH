@@ -1,5 +1,4 @@
 "use client";
-import { ImageCard } from "@/components/ImageCard/ImageCard";
 import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
 import {
   EVENT_REFETCH_INTERVAL,
@@ -38,26 +37,16 @@ import {
   Upload,
   X,
 } from "lucide-react";
-import styles from "./UploadImage.module.css";
-import {
-  ActionCard,
-  Button,
-  Dialog,
-  QRDisplay,
-  SegmentedControl,
-  Title,
-} from "@flash/ui";
-import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styles from "./UploadImage.module.css";
 
-const maxFileSizeInMb = Math.ceil(MAX_IMAGE_SIZE / (1024 * 1024)); //TODO: Move this to a more appropriate location
 import { PhotoList } from "@/components/PhotoList/PhotoList";
 
 const IMAGE_PAGE_SIZE = 12;
+const maxFileSizeInMb = Math.ceil(MAX_IMAGE_SIZE / (1024 * 1024)); //TODO: Move this to a more appropriate location
 
 export default function Page() {
   return (
@@ -111,7 +100,6 @@ function UploadPageContent() {
 
   const [isUploading, setIsUploading] = useState(false);
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
-  const displayedImages = (isShowingUserTab ? myImagesData : imagesData) ?? [];
 
   const showUploadErrorToast = (message: string) => {
     createToast({
