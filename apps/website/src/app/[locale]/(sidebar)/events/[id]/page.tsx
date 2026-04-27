@@ -1,5 +1,5 @@
 "use client";
-import { FC, RefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -18,7 +18,6 @@ import {
   SegmentedControl,
   Title,
 } from "@flash/ui";
-import { ImageCard } from "@/components/ImageCard/ImageCard";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
@@ -35,42 +34,7 @@ import {
 import Image from "next/image";
 import { getImageSrc } from "@/lib/utils/images";
 import { EVENT_REFETCH_INTERVAL, PHOTOS_REFETCH_INTERVAL } from "@/config/images";
-import { InfiniteData, UseInfiniteQueryResult } from "@tanstack/react-query";
-import { GetImagesPage } from "@/db";
-
-function useLoadMore({
-  hasNextPage,
-  isFetchingNextPage,
-  fetchNextPage,
-}: UseInfiniteQueryResult): RefObject<HTMLDivElement | null> {
-  const loadMoreRef = useRef<HTMLDivElement>(null);
-
-  // Auto-fetch the next page when the user scrolls near the end of the current list.
-  useEffect(() => {
-    if (hasNextPage !== true) return;
-
-    const target = loadMoreRef.current;
-    if (!target) return;
-
-    const observer = new IntersectionObserver(
-      entries => {
-        const entry = entries[0];
-        if (!entry?.isIntersecting || isFetchingNextPage) return;
-        void fetchNextPage();
-      },
-      {
-        root: null,
-        rootMargin: "200px 0px",
-        threshold: 0,
-      }
-    );
-
-    observer.observe(target);
-    return () => observer.disconnect();
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
-
-  return loadMoreRef;
-}
+import { PhotoList } from "@/components/PhotoList/PhotoList";
 
 const IMAGE_PAGE_SIZE = 12;
 
@@ -487,51 +451,3 @@ export default function Page() {
     </>
   );
 }
-
-const PhotoList: FC<{
-  eventId: string;
-  query: UseInfiniteQueryResult<InfiniteData<GetImagesPage>>;
-  loadingText: string;
-  onClick?: (idx: number) => void;
-}> = ({ eventId, query, loadingText, onClick }) => {
-  const tUpload = useTranslations("guest.event.upload");
-  const loadMoreRef = useLoadMore(query);
-
-  const { data, hasNextPage, isLoading } = query;
-  const images = data?.pages.flatMap(page => page.items) ?? [];
-
-  if (isLoading || images.length === 0) {
-    return (
-      <div role="status" className={styles.emptyState}>
-        {loadingText}
-      </div>
-    );
-  }
-
-  return (
-    <div className={styles.grid}>
-      {images.map((image, index) => (
-        <ImageCard
-          key={image.id}
-          src={getImageSrc(eventId, image.id, { width: 200, height: 200 })}
-          alt={tUpload("imageAlt", {
-            index: index + 1,
-            total: images.length,
-          })}
-          title={tUpload("imageTitle", { index: index + 1 })}
-          data-image-id={image.id}
-          placeholder={image.previewImage}
-          state={
-            image.isApproved === null
-              ? "pending"
-              : image.isApproved === false
-                ? "rejected"
-                : undefined
-          }
-          onClick={() => onClick && onClick(index)}
-        />
-      ))}
-      {hasNextPage && <div ref={loadMoreRef} className={styles.loadMoreSentinel} />}
-    </div>
-  );
-};
