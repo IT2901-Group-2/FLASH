@@ -1,5 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
-import type { CoverageReportOptions } from "monocart-reporter";
+// import type { CoverageReportOptions } from "monocart-reporter";
 
 /**
  * Read environment variables from file.
