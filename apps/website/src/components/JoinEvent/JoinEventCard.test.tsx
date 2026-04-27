@@ -108,7 +108,6 @@ describe("JoinEventCard", () => {
       it("hides the scanner again after a second toggle", async () => {
         await openCamera();
         await openCamera();
-
         expect(screen.queryByTestId("qr-scanner")).not.toBeInTheDocument();
       });
     });
@@ -122,9 +121,7 @@ describe("JoinEventCard", () => {
 
       it("navigates to /join/{code} on a valid scan", async () => {
         triggerScan("http://localhost/join/EVT999");
-        await waitFor(() => {
-          expect(mockRouter.push).toHaveBeenCalledWith("/join/EVT999");
-        });
+        await waitFor(() => expect(mockRouter.push).toHaveBeenCalledWith("/join/EVT999"));
       });
 
       it("calls makeRequest with the correct path on a valid scan", async () => {
