@@ -1,4 +1,11 @@
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Button } from "@flash/ui";
 import Image from "next/image";
@@ -31,14 +38,14 @@ export const ImagePreview = forwardRef<ImagePreviewHandle, ImagePreviewProps>(
     const closePreview = () => setPreviewIndex(null);
 
     const nextPreviewImage = useCallback(() => {
-      setPreviewIndex((prev) => {
+      setPreviewIndex(prev => {
         if (prev === null || images.length === 0) return prev;
         return (prev + 1) % images.length;
       });
     }, [images.length]);
 
     const prevPreviewImage = useCallback(() => {
-      setPreviewIndex((prev) => {
+      setPreviewIndex(prev => {
         if (prev === null || images.length === 0) return prev;
         return (prev - 1 + images.length) % images.length;
       });
