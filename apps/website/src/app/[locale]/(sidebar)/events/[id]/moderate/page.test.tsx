@@ -9,6 +9,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { screen, waitFor } from "@testing-library/react";
 import ModeratePage from "./page";
 import { useBatchUpdateImageMutation, useImagesQuery } from "@/hooks/useImages";
+import { PHOTOS_REFETCH_INTERVAL } from "@/config/images";
 import userEvent from "@testing-library/user-event";
 
 vi.mock("@/hooks/useImages", () => imageHooksMock());
@@ -66,9 +67,9 @@ describe("ModeratePage", () => {
     it("updates the displayed images to match the selected status when switching tabs ", async () => {
       renderWithQuery(<ModeratePage />);
 
-      expect(useImagesQuery).toHaveBeenCalledWith("event-123", { approval: "pending" });
+      expect(useImagesQuery).toHaveBeenCalledWith("event-123", { approval: "pending" }, undefined, PHOTOS_REFETCH_INTERVAL);
       await userEvent.click(screen.getByText("tabs.approved"));
-      expect(useImagesQuery).toHaveBeenCalledWith("event-123", { approval: "approved" });
+      expect(useImagesQuery).toHaveBeenCalledWith("event-123", { approval: "approved" }, undefined, PHOTOS_REFETCH_INTERVAL);
     });
 
     it("cannot switch tabs while in select mode", async () => {
