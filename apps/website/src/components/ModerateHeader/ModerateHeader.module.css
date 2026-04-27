@@ -1,119 +1,70 @@
-/* ── Shared header shell ── */
 .header {
-  background: var(--color-primary-base);
-  width: 100%;
-  box-sizing: border-box;
-  position: sticky;
-  top: -1px;
-  z-index: 100;
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.2s ease;
-}
-
-.scrolled {
-  border-bottom-color: var(--color-border-base);
-}
-
-/* ── MOBILE layout (default, < 768px) ── */
-
-/* Hide desktop row on mobile */
-.desktopRow {
-  display: none;
-}
-
-/* Title bar: 73px tall, centres title, back icon pinned absolute-left */
-.mobileTitleBar {
-  position: relative;
   display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  height: 73px;
-  padding-top: 22px;
-  padding-bottom: 10px;
-  overflow: hidden;
+  width: 100%;
+  padding: 1rem 2rem;
+  box-sizing: border-box;
+  background-color: var(--color-primary-base);
+  border-bottom: 1px solid var(--color-border-base);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  min-height: 6.85rem;
 }
 
-.mobileBackButton {
-  position: absolute;
-  left: 16px;
-  color: var(--color-text-base);
+.leftSection {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.rightSection {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.backButton {
   padding: 0;
   min-width: unset;
+  color: var(--color-text-base);
 }
 
-/* Bottom bar: 45px tall, holds breadcrumb or select actions */
-.mobileBottomBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 45px;
-  padding-left: 30px;
-  padding-right: 10px;
-  box-sizing: border-box;
-  margin: 0.8rem 0 1rem;
+@media (max-width: 768px) {
+  .header {
+    padding: 1rem 1rem 1rem 0.5rem;
+    min-height: 5.5rem;
+  }
+
+  .title {
+    font-size: var(--font-size-heading-medium) !important;
+  }
+
+  .backButton {
+    padding: 0.5rem !important;
+  }
+
+  .actionButton {
+    height: 2.5rem;
+    font-size: var(--font-size-medium);
+    padding-inline: 1rem;
+  }
 }
 
-/* Mobile button width overrides (height from Button size="xsmall") */
-.mobileSelectButton {
-  width: 95px;
-  min-width: unset;
-}
-
-/* Mobile select actions: right-aligned button group, gap 8px */
-.mobileSelectActions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: auto;
-}
-
-.mobileSelectAllButton {
-  width: 128px;
-  min-width: unset;
-}
-
-/* ── DESKTOP layout (≥ 768px) ── */
-@media (min-width: 768px) {
-  /* Hide mobile rows */
-  .mobileTitleBar,
-  .mobileBottomBar {
+@media (max-width: 469px) {
+  .titleSelectMode {
     display: none;
-  }
-
-  /* Show desktop row */
-  .desktopRow {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 16px 30px;
-    height: 153px;
-    box-sizing: border-box;
-  }
-
-  /* Center block: title left, actions right */
-  .desktopCenter {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-width: 0;
-  }
-
-  /* Desktop action group */
-  .desktopActions {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex-shrink: 0;
-  }
-
-  .desktopBackButton {
-    min-width: unset;
-  }
-
-  /* Desktop button width override (height from Button default size) */
-  .desktopButton {
-    width: 142px;
-    min-width: 10rem;
   }
 }

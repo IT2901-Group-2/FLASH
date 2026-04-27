@@ -54,7 +54,7 @@
         "rejected": "Avvist"
       },
       "headings": {
-        "pending": "Bilder til godkjenning",
+        "pending": "Til godkjenning",
         "approved": "Godkjente bilder",
         "rejected": "Avviste bilder"
       },
@@ -68,13 +68,14 @@
         "select": "Velg",
         "cancel": "Avbryt",
         "selectAll": "Velg alle",
-        "deselectAll": "Fjern alle valg"
+        "deselectAll": "Fjern alle valgte"
       },
       "aria": {
         "goBack": "Gå tilbake",
         "home": "Hjem",
         "goTo": "Gå til"
       },
+      "bulkUpdateFailed": "{count, plural, one {# bilde kunne ikke oppdateres.} other {# bilder kunne ikke oppdateres.}}",
       "imageStates": {
         "pending": "Venter...",
         "loading": "Laster...",
