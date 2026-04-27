@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ActionCard, SegmentedControl } from "@flash/ui";
 import { ImageCard } from "@/components/ImageCard/ImageCard";
@@ -9,6 +9,7 @@ import { useImagesQuery } from "@/hooks/useImages";
 import { useImageSelection } from "./useImageSelection";
 import { useTranslations } from "next-intl";
 import styles from "./Moderate.module.css";
+import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
 
 type Tab = "pending" | "approved" | "rejected";
 
@@ -16,6 +17,7 @@ export default function ModeratePage() {
   const router = useRouter();
   const { id: eventId, locale } = useParams<{ id: string; locale: string }>();
   const t = useTranslations("guest.event.moderate");
+  const imagePreviewRef = useRef<ImagePreviewHandle>(null);
 
   const [activeTab, setActiveTab] = useState<Tab>("pending");
 
@@ -126,7 +128,11 @@ export default function ModeratePage() {
                 alt={t("imageAlt", { index: index + 1, total: images.length })}
                 title={t("imageTitle", { index: index + 1 })}
                 state={selectMode && selectedIds.has(image.id) ? "selected" : "default"}
-                onClick={() => handleImageClick(image.id)}
+                onClick={() =>
+                  selectMode
+                    ? handleImageClick(image.id)
+                    : imagePreviewRef.current?.open(index)
+                }
                 data-testid={image.id}
                 placeholder={image.previewImage}
               />
@@ -134,6 +140,9 @@ export default function ModeratePage() {
           </div>
         )}
       </div>
+
+      <ImagePreview ref={imagePreviewRef} images={images} />
+
       {/* The error banner/sonnar/toast is just a placeholder for now,
       and is to be implemented as a component later */}
       {bulkError && (
