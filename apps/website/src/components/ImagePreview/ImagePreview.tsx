@@ -17,6 +17,10 @@ export const ImagePreview = forwardRef<ImagePreviewHandle, ImagePreviewProps>(
   ({ images }, ref) => {
     const [previewIndex, setPreviewIndex] = useState<number | null>(null);
     const touchStartX = useRef<number | null>(null);
+    const isValidIndex =
+      previewIndex !== null &&
+      previewIndex >= 0 &&
+      previewIndex < images.length;
 
     useImperativeHandle(
       ref,
@@ -49,19 +53,7 @@ export const ImagePreview = forwardRef<ImagePreviewHandle, ImagePreviewProps>(
 
       window.addEventListener("keydown", handleKeyDown);
       return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [previewIndex, setPreviewIndex]);
-
-    useEffect(() => {
-      if (previewIndex === null) return;
-      if (images.length === 0) {
-        setPreviewIndex(null);
-        return;
-      }
-
-      if (previewIndex > images.length - 1) {
-        setPreviewIndex(images.length - 1);
-      }
-    }, [images.length, previewIndex, setPreviewIndex]);
+    }, [previewIndex]);
 
     const closePreview = () => setPreviewIndex(null);
 
@@ -96,7 +88,7 @@ export const ImagePreview = forwardRef<ImagePreviewHandle, ImagePreviewProps>(
       }
     };
 
-    if (previewIndex === null || !images[previewIndex]) return null;
+    if (previewIndex === null || images.length === 0 || !isValidIndex) return null;
 
     const currentImage = images[previewIndex];
     const eventId = currentImage.eventId;
@@ -148,3 +140,5 @@ export const ImagePreview = forwardRef<ImagePreviewHandle, ImagePreviewProps>(
     );
   }
 );
+
+ImagePreview.displayName = "ImagePreview";
