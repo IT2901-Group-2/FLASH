@@ -1,7 +1,7 @@
 import { THEME_RESOLVED_COOKIE_KEY } from "@/config/theme";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import ThemeProvider from "@/providers/ThemeProvider";
-import { Toast, Toaster } from "@flash/ui";
+import ToastProvider from "@/providers/ToastProvider";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -52,10 +52,7 @@ export default async function RootLayout({
         <NextIntlClientProvider>
           <ReactQueryProvider>
             <ThemeProvider defaultTheme={"system"}>
-              <Toast.Provider>
-                {children}
-                <Toaster />
-              </Toast.Provider>
+              <ToastProvider>{children}</ToastProvider>
             </ThemeProvider>
           </ReactQueryProvider>
         </NextIntlClientProvider>
