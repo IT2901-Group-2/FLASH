@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { FC, RefObject, useEffect, useRef, useState } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -35,57 +35,14 @@ import {
 import Image from "next/image";
 import { getImageSrc } from "@/lib/utils/images";
 import { EVENT_REFETCH_INTERVAL, PHOTOS_REFETCH_INTERVAL } from "@/config/images";
+import { UseInfiniteQueryResult } from "@tanstack/react-query";
+import { Image as ImageType } from "@/db";
 
-const IMAGE_PAGE_SIZE = 12;
-
-export default function Page() {
-  const router = useRouter();
-  const tCommon = useTranslations("common");
-  const tUpload = useTranslations("guest.event.upload");
-  const eventAuth = useEventAuth();
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const { mutate: downloadImages } = useDownloadImagesMutation();
-
-  // Event Data
-  const { id: eventId } = useParams<{ id: string }>();
-  const { data, isLoading, isError } = useEventsQuery(
-    eventId ? { id: [eventId] } : undefined,
-    undefined,
-    EVENT_REFETCH_INTERVAL
-  );
-  const eventData = data?.pages[0]?.items[0];
-  const uploadsArePrivate = eventData?.uploadsArePrivate ?? false;
-  const [activeTab, setActiveTab] = useState<"all" | "user">("all");
-  const showTabs = uploadsArePrivate || !!eventAuth.isModerator;
-  const isShowingUserTab = !showTabs || activeTab === "user";
-
-  // Image Data
-  const {
-    data: imagesPages,
-    hasNextPage,
-    isFetchingNextPage,
-    fetchNextPage,
-    isLoading: isImagesLoading,
-  } = useImagesQuery(
-    eventId,
-    { approval: "approved", pageSize: IMAGE_PAGE_SIZE },
-    !isShowingUserTab,
-    PHOTOS_REFETCH_INTERVAL
-  );
-  const images = imagesPages?.pages.flatMap(page => page.items) ?? [];
-
-  const {
-    data: myImagesData, // TODO: Fetch more pages
-  } = useMyImagesQuery(
-    eventId,
-    { pageSize: IMAGE_PAGE_SIZE },
-    isShowingUserTab,
-    PHOTOS_REFETCH_INTERVAL
-  );
-  const myImages = myImagesData?.pages.flatMap(page => page.items) ?? [];
-
-  const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
-
+function useLoadMore({
+  hasNextPage,
+  isFetchingNextPage,
+  fetchNextPage,
+}: UseInfiniteQueryResult): RefObject<HTMLDivElement | null> {
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   // Auto-fetch the next page when the user scrolls near the end of the current list.
@@ -112,10 +69,38 @@ export default function Page() {
     return () => observer.disconnect();
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
+  return loadMoreRef;
+}
+
+const IMAGE_PAGE_SIZE = 12;
+
+export default function Page() {
+  const router = useRouter();
+  const tCommon = useTranslations("common");
+  const tUpload = useTranslations("guest.event.upload");
+  const eventAuth = useEventAuth();
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const { mutate: downloadImages } = useDownloadImagesMutation();
+
+  // Event Data
+  const { id: eventId } = useParams<{ id: string }>();
+  const { data, isLoading, isError } = useEventsQuery(
+    eventId ? { id: [eventId] } : undefined,
+    undefined,
+    EVENT_REFETCH_INTERVAL
+  );
+  const eventData = data?.pages[0]?.items[0];
+  const uploadsArePrivate = eventData?.uploadsArePrivate ?? false;
+  const [activeTab, setActiveTab] = useState<"all" | "user">("all");
+  const showTabs = uploadsArePrivate || !!eventAuth.isModerator;
+  const isShowingUserTab = !showTabs || activeTab === "user";
+
+  const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
+
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
-  const displayedImages = (isShowingUserTab ? myImages : images) ?? [];
+  const displayedImages: ImageType[] = [];
 
   const handleTabChange = (val: string) => {
     if (val === "all" || val === "user") setActiveTab(val);
@@ -475,41 +460,118 @@ export default function Page() {
           </Button>
         )}
       </div>
-
-      {!isLoading && displayedImages.length === 0 ? (
-        <div role="status" className={styles.emptyState}>
-          {isShowingUserTab ? tUpload("userPhotosEmptyState") : tUpload("emptyState")}
-        </div>
+      {isShowingUserTab ? (
+        <MyPhotos eventId={eventId} onClick={handleImagePreview} />
       ) : (
-        <>
-          <div className={styles.grid}>
-            {displayedImages.map((image, index) => (
-              <ImageCard
-                key={image.id}
-                src={getImageSrc(eventId, image.id, { width: 200, height: 200 })}
-                alt={tUpload("imageAlt", {
-                  index: index + 1,
-                  total: displayedImages.length,
-                })}
-                title={tUpload("imageTitle", { index: index + 1 })}
-                data-image-id={image.id}
-                placeholder={image.previewImage}
-                state={
-                  image.isApproved === null
-                    ? "pending"
-                    : image.isApproved === false
-                      ? "rejected"
-                      : undefined
-                }
-                onClick={() => handleImagePreview(index)}
-              />
-            ))}
-          </div>
-          {hasNextPage ? (
-            <div ref={loadMoreRef} className={styles.loadMoreSentinel} />
-          ) : null}
-        </>
+        <AllPhotos eventId={eventId} onClick={handleImagePreview} />
       )}
     </>
   );
 }
+
+const AllPhotos: FC<{ eventId: string; onClick: (idx: number) => void }> = ({
+  eventId,
+  onClick,
+}) => {
+  const tUpload = useTranslations("guest.event.upload");
+
+  // Image Data
+  const imageQuery = useImagesQuery(
+    eventId,
+    { approval: "approved", pageSize: IMAGE_PAGE_SIZE },
+    true,
+    PHOTOS_REFETCH_INTERVAL
+  );
+  const loadMoreRef = useLoadMore(imageQuery);
+
+  const { data: imagesPages, hasNextPage, isLoading } = imageQuery;
+  const images = imagesPages?.pages.flatMap(page => page.items) ?? [];
+
+  if (isLoading || images.length === 0) {
+    return (
+      <div role="status" className={styles.emptyState}>
+        {tUpload("emptyState")}
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.grid}>
+      {images.map((image, index) => (
+        <ImageCard
+          key={image.id}
+          src={getImageSrc(eventId, image.id, { width: 200, height: 200 })}
+          alt={tUpload("imageAlt", {
+            index: index + 1,
+            total: images.length,
+          })}
+          title={tUpload("imageTitle", { index: index + 1 })}
+          data-image-id={image.id}
+          placeholder={image.previewImage}
+          state={
+            image.isApproved === null
+              ? "pending"
+              : image.isApproved === false
+                ? "rejected"
+                : undefined
+          }
+          onClick={() => onClick(index)}
+        />
+      ))}
+      {hasNextPage && <div ref={loadMoreRef} className={styles.loadMoreSentinel} />}
+    </div>
+  );
+};
+
+const MyPhotos: FC<{ eventId: string; onClick: (idx: number) => void }> = ({
+  eventId,
+  onClick,
+}) => {
+  const tUpload = useTranslations("guest.event.upload");
+
+  const imageQuery = useMyImagesQuery(
+    eventId,
+    { pageSize: IMAGE_PAGE_SIZE },
+    true,
+    PHOTOS_REFETCH_INTERVAL
+  );
+  const loadMoreRef = useLoadMore(imageQuery);
+
+  const { data: myImagesData, hasNextPage, isLoading } = imageQuery;
+  const myImages = myImagesData?.pages.flatMap(page => page.items) ?? [];
+
+  if (isLoading || myImages.length === 0) {
+    return (
+      <div role="status" className={styles.emptyState}>
+        {tUpload("userPhotosEmptyState")}
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.grid}>
+      {myImages.map((image, index) => (
+        <ImageCard
+          key={image.id}
+          src={getImageSrc(eventId, image.id, { width: 200, height: 200 })}
+          alt={tUpload("imageAlt", {
+            index: index + 1,
+            total: myImages.length,
+          })}
+          title={tUpload("imageTitle", { index: index + 1 })}
+          data-image-id={image.id}
+          placeholder={image.previewImage}
+          state={
+            image.isApproved === null
+              ? "pending"
+              : image.isApproved === false
+                ? "rejected"
+                : undefined
+          }
+          onClick={() => onClick(index)}
+        />
+      ))}
+      {hasNextPage && <div ref={loadMoreRef} className={styles.loadMoreSentinel} />}
+    </div>
+  );
+};

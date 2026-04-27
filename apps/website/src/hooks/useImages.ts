@@ -2,6 +2,7 @@ import {
   getImageSchema,
   getImagesPageSchema,
   GetImagesParams,
+  GetMyImagesParams,
   UpdateImage,
   uploadedImageCountSchema,
 } from "@/db";
@@ -122,7 +123,7 @@ export function useImagesQuery(
  */
 export function useMyImagesQuery(
   eventId?: string,
-  params?: GetImagesParams,
+  params?: GetMyImagesParams,
   enabled = true,
   refetchInterval?: number
 ) {
@@ -132,7 +133,7 @@ export function useMyImagesQuery(
     queryFn: ({ pageParam }) =>
       makeRequest(
         getImagesPageSchema,
-        `/api/events/${eventId}/images/my?cursor=${pageParam}`
+        `/api/events/${eventId}/images/my${toImagesSearchParams({ ...params, cursor: pageParam })}`
       ),
     getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
     enabled: !!eventId && enabled,

@@ -16,6 +16,7 @@ import {
   imageSizesTable,
   imageTable,
   UpdateImage,
+  GetMyImagesParams,
 } from "@/db";
 import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
@@ -549,16 +550,21 @@ export class ImageService {
    */
   getImagesByUser(
     eventId: string,
-    { cursor = 0, pageSize = 20 }: GetImagesParams = {}
+    { cursor = 0, pageSize = 20 }: GetMyImagesParams = {}
   ): AsyncResult<GetImagesPage, Error> {
-    return this.getAuthenticatedUserId(eventId).mapCatching(userId =>
-      this.dbService.db
-        .select()
-        .from(imageTable)
-        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.userId, userId)))
-        .limit(pageSize)
-        .offset(cursor)
-    );
+    return this.getAuthenticatedUserId(eventId)
+      .mapCatching(userId =>
+        this.dbService.db
+          .select()
+          .from(imageTable)
+          .where(and(eq(imageTable.eventId, eventId), eq(imageTable.userId, userId)))
+          .offset(cursor)
+          .limit(pageSize + 1)
+      )
+      .map(rows => ({
+        items: rows.slice(0, pageSize),
+        nextCursor: rows.length > pageSize ? cursor + pageSize : null,
+      }));
   }
 
   /**
