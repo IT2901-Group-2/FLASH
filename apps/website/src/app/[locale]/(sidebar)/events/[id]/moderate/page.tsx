@@ -1,16 +1,16 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { ActionCard, SegmentedControl, Title, useToast } from "@flash/ui";
-import { ModerateHeader } from "@/components/ModerateHeader";
-import { useImagesQuery } from "@/hooks/useImages";
-import { useImageSelection } from "./useImageSelection";
-import { useTranslations } from "next-intl";
-import styles from "./Moderate.module.css";
-import { CircleAlert } from "lucide-react";
-import { PHOTOS_REFETCH_INTERVAL } from "@/config/images";
 import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
+import { ModerateHeader } from "@/components/ModerateHeader";
+import { PHOTOS_REFETCH_INTERVAL } from "@/config/images";
+import { useImagesQuery } from "@/hooks/useImages";
+import { ActionCard, SegmentedControl, Title, useToast } from "@flash/ui";
+import { CircleAlert } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useParams, useRouter } from "next/navigation";
+import { useCallback, useRef, useState } from "react";
+import styles from "./Moderate.module.css";
+import { useImageSelection } from "./useImageSelection";
 import { PhotoList } from "@/components/PhotoList/PhotoList";
 
 type Tab = "pending" | "approved" | "rejected";
