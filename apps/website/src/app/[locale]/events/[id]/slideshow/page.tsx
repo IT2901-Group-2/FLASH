@@ -22,9 +22,10 @@ import { useIdle } from "@/hooks/useIdle";
 import { useInterval } from "@/hooks/useInterval";
 import { useTranslations } from "next-intl";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import { getImageSrc } from "@/lib/utils/images";
+import { SLIDE_DURATION } from "@/config/images";
 
 const Page = () => {
-  const INTERVAL = 10 * 1000;
   const IMAGE_PAGE_SIZE = 5;
   const PREFETCH_THRESHOLD = 0;
 
@@ -47,11 +48,16 @@ const Page = () => {
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
-  } = useImagesQuery(id, { approval: "approved", pageSize: IMAGE_PAGE_SIZE }, INTERVAL);
+  } = useImagesQuery(
+    id,
+    { approval: "approved", pageSize: IMAGE_PAGE_SIZE },
+    true,
+    SLIDE_DURATION
+  );
   const imageData = imagePages?.pages.flatMap(page => page.items) ?? [];
   const [viewIndex, setViewIndex, { paused, toggle }] = useInterval(
     imageData.length,
-    INTERVAL
+    SLIDE_DURATION
   );
   const image = imageData[viewIndex];
   const prefetchedForLengthRef = useRef<number>(-1);
@@ -88,7 +94,7 @@ const Page = () => {
         {image && (
           <Image
             fill
-            src={`/api/events/${id}/images/${image.id}`}
+            src={getImageSrc(id, image.id)}
             alt=""
             role="img"
             className={styles.image}

@@ -45,7 +45,7 @@ const Page = () => {
           />
           <Title description={eventData?.description}>{eventData?.name}</Title>
         </div>
-        <Card className={styles.card}>
+        <div className={styles.buttonGroup}>
           <Button
             data-color="brand-purple"
             variant="secondary"
@@ -54,31 +54,33 @@ const Page = () => {
           >
             {c("download")}
           </Button>
-          <Button
-            data-color="brand-purple"
-            icon={<Share />}
-            variant="secondary"
-            onClick={() => qrCodeRef.current?.showModal()}
-          >
-            {c("shareEvent")}
-          </Button>
-          <Button
-            data-color="brand-purple"
-            icon={<Play />}
-            onClick={() => navigation.push(`/events/${id}/slideshow`)}
-          >
-            {c("slideshow")}
-          </Button>
-          <Button
-            data-color="brand-purple"
-            className={styles.goToEventButton}
-            icon={<ArrowRight />}
-            iconPosition="right"
-            onClick={() => navigation.push(`/${locale}/join/${joinCode}`)}
-          >
-            {c("join")}
-          </Button>
-        </Card>
+          <Card className={styles.card}>
+            <Button
+              data-color="brand-purple"
+              icon={<Share />}
+              variant="secondary"
+              onClick={() => qrCodeRef.current?.showModal()}
+            >
+              {c("shareEvent")}
+            </Button>
+            <Button
+              data-color="brand-purple"
+              icon={<Play />}
+              onClick={() => navigation.push(`/events/${id}/slideshow`)}
+            >
+              {c("slideshow")}
+            </Button>
+            <Button
+              data-color="brand-purple"
+              className={styles.goToEventButton}
+              icon={<ArrowRight />}
+              iconPosition="right"
+              onClick={() => navigation.push(`/${locale}/join/${joinCode}`)}
+            >
+              {c("join")}
+            </Button>
+          </Card>
+        </div>
       </div>
     </>
   );

@@ -1,18 +1,52 @@
 "use client";
 
 import {
+  THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+  THEME_PREF_COOKIE_KEY,
+  THEME_RESOLVED_COOKIE_KEY,
+  type ResolvedTheme,
+  type Theme,
+} from "@/config/theme";
+import {
   applyTheme,
-  getStoredTheme,
-  getSystemTheme,
+  getStoredThemePref,
+  isResolvedTheme,
+  resolveThemePreference,
   setStoredTheme,
-  systemThemeListner,
-} from "@/lib/theme-utils";
-import { createContext, useEffect, useMemo, useState } from "react";
+  systemThemeListener,
+} from "@/lib/utils/theme-utils";
+import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 
-export const THEME_STORAGE_KEY = "theme";
+const COOKIE_OPTIONS = {
+  prefCookieKey: THEME_PREF_COOKIE_KEY,
+  resolvedCookieKey: THEME_RESOLVED_COOKIE_KEY,
+  cookieMaxAgeSeconds: THEME_COOKIE_DEFAULT_MAX_AGE_SECONDS,
+} as const;
 
-export type ResolvedTheme = "light" | "dark";
-export type Theme = "system" | ResolvedTheme;
+/**
+ * Read the resolved theme that was baked into the document by the server.
+ *
+ * Returns `null` when running on the server or when the attribute is absent /
+ * invalid, so callers can fall back to the configured default.
+ */
+export const getSSRResolvedTheme = (): ResolvedTheme | null => {
+  if (typeof document === "undefined") return null;
+  const attr = document.documentElement.getAttribute("data-theme");
+  return isResolvedTheme(attr) ? attr : null;
+};
+
+/**
+ * Get the initial theme state on first render.
+ *
+ * This reads the SSR-resolved theme when available, falling back to resolving the
+ * provided default theme. The returned object contains both the raw preference and
+ * the resolved theme to avoid redundant work in the initial effects.
+ */
+export const getInitialState = (defaultTheme: Theme) => {
+  const theme = getStoredThemePref() ?? defaultTheme;
+  const resolvedTheme = getSSRResolvedTheme() ?? resolveThemePreference(theme);
+  return { theme, resolvedTheme };
+};
 
 export interface ThemeContextType {
   /**
@@ -39,6 +73,10 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(undefine
 
 interface ThemeProviderProps {
   children: React.ReactNode;
+  /**
+   * Theme to use before a stored preference is found.
+   * Only read on initial mount - changes to this prop after mount are ignored.
+   */
   defaultTheme?: Theme;
 }
 
@@ -46,16 +84,15 @@ interface ThemeProviderProps {
  * ## ThemeProvider
  *
  * Wrap your application with this provider to expose theme state and helpers.
- * It integrates with `localStorage` (via {@link THEME_STORAGE_KEY}) and listens to
+ * It persists a resolved theme cookie and listens to
  * the OS color-scheme changes when the saved preference is `"system"`.
  *
  * Behaviour details:
- * - On mount the provider reads the persisted preference (via {@link getStoredTheme}).
- * - The `resolvedTheme` is computed: if `theme === "system"` the OS preference
- * (via {@link getSystemTheme}) is used, otherwise the explicit value is used.
+ * - On mount, `resolvedTheme` is read from the SSR `data-theme` attribute when available.
+ * - Otherwise `resolvedTheme` is computed from `defaultTheme`.
  * - When `theme` changes the provider:
  *   1. Applies the resolved theme to the document using {@link applyTheme}.
- *   2. Persists the selected preference using {@link setStoredTheme}.
+ *   2. Persists the resolved value using {@link setStoredTheme}.
  * - When `theme === "system"` a system listener is registered to re-apply the
  * resolved theme when the OS preference changes.
  */
@@ -63,33 +100,40 @@ export const ThemeProvider = ({
   children,
   defaultTheme = "system",
 }: ThemeProviderProps) => {
-  const [theme, setTheme] = useState<Theme>(getStoredTheme() ?? defaultTheme);
-
-  const resolvedTheme = useMemo<ResolvedTheme>(() => {
-    return theme === "system" ? getSystemTheme() : theme;
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme(prev => {
-      const effective = prev === "system" ? getSystemTheme() : prev;
-      return effective === "dark" ? "light" : "dark";
-    });
-  };
-
-  useEffect(() => {
-    if (theme === "system") applyTheme(getSystemTheme());
-    else applyTheme(theme);
-    setStoredTheme(theme);
-  }, [theme]);
-
-  useEffect(() => {
-    return systemThemeListner(theme);
-  }, [theme]);
-
-  return (
-    <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
+  const [{ theme, resolvedTheme }, setThemeState] = useState(() =>
+    getInitialState(defaultTheme)
   );
+
+  useEffect(() => {
+    applyTheme(resolvedTheme);
+    setStoredTheme(theme, COOKIE_OPTIONS);
+  }, [theme, resolvedTheme]);
+
+  useEffect(() => {
+    if (theme !== "system") return;
+    return systemThemeListener("system", {
+      onChange: resolved =>
+        setThemeState(prev =>
+          prev.resolvedTheme === resolved ? prev : { ...prev, resolvedTheme: resolved }
+        ),
+      cookie: COOKIE_OPTIONS,
+    });
+  }, [theme]);
+
+  const setTheme = useCallback((next: Theme) => {
+    setThemeState({ theme: next, resolvedTheme: resolveThemePreference(next) });
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  }, [setTheme, resolvedTheme]);
+
+  const contextValue = useMemo<ThemeContextType>(
+    () => ({ theme, resolvedTheme, setTheme, toggleTheme }),
+    [theme, resolvedTheme, setTheme, toggleTheme]
+  );
+
+  return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 };
+
 export default ThemeProvider;

@@ -2,14 +2,15 @@ import {
   eventAuthMock,
   eventHooksMock,
   imageHooksMock,
+  imageCardMock,
   makeImage,
   mockImagesLoaded,
   fileUploadHookMock,
 } from "@test-config";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import Page from "./page";
-import { useImagesQuery } from "@/hooks/useImages";
+import { useImagesQuery, useMyImagesQuery } from "@/hooks/useImages";
 import userEvent from "@testing-library/user-event";
 import { PhoneHeaderProps } from "@/components/PhoneHeader/PhoneHeader";
 import { useFileUpload } from "@/hooks/useFileUpload";
@@ -18,6 +19,7 @@ vi.mock("@/hooks/useEvents", () => eventHooksMock());
 vi.mock("@/hooks/useImages", () => imageHooksMock());
 vi.mock("@/providers/EventAuthContext", () => eventAuthMock());
 vi.mock("@/hooks/useFileUpload", () => fileUploadHookMock());
+vi.mock("@/components/ImageCard/ImageCard", () => imageCardMock());
 
 vi.mock("@/components/PhoneHeader/PhoneHeader", () => ({
   PhoneHeader: vi.fn(({ children, ...rest }: PhoneHeaderProps) => (
@@ -30,6 +32,7 @@ vi.mock("@/components/PhoneHeader/PhoneHeader", () => ({
 describe("Guest Upload Page", () => {
   beforeEach(() => {
     vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoaded([makeImage()]));
+    vi.mocked(useMyImagesQuery).mockReturnValue(mockImagesLoaded([makeImage()]));
   });
 
   describe("render and hook setup", () => {
@@ -51,10 +54,13 @@ describe("Guest Upload Page", () => {
 
     it("uses image query hook", () => {
       render(<Page />);
-      expect(useImagesQuery).toHaveBeenCalledWith("event-123", {
-        pageSize: 12,
-        approval: "approved",
-      });
+      // uploadsArePrivate defaults to false, so no polling interval is set.
+      expect(useImagesQuery).toHaveBeenCalledWith(
+        "event-123",
+        { approval: "approved", pageSize: 12 },
+        false,
+        expect.any(Number)
+      );
     });
   });
 
@@ -73,15 +79,75 @@ describe("Guest Upload Page", () => {
       expect(screen.getByRole("dialog")).toBeInTheDocument();
     });
 
-    it("closes fullscreen preview when pressing Escape", async ({ skip }) => {
-      skip(); // The page.tsx file needs to be refactored. The logic is a mess.
+    it("closes fullscreen preview when pressing Escape", async () => {
       render(<Page />);
 
       await userEvent.click(screen.getByTestId("image-card"));
-      expect(screen.getByTestId("preview-dialog")).toBeInTheDocument();
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
 
-      await userEvent.keyboard("{Esc}");
-      expect(screen.getByTestId("preview-dialog")).not.toBeInTheDocument();
+      fireEvent.keyDown(window, { key: "Escape" });
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+
+    it("navigates preview with ArrowRight and ArrowLeft", async () => {
+      vi.mocked(useMyImagesQuery).mockReturnValue(
+        mockImagesLoaded([
+          makeImage({ id: "image-1" }),
+          makeImage({ id: "image-2" }),
+          makeImage({ id: "image-3" }),
+        ])
+      );
+
+      render(<Page />);
+
+      const thumbnails = screen.getAllByTestId("image-card");
+      const firstThumbnail = thumbnails.at(0);
+      if (!firstThumbnail) throw new Error("Expected at least one image thumbnail");
+      await userEvent.click(firstThumbnail);
+
+      let preview = screen.getByRole("dialog").querySelector("img");
+      expect(preview).toHaveAttribute(
+        "src",
+        expect.stringContaining("/api/events/event-123/images/image-1")
+      );
+
+      await userEvent.keyboard("{ArrowRight}");
+      preview = screen.getByRole("dialog").querySelector("img");
+      expect(preview).toHaveAttribute(
+        "src",
+        expect.stringContaining("/api/events/event-123/images/image-2")
+      );
+
+      await userEvent.keyboard("{ArrowLeft}");
+      preview = screen.getByRole("dialog").querySelector("img");
+      expect(preview).toHaveAttribute(
+        "src",
+        expect.stringContaining("/api/events/event-123/images/image-1")
+      );
+    });
+
+    it("wraps preview to last image when pressing ArrowLeft on first image", async () => {
+      vi.mocked(useMyImagesQuery).mockReturnValue(
+        mockImagesLoaded([
+          makeImage({ id: "image-1" }),
+          makeImage({ id: "image-2" }),
+          makeImage({ id: "image-3" }),
+        ])
+      );
+
+      render(<Page />);
+
+      const thumbnails = screen.getAllByTestId("image-card");
+      const firstThumbnail = thumbnails.at(0);
+      if (!firstThumbnail) throw new Error("Expected at least one image thumbnail");
+      await userEvent.click(firstThumbnail);
+
+      await userEvent.keyboard("{ArrowLeft}");
+      const preview = screen.getByRole("dialog").querySelector("img");
+      expect(preview).toHaveAttribute(
+        "src",
+        expect.stringContaining("/api/events/event-123/images/image-3")
+      );
     });
   });
 

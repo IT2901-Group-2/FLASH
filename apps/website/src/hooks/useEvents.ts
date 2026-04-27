@@ -71,7 +71,11 @@ export const eventsKeys = {
 /**
  * Fetches events with cursor pagination for infinite scrolling/loading.
  */
-export function useEventsQuery(params?: GetEventsParams, enabled: boolean = true) {
+export function useEventsQuery(
+  params?: GetEventsParams,
+  enabled: boolean = true,
+  refetchInterval?: number
+) {
   return useInfiniteQuery({
     queryKey: eventsKeys.list(params),
     initialPageParam: params?.cursor,
@@ -82,6 +86,7 @@ export function useEventsQuery(params?: GetEventsParams, enabled: boolean = true
       ),
     getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
     enabled,
+    refetchInterval,
   });
 }
 

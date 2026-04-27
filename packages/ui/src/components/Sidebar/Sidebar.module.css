@@ -83,7 +83,7 @@
     .headerText {
       font-weight: var(--font-weight-bold);
       font-size: var(--font-size-heading-large);
-      overflow-x: hidden;
+      overflow: hidden;
       text-overflow: clip;
       text-align: center;
       width: min-content;

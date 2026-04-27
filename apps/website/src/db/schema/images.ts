@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import ShortUniqueId from "short-unique-id";
 import { eventTable } from "./events";
 import z from "zod";
@@ -27,6 +27,18 @@ export const imageTable = sqliteTable("images", {
     .$onUpdate(() => new Date()),
 });
 
+export const imageSizesTable = sqliteTable(
+  "imageSizes",
+  {
+    imageId: text()
+      .notNull()
+      .references(() => imageTable.id, { onDelete: "cascade" }),
+    width: integer().notNull(),
+    height: integer().notNull(),
+  },
+  t => [primaryKey({ columns: [t.imageId, t.width, t.height] })]
+);
+
 export const getImagesParamsSchema = z.object({
   id: z.string().array().min(1).optional(),
   approval: z
@@ -43,6 +55,17 @@ export const getImagesParamsSchema = z.object({
     .transform(([str]) => Number.parseInt(str, 10))
     .pipe(z.number().int().positive().max(100))
     .prefault(["20"])
+    .optional(),
+});
+
+export const getImageParamsSchema = z.object({
+  width: z
+    .tuple([z.coerce.number().positive()])
+    .transform(([int]) => int)
+    .optional(),
+  height: z
+    .tuple([z.coerce.number().positive()])
+    .transform(([int]) => int)
     .optional(),
 });
 
@@ -74,6 +97,7 @@ export const getImagesPageSchema = z.object({
 export const uploadedImageCountSchema = z.object({ count: z.number().nonnegative() });
 
 export type Image = typeof imageTable.$inferSelect;
+export type GetImageParams = z.infer<typeof getImageParamsSchema>;
 export type GetImagesParams = z.infer<typeof getImagesParamsSchema>;
 export type UpdateImage = z.infer<typeof updateImageSchema>;
 export type UpdateImages = z.infer<typeof updateImagesSchema>;

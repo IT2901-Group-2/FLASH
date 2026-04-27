@@ -1,17 +1,19 @@
-import { JWT_SECRET, storage } from "@/config";
+import { JWT_SECRET, MAX_IMAGE_SIZE, storage } from "@/config";
 import { HTTPError } from "@/lib/utils/error";
 import { getEventCookie } from "@/lib/utils/eventCookie";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { getFirstRow } from "@/lib/utils/sql";
 import { FileStorage } from "@flash/file-storage";
-import { and, eq, inArray, isNull, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull, SQL, sql } from "drizzle-orm";
 import { DatabaseService, dbService } from "./databaseService";
 import { AsyncResult, Result } from "typescript-result";
 import {
   eventTable,
   GetImagesPage,
+  GetImageParams,
   GetImagesParams,
   Image,
+  imageSizesTable,
   imageTable,
   UpdateImage,
 } from "@/db";
@@ -19,6 +21,7 @@ import sharp, { Sharp, SharpInput } from "sharp";
 import ShortUniqueId from "short-unique-id";
 import AdmZip from "adm-zip";
 import { verifyAccessToken } from "@/lib/utils/auth";
+import { eventService } from "./eventService";
 
 const uid = new ShortUniqueId();
 
@@ -32,7 +35,8 @@ export class ImageService {
     this.storage = storage;
   }
 
-  static readonly MAX_IMAGE_SIZE = 12 * 1024 * 1024;
+  static readonly TARGET_IMAGE_SIZES: number[] = [250];
+
   /**
    * Validates the image metadata using `sharp`.
    * Checks that `sharp` is able to open the image file and that the size of the image does not exceed `ImageService.MAX_IMAGE_SIZE`.
@@ -46,7 +50,7 @@ export class ImageService {
         return Result.error(new Error("Unable to determine image size"));
       }
 
-      if (meta.size > ImageService.MAX_IMAGE_SIZE) {
+      if (meta.size > MAX_IMAGE_SIZE) {
         return Result.error(new Error("Image exceeded the max image size"));
       }
 
@@ -85,27 +89,56 @@ export class ImageService {
   ): AsyncResult<GetImagesPage, Error> {
     const offset = cursor ?? 0;
 
-    return Result.try(() =>
-      this.dbService.db
-        .select()
-        .from(imageTable)
-        .where(
-          and(
-            eq(imageTable.eventId, eventId),
-            id !== undefined ? inArray(imageTable.id, id) : undefined,
-            approval !== undefined && approval !== "pending"
-              ? eq(imageTable.isApproved, approval === "approved")
-              : undefined,
-            approval === "pending" ? isNull(imageTable.isApproved) : undefined
+    return this.getVisibleToUserId(eventId)
+      .mapCatching(visibleToUserId =>
+        this.dbService.db
+          .select()
+          .from(imageTable)
+          .where(
+            and(
+              eq(imageTable.eventId, eventId),
+              id !== undefined ? inArray(imageTable.id, id) : undefined,
+              approval !== undefined && approval !== "pending"
+                ? eq(imageTable.isApproved, approval === "approved")
+                : undefined,
+              approval === "pending" ? isNull(imageTable.isApproved) : undefined,
+              visibleToUserId !== undefined
+                ? eq(imageTable.userId, visibleToUserId)
+                : undefined
+            )
           )
-        )
-        .orderBy(imageTable.createdAt)
-        .offset(offset)
-        .limit(pageSize + 1)
-    ).map(rows => ({
-      items: rows.slice(0, pageSize),
-      nextCursor: rows.length > pageSize ? offset + pageSize : null,
-    }));
+          .orderBy(imageTable.createdAt)
+          .offset(offset)
+          .limit(pageSize + 1)
+      )
+      .map(rows => ({
+        items: rows.slice(0, pageSize),
+        nextCursor: rows.length > pageSize ? offset + pageSize : null,
+      }));
+  }
+
+  /**
+   * Returns the "ORDER BY" clause to use in order to get the desired image size.
+   *
+   * @param param The desired width and height of the image.
+   * @returns An SQL statement to use in an "ORDER BY" clause.
+   */
+  private getSizeOrder({ width, height }: GetImageParams): SQL | null {
+    if (width !== undefined && height !== undefined) {
+      return asc(
+        sql`abs(${imageSizesTable.width} * ${imageSizesTable.height} - ${width * height})`
+      );
+    }
+
+    if (width !== undefined) {
+      return asc(sql`abs(${imageSizesTable.width} - ${width})`);
+    }
+
+    if (height !== undefined) {
+      return asc(sql`abs(${imageSizesTable.height} - ${height})`);
+    }
+
+    return null;
   }
 
   /**
@@ -114,26 +147,92 @@ export class ImageService {
    *
    * @param eventId The id of the event the image belongs to.
    * @param imageId The id of the image to download.
+   * @param params The desired width and height of the image.
    * @returns A result containing the downloaded image as a `Buffer` or an error
    */
   downloadImage(
     eventId: string,
-    imageId: string
+    imageId: string,
+    params: GetImageParams = {}
   ): AsyncResult<Buffer<ArrayBufferLike>, Error> {
-    return Result.try(() =>
-      this.dbService.db
-        .select()
-        .from(imageTable)
-        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
-        .limit(1)
-    )
-      .map(rows =>
-        getFirstRow(
-          rows,
-          `Image with id ${imageId} does not exist on event with id ${eventId}`
+    return Result.gen(this, function* () {
+      yield* this.getVisibleToUserId(eventId)
+        .mapCatching(visibleToUserId =>
+          this.dbService.db
+            .select()
+            .from(imageTable)
+            .where(
+              and(
+                eq(imageTable.eventId, eventId),
+                eq(imageTable.id, imageId),
+                visibleToUserId !== undefined
+                  ? eq(imageTable.userId, visibleToUserId)
+                  : undefined
+              )
+            )
+            .limit(1)
         )
-      )
-      .map(() => this.storage.read(`${imageId}.webp`));
+        .map(rows =>
+          getFirstRow(
+            rows,
+            `Image with id ${imageId} does not exist on event with id ${eventId}`
+          )
+        );
+
+      const sortOrder = this.getSizeOrder(params);
+      if (sortOrder === null) {
+        return this.storage.read(`${imageId}.webp`);
+      }
+
+      return Result.try(() =>
+        this.dbService.db
+          .select()
+          .from(imageSizesTable)
+          .where(eq(imageSizesTable.imageId, imageId))
+          .orderBy(sortOrder)
+          .limit(1)
+      ).map(([row]) =>
+        this.storage.read(
+          row === undefined
+            ? `${imageId}.webp`
+            : `${imageId}-${row.width}x${row.height}.webp`
+        )
+      );
+    });
+  }
+
+  /**
+   * Attempts to resize and save the image in all the desired image sizes.
+   * The image will never be enlarged.
+   *
+   * @param imageId The id of the image to save.
+   * @param sharpImage The image to save loaded into a `sharp` pipeline.
+   * @returns A result containing the actual sizes the image was saved as or an error.
+   */
+  private saveImage(
+    imageId: string,
+    sharpImage: Sharp
+  ): AsyncResult<[number, number][], Error> {
+    return Result.try(() => sharpImage.clone().toBuffer())
+      .map(buff => this.storage.write(`${imageId}.webp`, buff))
+      .map(() => sharpImage.metadata())
+      .map(({ width, height }) =>
+        Result.all(
+          ...ImageService.TARGET_IMAGE_SIZES.filter(s => s < Math.max(width, height)).map(
+            s =>
+              Result.try(() =>
+                sharpImage
+                  .clone()
+                  .resize(s, s, { fit: "inside" })
+                  .toBuffer({ resolveWithObject: true })
+              ).map(({ data, info: { width, height } }) =>
+                this.storage
+                  .write(`${imageId}-${width}x${height}.webp`, data)
+                  .map(() => [width, height])
+              )
+          )
+        )
+      );
   }
 
   /**
@@ -177,9 +276,7 @@ export class ImageService {
         sharpImage.rotate().webp()
       );
 
-      yield* Result.try(() => sharpImage.clone().toBuffer()).map(buff =>
-        this.storage.write(`${imageId}.webp`, buff)
-      );
+      const imageSizes = yield* this.saveImage(imageId, sharpImage);
 
       const previewImage = yield* Result.try(() =>
         sharpImage.clone().resize({ width: 32, height: 32 }).blur().toBuffer()
@@ -197,7 +294,20 @@ export class ImageService {
           })
           .returning()
       )
-        .map(rows => getFirstRow(rows, "Failed to upload image"))
+        .map(rows =>
+          getFirstRow(rows, "Failed to upload image").map(image =>
+            imageSizes.length > 0
+              ? Result.try(() =>
+                  this.dbService.db
+                    .insert(imageSizesTable)
+                    .values(
+                      imageSizes.map(([width, height]) => ({ imageId, width, height }))
+                    )
+                    .returning()
+                ).map(rows => getFirstRow(rows).map(() => image))
+              : image
+          )
+        )
         .onSuccess(async image => {
           this.dbService.flush();
           if (image.isApproved) {
@@ -398,6 +508,19 @@ export class ImageService {
   }
 
   /**
+   * Retrieves the authenticated user's ID from the event cookie.
+   * @param eventId The id of the event.
+   * @returns A result containing the user ID, or a 403 error if the user is not logged in.
+   */
+  private getAuthenticatedUserId(eventId: string): AsyncResult<string, Error> {
+    return getEventCookie(eventId, JWT_SECRET)
+      .mapError(
+        () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
+      )
+      .map(({ userId }) => userId);
+  }
+
+  /**
    * Returns the number of images uploaded by the specified user in the specified event.
    * @param eventId The id of the event.
    * @param userId The id of the user.
@@ -418,6 +541,22 @@ export class ImageService {
   }
 
   /**
+   * Returns all images uploaded by the currently authenticated user in the given event,
+   * regardless of approval status.
+   *
+   * @param eventId The id of the event.
+   * @returns A result containing the list of `Image` objects or an error.
+   */
+  getImagesByUser(eventId: string): AsyncResult<Image[], Error> {
+    return this.getAuthenticatedUserId(eventId).mapCatching(userId =>
+      this.dbService.db
+        .select()
+        .from(imageTable)
+        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.userId, userId)))
+    );
+  }
+
+  /**
    * Returns the number of images uploaded by the currently authenticated user in the given event.
    *
    * @param eventId The id of the event.
@@ -425,11 +564,30 @@ export class ImageService {
    */
   getUploadedImageCount(eventId: string): AsyncResult<number, Error> {
     return Result.genCatching(this, function* () {
-      const { userId } = yield* getEventCookie(eventId, JWT_SECRET).mapError(
-        () => new HTTPError(`User is not logged in to event with id: ${eventId}`, 403)
-      );
+      const userId = yield* this.getAuthenticatedUserId(eventId);
 
       return yield* this.getUploadedImageCountByUser(eventId, userId);
+    });
+  }
+  /**
+   * Returns the userId to filter images by based on whether the event's uploads
+   * are private and whether the requesting user has elevated privileges.
+   * Returns `undefined` if all images are visible (i.e. public or privileged user).
+   */
+
+  private getVisibleToUserId(eventId: string): AsyncResult<string | undefined, Error> {
+    return Result.genCatching(this, async function* () {
+      const { userId, isModerator } = yield* getEventCookie(eventId, JWT_SECRET);
+      const isAdmin = await verifyAccessToken()
+        .then(() => true)
+        .catch(() => false);
+      if (isAdmin || isModerator) {
+        return undefined;
+      }
+      const {
+        items: [event],
+      } = yield* eventService.getEvents({ id: [eventId] });
+      return event?.uploadsArePrivate === true ? userId : undefined;
     });
   }
 }

@@ -14,3 +14,4 @@ export * from "./Breadcrumb";
 export * from "./QRDisplay";
 export * from "./ActionCard";
 export * from "./Logo";
+export * from "./Toast";

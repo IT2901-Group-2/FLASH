@@ -13,7 +13,7 @@
   width: 100%;
 }
 
-.main {
+.section {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -22,8 +22,9 @@
 }
 
 @media screen and (max-width: 768px) {
-  .main {
+  .section {
     padding-top: 4.5rem;
+    margin-bottom: 10rem;
   }
   .header {
     display: flex;

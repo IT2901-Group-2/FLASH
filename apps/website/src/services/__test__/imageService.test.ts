@@ -121,6 +121,14 @@ afterEach(async () => {
 });
 
 describe("ImageService getImages", () => {
+  beforeEach(() => {
+    mockedGetEventCookie.mockImplementation(() =>
+      Result.fromAsync(
+        async () => ({ userId: "john1", isModerator: true }) as EventCookie
+      )
+    );
+  });
+
   it("Should return Err when database call fails", async () => {
     vi.spyOn(BetterSQLite3Database.prototype, "select").mockImplementationOnce(() => {
       throw new Error();
@@ -219,7 +227,6 @@ describe("ImageService getImages", () => {
         .getOrThrow()
     ).toStrictEqual(new Set(["image-5"]));
   });
-
   it("Should return at most pageSize items and nextCursor when more rows exist", async () => {
     const page = await imageService.getImages("wedding", { pageSize: 2 }).getOrThrow();
 
@@ -248,9 +255,24 @@ describe("ImageService getImages", () => {
     );
     expect(secondPage.nextCursor).toBeNull();
   });
+
+  it("Should return Err when cookie retrieval fails", async () => {
+    mockedGetEventCookie.mockImplementationOnce(() =>
+      Result.fromAsync(async () => Result.error(new Error("Not authenticated")))
+    );
+
+    Result.assertError(await imageService.getImages("wedding"));
+  });
 });
 
 describe("ImageService downloadImage", () => {
+  beforeEach(() => {
+    mockedGetEventCookie.mockImplementation(() =>
+      Result.fromAsync(
+        async () => ({ userId: "john1", isModerator: true }) as EventCookie
+      )
+    );
+  });
   it("Should return Err when database call fails", async () => {
     vi.spyOn(BetterSQLite3Database.prototype, "select").mockImplementationOnce(() => {
       throw new Error();
@@ -316,6 +338,13 @@ describe("ImageService downloadImage", () => {
     const zip = new AdmZip(result);
     const names = zip.getEntries().map(e => e.entryName);
     expect(new Set(names)).toStrictEqual(new Set(["image-3.webp", "image-5.webp"]));
+  });
+  it("Should return Err when cookie retrieval fails", async () => {
+    mockedGetEventCookie.mockImplementationOnce(() =>
+      Result.fromAsync(async () => Result.error(new Error("Not authenticated")))
+    );
+
+    Result.assertError(await imageService.downloadImage("wedding", "image-3"));
   });
 });
 
@@ -401,9 +430,15 @@ describe("ImageService uploadImage", () => {
       .set({ uploadLimit: 2 })
       .where(eq(eventTable.id, "wedding"));
 
-    mockedGetEventCookie.mockImplementationOnce(() =>
-      Result.fromAsync(async () => ({ userId: "john2" }) as EventCookie)
-    );
+    mockedGetEventCookie
+      .mockImplementationOnce(() =>
+        Result.fromAsync(async () => ({ userId: "john2" }) as EventCookie)
+      )
+      .mockImplementationOnce(() =>
+        Result.fromAsync(
+          async () => ({ userId: "john1", isModerator: true }) as EventCookie
+        )
+      );
 
     const blockedUpload = await imageService.uploadImage("wedding", mockImageData[0]!);
     Result.assertError(blockedUpload);
@@ -423,9 +458,15 @@ describe("ImageService uploadImage", () => {
       .set({ uploadLimit: 3 })
       .where(eq(eventTable.id, "wedding"));
 
-    mockedGetEventCookie.mockImplementationOnce(() =>
-      Result.fromAsync(async () => ({ userId: "john2" }) as EventCookie)
-    );
+    mockedGetEventCookie
+      .mockImplementationOnce(() =>
+        Result.fromAsync(async () => ({ userId: "john2" }) as EventCookie)
+      )
+      .mockImplementationOnce(() =>
+        Result.fromAsync(
+          async () => ({ userId: "john1", isModerator: true }) as EventCookie
+        )
+      );
 
     const uploadedImage = await imageService
       .uploadImage("wedding", mockImageData[0]!)

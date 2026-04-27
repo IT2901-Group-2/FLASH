@@ -1,5 +1,6 @@
 import {
   imageHooksMock,
+  imageCardMock,
   makeImages,
   mockImagesLoaded,
   renderWithQuery,
@@ -11,6 +12,8 @@ import { useBatchUpdateImageMutation, useImagesQuery } from "@/hooks/useImages";
 import userEvent from "@testing-library/user-event";
 
 vi.mock("@/hooks/useImages", () => imageHooksMock());
+vi.mock("@/components/ImageCard/ImageCard", () => imageCardMock());
+
 vi.mock("@/components/ModerateHeader", () => ({
   ModerateHeader: ({
     onBack,
