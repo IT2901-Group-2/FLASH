@@ -4,6 +4,7 @@ import {
   makeEvent,
   makeEventStats,
   makeJoinedEvent,
+  mockEventsPage,
   mockJsonResponse,
   mockServerErrorResponse,
   mockUnauthorizedResponse,
@@ -34,13 +35,13 @@ beforeEach(() => {
 
 describe("useEventsQuery", () => {
   it("returns data on a successful response", async () => {
-    const events = [makeEvent(), makeEvent()];
+    const events = mockEventsPage([(makeEvent(), makeEvent())]);
     vi.stubGlobal("fetch", mockJsonResponse(events));
 
     const { result } = renderHook(() => useEventsQuery(), { wrapper });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(result.current.data).toStrictEqual(events);
+    expect(result.current.data?.pages[0]).toStrictEqual(events);
   });
 
   it("handles fetch error", async () => {
@@ -354,6 +355,6 @@ describe("useDeleteEventMutation", () => {
   });
 });
 
-describe("useJoinMutation", () => {
-  it("no idea how to test this hook", ({ skip }) => skip);
+describe("useJoinMutation", ({ skip }) => {
+  skip("no idea how to test this hook");
 });

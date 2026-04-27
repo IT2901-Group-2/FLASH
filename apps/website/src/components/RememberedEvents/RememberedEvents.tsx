@@ -7,6 +7,7 @@ import { Card, Title } from "@flash/ui";
 import { Calendar, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
 import styles from "./RememberedEvents.module.css";
 
 const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
@@ -38,15 +39,53 @@ const RememberedEvent = ({ name, uploadLimit, id }: Event) => {
 const RememberedEvents = () => {
   const t = useTranslations("guest.event");
   const { data: rememberedEvents = [] } = useJoinedEvents();
-  const events = useEventsQuery(
+  const eventIDs = useMemo(
+    () => rememberedEvents.map(e => e.eventId),
+    [rememberedEvents]
+  );
+  const {
+    data: eventsData,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useEventsQuery(
     {
-      id: rememberedEvents.map(e => e.eventId),
+      id: eventIDs,
     },
-    rememberedEvents.length > 0
-  ).data;
+    eventIDs.length > 0
+  );
 
-  if (!events) return;
-  if (events.length === 0) return;
+  const events = useMemo(
+    () => eventsData?.pages.flatMap(page => page.items) ?? [],
+    [eventsData]
+  );
+  const loadedEventIds = useMemo(() => new Set(events.map(event => event.id)), [events]);
+  const hasLoadedAllJoinedEvents = useMemo(
+    () => eventIDs.every(id => loadedEventIds.has(id)),
+    [eventIDs, loadedEventIds]
+  );
+
+  useEffect(() => {
+    if (
+      eventIDs.length === 0 ||
+      !eventsData ||
+      isFetchingNextPage ||
+      hasLoadedAllJoinedEvents ||
+      !hasNextPage
+    )
+      return;
+
+    void fetchNextPage();
+  }, [
+    eventIDs.length,
+    eventsData,
+    hasNextPage,
+    isFetchingNextPage,
+    hasLoadedAllJoinedEvents,
+    fetchNextPage,
+  ]);
+
+  if (events.length === 0) return null;
 
   return (
     <Card className={styles.card}>

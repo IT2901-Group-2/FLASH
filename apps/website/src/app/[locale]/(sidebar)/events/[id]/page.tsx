@@ -1,14 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Download,
-  ImageMinus,
-  QrCode,
-  Upload,
-  X,
-} from "lucide-react";
+import { ChevronRight, Download, ImageMinus, QrCode, Upload } from "lucide-react";
 import styles from "./UploadImage.module.css";
 import {
   ActionCard,
@@ -18,7 +10,6 @@ import {
   SegmentedControl,
   Title,
 } from "@flash/ui";
-import { ImageCard } from "@/components/ImageCard/ImageCard";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
@@ -32,9 +23,11 @@ import {
   useUploadedImageCountQuery,
   useUploadImageMutation,
 } from "@/hooks/useImages";
-import Image from "next/image";
-import { getImageSrc } from "@/lib/utils/images";
+import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
 import { EVENT_REFETCH_INTERVAL, PHOTOS_REFETCH_INTERVAL } from "@/config/images";
+import { PhotoList } from "@/components/PhotoList/PhotoList";
+
+const IMAGE_PAGE_SIZE = 12;
 
 export default function Page() {
   const router = useRouter();
@@ -42,6 +35,7 @@ export default function Page() {
   const tUpload = useTranslations("guest.event.upload");
   const eventAuth = useEventAuth();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const imagePreviewRef = useRef<ImagePreviewHandle>(null);
   const { mutate: downloadImages } = useDownloadImagesMutation();
 
   // Event Data
@@ -51,37 +45,37 @@ export default function Page() {
     undefined,
     EVENT_REFETCH_INTERVAL
   );
-  const eventData = data?.[0];
+  const eventData = data?.pages[0]?.items[0];
   const uploadsArePrivate = eventData?.uploadsArePrivate ?? false;
-
   const [activeTab, setActiveTab] = useState<"all" | "user">("all");
   const showTabs = uploadsArePrivate || !!eventAuth.isModerator;
   const isShowingUserTab = !showTabs || activeTab === "user";
 
-  // Image Data
-  const { data: imagesData } = useImagesQuery(
+  const handleTabChange = (val: string) => {
+    if (val === "all" || val === "user") setActiveTab(val);
+  };
+
+  const myImagesQuery = useMyImagesQuery(
     eventId,
-    { approval: "approved" },
-    !isShowingUserTab,
-    PHOTOS_REFETCH_INTERVAL
-  );
-  const { data: myImagesData } = useMyImagesQuery(
-    eventId,
+    { pageSize: IMAGE_PAGE_SIZE },
     isShowingUserTab,
     PHOTOS_REFETCH_INTERVAL
   );
+
+  const imagesQuery = useImagesQuery(
+    eventId,
+    { approval: "approved", pageSize: IMAGE_PAGE_SIZE },
+    !isShowingUserTab,
+    PHOTOS_REFETCH_INTERVAL
+  );
+
+  const activeQuery = isShowingUserTab ? myImagesQuery : imagesQuery;
+  const displayedImages = activeQuery.data?.pages.flatMap(page => page.items) ?? [];
+
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
-  const displayedImages = (isShowingUserTab ? myImagesData : imagesData) ?? [];
-
-  const handleTabChange = (val: string) => {
-    if (val === "all" || val === "user") setActiveTab(val);
-    setPreviewIndex(null);
-  };
-  const touchStartX = useRef<number | null>(null);
   const { mutateAsync: uploadImage } = useUploadImageMutation();
 
   // Join Code
@@ -162,111 +156,6 @@ export default function Page() {
     }
   }, [eventAuth, router]);
 
-  useEffect(() => {
-    if (previewIndex === null) return;
-
-    const previousOverflow = document.body.style.overflow;
-    const previousOverscrollBehavior = document.body.style.overscrollBehavior;
-
-    document.body.style.overflow = "hidden";
-    document.body.style.overscrollBehavior = "none";
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.body.style.overscrollBehavior = previousOverscrollBehavior;
-    };
-  }, [previewIndex]);
-
-  useEffect(() => {
-    if (previewIndex === null) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setPreviewIndex(null);
-        return;
-      }
-
-      if (displayedImages.length <= 1) return;
-
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        setPreviewIndex(currentIndex =>
-          currentIndex === null ? null : (currentIndex + 1) % displayedImages.length
-        );
-      }
-
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        setPreviewIndex(currentIndex =>
-          currentIndex === null
-            ? null
-            : (currentIndex - 1 + displayedImages.length) % displayedImages.length
-        );
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [displayedImages.length, previewIndex]);
-
-  useEffect(() => {
-    if (previewIndex === null) return;
-    if (displayedImages.length === 0) {
-      setPreviewIndex(null);
-      return;
-    }
-
-    if (previewIndex > displayedImages.length - 1) {
-      setPreviewIndex(displayedImages.length - 1);
-    }
-  }, [displayedImages.length, previewIndex]);
-
-  const handleImagePreview = (index: number) => setPreviewIndex(index);
-
-  const closePreview = () => setPreviewIndex(null);
-
-  const nextPreviewImage = () => {
-    if (previewIndex === null || displayedImages.length === 0) return;
-    setPreviewIndex((previewIndex + 1) % displayedImages.length);
-  };
-
-  const prevPreviewImage = () => {
-    if (previewIndex === null || displayedImages.length === 0) return;
-    setPreviewIndex((previewIndex - 1 + displayedImages.length) % displayedImages.length);
-  };
-
-  const handlePreviewTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
-    touchStartX.current = event.touches[0]?.clientX ?? null;
-  };
-
-  const handlePreviewTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
-    if (touchStartX.current === null) return;
-    const endX = event.changedTouches[0]?.clientX;
-    if (typeof endX !== "number") return;
-
-    const deltaX = endX - touchStartX.current;
-    touchStartX.current = null;
-
-    if (Math.abs(deltaX) < 40) return;
-
-    if (deltaX > 0) {
-      prevPreviewImage();
-    } else {
-      nextPreviewImage();
-    }
-  };
-
-  const previewImage =
-    previewIndex !== null && displayedImages[previewIndex]
-      ? {
-          src: getImageSrc(eventId, displayedImages[previewIndex].id),
-          alt: tUpload("imageAlt", {
-            index: previewIndex + 1,
-            total: displayedImages.length,
-          }),
-        }
-      : null;
-
   return (
     <>
       <FileInput />
@@ -291,45 +180,7 @@ export default function Page() {
         </div>
       </Dialog>
 
-      {previewImage && (
-        <div
-          className={styles.previewPage}
-          role="dialog"
-          aria-modal="true"
-          onTouchStart={handlePreviewTouchStart}
-          onTouchEnd={handlePreviewTouchEnd}
-        >
-          <Image
-            fill
-            src={previewImage.src}
-            alt={previewImage.alt}
-            className={styles.previewFullscreenImage}
-            sizes="100vw"
-          />
-          <Button
-            className={styles.previewClose}
-            onClick={closePreview}
-            variant="icon"
-            icon={<X />}
-          />
-          {displayedImages.length > 1 && (
-            <>
-              <Button
-                className={styles.previewNavButtonLeft}
-                onClick={prevPreviewImage}
-                variant="icon"
-                icon={<ChevronLeft />}
-              />
-              <Button
-                className={styles.previewNavButtonRight}
-                onClick={nextPreviewImage}
-                variant="icon"
-                icon={<ChevronRight />}
-              />
-            </>
-          )}
-        </div>
-      )}
+      <ImagePreview ref={imagePreviewRef} images={displayedImages} />
 
       <div className={styles.pageWrapper}>
         <PhoneHeader
@@ -435,36 +286,14 @@ export default function Page() {
           </Button>
         )}
       </div>
-
-      {!isLoading && displayedImages.length === 0 ? (
-        <div role="status" className={styles.emptyState}>
-          {isShowingUserTab ? tUpload("userPhotosEmptyState") : tUpload("emptyState")}
-        </div>
-      ) : (
-        <div className={styles.grid}>
-          {displayedImages.map((image, index) => (
-            <ImageCard
-              key={image.id}
-              src={getImageSrc(eventId, image.id, { width: 200, height: 200 })}
-              alt={tUpload("imageAlt", {
-                index: index + 1,
-                total: displayedImages.length,
-              })}
-              title={tUpload("imageTitle", { index: index + 1 })}
-              data-image-id={image.id}
-              placeholder={image.previewImage}
-              state={
-                image.isApproved === null
-                  ? "pending"
-                  : image.isApproved === false
-                    ? "rejected"
-                    : undefined
-              }
-              onClick={() => handleImagePreview(index)}
-            />
-          ))}
-        </div>
-      )}
+      <PhotoList
+        eventId={eventId}
+        query={isShowingUserTab ? myImagesQuery : imagesQuery}
+        loadingText={
+          isShowingUserTab ? tUpload("userPhotosEmptyState") : tUpload("emptyState")
+        }
+        onClick={index => imagePreviewRef.current?.open(index)}
+      />
     </>
   );
 }

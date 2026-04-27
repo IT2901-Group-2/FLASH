@@ -22,7 +22,6 @@ const EventCard = ({ data, ...rest }: EventCardProps) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const deleteConfirmRef = useRef<HTMLDialogElement>(null);
   const { name, startDate, uploadLimit, id } = data;
-
   const { data: imageStats } = useEventStatsQuery(id);
   const { pendingImages = 0, approvedImages = 0, rejectedImages = 0 } = imageStats ?? {};
   const totalImages = pendingImages + approvedImages + rejectedImages;

@@ -13,7 +13,7 @@ import { useLanguage } from "@/hooks/useLanguage";
  * > _Last updated: `2026-03-18`_
  */
 const LanguageToggleButton = () => {
-  const { isSwitching, currentLocale, nextLocale, switchLocale } = useLanguage();
+  const { isSwitching, nextLocale, switchLocale } = useLanguage();
 
   return (
     <button
@@ -21,7 +21,7 @@ const LanguageToggleButton = () => {
       onClick={switchLocale}
       disabled={isSwitching}
       className={`${styles.button} ${styles.right}`}
-      aria-label={`Current language: ${currentLocale.toUpperCase()}. Switch to ${nextLocale?.toUpperCase()}`}
+      aria-label={`Switch to ${nextLocale?.toUpperCase()}`}
       aria-busy={isSwitching}
     >
       <Languages size={16} aria-hidden="true" />
