@@ -12,6 +12,7 @@ export default defineConfig({
     coverage: {
       provider: "istanbul",
     },
+    exclude: ["**\/node_modules/**", "**\/.git/**", "**\/e2e/**"],
     server: {
       deps: {
         inline: ["next-intl"],
