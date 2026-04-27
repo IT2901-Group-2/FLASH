@@ -18,9 +18,7 @@ export const ImagePreview = forwardRef<ImagePreviewHandle, ImagePreviewProps>(
     const [previewIndex, setPreviewIndex] = useState<number | null>(null);
     const touchStartX = useRef<number | null>(null);
     const isValidIndex =
-      previewIndex !== null &&
-      previewIndex >= 0 &&
-      previewIndex < images.length;
+      previewIndex !== null && previewIndex >= 0 && previewIndex < images.length;
 
     useImperativeHandle(
       ref,
