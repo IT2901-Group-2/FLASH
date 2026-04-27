@@ -74,11 +74,16 @@ export default function Page() {
   );
   const images = imagesPages?.pages.flatMap(page => page.items) ?? [];
 
-  const { data: myImagesData } = useMyImagesQuery(
+  const {
+    data: myImagesData, // TODO: Fetch more pages
+  } = useMyImagesQuery(
     eventId,
+    { pageSize: IMAGE_PAGE_SIZE },
     isShowingUserTab,
     PHOTOS_REFETCH_INTERVAL
   );
+  const myImages = myImagesData?.pages.flatMap(page => page.items) ?? [];
+
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
   const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -110,7 +115,7 @@ export default function Page() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
-  const displayedImages = (isShowingUserTab ? myImagesData : images) ?? [];
+  const displayedImages = (isShowingUserTab ? myImages : images) ?? [];
 
   const handleTabChange = (val: string) => {
     if (val === "all" || val === "user") setActiveTab(val);

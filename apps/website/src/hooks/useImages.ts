@@ -86,7 +86,8 @@ export const imagesKeys = {
   list: (eventId?: string, params?: GetImagesParams) =>
     [...imagesKeys.event(eventId), "list", toImagesSearchParams(params)] as const,
   uploaded: (eventId?: string) => [...imagesKeys.event(eventId), "uploaded"] as const,
-  my: (eventId?: string) => [...imagesKeys.event(eventId), "my"] as const,
+  my: (eventId?: string, params?: GetImagesParams) =>
+    [...imagesKeys.event(eventId), "my", toImagesSearchParams(params)] as const,
 };
 
 /**
@@ -121,12 +122,19 @@ export function useImagesQuery(
  */
 export function useMyImagesQuery(
   eventId?: string,
+  params?: GetImagesParams,
   enabled = true,
   refetchInterval?: number
 ) {
-  return useQuery({
-    queryKey: imagesKeys.my(eventId),
-    queryFn: () => makeRequest(imageArraySchema, `/api/events/${eventId}/images/my`),
+  return useInfiniteQuery({
+    queryKey: imagesKeys.my(eventId, params),
+    initialPageParam: params?.cursor,
+    queryFn: ({ pageParam }) =>
+      makeRequest(
+        getImagesPageSchema,
+        `/api/events/${eventId}/images/my?cursor=${pageParam}`
+      ),
+    getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
     enabled: !!eventId && enabled,
     refetchInterval,
   });

@@ -547,12 +547,17 @@ export class ImageService {
    * @param eventId The id of the event.
    * @returns A result containing the list of `Image` objects or an error.
    */
-  getImagesByUser(eventId: string): AsyncResult<Image[], Error> {
+  getImagesByUser(
+    eventId: string,
+    { cursor = 0, pageSize = 20 }: GetImagesParams = {}
+  ): AsyncResult<GetImagesPage, Error> {
     return this.getAuthenticatedUserId(eventId).mapCatching(userId =>
       this.dbService.db
         .select()
         .from(imageTable)
         .where(and(eq(imageTable.eventId, eventId), eq(imageTable.userId, userId)))
+        .limit(pageSize)
+        .offset(cursor)
     );
   }
 
