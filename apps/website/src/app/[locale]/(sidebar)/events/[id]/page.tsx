@@ -153,8 +153,6 @@ export default function Page() {
     }
   }, [eventAuth, router]);
 
-  const handleImagePreview = (index: number) => setPreviewIndex(index);
-
   return (
     <>
       <FileInput />
@@ -316,7 +314,7 @@ export default function Page() {
                     ? "rejected"
                     : undefined
               }
-              onClick={() => handleImagePreview(index)}
+              onClick={() => setPreviewIndex(index)}
             />
           ))}
         </div>
