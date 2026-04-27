@@ -2,7 +2,7 @@
 
 import { useEventCodeQuery, useEventsQuery, useEventStatsQuery } from "@/hooks/useEvents";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, QRDisplay, Title } from "@flash/ui";
 import styles from "./slideshow.module.css";
 import {
@@ -23,9 +23,11 @@ import { useInterval } from "@/hooks/useInterval";
 import { useTranslations } from "next-intl";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { getImageSrc } from "@/lib/utils/images";
+import { SLIDE_DURATION } from "@/config/images";
 
 const Page = () => {
-  const INTERVAL = 10 * 1000;
+  const IMAGE_PAGE_SIZE = 5;
+  const PREFETCH_THRESHOLD = 0;
 
   const router = useRouter();
   const t = useTranslations("common.slideshow");
@@ -36,22 +38,45 @@ const Page = () => {
 
   const { id } = useParams<{ id: string }>();
   const { data } = useEventsQuery(id ? { id: [id] } : undefined);
-  const eventData = data?.[0];
+  const eventData = data?.pages[0]?.items[0];
 
   const { data: joinCode } = useEventCodeQuery(id, "guest");
   const { data: imageStats } = useEventStatsQuery(id);
 
-  const { data: imageData } = useImagesQuery(
+  const {
+    data: imagePages,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useImagesQuery(
     id,
-    { approval: "approved" },
+    { approval: "approved", pageSize: IMAGE_PAGE_SIZE },
     true,
-    INTERVAL
+    SLIDE_DURATION
   );
+  const imageData = imagePages?.pages.flatMap(page => page.items) ?? [];
   const [viewIndex, setViewIndex, { paused, toggle }] = useInterval(
-    imageData?.length ?? 0,
-    INTERVAL
+    imageData.length,
+    SLIDE_DURATION
   );
-  const image = imageData?.[viewIndex];
+  const image = imageData[viewIndex];
+  const prefetchedForLengthRef = useRef<number>(-1);
+
+  useEffect(() => {
+    if (
+      !hasNextPage ||
+      isFetchingNextPage ||
+      imageData.length === 0 ||
+      prefetchedForLengthRef.current >= imageData.length
+    ) {
+      return;
+    }
+
+    const remaining = imageData.length - (viewIndex + 1);
+    if (remaining > PREFETCH_THRESHOLD) return;
+    prefetchedForLengthRef.current = imageData.length;
+    void fetchNextPage();
+  }, [fetchNextPage, hasNextPage, imageData.length, isFetchingNextPage, viewIndex]);
 
   const [joinLink, setJoinLink] = useState<string | null>(null);
   useEffect(() => {
@@ -85,7 +110,7 @@ const Page = () => {
             size="xsmall"
             description={t("viewProgress", {
               index: Math.min(viewIndex + 1, imageData?.length ?? 0),
-              total: imageStats?.pendingImages ?? 0,
+              total: imageStats?.approvedImages ?? 0,
             })}
           >
             {eventData?.name}

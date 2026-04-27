@@ -18,10 +18,10 @@ const Page = () => {
 
   const { id, locale } = useParams<{ id: string; locale: string }>();
   const { data: joinCode } = useEventCodeQuery(id, "moderator");
-  const { data = [], status } = useEventsQuery({ id: [id?.toString() || ""] });
+  const { data, status } = useEventsQuery({ id: [id?.toString() || ""] });
   const { mutate: downloadImages } = useDownloadImagesMutation();
-  const eventData = data[0];
-  if (!eventData) return;
+  const eventData = data?.pages[0]?.items[0];
+  if (eventData === undefined) return;
 
   return (
     <>
