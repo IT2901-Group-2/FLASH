@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: npm install -g pnpm && pnpm install
       - name: Run Playwright tests
-        run: pnpm --filter website exec playwright test
+        run: pnpm --filter website test:e2e
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
