@@ -10,8 +10,7 @@ import { useImageSelection } from "./useImageSelection";
 import { useTranslations } from "next-intl";
 import styles from "./Moderate.module.css";
 import { CircleAlert } from "lucide-react";
-
-const PHOTOS_REFETCH_INTERVAL = 12_000;
+import { PHOTOS_REFETCH_INTERVAL } from "@/config/images";
 
 type Tab = "pending" | "approved" | "rejected";
 
