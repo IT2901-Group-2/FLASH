@@ -96,7 +96,7 @@ export default function Page() {
   const showUploadErrorToast = (message: string) => {
     createToast({
       id: "upload-error-toast",
-      title: tUpload("errors.uploadFailed"),
+      title: tUpload("errors.uploadFailedTitle"),
       description: message,
       icon: <OctagonAlert />,
       "data-color": "danger",
