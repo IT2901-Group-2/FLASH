@@ -26,21 +26,22 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     ["html"],
-    [
-      "monocart-reporter",
-      {
-        name: "E2E Coverage Report",
-        outputFile: "coverage/index.html",
-        coverage: {
-          // Only collect coverage from your app, not node_modules etc.
-          entryFilter: (entry: { url: string }) => entry.url.includes("localhost:3000"),
-          sourceFilter: (sourcePath: string) => sourcePath.includes("/src/"),
-          reports: ["v8", "html", "lcov", "text-summary"],
-          // Where to write the coverage data
-          outputDir: "coverage",
-        },
-      } as CoverageReportOptions,
-    ],
+    ["list"],
+    // [
+    //   "monocart-reporter",
+    //   {
+    //     name: "E2E Coverage Report",
+    //     outputFile: "coverage/index.html",
+    //     coverage: {
+    //       // Only collect coverage from your app, not node_modules etc.
+    //       entryFilter: (entry: { url: string }) => entry.url.includes("localhost:3000"),
+    //       sourceFilter: (sourcePath: string) => sourcePath.includes("/src/"),
+    //       reports: ["v8", "html", "lcov", "text-summary"],
+    //       // Where to write the coverage data
+    //       outputDir: "coverage",
+    //     },
+    //   } as CoverageReportOptions,
+    // ],
   ],
 
   timeout: 30 * 1000,
@@ -68,7 +69,7 @@ export default defineConfig({
 
     /* Test against branded browsers. */
     { name: "Microsoft Edge", use: { ...devices["Desktop Edge"], channel: "msedge" } },
-    { name: "Google Chrome", use: { ...devices["Desktop Chrome"], channel: "chrome" } },
+    // { name: "Google Chrome", use: { ...devices["Desktop Chrome"], channel: "chrome" } },
   ],
 
   /* Run your local dev server before starting the tests */

@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: npm install -g pnpm && pnpm install
       - name: Build application
-        run: pnpm --filter \!website build
+        run: pnpm --filter="./packages/*" build
       - name: Run Playwright tests
         run: pnpm test:e2e
         env:
