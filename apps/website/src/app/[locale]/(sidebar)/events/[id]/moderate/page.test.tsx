@@ -70,14 +70,14 @@ describe("ModeratePage", () => {
       expect(useImagesQuery).toHaveBeenCalledWith(
         "event-123",
         { approval: "pending" },
-        undefined,
+        true,
         PHOTOS_REFETCH_INTERVAL
       );
       await userEvent.click(screen.getByText("tabs.approved"));
       expect(useImagesQuery).toHaveBeenCalledWith(
         "event-123",
         { approval: "approved" },
-        undefined,
+        true,
         PHOTOS_REFETCH_INTERVAL
       );
     });
@@ -106,14 +106,14 @@ describe("ModeratePage", () => {
       renderWithQuery(<ModeratePage />);
 
       expect(screen.queryByRole("dialog")).toBeNull();
-      await userEvent.click(screen.getByTestId("image-1"));
+      await userEvent.click(screen.getAllByTestId("image-card")[0]!);
       expect(screen.getByRole("dialog")).toBeInTheDocument();
     });
 
     it("closes image preview when pressing Escape", async () => {
       renderWithQuery(<ModeratePage />);
 
-      await userEvent.click(screen.getByTestId("image-1"));
+      await userEvent.click(screen.getAllByTestId("image-card")[0]!);
       expect(screen.getByRole("dialog")).toBeInTheDocument();
 
       fireEvent.keyDown(window, { key: "Escape" });
@@ -137,17 +137,19 @@ describe("ModeratePage", () => {
       renderWithQuery(<ModeratePage />);
 
       await userEvent.click(screen.getByText("Select")); // Enter select mode
-      await userEvent.click(screen.getByTestId("image-1")); // Select an image via click
+      await userEvent.click(screen.getAllByTestId("image-card")[0]!); // Select an image via click
       await userEvent.click(screen.getByText("Cancel")); // Click Cancel
 
       expect(screen.getByText("Select")).toBeDefined(); // Button should revert to "Select"
       expect(screen.getByText("tabs.pending")).not.toBeDisabled(); // Tabs should be re-enabled
-      expect(screen.getByTestId("image-1").getAttribute("data-state")).toBe("default");
+      expect(screen.getAllByTestId("image-card")[0]!.getAttribute("data-state")).toBe(
+        "default"
+      );
     });
 
     it("tapping an image in select mode toggles its selected state", async () => {
       renderWithQuery(<ModeratePage />);
-      const imageCard = screen.getByTestId("image-1");
+      const imageCard = screen.getAllByTestId("image-card")[0]!;
 
       await userEvent.click(screen.getByText("Select"));
       await userEvent.click(imageCard);
@@ -161,15 +163,18 @@ describe("ModeratePage", () => {
       renderWithQuery(<ModeratePage />);
 
       await userEvent.click(screen.getByText("Select"));
-      await userEvent.click(screen.getByTestId("image-1"));
-      await userEvent.click(screen.getByTestId("image-2"));
+      await userEvent.click(screen.getAllByTestId("image-card")[0]!);
+      await userEvent.click(screen.getAllByTestId("image-card")[1]!);
 
       expect(screen.getByTestId("action-card")).toBeInTheDocument();
 
       await userEvent.click(screen.getByText("Cancel")); // Click Cancel in header
 
       expect(screen.queryByTestId("action-card")).not.toBeInTheDocument();
-      expect(screen.getByTestId("image-1")).toHaveAttribute("data-state", "default");
+      expect(screen.getAllByTestId("image-card")[0]!).toHaveAttribute(
+        "data-state",
+        "default"
+      );
     });
   });
 
@@ -182,14 +187,14 @@ describe("ModeratePage", () => {
 
       // Enter select mode and select an image via click
       await userEvent.click(screen.getByText("Select"));
-      await userEvent.click(screen.getByTestId("image-1"));
+      await userEvent.click(screen.getAllByTestId("image-card")[0]!);
 
       // ActionCard should be visible
       expect(screen.getByTestId("action-card")).toBeDefined();
       expect(screen.getByText("selectionDescription")).toBeInTheDocument();
 
       // Select another via click
-      await userEvent.click(screen.getByTestId("image-2"));
+      await userEvent.click(screen.getAllByTestId("image-card")[1]!);
       expect(screen.getByText("selectionDescription")).toBeInTheDocument();
     });
 
@@ -199,8 +204,8 @@ describe("ModeratePage", () => {
 
       // Enter select mode and select two images
       await userEvent.click(screen.getByText("Select"));
-      await userEvent.click(screen.getByTestId("image-1"));
-      await userEvent.click(screen.getByTestId("image-2"));
+      await userEvent.click(screen.getAllByTestId("image-card")[0]!);
+      await userEvent.click(screen.getAllByTestId("image-card")[1]!);
       await userEvent.click(screen.getByText("actions.approveSelected"));
 
       expect(mutateAsync).toHaveBeenCalledTimes(1);
@@ -224,7 +229,7 @@ describe("ModeratePage", () => {
 
       // Enter select mode and select one image
       await userEvent.click(screen.getByText("Select"));
-      await userEvent.click(screen.getByTestId("image-1"));
+      await userEvent.click(screen.getAllByTestId("image-card")[0]!);
       await userEvent.click(screen.getByText("actions.rejectSelected"));
 
       expect(mutateAsync).toHaveBeenCalledTimes(1);

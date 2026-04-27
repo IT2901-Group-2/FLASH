@@ -1,6 +1,5 @@
 "use client";
 
-import { ImageCard } from "@/components/ImageCard/ImageCard";
 import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
 import { ModerateHeader } from "@/components/ModerateHeader";
 import { PHOTOS_REFETCH_INTERVAL } from "@/config/images";
@@ -12,6 +11,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import styles from "./Moderate.module.css";
 import { useImageSelection } from "./useImageSelection";
+import { PhotoList } from "@/components/PhotoList/PhotoList";
 
 type Tab = "pending" | "approved" | "rejected";
 
@@ -36,15 +36,13 @@ export default function ModeratePage() {
 
   const [activeTab, setActiveTab] = useState<Tab>("pending");
 
-  const { data: imagesPages, isLoading } = useImagesQuery(
+  const imagesQuery = useImagesQuery(
     eventId,
-    {
-      approval: activeTab,
-    },
-    undefined,
+    { approval: activeTab },
+    true,
     PHOTOS_REFETCH_INTERVAL
   );
-  const images = imagesPages?.pages.flatMap(page => page.items) ?? [];
+  const images = imagesQuery.data?.pages.flatMap(page => page.items) ?? [];
 
   const {
     selectMode,
@@ -129,30 +127,17 @@ export default function ModeratePage() {
           </Title>
         </div>
 
-        {!isLoading && images.length === 0 ? (
-          <div role="status" className={styles.emptyState}>
-            {t(`emptyState.${activeTab}`)}
-          </div>
-        ) : (
-          <div className={styles.grid}>
-            {images.map((image, index) => (
-              <ImageCard
-                key={image.id}
-                src={`/api/events/${eventId}/images/${image.id}`}
-                alt={t("imageAlt", { index: index + 1, total: images.length })}
-                title={t("imageTitle", { index: index + 1 })}
-                state={selectMode && selectedIds.has(image.id) ? "selected" : "default"}
-                onClick={() =>
-                  selectMode
-                    ? handleImageClick(image.id)
-                    : imagePreviewRef.current?.open(index)
-                }
-                data-testid={image.id}
-                placeholder={image.previewImage}
-              />
-            ))}
-          </div>
-        )}
+        <PhotoList
+          eventId={eventId}
+          query={imagesQuery}
+          loadingText={t(`emptyState.${activeTab}`)}
+          onClick={({ id, index }) =>
+            selectMode ? handleImageClick(id) : imagePreviewRef.current?.open(index)
+          }
+          setState={({ id }) =>
+            selectMode && selectedIds.has(id) ? "selected" : "default"
+          }
+        />
       </div>
 
       <ImagePreview ref={imagePreviewRef} images={images} />
