@@ -17,29 +17,30 @@ All components are scoped with CSS Modules and pick up their colour values from 
 
 ## Components
 
-| Component                | Category            | Description                                                                                                                                                        |
-| ------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `Sidebar`                | Layout & Navigation | Collapsible application sidebar with `Sidebar.Provider`, `Sidebar.Item`, `Sidebar.Group`, `Sidebar.Header`, `Sidebar.Footer`, and `Sidebar.Trigger` sub-components |
-| `Breadcrumb`             | Layout & Navigation | Navigation breadcrumb trail                                                                                                                                        |
-| `Card`                   | Content & Display   | Basic content container                                                                                                                                            |
-| `ActionCard`             | Content & Display   | Card with configurable primary and secondary `Button` actions                                                                                                      |
-| ~~`ImageCard`~~ (Deprecated) | Content & Display   | **Deprecated.** _Use `ImageCard` from `apps/website/src/components/ImageCard` instead_. ~~Card with a prominent image area~~ |
-| `Title`                  | Content & Display   | Typographic heading component                                                                                                                                      |
-| `Logo`                   | Content & Display   | Flash logo component. Can also be used as a loader.                                                                                                                |
-| `QRDisplay`              | Content & Display   | Renders a QR code from a given value                                                                                                                               |
-| `Dialog`                 | Content & Display   | Modal dialog overlay                                                                                                                                               |
-| ~~`Input`~~ (Depricated) | Form & Input        | **Deprecated.** _Use other form components instead_. ~~Single-line text input with label, helper text, error, and success states~~                                 |
-| `TextField`              | Form & Input        | Managed text field for use within a form context                                                                                                                   |
-| `Textarea`               | Form & Input        | Multi-line text area with auto-resize                                                                                                                              |
-| `Select`                 | Form & Input        | Dropdown selection with accessible option list                                                                                                                     |
-| `DropdownControl`        | Form & Input        | Controlled dropdown primitive                                                                                                                                      |
-| `SegmentedControl`       | Form & Input        | Segmented button group for mutually exclusive choices                                                                                                              |
-| `DatePicker`             | Form & Input        | Calendar-based date picker                                                                                                                                         |
-| `Button`                 | Feedback & Status   | Action trigger with `primary`, `secondary`, and `tertiary` variants                                                                                                |
-| `Loader`                 | Feedback & Status   | Animated loading spinner                                                                                                                                           |
-| `ProgressBar`            | Feedback & Status   | Linear progress indicator                                                                                                                                          |
-| `ProgressDots`           | Feedback & Status   | Step-based dot progress indicator                                                                                                                                  |
-| `Switch`                 | Feedback & Status   | Toggle switch for boolean settings                                                                                                                                 |
+| Component                    | Category            | Description                                                                                                                                                        |
+| ---------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Sidebar`                    | Layout & Navigation | Collapsible application sidebar with `Sidebar.Provider`, `Sidebar.Item`, `Sidebar.Group`, `Sidebar.Header`, `Sidebar.Footer`, and `Sidebar.Trigger` sub-components |
+| `Breadcrumb`                 | Layout & Navigation | Navigation breadcrumb trail                                                                                                                                        |
+| `Card`                       | Content & Display   | Basic content container                                                                                                                                            |
+| `ActionCard`                 | Content & Display   | Card with configurable primary and secondary `Button` actions                                                                                                      |
+| ~~`ImageCard`~~ (Deprecated) | Content & Display   | **Deprecated.** _Use `ImageCard` from `apps/website/src/components/ImageCard` instead_. ~~Card with a prominent image area~~                                       |
+| `Title`                      | Content & Display   | Typographic heading component                                                                                                                                      |
+| `Logo`                       | Content & Display   | Flash logo component. Can also be used as a loader.                                                                                                                |
+| `QRDisplay`                  | Content & Display   | Renders a QR code from a given value                                                                                                                               |
+| `Dialog`                     | Content & Display   | Modal dialog overlay                                                                                                                                               |
+| ~~`Input`~~ (Depricated)     | Form & Input        | **Deprecated.** _Use other form components instead_. ~~Single-line text input with label, helper text, error, and success states~~                                 |
+| `TextField`                  | Form & Input        | Managed text field for use within a form context                                                                                                                   |
+| `Textarea`                   | Form & Input        | Multi-line text area with auto-resize                                                                                                                              |
+| `Select`                     | Form & Input        | Dropdown selection with accessible option list                                                                                                                     |
+| `DropdownControl`            | Form & Input        | Controlled dropdown primitive                                                                                                                                      |
+| `SegmentedControl`           | Form & Input        | Segmented button group for mutually exclusive choices                                                                                                              |
+| `DatePicker`                 | Form & Input        | Calendar-based date picker                                                                                                                                         |
+| `Button`                     | Feedback & Status   | Action trigger with `primary`, `secondary`, and `tertiary` variants                                                                                                |
+| `Loader`                     | Feedback & Status   | Animated loading spinner                                                                                                                                           |
+| `ProgressBar`                | Feedback & Status   | Linear progress indicator                                                                                                                                          |
+| `ProgressDots`               | Feedback & Status   | Step-based dot progress indicator                                                                                                                                  |
+| `Switch`                     | Feedback & Status   | Toggle switch for boolean settings                                                                                                                                 |
+| `Toast` & `Toaster`          | Feedback & Status   | Popup with a message.                                                                                                                                              |
 
 ---
 
