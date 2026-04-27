@@ -10,6 +10,7 @@ import { useImageSelection } from "./useImageSelection";
 import { useTranslations } from "next-intl";
 import styles from "./Moderate.module.css";
 import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
+import { PhotoList } from "@/components/PhotoList/PhotoList";
 
 type Tab = "pending" | "approved" | "rejected";
 
@@ -21,13 +22,9 @@ export default function ModeratePage() {
 
   const [activeTab, setActiveTab] = useState<Tab>("pending");
 
-  const { data: imagesPages, isLoading } = useImagesQuery(eventId, {
-    approval: activeTab,
-  });
+  const imagesQuery = useImagesQuery(eventId, { approval: activeTab });
+  const { data: imagesPages, isLoading } = imagesQuery;
   const images = imagesPages?.pages.flatMap(page => page.items) ?? [];
-
-  // TODO: Replace with actual moderator check when JWT auth is implemented
-  // const isModerator = checkModeratorAccess(token);
 
   const {
     selectMode,
@@ -115,30 +112,14 @@ export default function ModeratePage() {
           <h2 className={styles.sectionHeading}>{t(`headings.${activeTab}`)}</h2>
         </div>
 
-        {!isLoading && images.length === 0 ? (
-          <div role="status" className={styles.emptyState}>
-            {t(`emptyState.${activeTab}`)}
-          </div>
-        ) : (
-          <div className={styles.grid}>
-            {images.map((image, index) => (
-              <ImageCard
-                key={image.id}
-                src={`/api/events/${eventId}/images/${image.id}`}
-                alt={t("imageAlt", { index: index + 1, total: images.length })}
-                title={t("imageTitle", { index: index + 1 })}
-                state={selectMode && selectedIds.has(image.id) ? "selected" : "default"}
-                onClick={() =>
-                  selectMode
-                    ? handleImageClick(image.id)
-                    : imagePreviewRef.current?.open(index)
-                }
-                data-testid={image.id}
-                placeholder={image.previewImage}
-              />
-            ))}
-          </div>
-        )}
+        <PhotoList
+          eventId={eventId}
+          query={imagesQuery}
+          loadingText={t(`emptyState.${activeTab}`)}
+          onClick={({ id, index }) =>
+            selectMode ? handleImageClick(id) : imagePreviewRef.current?.open(index)
+          }
+        />
       </div>
 
       <ImagePreview ref={imagePreviewRef} images={images} />

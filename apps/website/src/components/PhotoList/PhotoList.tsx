@@ -11,7 +11,7 @@ export type PhotoListProps = {
   eventId: string;
   query: UseInfiniteQueryResult<InfiniteData<GetImagesPage>>;
   loadingText: string;
-  onClick?: (idx: number) => void;
+  onClick?: (_: { id: string; index: number }) => void;
 };
 
 export const PhotoList: FC<PhotoListProps> = ({
@@ -54,7 +54,7 @@ export const PhotoList: FC<PhotoListProps> = ({
                 ? "rejected"
                 : undefined
           }
-          onClick={() => onClick && onClick(index)}
+          onClick={() => onClick && onClick({ id: image.id, index })}
         />
       ))}
       {hasNextPage && <div ref={loadMoreRef} className={styles.loadMoreSentinel} />}
