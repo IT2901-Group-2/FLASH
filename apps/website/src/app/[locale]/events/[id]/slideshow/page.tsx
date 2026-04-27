@@ -23,10 +23,9 @@ import { useInterval } from "@/hooks/useInterval";
 import { useTranslations } from "next-intl";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { getImageSrc } from "@/lib/utils/images";
+import { SLIDE_DURATION } from "@/config/images";
 
 const Page = () => {
-  const INTERVAL = 10 * 1000;
-
   const router = useRouter();
   const t = useTranslations("common.slideshow");
   const isIdle = useIdle(2000);
@@ -45,11 +44,11 @@ const Page = () => {
     id,
     { approval: "approved" },
     true,
-    INTERVAL
+    SLIDE_DURATION
   );
   const [viewIndex, setViewIndex, { paused, toggle }] = useInterval(
     imageData?.length ?? 0,
-    INTERVAL
+    SLIDE_DURATION
   );
   const image = imageData?.[viewIndex];
 
