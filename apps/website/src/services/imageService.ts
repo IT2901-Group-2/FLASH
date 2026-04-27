@@ -34,7 +34,6 @@ export class ImageService {
     this.storage = storage;
   }
 
-  static readonly MAX_IMAGE_SIZE = 12 * 1024 * 1024;
   static readonly TARGET_IMAGE_SIZES: number[] = [250];
 
   /**

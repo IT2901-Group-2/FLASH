@@ -41,10 +41,7 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./UploadImage.module.css";
 
 const maxFileSizeInMb = Math.ceil(MAX_IMAGE_SIZE / (1024 * 1024)); //TODO: Move this to a more appropriate location
-
-const EVENT_REFETCH_INTERVAL = 120_000; // 2 minutes
-
-const PHOTOS_REFETCH_INTERVAL = 12_000; // 12 sec
+import { EVENT_REFETCH_INTERVAL, PHOTOS_REFETCH_INTERVAL } from "@/config/images";
 
 export default function Page() {
   return (

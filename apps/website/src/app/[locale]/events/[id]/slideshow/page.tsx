@@ -44,7 +44,7 @@ const Page = () => {
     id,
     { approval: "approved" },
     true,
-    INTERVAL
+    SLIDE_DURATION
   );
   const [viewIndex, setViewIndex, { paused, toggle }] = useInterval(
     imageData?.length ?? 0,
