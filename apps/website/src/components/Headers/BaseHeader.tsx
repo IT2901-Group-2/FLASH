@@ -19,7 +19,9 @@ const BaseHeader = ({ hideOnDesktop = false, children, ...props }: BaseHeaderPro
   return (
     <header className={styles.header}>
       {isMobile && <Sidebar.Trigger />}
-      <div {...props}>{children}</div>
+      <div {...props} className={styles.headerContent}>
+        {children}
+      </div>
     </header>
   );
 };
