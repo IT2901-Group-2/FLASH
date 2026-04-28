@@ -81,7 +81,7 @@ const Page = () => {
     void fetchNextPage();
   }, [fetchNextPage, hasNextPage, imageData.length, isFetchingNextPage, viewIndex]);
 
-  // Calculating the join code for the QR display
+  // Calculating the join link for the QR display
   // YES, this is the best option.
   const [joinLink, setJoinLink] = useState<string | null>(null);
   useEffect(() => {
