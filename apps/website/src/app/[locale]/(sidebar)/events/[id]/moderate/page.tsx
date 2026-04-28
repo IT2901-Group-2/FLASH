@@ -4,7 +4,7 @@ import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/Imag
 import { ModerateHeader } from "@/components/ModerateHeader";
 import { PHOTOS_REFETCH_INTERVAL } from "@/config/images";
 import { useImagesQuery } from "@/hooks/useImages";
-import { ActionCard, SegmentedControl, Title, useToast } from "@flash/ui";
+import { Button, Card, SegmentedControl, Title, useToast } from "@flash/ui";
 import { CircleAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
@@ -55,36 +55,6 @@ export default function ModeratePage() {
     handleBulkApprove,
     handleBulkReject,
   } = useImageSelection(images, eventId, { onError: handleError });
-
-  const BUTTON_COLOR = "brand-purple" as const;
-
-  // Button matrix by tab:
-  //   pending:  primary=Approve, secondary=Reject  (both actions make sense)
-  //   approved: primary=Reject,  secondary=none    (already approved; only rejection is a new action)
-  //   rejected: primary=Approve, secondary=none    (already rejected; only approval is a new action)
-  const primaryButton = (() => {
-    if (activeTab === "pending" || activeTab === "rejected") {
-      return {
-        text: t("actions.approveSelected"),
-        "data-color": BUTTON_COLOR,
-        onClick: handleBulkApprove,
-      };
-    }
-    return {
-      text: t("actions.rejectSelected"),
-      "data-color": BUTTON_COLOR,
-      onClick: handleBulkReject,
-    };
-  })();
-
-  const secondaryButton =
-    activeTab === "pending"
-      ? {
-          text: t("actions.rejectSelected"),
-          "data-color": BUTTON_COLOR,
-          onClick: handleBulkReject,
-        }
-      : undefined;
 
   return (
     <>
@@ -143,12 +113,28 @@ export default function ModeratePage() {
 
       {selectedIds.size > 0 && (
         <div className={styles.actionCardContainer}>
-          <ActionCard
-            data-testid="action-card"
-            description={t("selectionDescription", { count: selectedIds.size })}
-            primaryButton={primaryButton}
-            secondaryButton={secondaryButton}
-          />
+          <Card data-testid="action-card" className={styles.card}>
+            {t("selectionDescription", { count: selectedIds.size })}
+            {activeTab === "pending" && (
+              <Button
+                data-color="brand-purple"
+                onClick={handleBulkReject}
+                variant="secondary"
+                fill
+              >
+                {t("actions.rejectSelected")}
+              </Button>
+            )}
+            {activeTab === "approved" ? (
+              <Button data-color="brand-purple" onClick={handleBulkReject} fill>
+                {t("actions.rejectSelected")}
+              </Button>
+            ) : (
+              <Button data-color="brand-purple" onClick={handleBulkApprove} fill>
+                {t("actions.approveSelected")}
+              </Button>
+            )}
+          </Card>
         </div>
       )}
     </>
