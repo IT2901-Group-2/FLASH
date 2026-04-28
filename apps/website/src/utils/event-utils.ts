@@ -1,6 +1,6 @@
 import { Event } from "@/db";
 
-export const hasEnded = (eventData: Pick<Event, "endDate">): boolean =>
+export const hasEnded = (eventData: Pick<Event, "endDate"> | undefined): boolean =>
   eventData ? new Date() > eventData.endDate : false;
 
 export const getEventName = (

@@ -110,7 +110,7 @@ export default function Page() {
     maxSizeBytes: MAX_IMAGE_SIZE,
   });
 
-  if (!eventData) return;
+  // if (!eventData) return;
 
   const isEnded = hasEnded(eventData);
   const uploadsRemaining = getUploadsRemaining(eventData, uploadedCountData?.count ?? 0);

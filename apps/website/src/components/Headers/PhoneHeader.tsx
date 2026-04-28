@@ -77,8 +77,6 @@ export const PhoneHeader = ({ ...rest }: PhoneHeaderProps) => {
     maxSizeBytes: MAX_IMAGE_SIZE,
   });
 
-  if (!eventData) return;
-
   const isEnded = hasEnded(eventData);
   const uploadsRemaining = getUploadsRemaining(eventData, uploadedCountData?.count ?? 0);
 

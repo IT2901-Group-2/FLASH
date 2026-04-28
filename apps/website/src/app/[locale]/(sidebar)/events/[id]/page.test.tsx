@@ -6,6 +6,7 @@ import {
   makeImage,
   mockImagesLoaded,
   fileUploadHookMock,
+  defaultEventsQueryReturn,
 } from "@test-config";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
@@ -14,6 +15,7 @@ import { useImagesQuery, useMyImagesQuery } from "@/hooks/useImages";
 import userEvent from "@testing-library/user-event";
 import { PhoneHeaderProps } from "@/components/Headers";
 import { useFileUpload } from "@/hooks/useFileUpload";
+import { useEventsQuery } from "@/hooks/useEvents";
 
 vi.mock("@/hooks/useEvents", () => eventHooksMock());
 vi.mock("@/hooks/useImages", () => imageHooksMock());
@@ -37,6 +39,7 @@ describe("Guest Upload Page", () => {
   beforeEach(() => {
     vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoaded([makeImage()]));
     vi.mocked(useMyImagesQuery).mockReturnValue(mockImagesLoaded([makeImage()]));
+    vi.mocked(useEventsQuery).mockReturnValue({ ...defaultEventsQueryReturn });
   });
 
   describe("render and hook setup", () => {
@@ -47,11 +50,14 @@ describe("Guest Upload Page", () => {
       expect(screen.getByTestId("file-upload")).toBeInTheDocument();
     });
 
-    it("uses useFileUpload with onFilesSelected callback", () => {
+    it("uses the correct parameters and callbacks", () => {
       render(<Page />);
       expect(useFileUpload).toHaveBeenCalledWith(
         expect.objectContaining({
-          onFilesSelected: expect.any(Function),
+          eventId: expect.any(String),
+          maxSizeBytes: expect.any(Number),
+          multiple: expect.any(Boolean),
+          onError: expect.any(Function),
         })
       );
     });
