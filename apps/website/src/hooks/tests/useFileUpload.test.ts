@@ -1,12 +1,22 @@
+import {
+  createQueryClientWrapper,
+  makeEvent,
+  makeMockFile,
+  makeMockFiles,
+} from "@test-config";
 import { render, renderHook, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { useFileUpload } from "../useFileUpload";
+import { FileUploadOptions, useFileUpload } from "../useFileUpload";
 import { act } from "react";
-import { makeMockFile, makeMockFiles } from "@test-config";
 import userEvent from "@testing-library/user-event";
 
-const setup = (opts?: Parameters<typeof useFileUpload>[0]) => {
-  const { result } = renderHook(() => useFileUpload(opts));
+const wrapper = createQueryClientWrapper();
+const event = makeEvent();
+
+const setup = (opts?: Partial<FileUploadOptions>) => {
+  const { result } = renderHook(() => useFileUpload({ ...opts, eventId: event.id }), {
+    wrapper,
+  });
   const { FileInput, openFilePicker } = result.current;
   render(FileInput());
   const input = document.querySelector("input[type='file']") as HTMLInputElement;
@@ -16,7 +26,9 @@ const setup = (opts?: Parameters<typeof useFileUpload>[0]) => {
 describe("useFileUpload", () => {
   describe("return shape", () => {
     it("returns openFilePicker and FileInput", () => {
-      const { result } = renderHook(() => useFileUpload());
+      const { result } = renderHook(() => useFileUpload({ eventId: event.id }), {
+        wrapper,
+      });
       expect(typeof result.current.openFilePicker).toBe("function");
       expect(typeof result.current.FileInput).toBe("function");
     });
@@ -24,7 +36,9 @@ describe("useFileUpload", () => {
 
   describe("FileInput component", () => {
     it("renders a hidden file input", () => {
-      const { result } = renderHook(() => useFileUpload());
+      const { result } = renderHook(() => useFileUpload({ eventId: event.id }), {
+        wrapper,
+      });
       render(result.current.FileInput());
 
       const input = screen.getByTestId("file-input") as HTMLInputElement;
@@ -39,18 +53,18 @@ describe("useFileUpload", () => {
     });
 
     it("applies a custom accept value", () => {
-      const { input } = setup({ accept: ".pdf" });
+      const { input } = setup({ accept: [".pdf"] });
       expect(input.accept).toBe(".pdf");
     });
 
     it("enables multiple by default", () => {
       const { input } = setup();
-      expect(input.multiple).toBe(true);
+      expect(input.multiple).toBe(false);
     });
 
-    it("disables multiple when multiple: false is passed", () => {
-      const { input } = setup({ multiple: false });
-      expect(input.multiple).toBe(false);
+    it("disables multiple when multiple: true is passed", () => {
+      const { input } = setup({ multiple: true });
+      expect(input.multiple).toBe(true);
     });
   });
 
@@ -65,40 +79,42 @@ describe("useFileUpload", () => {
     });
 
     it("does not throw when the ref is not yet attached", () => {
-      const { result } = renderHook(() => useFileUpload());
+      const { result } = renderHook(() => useFileUpload({ eventId: event.id }), {
+        wrapper,
+      });
       // FileInput is NOT rendered, so fileInputRef.current is null
       expect(() => act(() => result.current.openFilePicker())).not.toThrow();
     });
   });
 
-  describe("onFilesSelected callback", () => {
-    const onFilesSelected = vi.fn();
+  describe("onAllUploaded callback", () => {
+    const onAllUploaded = vi.fn();
 
-    it("calls onFilesSelected with the FileList when files are chosen", async () => {
-      const { input } = setup({ onFilesSelected });
+    it("calls onAllUploaded with the FileList when files are chosen", async () => {
+      const { input } = setup({ onAllUploaded });
       const files = [makeMockFile()];
       await userEvent.upload(input, files);
 
-      expect(onFilesSelected).toHaveBeenCalledOnce();
-      expect(onFilesSelected).toHaveBeenCalledWith(files);
+      expect(onAllUploaded).toHaveBeenCalledOnce();
+      expect(onAllUploaded).toHaveBeenCalledWith(files);
     });
 
     it("passes all selected files when multiple files are chosen", async () => {
-      const { input } = setup({ onFilesSelected });
+      const { input } = setup({ onAllUploaded });
       const files = makeMockFiles(3);
       await userEvent.upload(input, files);
 
-      expect(onFilesSelected).toHaveBeenCalledOnce();
-      expect(onFilesSelected).toHaveBeenCalledWith(files);
+      expect(onAllUploaded).toHaveBeenCalledOnce();
+      expect(onAllUploaded).toHaveBeenCalledWith(files);
     });
 
-    it("does not call onFilesSelected when no files are selected", async () => {
-      const { input } = setup({ onFilesSelected });
+    it("does not call onAllUploaded when no files are selected", async () => {
+      const { input } = setup({ onAllUploaded });
       await userEvent.upload(input, []);
-      expect(onFilesSelected).not.toHaveBeenCalled();
+      expect(onAllUploaded).not.toHaveBeenCalled();
     });
 
-    it("does not throw when onFilesSelected is not provided", async () => {
+    it("does not throw when onAllUploaded is not provided", async () => {
       const { input } = setup();
       expect(() => userEvent.upload(input, makeMockFiles(2))).not.toThrow();
     });
