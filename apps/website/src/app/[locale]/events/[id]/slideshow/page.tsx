@@ -62,15 +62,18 @@ const Page = () => {
   const image = imageData[viewIndex];
   const prefetchedForLengthRef = useRef<number>(-1);
 
+  // Prefetch trigger for paginated images
+  // It watches viewIndex, page state, and the number of loaded images.
+  // When the user gets close to the end of the currently loaded list,
+  // it fetches the next page in advance.
   useEffect(() => {
-    if (
+    const shouldSkip =
       !hasNextPage ||
       isFetchingNextPage ||
       imageData.length === 0 ||
-      prefetchedForLengthRef.current >= imageData.length
-    ) {
-      return;
-    }
+      prefetchedForLengthRef.current >= imageData.length;
+
+    if (shouldSkip) return;
 
     const remaining = imageData.length - (viewIndex + 1);
     if (remaining > PREFETCH_THRESHOLD) return;
@@ -78,6 +81,8 @@ const Page = () => {
     void fetchNextPage();
   }, [fetchNextPage, hasNextPage, imageData.length, isFetchingNextPage, viewIndex]);
 
+  // Calculating the join code for the QR display
+  // YES, this is the best option.
   const [joinLink, setJoinLink] = useState<string | null>(null);
   useEffect(() => {
     (async () =>
