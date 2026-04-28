@@ -52,7 +52,7 @@ const Page = () => {
     id,
     { approval: "approved", pageSize: IMAGE_PAGE_SIZE },
     true,
-    IMAGE_PAGE_SIZE
+    SLIDESHOW_SLIDE_DURATION
   );
   const imageData = imagePages?.pages.flatMap(page => page.items) ?? [];
   const [viewIndex, setViewIndex, { paused, toggle }] = useInterval(
