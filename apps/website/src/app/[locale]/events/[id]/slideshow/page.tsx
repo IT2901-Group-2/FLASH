@@ -23,7 +23,7 @@ import { useInterval } from "@/hooks/useInterval";
 import { useTranslations } from "next-intl";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import { getImageSrc } from "@/lib/utils/images";
-import { SLIDE_DURATION } from "@/config/images";
+import { SLIDESHOW_SLIDE_DURATION } from "@/config/event";
 
 const Page = () => {
   const IMAGE_PAGE_SIZE = 5;
@@ -52,25 +52,28 @@ const Page = () => {
     id,
     { approval: "approved", pageSize: IMAGE_PAGE_SIZE },
     true,
-    SLIDE_DURATION
+    SLIDESHOW_SLIDE_DURATION
   );
   const imageData = imagePages?.pages.flatMap(page => page.items) ?? [];
   const [viewIndex, setViewIndex, { paused, toggle }] = useInterval(
     imageData.length,
-    SLIDE_DURATION
+    SLIDESHOW_SLIDE_DURATION
   );
   const image = imageData[viewIndex];
   const prefetchedForLengthRef = useRef<number>(-1);
 
+  // Prefetch trigger for paginated images
+  // It watches viewIndex, page state, and the number of loaded images.
+  // When the user gets close to the end of the currently loaded list,
+  // it fetches the next page in advance.
   useEffect(() => {
-    if (
+    const shouldSkip =
       !hasNextPage ||
       isFetchingNextPage ||
       imageData.length === 0 ||
-      prefetchedForLengthRef.current >= imageData.length
-    ) {
-      return;
-    }
+      prefetchedForLengthRef.current >= imageData.length;
+
+    if (shouldSkip) return;
 
     const remaining = imageData.length - (viewIndex + 1);
     if (remaining > PREFETCH_THRESHOLD) return;
@@ -78,6 +81,8 @@ const Page = () => {
     void fetchNextPage();
   }, [fetchNextPage, hasNextPage, imageData.length, isFetchingNextPage, viewIndex]);
 
+  // Calculating the join link for the QR display
+  // YES, this is the best option. SSR sucks...
   const [joinLink, setJoinLink] = useState<string | null>(null);
   useEffect(() => {
     (async () =>
