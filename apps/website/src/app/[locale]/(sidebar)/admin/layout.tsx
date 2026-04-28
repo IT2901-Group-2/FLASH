@@ -6,7 +6,7 @@ import BaseHeader from "@/components/Header/BaseHeader";
 export default function Layout({ children }: LayoutProps<"/[locale]/admin">) {
   return (
     <>
-      <BaseHeader />
+      <BaseHeader hideOnDesktop />
       <section className={styles.section}>{children}</section>
     </>
   );
