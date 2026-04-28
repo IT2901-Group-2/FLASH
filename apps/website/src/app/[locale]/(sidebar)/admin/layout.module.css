@@ -14,17 +14,13 @@
 }
 
 .section {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
   padding: 2rem;
-  height: 100vh;
 }
 
 @media screen and (max-width: 768px) {
   .section {
     padding-top: 4.5rem;
-    margin-bottom: 10rem;
+    margin-bottom: 5rem;
   }
   .header {
     display: flex;

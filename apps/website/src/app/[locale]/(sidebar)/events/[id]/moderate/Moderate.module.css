@@ -21,37 +21,24 @@
   }
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: auto;
-  gap: 3px;
-  padding: 0.3em 0.3em calc(10rem + env(safe-area-inset-bottom));
-}
-
 .actionCardContainer {
-  position: sticky;
+  position: absolute;
   background: transparent;
   z-index: 9999;
   bottom: 0;
 
+  right: 50%;
+  transform: translateX(50%);
+
   width: clamp(20rem, 100%, 40rem);
-  margin: 0 auto;
   padding: 1rem;
 
   .card {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
 
     padding: 1rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .grid {
-    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
-    padding: 0.3em 1em 0.3em;
   }
 }

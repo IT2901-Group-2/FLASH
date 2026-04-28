@@ -12,7 +12,7 @@
   grid-template-columns: repeat(3, 1fr);
   grid-auto-rows: auto;
   gap: 3px;
-  padding: 0.3em 0.3em calc(10rem + env(safe-area-inset-bottom));
+  padding: 0.3em 0.3em calc(15rem + env(safe-area-inset-bottom));
 }
 
 @media (width >= 768px) {
