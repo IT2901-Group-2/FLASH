@@ -3,7 +3,7 @@ import { AsyncResult, Result } from "typescript-result";
 import { FileStorage } from "@flash/file-storage";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import Sqlite from "better-sqlite3";
-import { storage } from "@/config";
+import { storage } from "@/config/storage";
 import * as schema from "@/db";
 import upath from "upath";
 import { makeGlobal } from "@/lib/utils/makeGlobal";

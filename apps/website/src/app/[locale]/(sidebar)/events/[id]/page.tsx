@@ -1,4 +1,5 @@
 "use client";
+
 import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
 import { PhoneHeader } from "@/components/Headers";
 import { PhotoList } from "@/components/PhotoList/PhotoList";
@@ -6,8 +7,8 @@ import {
   EVENT_REFETCH_INTERVAL,
   MAX_IMAGE_SIZE,
   PHOTOS_REFETCH_INTERVAL,
-} from "@/config/images";
-import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+} from "@/config";
+import { useEventsQuery } from "@/hooks/useEvents";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import {
   useDownloadImagesMutation,
@@ -18,23 +19,8 @@ import {
 } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { getUploadErrorMessageDescriptor } from "@/utils/fileUploadErrorMessages";
-import {
-  ActionCard,
-  Button,
-  Dialog,
-  QRDisplay,
-  SegmentedControl,
-  Title,
-  useToast,
-} from "@flash/ui";
-import {
-  ChevronRight,
-  Download,
-  ImageMinus,
-  OctagonAlert,
-  QrCode,
-  Upload,
-} from "lucide-react";
+import { ActionCard, Button, SegmentedControl, Title, useToast } from "@flash/ui";
+import { ChevronRight, Download, ImageMinus, OctagonAlert, Upload } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -49,7 +35,6 @@ export default function Page() {
   const tUpload = useTranslations("guest.event.upload");
   const { createToast } = useToast();
   const eventAuth = useEventAuth();
-  const dialogRef = useRef<HTMLDialogElement>(null);
   const imagePreviewRef = useRef<ImagePreviewHandle>(null);
   const { mutate: downloadImages } = useDownloadImagesMutation();
   const { mutateAsync: uploadImage } = useUploadImageMutation();
@@ -102,14 +87,6 @@ export default function Page() {
       duration: 5000,
     });
   };
-
-  // Join Code
-  const { data: joinCode } = useEventCodeQuery(eventId, "guest");
-  const [joinLink, setJoinLink] = useState<string | null>(null);
-  useEffect(() => {
-    (async () =>
-      setJoinLink(new URL(`/join/${joinCode}`, window.location.origin).href))();
-  }, [setJoinLink, joinCode]);
 
   //Event date data
   const isEnded = eventData ? new Date() > eventData.endDate : false;
@@ -179,28 +156,6 @@ export default function Page() {
 
   return (
     <>
-      <FileInput />
-      <Dialog ref={dialogRef} closedby="any" className={styles.qrCodeContainer}>
-        <div className={styles.qrCodeContainer}>
-          {joinLink !== null && (
-            <QRDisplay
-              value={joinLink}
-              size="large"
-              helperText={tCommon("messages.scanToUploadPhotos")}
-              code={joinCode}
-            />
-          )}
-          <Button
-            variant="secondary"
-            data-color="neutral"
-            onClick={() => dialogRef.current?.close()}
-            fill
-          >
-            {tCommon("actions.close")}
-          </Button>
-        </div>
-      </Dialog>
-
       <ImagePreview ref={imagePreviewRef} images={displayedImages} />
 
       <div className={styles.pageWrapper}>
@@ -208,38 +163,7 @@ export default function Page() {
           title={eventName}
           username={eventAuth?.nickname ?? ""}
           description={uploadDescription}
-        >
-          <Button
-            icon={<QrCode />}
-            iconPosition="right"
-            data-color="brand-purple"
-            variant="secondary"
-            onClick={() => dialogRef.current?.showModal()}
-          />
-          {eventAuth.isModerator && (
-            <Button
-              icon={<ImageMinus />}
-              iconPosition="right"
-              data-color="brand-purple"
-              variant="primary"
-              onClick={() => router.push(`./${eventId}/moderate`)}
-              className={styles.desktopOnly}
-            >
-              {tCommon("actions.moderate")}
-            </Button>
-          )}
-          <Button
-            icon={isEnded ? <Download /> : <Upload />}
-            iconPosition="right"
-            data-color="brand-purple"
-            variant="primary"
-            onClick={isEnded ? () => downloadImages({ eventId }) : openFilePicker}
-            loading={isUploading}
-            className={styles.desktopOnly}
-          >
-            {isEnded ? tCommon("actions.downloadImages") : tCommon("actions.uploadImage")}
-          </Button>
-        </PhoneHeader>
+        ></PhoneHeader>
         {!isLoading && (isError || !eventData) ? (
           <p className={styles.errorText}>{tUpload("eventLoadFailed")}</p>
         ) : null}

@@ -1,4 +1,4 @@
-import { JWT_SECRET, MAX_IMAGE_SIZE, storage } from "@/config";
+import { JWT_SECRET, MAX_IMAGE_SIZE } from "@/config";
 import { HTTPError } from "@/lib/utils/error";
 import { getEventCookie } from "@/lib/utils/eventCookie";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
@@ -23,6 +23,7 @@ import ShortUniqueId from "short-unique-id";
 import AdmZip from "adm-zip";
 import { verifyAccessToken } from "@/lib/utils/auth";
 import { eventService } from "./eventService";
+import { storage } from "@/config/storage";
 
 const uid = new ShortUniqueId();
 
