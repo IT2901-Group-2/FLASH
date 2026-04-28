@@ -104,6 +104,7 @@ export default function Page() {
     multiple: true,
     eventId,
     onError: e => errorToast(e.message),
+    maxSizeBytes: MAX_IMAGE_SIZE,
   });
 
   if (!eventData) return;

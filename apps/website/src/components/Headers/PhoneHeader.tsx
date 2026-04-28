@@ -69,6 +69,7 @@ export const PhoneHeader = ({ ...rest }: BaseHeaderProps) => {
     multiple: true,
     eventId,
     onError: e => errorToast(e.message),
+    maxSizeBytes: MAX_IMAGE_SIZE,
   });
 
   if (!eventData) return;
