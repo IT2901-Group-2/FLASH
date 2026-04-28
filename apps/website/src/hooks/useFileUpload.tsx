@@ -19,7 +19,10 @@ export interface FileUploadError {
 
 export interface FileUploadOptions {
   eventId: string;
-  /** Accepted MIME types or file extensions, e.g. ["image/png", ".jpg"] */
+  /**
+   * Accepted MIME types or file extensions, e.g. ["image/png", ".jpg"]
+   * @default ["image/*"]
+   */
   accept?: string[];
   /**
    * Allow selecting multiple files at once
@@ -64,7 +67,7 @@ export interface UseFileUploadReturn {
 export function useFileUpload(options: FileUploadOptions): UseFileUploadReturn {
   const {
     eventId,
-    accept,
+    accept = ["image/*"],
     multiple = false,
     maxSizeBytes,
     maxFiles,
@@ -88,38 +91,21 @@ export function useFileUpload(options: FileUploadOptions): UseFileUploadReturn {
           code: "TOO_MANY_FILES",
           message: t("tooManyFiles", { max: maxFiles }),
         };
-
-      for (const file of files) {
-        if (maxSizeBytes && file.size > maxSizeBytes) {
-          return {
-            file,
-            code: "FILE_TOO_LARGE",
-            message: t("fileTooLarge", {
-              name: file.name,
-              max: formatBytes(maxSizeBytes),
-            }),
-          };
-        }
-
-        if (accept && accept.length > 0) {
-          const ok = accept.some(rule =>
-            rule.startsWith(".")
-              ? file.name.toLowerCase().endsWith(rule.toLowerCase())
-              : file.type === rule
-          );
-          if (!ok) {
-            return {
-              file,
-              code: "INVALID_TYPE",
-              message: t("invalidType", { name: file.name, accepted: accept.join(", ") }),
-            };
-          }
-        }
+      const oversized = maxSizeBytes ? files.find(f => f.size > maxSizeBytes) : undefined;
+      if (oversized) {
+        return {
+          file: oversized,
+          code: "FILE_TOO_LARGE",
+          message: t("fileTooLarge", {
+            name: oversized.name,
+            max: formatBytes(maxSizeBytes!),
+          }),
+        };
       }
 
       return null;
     },
-    [accept, maxFiles, maxSizeBytes, t]
+    [maxFiles, maxSizeBytes, t]
   );
 
   const handleInputChange = useCallback(
@@ -142,27 +128,28 @@ export function useFileUpload(options: FileUploadOptions): UseFileUploadReturn {
 
       const results: UploadedFile[] = [];
 
-      for (const file of files) {
-        try {
-          const data = await uploadImage({ eventId, file });
-          const uploaded: UploadedFile = { file, data };
-          results.push(uploaded);
-          setUploadedFiles(prev => [...prev, uploaded]);
-          onUpload?.(uploaded);
-        } catch (err) {
-          const uploadError: FileUploadError = {
-            file,
-            code: "UPLOAD_FAILED",
-            message:
-              err instanceof Error ? err.message : t("uploadFailed", { name: file.name }),
-          };
-          setError(uploadError);
-          setStatus("error");
-          onError?.(uploadError);
-          return;
-        }
-      }
-
+      files.forEach(async file => {
+        await uploadImage({ eventId, file })
+          .then(data => {
+            const uploaded: UploadedFile = { file, data };
+            results.push(uploaded);
+            setUploadedFiles(prev => [...prev, uploaded]);
+            onUpload?.(uploaded);
+          })
+          .catch(err => {
+            const uploadError: FileUploadError = {
+              file,
+              code: "UPLOAD_FAILED",
+              message:
+                err instanceof Error
+                  ? err.message
+                  : t("uploadFailed", { name: file.name }),
+            };
+            setError(uploadError);
+            setStatus("error");
+            onError?.(uploadError);
+          });
+      });
       setStatus("success");
       onAllUploaded?.(results);
     },
