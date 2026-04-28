@@ -14,9 +14,9 @@ import { useFileUpload } from "@/hooks/useFileUpload";
 import { EVENT_REFETCH_INTERVAL, MAX_IMAGE_SIZE, TOAST_DISPLAY_TIME } from "@/config";
 import { getUploadsRemaining, hasEnded } from "@/utils/event-utils";
 
-// export interface PhoneHeaderProps extends BaseHeaderProps {}
+export type PhoneHeaderProps = BaseHeaderProps;
 
-export const PhoneHeader = ({ ...rest }: BaseHeaderProps) => {
+export const PhoneHeader = ({ ...rest }: PhoneHeaderProps) => {
   const t = useTranslations("common");
   const tUpload = useTranslations("guest.event.upload");
   const tCommon = useTranslations("common");
