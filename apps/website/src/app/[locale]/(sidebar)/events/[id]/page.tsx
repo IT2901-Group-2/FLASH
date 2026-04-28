@@ -104,7 +104,7 @@ export default function Page() {
   );
 
   const { openFilePicker, FileInput, isUploading } = useFileUpload({
-    multiple: true,
+    multiple: MULTI_FILE_UPLOAD,
     eventId,
     onError: e => errorToast(e.message),
     maxSizeBytes: MAX_IMAGE_SIZE,
