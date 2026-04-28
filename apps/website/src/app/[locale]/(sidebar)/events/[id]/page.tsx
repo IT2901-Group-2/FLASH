@@ -88,7 +88,7 @@ export default function Page() {
         description: message,
         icon: <OctagonAlert />,
         "data-color": "danger",
-        duration: 5000,
+        duration: TOAST_DISPLAY_TIME,
       }),
     [createToast, tUpload]
   );

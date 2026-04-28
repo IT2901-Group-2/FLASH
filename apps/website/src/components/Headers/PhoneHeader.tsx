@@ -11,7 +11,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { useDownloadImagesMutation, useUploadedImageCountQuery } from "@/hooks/useImages";
 import { useFileUpload } from "@/hooks/useFileUpload";
-import { EVENT_REFETCH_INTERVAL, MAX_IMAGE_SIZE } from "@/config";
+import { EVENT_REFETCH_INTERVAL, MAX_IMAGE_SIZE, TOAST_DISPLAY_TIME } from "@/config";
 import { getUploadsRemaining, hasEnded } from "@/utils/event-utils";
 
 // export interface PhoneHeaderProps extends BaseHeaderProps {}
@@ -50,7 +50,7 @@ export const PhoneHeader = ({ ...rest }: BaseHeaderProps) => {
         description: message,
         icon: <OctagonAlert />,
         "data-color": "danger",
-        duration: 5000,
+        duration: TOAST_DISPLAY_TIME,
       }),
     [createToast, tUpload]
   );
