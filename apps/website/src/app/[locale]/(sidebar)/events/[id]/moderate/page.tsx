@@ -19,9 +19,11 @@ type Tab = "pending" | "approved" | "rejected";
 
 export default function ModeratePage() {
   const router = useRouter();
-  const { id: eventId } = useParams<{ id: string }>();
-  const t = useTranslations("guest.event.moderate");
   const { createToast } = useToast();
+  const { id: eventId } = useParams<{ id: string }>();
+  const imagePreviewRef = useRef<ImagePreviewHandle>(null);
+  const [activeTab, setActiveTab] = useState<Tab>("pending");
+  const t = useTranslations("guest.event.moderate");
 
   const handleError = useCallback(
     (count: number) =>
@@ -34,9 +36,6 @@ export default function ModeratePage() {
       }),
     [createToast, t]
   );
-  const imagePreviewRef = useRef<ImagePreviewHandle>(null);
-
-  const [activeTab, setActiveTab] = useState<Tab>("pending");
 
   const imagesQuery = useImagesQuery(
     eventId,
