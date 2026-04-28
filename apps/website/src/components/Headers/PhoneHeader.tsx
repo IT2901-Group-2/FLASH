@@ -1,5 +1,5 @@
 import styles from "./PhoneHeader.module.css";
-import { Sidebar, Title } from "@flash/ui";
+import { Title } from "@flash/ui";
 import { User } from "lucide-react";
 import BaseHeader, { BaseHeaderProps } from "./BaseHeader";
 

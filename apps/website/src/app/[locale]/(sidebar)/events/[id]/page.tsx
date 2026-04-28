@@ -1,6 +1,6 @@
 "use client";
 import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
-import PhoneHeader from "@/components/Headers/PhoneHeader";
+import { PhoneHeader } from "@/components/Headers";
 import { PhotoList } from "@/components/PhotoList/PhotoList";
 import {
   EVENT_REFETCH_INTERVAL,

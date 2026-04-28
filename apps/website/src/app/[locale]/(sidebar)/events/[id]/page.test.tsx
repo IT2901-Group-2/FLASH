@@ -12,7 +12,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import Page from "./page";
 import { useImagesQuery, useMyImagesQuery } from "@/hooks/useImages";
 import userEvent from "@testing-library/user-event";
-import { PhoneHeaderProps } from "@/components/Headers/PhoneHeader";
+import { PhoneHeaderProps } from "@/components/Headers";
 import { useFileUpload } from "@/hooks/useFileUpload";
 
 vi.mock("@/hooks/useEvents", () => eventHooksMock());
@@ -25,8 +25,8 @@ vi.mock("@flash/ui", async importOriginal => {
   return { ...actual, useToast: () => ({ createToast: vi.fn() }) };
 });
 
-vi.mock("@/components/PhoneHeader/PhoneHeader", () => ({
-  default: vi.fn(({ children, ...rest }: PhoneHeaderProps) => (
+vi.mock("@/components/Headers", () => ({
+  PhoneHeader: vi.fn(({ children, ...rest }: PhoneHeaderProps) => (
     <div data-testid="phone-header" {...rest}>
       {children}
     </div>
