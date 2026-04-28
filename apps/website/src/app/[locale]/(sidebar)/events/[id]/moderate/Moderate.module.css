@@ -2,6 +2,7 @@
   flex: 1;
   margin: 0 1rem;
   margin-top: 1.5rem;
+  height: 100vh;
 
   > .sectionHeading {
     margin: 1.5rem 0 1rem;
@@ -27,27 +28,19 @@
 }
 
 .actionCardContainer {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 1rem;
+  position: sticky;
   background: transparent;
   z-index: 9999;
+  bottom: 0;
+
+  width: clamp(20rem, 100%, 40rem);
+  margin: 0 auto;
+  padding: 1rem;
 }
 
 @media (min-width: 768px) {
   .grid {
     grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
     padding: 0.3em 1em 0.3em;
-  }
-
-  .actionCardContainer {
-    position: sticky;
-    padding: 1rem;
-    background: transparent;
-    z-index: 9999;
-    min-width: 40rem;
-    margin: auto;
   }
 }
