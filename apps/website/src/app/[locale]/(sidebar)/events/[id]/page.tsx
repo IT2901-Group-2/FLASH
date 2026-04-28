@@ -10,17 +10,20 @@ import {
 } from "@/config";
 import { useEventsQuery } from "@/hooks/useEvents";
 import {
+  useDownloadImagesMutation,
   useImagesQuery,
   useMyImagesQuery,
   useUploadedImageCountQuery,
 } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
-import { ActionCard, Button, SegmentedControl, Title } from "@flash/ui";
-import { ChevronRight, Download, ImageMinus, Upload } from "lucide-react";
+import { ActionCard, Button, SegmentedControl, Title, useToast } from "@flash/ui";
+import { ChevronRight, Download, ImageMinus, OctagonAlert, Upload } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./UploadImage.module.css";
+import { useFileUpload } from "@/hooks/useFileUpload";
+import { getUploadsRemaining, hasEnded } from "@/utils/event-utils";
 
 const IMAGE_PAGE_SIZE = 12;
 
@@ -30,6 +33,8 @@ export default function Page() {
   const tUpload = useTranslations("guest.event.upload");
   const eventAuth = useEventAuth();
   const imagePreviewRef = useRef<ImagePreviewHandle>(null);
+  const { createToast } = useToast();
+  const { mutateAsync: download } = useDownloadImagesMutation();
 
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
@@ -67,35 +72,49 @@ export default function Page() {
 
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
-  const [isUploading, setIsUploading] = useState(false);
-
-  //Event date data
-  const isEnded = eventData ? new Date() > eventData.endDate : false;
-
-  const userImageCount = uploadedCountData?.count ?? 0;
-
-  const uploadsRemaining =
-    typeof eventData?.uploadLimit === "number"
-      ? Math.max(0, eventData.uploadLimit - userImageCount)
-      : undefined;
-
-  const uploadDescription = isEnded
-    ? tCommon("uploads.eventEnded")
-    : typeof uploadsRemaining !== "number"
-      ? tCommon("uploads.unlimited.long")
-      : uploadsRemaining === 0
-        ? tCommon("uploads.none.long")
-        : tCommon("uploads.remaining.long", { count: uploadsRemaining });
-
   useEffect(() => {
     if (eventAuth !== undefined && !eventAuth.isAuthenticated) {
       router.push("/");
     }
   }, [eventAuth, router, eventData]);
 
+  const errorToast = useCallback(
+    (message: string) =>
+      createToast({
+        title: tUpload("errors.uploadFailedTitle"),
+        description: message,
+        icon: <OctagonAlert />,
+        "data-color": "danger",
+        duration: 5000,
+      }),
+    [createToast, tUpload]
+  );
+
+  const getUploadDescription = useCallback(
+    (remaining: number | undefined, ended: boolean) => {
+      if (ended) return tCommon("uploads.eventEnded");
+      if (remaining === undefined) return tCommon("uploads.unlimited.long");
+      if (remaining === 0) return tCommon("uploads.none.long");
+      return tCommon("uploads.remaining.long", { count: remaining });
+    },
+    [tCommon]
+  );
+
+  const { openFilePicker, FileInput, isUploading } = useFileUpload({
+    multiple: true,
+    eventId,
+    onError: e => errorToast(e.message),
+  });
+
+  if (!eventData) return;
+
+  const isEnded = hasEnded(eventData);
+  const uploadsRemaining = getUploadsRemaining(eventData, uploadedCountData?.count ?? 0);
+
   return (
     <>
       <ImagePreview ref={imagePreviewRef} images={displayedImages} />
+      <FileInput />
 
       <div className={styles.pageWrapper}>
         <PhoneHeader />
@@ -107,7 +126,7 @@ export default function Page() {
         <div className={styles.mobileOnly}>
           <ActionCard
             data-testid="action-card"
-            description={uploadDescription}
+            description={getUploadDescription(uploadsRemaining, isEnded)}
             primaryButton={{
               "data-color": "brand-purple",
               icon: isEnded ? <Download size={18} /> : <Upload size={18} />,
@@ -115,7 +134,7 @@ export default function Page() {
               text: isEnded
                 ? tCommon("actions.downloadImages")
                 : tCommon("actions.uploadImage"),
-              // onClick: isEnded ? () => downloadImages({ eventId }) : openFilePicker,
+              onClick: isEnded ? () => download({ eventId }) : openFilePicker,
               loading: isUploading,
             }}
             secondaryButton={
