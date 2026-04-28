@@ -82,7 +82,7 @@ const Page = () => {
   }, [fetchNextPage, hasNextPage, imageData.length, isFetchingNextPage, viewIndex]);
 
   // Calculating the join link for the QR display
-  // YES, this is the best option.
+  // YES, this is the best option. SSR sucks...
   const [joinLink, setJoinLink] = useState<string | null>(null);
   useEffect(() => {
     (async () =>
