@@ -1,25 +1,15 @@
-.pageWrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
 .content {
   flex: 1;
+  margin: 0 1rem;
   margin-top: 1.5rem;
-}
 
-.tabContainer {
-  margin: 0 1em;
+  > .sectionHeading {
+    margin: 1.5rem 0 1rem;
+  }
 }
 
 .tabDisabled {
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.sectionHeading {
-  margin: 1.5rem 0 1rem;
+  opacity: var(--opacity-disabled);
 }
 
 @media (max-width: 767px) {
@@ -53,31 +43,11 @@
 }
 
 .actionCardContainer {
-  position: sticky;
+  position: absolute;
   bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
   padding: 1rem;
   background: transparent;
   z-index: 9999;
-}
-
-.emptyState {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 1rem;
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-medium);
-  text-align: center;
-}
-
-.srOnly {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: 0;
 }

@@ -13,6 +13,7 @@ import styles from "./Moderate.module.css";
 import { useImageSelection } from "./useImageSelection";
 import { PhotoList } from "@/components/PhotoList/PhotoList";
 import { TOAST_DISPLAY_TIME } from "@/config/event";
+import { cl } from "@/utils/className";
 
 type Tab = "pending" | "approved" | "rejected";
 
@@ -87,7 +88,7 @@ export default function ModeratePage() {
       : undefined;
 
   return (
-    <div className={styles.pageWrapper}>
+    <>
       <ModerateHeader
         onBack={() => router.back()}
         selectMode={selectMode}
@@ -96,37 +97,35 @@ export default function ModeratePage() {
         onSelectAll={handleSelectAllToggle}
       />
 
-      <div className={styles.content}>
-        <div className={styles.tabContainer}>
-          <div className={selectMode ? styles.tabDisabled : undefined}>
-            <SegmentedControl
-              fill
-              data-color="accent"
-              value={activeTab}
-              onChange={val => setActiveTab(val as Tab)}
-              data-testid="segmented-control"
-            >
-              <SegmentedControl.Item
-                value="pending"
-                label={t("tabs.pending")}
-                disabled={selectMode}
-              />
-              <SegmentedControl.Item
-                value="approved"
-                label={t("tabs.approved")}
-                disabled={selectMode}
-              />
-              <SegmentedControl.Item
-                value="rejected"
-                label={t("tabs.rejected")}
-                disabled={selectMode}
-              />
-            </SegmentedControl>
-          </div>
-          <Title as="h2" size="medium" weight="bold" className={styles.sectionHeading}>
-            {t(`headings.${activeTab}`)}
-          </Title>
+      <section className={styles.content}>
+        <div className={cl(selectMode && styles.tabDisabled)}>
+          <SegmentedControl
+            fill
+            data-color="accent"
+            value={activeTab}
+            onChange={val => setActiveTab(val as Tab)}
+            data-testid="segmented-control"
+          >
+            <SegmentedControl.Item
+              value="pending"
+              label={t("tabs.pending")}
+              disabled={selectMode}
+            />
+            <SegmentedControl.Item
+              value="approved"
+              label={t("tabs.approved")}
+              disabled={selectMode}
+            />
+            <SegmentedControl.Item
+              value="rejected"
+              label={t("tabs.rejected")}
+              disabled={selectMode}
+            />
+          </SegmentedControl>
         </div>
+        <Title as="h2" size="medium" weight="bold" className={styles.sectionHeading}>
+          {t(`headings.${activeTab}`)}
+        </Title>
 
         <PhotoList
           eventId={eventId}
@@ -139,7 +138,7 @@ export default function ModeratePage() {
             selectMode && selectedIds.has(id) ? "selected" : "default"
           }
         />
-      </div>
+      </section>
 
       <ImagePreview ref={imagePreviewRef} images={images} />
 
@@ -153,6 +152,6 @@ export default function ModeratePage() {
           />
         </div>
       )}
-    </div>
+    </>
   );
 }
