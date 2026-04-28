@@ -25,6 +25,7 @@ import styles from "./UploadImage.module.css";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { getUploadsRemaining, hasEnded } from "@/utils/event-utils";
 import useIsMobile from "@/hooks/useIsMobile";
+import { MULTI_FILE_UPLOAD, TOAST_DISPLAY_TIME } from "@/config/event";
 
 const IMAGE_PAGE_SIZE = 12;
 

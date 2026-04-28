@@ -4,7 +4,7 @@ import styles from "./nickname.module.css";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { SubmitEvent, useState } from "react";
 import { useEventByCodeQuery, useEventsQuery, useJoinMutation } from "@/hooks/useEvents";
 
 export default function Page() {
@@ -25,25 +25,20 @@ export default function Page() {
 
   const [nickname, setNickname] = useState<string>("");
   const [nicknameError, setNicknameError] = useState<string>("");
-  const joinMutation = useJoinMutation();
+  const { mutateAsync: join, isPending } = useJoinMutation();
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  const handleError = (err: unknown) => {
+    if (err instanceof Error && err.message === "NICKNAME_TAKEN")
+      return setNicknameError(tErrors("nicknameTaken"));
+    setNicknameError(tErrors("joinFailed"));
+  };
 
-    try {
-      const { redirectUrl } = await joinMutation.mutateAsync(
-        new FormData(event.currentTarget)
-      );
-      window.location.assign(redirectUrl);
-    } catch (error) {
-      if (error instanceof Error && error.message === "NICKNAME_TAKEN") {
-        setNicknameError(tErrors("nicknameTaken"));
-        return;
-      }
-
-      setNicknameError(tErrors("joinFailed"));
-    }
-  }
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await join(new FormData(e.currentTarget))
+      .then(e => navigation.push(e.redirectUrl))
+      .catch(handleError);
+  };
 
   return (
     <div className={styles.container}>
@@ -82,7 +77,7 @@ export default function Page() {
             iconPosition="right"
             data-color="brand-purple"
             type="submit"
-            disabled={joinMutation.isPending}
+            disabled={isPending}
             fill
           >
             {cActions("join")}
