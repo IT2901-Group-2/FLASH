@@ -16,7 +16,7 @@ import {
   useUploadedImageCountQuery,
 } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
-import { ActionCard, Button, SegmentedControl, Title, useToast } from "@flash/ui";
+import { Button, Card, SegmentedControl, Title, useToast } from "@flash/ui";
 import { ChevronRight, Download, ImageMinus, OctagonAlert, Upload } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
@@ -24,6 +24,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./UploadImage.module.css";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { getUploadsRemaining, hasEnded } from "@/utils/event-utils";
+import useIsMobile from "@/hooks/useIsMobile";
 
 const IMAGE_PAGE_SIZE = 12;
 
@@ -35,6 +36,7 @@ export default function Page() {
   const imagePreviewRef = useRef<ImagePreviewHandle>(null);
   const { createToast } = useToast();
   const { mutateAsync: download } = useDownloadImagesMutation();
+  const isMobile = useIsMobile();
 
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
@@ -125,32 +127,33 @@ export default function Page() {
         ) : null}
 
         <div className={styles.mobileOnly}>
-          <ActionCard
-            data-testid="action-card"
-            description={getUploadDescription(uploadsRemaining, isEnded)}
-            primaryButton={{
-              "data-color": "brand-purple",
-              icon: isEnded ? <Download size={18} /> : <Upload size={18} />,
-              iconPosition: "right",
-              text: isEnded
+          <Card data-testid="action-card">
+            {getUploadDescription(uploadsRemaining, isEnded)}
+            {eventAuth.isModerator && (
+              <Button
+                data-color="brand-purple"
+                icon={<ImageMinus />}
+                iconPosition="right"
+                variant="secondary"
+                onClick={() => router.push(`./${eventId}/moderate`)}
+                fill
+              >
+                Moderate
+              </Button>
+            )}
+            <Button
+              data-color="brand-purple"
+              icon={isEnded ? <Download /> : <Upload />}
+              iconPosition="right"
+              loading={isUploading}
+              onClick={isEnded ? () => download({ eventId }) : openFilePicker}
+              fill
+            >
+              {isEnded
                 ? tCommon("actions.downloadImages")
-                : tCommon("actions.uploadImage"),
-              onClick: isEnded ? () => download({ eventId }) : openFilePicker,
-              loading: isUploading,
-            }}
-            secondaryButton={
-              eventAuth.isModerator
-                ? {
-                    icon: <ImageMinus />,
-                    iconPosition: "right",
-                    "data-color": "brand-purple",
-                    variant: "secondary",
-                    text: "Moderate",
-                    onClick: () => router.push(`./${eventId}/moderate`),
-                  }
-                : undefined
-            }
-          />
+                : tCommon("actions.uploadImage")}
+            </Button>
+          </Card>
         </div>
       </div>
 
@@ -177,6 +180,7 @@ export default function Page() {
             iconPosition="right"
             className={styles.slideshowButton}
             onClick={() => router.push(`./${eventId}/slideshow`)}
+            size={isMobile ? "small" : "medium"}
           >
             {tCommon("actions.slideshow")}
           </Button>
