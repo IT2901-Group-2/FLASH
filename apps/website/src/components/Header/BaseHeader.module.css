@@ -1,5 +1,4 @@
 .header {
-  height: 4.15rem;
   border-bottom: 0.1rem solid var(--color-border-base);
   background-color: var(--color-primary-base);
   padding: 1rem;
@@ -11,10 +10,4 @@
   top: 0;
   z-index: 1;
   width: 100%;
-}
-
-@media screen and (max-width: 768px) {
-  .header {
-    display: flex;
-  }
 }
