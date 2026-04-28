@@ -12,7 +12,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import Page from "./page";
 import { useImagesQuery, useMyImagesQuery } from "@/hooks/useImages";
 import userEvent from "@testing-library/user-event";
-import { PhoneHeaderProps } from "@/components/PhoneHeader/PhoneHeader";
+import { PhoneHeaderProps } from "@/components/Headers/PhoneHeader";
 import { useFileUpload } from "@/hooks/useFileUpload";
 
 vi.mock("@/hooks/useEvents", () => eventHooksMock());
