@@ -6,15 +6,23 @@
   align-items: center;
 }
 
-.mobileOnly {
-  display: flex;
-  width: 80vw;
-  position: fixed;
-  bottom: calc(1rem + env(safe-area-inset-bottom));
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 100;
-  border-radius: var(--radius-16);
+.actionCardContainer {
+  position: sticky;
+  background: transparent;
+  z-index: 9999;
+  bottom: 0;
+
+  width: clamp(20rem, 100%, 40rem);
+  padding: 1rem;
+
+  .actionCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+
+    padding: 1rem;
+  }
 }
 
 .errorText {
@@ -45,7 +53,7 @@
 }
 
 @media (width >= 768px) {
-  .mobileOnly {
+  .actionCardContainer {
     display: none;
   }
 

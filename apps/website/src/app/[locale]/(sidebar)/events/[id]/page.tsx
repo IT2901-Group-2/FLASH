@@ -125,36 +125,6 @@ export default function Page() {
         {!isLoading && (isError || !eventData) ? (
           <p className={styles.errorText}>{tUpload("eventLoadFailed")}</p>
         ) : null}
-
-        <div className={styles.mobileOnly}>
-          <Card data-testid="action-card">
-            {getUploadDescription(uploadsRemaining, isEnded)}
-            {eventAuth.isModerator && (
-              <Button
-                data-color="brand-purple"
-                icon={<ImageMinus />}
-                iconPosition="right"
-                variant="secondary"
-                onClick={() => router.push(`./${eventId}/moderate`)}
-                fill
-              >
-                Moderate
-              </Button>
-            )}
-            <Button
-              data-color="brand-purple"
-              icon={isEnded ? <Download /> : <Upload />}
-              iconPosition="right"
-              loading={isUploading}
-              onClick={isEnded ? () => download({ eventId }) : openFilePicker}
-              fill
-            >
-              {isEnded
-                ? tCommon("actions.downloadImages")
-                : tCommon("actions.uploadImage")}
-            </Button>
-          </Card>
-        </div>
       </div>
 
       {showTabs && (
@@ -197,6 +167,34 @@ export default function Page() {
           isApproved === null ? "pending" : isApproved === false ? "rejected" : undefined
         }
       />
+
+      <div className={styles.actionCardContainer}>
+        <Card data-testid="action-card" className={styles.actionCard}>
+          {getUploadDescription(uploadsRemaining, isEnded)}
+          {eventAuth.isModerator && (
+            <Button
+              data-color="brand-purple"
+              icon={<ImageMinus />}
+              iconPosition="right"
+              variant="secondary"
+              onClick={() => router.push(`./${eventId}/moderate`)}
+              fill
+            >
+              Moderate
+            </Button>
+          )}
+          <Button
+            data-color="brand-purple"
+            icon={isEnded ? <Download /> : <Upload />}
+            iconPosition="right"
+            loading={isUploading}
+            onClick={isEnded ? () => download({ eventId }) : openFilePicker}
+            fill
+          >
+            {isEnded ? tCommon("actions.downloadImages") : tCommon("actions.uploadImage")}
+          </Button>
+        </Card>
+      </div>
     </>
   );
 }
