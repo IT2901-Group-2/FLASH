@@ -20,9 +20,13 @@ vi.mock("@/hooks/useImages", () => imageHooksMock());
 vi.mock("@/providers/EventAuthContext", () => eventAuthMock());
 vi.mock("@/hooks/useFileUpload", () => fileUploadHookMock());
 vi.mock("@/components/ImageCard/ImageCard", () => imageCardMock());
+vi.mock("@flash/ui", async importOriginal => {
+  const actual = await importOriginal<typeof import("@flash/ui")>();
+  return { ...actual, useToast: () => ({ createToast: vi.fn() }) };
+});
 
 vi.mock("@/components/PhoneHeader/PhoneHeader", () => ({
-  PhoneHeader: vi.fn(({ children, ...rest }: PhoneHeaderProps) => (
+  default: vi.fn(({ children, ...rest }: PhoneHeaderProps) => (
     <div data-testid="phone-header" {...rest}>
       {children}
     </div>

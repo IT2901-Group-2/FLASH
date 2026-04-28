@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { cl } from "@/utils/className";
 import styles from "./ImageCard.module.css";
 
-type ImageCardState =
+export type ImageCardState =
   | "loading"
   | "rejected"
   | "approved"

@@ -1,15 +1,23 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
+import PhoneHeader from "@/components/PhoneHeader/PhoneHeader";
+import { PhotoList } from "@/components/PhotoList/PhotoList";
 import {
-  ChevronLeft,
-  ChevronRight,
-  Download,
-  ImageMinus,
-  QrCode,
-  Upload,
-  X,
-} from "lucide-react";
-import styles from "./UploadImage.module.css";
+  EVENT_REFETCH_INTERVAL,
+  MAX_IMAGE_SIZE,
+  PHOTOS_REFETCH_INTERVAL,
+} from "@/config/images";
+import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+import { useFileUpload } from "@/hooks/useFileUpload";
+import {
+  useDownloadImagesMutation,
+  useImagesQuery,
+  useMyImagesQuery,
+  useUploadImageMutation,
+  useUploadedImageCountQuery,
+} from "@/hooks/useImages";
+import { useEventAuth } from "@/providers/EventAuthContext";
+import { getUploadErrorMessageDescriptor } from "@/utils/fileUploadErrorMessages";
 import {
   ActionCard,
   Button,
@@ -17,34 +25,34 @@ import {
   QRDisplay,
   SegmentedControl,
   Title,
+  useToast,
 } from "@flash/ui";
-import { useFileUpload } from "@/hooks/useFileUpload";
+import {
+  ChevronRight,
+  Download,
+  ImageMinus,
+  OctagonAlert,
+  QrCode,
+  Upload,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
-import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
-import { useEventAuth } from "@/providers/EventAuthContext";
-import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
-import {
-  useDownloadImagesMutation,
-  useImagesQuery,
-  useMyImagesQuery,
-  useUploadedImageCountQuery,
-  useUploadImageMutation,
-} from "@/hooks/useImages";
-import Image from "next/image";
-import { getImageSrc } from "@/lib/utils/images";
-import { EVENT_REFETCH_INTERVAL, PHOTOS_REFETCH_INTERVAL } from "@/config/images";
-import { PhotoList } from "@/components/PhotoList/PhotoList";
+import { useEffect, useRef, useState } from "react";
+import styles from "./UploadImage.module.css";
 
 const IMAGE_PAGE_SIZE = 12;
+const maxFileSizeInMb = Math.ceil(MAX_IMAGE_SIZE / (1024 * 1024)); //TODO: Move this to a more appropriate location
 
 export default function Page() {
   const router = useRouter();
   const tCommon = useTranslations("common");
   const tUpload = useTranslations("guest.event.upload");
+  const { createToast } = useToast();
   const eventAuth = useEventAuth();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const imagePreviewRef = useRef<ImagePreviewHandle>(null);
   const { mutate: downloadImages } = useDownloadImagesMutation();
+  const { mutateAsync: uploadImage } = useUploadImageMutation();
 
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
@@ -58,6 +66,10 @@ export default function Page() {
   const [activeTab, setActiveTab] = useState<"all" | "user">("all");
   const showTabs = uploadsArePrivate || !!eventAuth.isModerator;
   const isShowingUserTab = !showTabs || activeTab === "user";
+
+  const handleTabChange = (val: string) => {
+    if (val === "all" || val === "user") setActiveTab(val);
+  };
 
   const myImagesQuery = useMyImagesQuery(
     eventId,
@@ -78,16 +90,18 @@ export default function Page() {
 
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
-  const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
 
-  const handleTabChange = (val: string) => {
-    if (val === "all" || val === "user") setActiveTab(val);
-    setPreviewIndex(null);
+  const showUploadErrorToast = (message: string) => {
+    createToast({
+      id: "upload-error-toast",
+      title: tUpload("errors.uploadFailedTitle"),
+      description: message,
+      icon: <OctagonAlert />,
+      "data-color": "danger",
+      duration: 5000,
+    });
   };
-  const touchStartX = useRef<number | null>(null);
-  const { mutateAsync: uploadImage } = useUploadImageMutation();
 
   // Join Code
   const { data: joinCode } = useEventCodeQuery(eventId, "guest");
@@ -120,15 +134,16 @@ export default function Page() {
         ? tCommon("uploads.none.long")
         : tCommon("uploads.remaining.long", { count: uploadsRemaining });
 
+  // If/when this page is refactored and this function is extracted as its own util, the contents of
+  // utils/fileUploadErrorMessages should possible be integrated into the new util as well
   const { openFilePicker, FileInput } = useFileUpload({
     multiple: false,
     onFilesSelected: async files => {
       if (!eventId) {
-        setUploadError(tUpload("errors.uploadUnavailable"));
+        showUploadErrorToast(tUpload("errors.uploadUnavailable"));
         return;
       }
 
-      setUploadError(null);
       setIsUploading(true);
 
       try {
@@ -138,21 +153,16 @@ export default function Page() {
           ),
           new Promise(resolve => setTimeout(resolve, 650)),
         ]);
-        const successfulUploads = results.filter(r => r.status === "fulfilled").length;
-        const failureCount = results.length - successfulUploads;
+        const uploadErrorDescriptor = getUploadErrorMessageDescriptor(results, {
+          maxFileSize: maxFileSizeInMb,
+        });
 
-        const hasUploadLimitError = results.some(
-          (result): result is PromiseRejectedResult =>
-            result.status === "rejected" &&
-            result.reason instanceof Error &&
-            /upload\s+limit\s+reached/i.test(result.reason.message)
-        );
-
-        if (failureCount > 0) {
-          setUploadError(
-            hasUploadLimitError
-              ? tUpload("errors.uploadLimitReached")
-              : tUpload("errors.uploadFailed", { count: failureCount })
+        if (uploadErrorDescriptor) {
+          showUploadErrorToast(
+            tUpload(
+              uploadErrorDescriptor.key,
+              "values" in uploadErrorDescriptor ? uploadErrorDescriptor.values : undefined
+            )
           );
         }
       } finally {
@@ -166,111 +176,6 @@ export default function Page() {
       router.push("/");
     }
   }, [eventAuth, router]);
-
-  useEffect(() => {
-    if (previewIndex === null) return;
-
-    const previousOverflow = document.body.style.overflow;
-    const previousOverscrollBehavior = document.body.style.overscrollBehavior;
-
-    document.body.style.overflow = "hidden";
-    document.body.style.overscrollBehavior = "none";
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.body.style.overscrollBehavior = previousOverscrollBehavior;
-    };
-  }, [previewIndex]);
-
-  useEffect(() => {
-    if (previewIndex === null) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setPreviewIndex(null);
-        return;
-      }
-
-      if (displayedImages.length <= 1) return;
-
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        setPreviewIndex(currentIndex =>
-          currentIndex === null ? null : (currentIndex + 1) % displayedImages.length
-        );
-      }
-
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        setPreviewIndex(currentIndex =>
-          currentIndex === null
-            ? null
-            : (currentIndex - 1 + displayedImages.length) % displayedImages.length
-        );
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [displayedImages.length, previewIndex]);
-
-  useEffect(() => {
-    if (previewIndex === null) return;
-    if (displayedImages.length === 0) {
-      setPreviewIndex(null);
-      return;
-    }
-
-    if (previewIndex > displayedImages.length - 1) {
-      setPreviewIndex(displayedImages.length - 1);
-    }
-  }, [displayedImages.length, previewIndex]);
-
-  const handleImagePreview = (index: number) => setPreviewIndex(index);
-
-  const closePreview = () => setPreviewIndex(null);
-
-  const nextPreviewImage = () => {
-    if (previewIndex === null || displayedImages.length === 0) return;
-    setPreviewIndex((previewIndex + 1) % displayedImages.length);
-  };
-
-  const prevPreviewImage = () => {
-    if (previewIndex === null || displayedImages.length === 0) return;
-    setPreviewIndex((previewIndex - 1 + displayedImages.length) % displayedImages.length);
-  };
-
-  const handlePreviewTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
-    touchStartX.current = event.touches[0]?.clientX ?? null;
-  };
-
-  const handlePreviewTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
-    if (touchStartX.current === null) return;
-    const endX = event.changedTouches[0]?.clientX;
-    if (typeof endX !== "number") return;
-
-    const deltaX = endX - touchStartX.current;
-    touchStartX.current = null;
-
-    if (Math.abs(deltaX) < 40) return;
-
-    if (deltaX > 0) {
-      prevPreviewImage();
-    } else {
-      nextPreviewImage();
-    }
-  };
-
-  const previewImage =
-    previewIndex !== null && displayedImages[previewIndex]
-      ? {
-          id: displayedImages[previewIndex].id,
-          alt: tUpload("imageAlt", {
-            index: previewIndex + 1,
-            total: displayedImages.length,
-          }),
-        }
-      : null;
 
   return (
     <>
@@ -296,46 +201,7 @@ export default function Page() {
         </div>
       </Dialog>
 
-      {previewImage && (
-        <div
-          className={styles.previewPage}
-          role="dialog"
-          aria-modal="true"
-          onTouchStart={handlePreviewTouchStart}
-          onTouchEnd={handlePreviewTouchEnd}
-        >
-          <Image
-            fill
-            loader={({ width }) => getImageSrc(eventId, previewImage.id, { width })}
-            src={getImageSrc(eventId, previewImage.id)}
-            alt={previewImage.alt}
-            className={styles.previewFullscreenImage}
-            sizes="100vw"
-          />
-          <Button
-            className={styles.previewClose}
-            onClick={closePreview}
-            variant="icon"
-            icon={<X />}
-          />
-          {displayedImages.length > 1 && (
-            <>
-              <Button
-                className={styles.previewNavButtonLeft}
-                onClick={prevPreviewImage}
-                variant="icon"
-                icon={<ChevronLeft />}
-              />
-              <Button
-                className={styles.previewNavButtonRight}
-                onClick={nextPreviewImage}
-                variant="icon"
-                icon={<ChevronRight />}
-              />
-            </>
-          )}
-        </div>
-      )}
+      <ImagePreview ref={imagePreviewRef} images={displayedImages} />
 
       <div className={styles.pageWrapper}>
         <PhoneHeader
@@ -377,16 +243,10 @@ export default function Page() {
         {!isLoading && (isError || !eventData) ? (
           <p className={styles.errorText}>{tUpload("eventLoadFailed")}</p>
         ) : null}
-        {uploadError && (
-          <p role="alert" className={`${styles.errorText} ${styles.desktopOnly}`}>
-            {uploadError}
-          </p>
-        )}
         <div className={styles.mobileOnly}>
           <ActionCard
             data-testid="action-card"
-            description={uploadError ?? uploadDescription}
-            descriptionColor={uploadError ? "danger" : undefined}
+            description={uploadDescription}
             primaryButton={{
               "data-color": "brand-purple",
               icon: isEnded ? <Download size={18} /> : <Upload size={18} />,
@@ -447,7 +307,10 @@ export default function Page() {
         loadingText={
           isShowingUserTab ? tUpload("userPhotosEmptyState") : tUpload("emptyState")
         }
-        onClick={handleImagePreview}
+        onClick={({ index }) => imagePreviewRef.current?.open(index)}
+        setState={({ isApproved }) =>
+          isApproved === null ? "pending" : isApproved === false ? "rejected" : undefined
+        }
       />
     </>
   );
