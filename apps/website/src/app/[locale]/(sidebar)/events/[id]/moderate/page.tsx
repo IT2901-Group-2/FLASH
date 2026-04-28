@@ -12,6 +12,7 @@ import { useCallback, useRef, useState } from "react";
 import styles from "./Moderate.module.css";
 import { useImageSelection } from "./useImageSelection";
 import { PhotoList } from "@/components/PhotoList/PhotoList";
+import { TOAST_DISPLAY_TIME } from "@/config/event";
 
 type Tab = "pending" | "approved" | "rejected";
 
@@ -28,7 +29,7 @@ export default function ModeratePage() {
         "data-color": "primary",
         icon: <CircleAlert style={{ color: "var(--color-danger-base)" }} />,
         position: "top-center",
-        duration: 7000,
+        duration: TOAST_DISPLAY_TIME,
       }),
     [createToast, t]
   );

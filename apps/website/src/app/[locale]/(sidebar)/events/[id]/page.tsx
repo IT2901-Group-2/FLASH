@@ -39,6 +39,7 @@ import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styles from "./UploadImage.module.css";
+import { MULTI_FILE_UPLOAD, TOAST_DISPLAY_TIME } from "@/config/event";
 
 const IMAGE_PAGE_SIZE = 12;
 const maxFileSizeInMb = Math.ceil(MAX_IMAGE_SIZE / (1024 * 1024)); //TODO: Move this to a more appropriate location
@@ -99,7 +100,7 @@ export default function Page() {
       description: message,
       icon: <OctagonAlert />,
       "data-color": "danger",
-      duration: 5000,
+      duration: TOAST_DISPLAY_TIME,
     });
   };
 
@@ -137,7 +138,7 @@ export default function Page() {
   // If/when this page is refactored and this function is extracted as its own util, the contents of
   // utils/fileUploadErrorMessages should possible be integrated into the new util as well
   const { openFilePicker, FileInput } = useFileUpload({
-    multiple: false,
+    multiple: MULTI_FILE_UPLOAD,
     onFilesSelected: async files => {
       if (!eventId) {
         showUploadErrorToast(tUpload("errors.uploadUnavailable"));
