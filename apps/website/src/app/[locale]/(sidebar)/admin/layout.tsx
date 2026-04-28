@@ -1,14 +1,12 @@
 "use client";
 
-import { Sidebar as FlashSidebar } from "@flash/ui";
 import styles from "./layout.module.css";
+import BaseHeader from "@/components/Header/BaseHeader";
 
 export default function Layout({ children }: LayoutProps<"/[locale]/admin">) {
   return (
     <>
-      <header className={styles.header}>
-        <FlashSidebar.Trigger />
-      </header>
+      <BaseHeader />
       <section className={styles.section}>{children}</section>
     </>
   );
