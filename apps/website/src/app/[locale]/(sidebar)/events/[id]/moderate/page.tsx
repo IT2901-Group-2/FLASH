@@ -1,7 +1,7 @@
 "use client";
 
 import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
-import { ModerateHeader } from "@/components/ModerateHeader";
+import { ModerateHeader } from "@/components/Headers";
 import { PHOTOS_REFETCH_INTERVAL } from "@/config/images";
 import { useImagesQuery } from "@/hooks/useImages";
 import { ActionCard, SegmentedControl, Title, useToast } from "@flash/ui";
