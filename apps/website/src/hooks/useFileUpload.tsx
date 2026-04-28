@@ -1,69 +1,218 @@
-import { useRef, ChangeEvent } from "react";
+import { useRef, useState, useCallback, ChangeEvent } from "react";
+import { useTranslations } from "next-intl";
+import { useUploadImageMutation } from "./useImages";
+import { Image } from "@/db";
 
-interface UseFileUploadOptions {
-  accept?: string;
-  multiple?: boolean;
-  onFilesSelected?: (files: File[]) => void;
+export type UploadStatus = "idle" | "uploading" | "success" | "error";
+
+export interface UploadedFile {
+  file: File;
+  /** The full image object returned from the server */
+  data: Image;
 }
 
-/**
- * Custom hook to handle file uploads via a hidden file input.
- *
- * Provides a function to open the file picker and a component for the file input.
- *
- * @param options - Configuration options for the file upload behavior.
- * @returns An object containing the `openFilePicker` function and the `FileInput` component.
- *
- * @example
- * const { openFilePicker, FileInput } = useFileUpload({
- *   accept: "image/*",
- *   multiple: false,
- *  onFilesSelected: (files) => console.log(files[0]),
- * });
- *
- * return (<>
- *   <FileInput />
- *   <button onClick={openFilePicker}>Upload Image</button>
- * </>);
- */
-export function useFileUpload(options: UseFileUploadOptions = {}) {
-  // Default to accepting all image types and allowing multiple file selection
-  const { accept = "image/*", multiple = true, onFilesSelected } = options;
+export interface FileUploadError {
+  file?: File;
+  message: string;
+  code: "FILE_TOO_LARGE" | "INVALID_TYPE" | "TOO_MANY_FILES" | "UPLOAD_FAILED";
+}
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+export interface FileUploadOptions {
+  eventId: string;
+  /** Accepted MIME types or file extensions, e.g. ["image/png", ".jpg"] */
+  accept?: string[];
+  /**
+   * Allow selecting multiple files at once
+   * @default false
+   */
+  multiple?: boolean;
+  /**
+   * Maximum file size in bytes. No limit if undefined.
+   * @default undefined
+   */
+  maxSizeBytes?: number;
+  /**
+   * Maximum number of files. No limit if undefined
+   * @default undefined
+   */
+  maxFiles?: number;
+  /** Called for each successfully uploaded file */
+  onUpload?: (uploaded: UploadedFile) => void;
+  /** Called on validation or upload failure */
+  onError?: (error: FileUploadError) => void;
+  /** Called when all queued files have finished uploading */
+  onAllUploaded?: (uploaded: UploadedFile[]) => void;
+}
 
-  // Function to programmatically open the file picker
-  const openFilePicker = () => {
-    fileInputRef.current?.click();
-  };
+export interface UseFileUploadReturn {
+  uploadedFiles: UploadedFile[];
+  status: UploadStatus;
+  isUploading: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+  error: FileUploadError | null;
+  /** Opens the native file picker */
+  openFilePicker: () => void;
+  /** Remove one uploaded file from the result list */
+  removeFile: (fileId: string) => void;
+  /** Reset all state back to idle */
+  reset: () => void;
+  /** A component you can render anywhere: <FileInput /> */
+  FileInput: () => React.ReactElement;
+}
 
-  // Handler for when files are selected through the file input.
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      onFilesSelected?.(Array.from(files));
-    }
-    // Reset input value to allow selecting the same file again if needed
-    if (event.target) {
-      event.target.value = "";
-    }
-  };
+export function useFileUpload(options: FileUploadOptions): UseFileUploadReturn {
+  const {
+    eventId,
+    accept,
+    multiple = false,
+    maxSizeBytes,
+    maxFiles,
+    onUpload,
+    onError,
+    onAllUploaded,
+  } = options;
 
-  // Component for the hidden file input that is triggered by the openFilePicker function
-  const FileInput = () => (
-    <input
-      ref={fileInputRef}
-      type="file"
-      accept={accept}
-      multiple={multiple}
-      style={{ display: "none" }}
-      onChange={handleFileChange}
-      data-testid="file-input"
-    />
+  const t = useTranslations("useFileUpload");
+  const { mutateAsync: uploadImage } = useUploadImageMutation();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [status, setStatus] = useState<UploadStatus>("idle");
+  const [error, setError] = useState<FileUploadError | null>(null);
+
+  const validate = useCallback(
+    (files: File[]): FileUploadError | null => {
+      if (maxFiles && files.length > maxFiles)
+        return {
+          code: "TOO_MANY_FILES",
+          message: t("tooManyFiles", { max: maxFiles }),
+        };
+
+      for (const file of files) {
+        if (maxSizeBytes && file.size > maxSizeBytes) {
+          return {
+            file,
+            code: "FILE_TOO_LARGE",
+            message: t("fileTooLarge", {
+              name: file.name,
+              max: formatBytes(maxSizeBytes),
+            }),
+          };
+        }
+
+        if (accept && accept.length > 0) {
+          const ok = accept.some(rule =>
+            rule.startsWith(".")
+              ? file.name.toLowerCase().endsWith(rule.toLowerCase())
+              : file.type === rule
+          );
+          if (!ok) {
+            return {
+              file,
+              code: "INVALID_TYPE",
+              message: t("invalidType", { name: file.name, accepted: accept.join(", ") }),
+            };
+          }
+        }
+      }
+
+      return null;
+    },
+    [accept, maxFiles, maxSizeBytes, t]
+  );
+
+  const handleInputChange = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      const files = Array.from(e.target.files ?? []);
+      e.target.value = "";
+
+      if (files.length === 0) return;
+
+      const validationError = validate(files);
+      if (validationError) {
+        setError(validationError);
+        setStatus("error");
+        onError?.(validationError);
+        return;
+      }
+
+      setStatus("uploading");
+      setError(null);
+
+      const results: UploadedFile[] = [];
+
+      for (const file of files) {
+        try {
+          const data = await uploadImage({ eventId, file });
+          const uploaded: UploadedFile = { file, data };
+          results.push(uploaded);
+          setUploadedFiles(prev => [...prev, uploaded]);
+          onUpload?.(uploaded);
+        } catch (err) {
+          const uploadError: FileUploadError = {
+            file,
+            code: "UPLOAD_FAILED",
+            message:
+              err instanceof Error ? err.message : t("uploadFailed", { name: file.name }),
+          };
+          setError(uploadError);
+          setStatus("error");
+          onError?.(uploadError);
+          return;
+        }
+      }
+
+      setStatus("success");
+      onAllUploaded?.(results);
+    },
+    [validate, uploadImage, eventId, onUpload, onError, onAllUploaded, t]
+  );
+
+  const openFilePicker = useCallback(() => inputRef.current?.click(), []);
+
+  const removeFile = useCallback(
+    (fileId: string) => setUploadedFiles(prev => prev.filter(f => f.data?.id !== fileId)),
+    []
+  );
+
+  const reset = useCallback(() => {
+    setUploadedFiles([]);
+    setStatus("idle");
+    setError(null);
+    if (inputRef.current) inputRef.current.value = "";
+  }, []);
+
+  const FileInput = useCallback(
+    () => (
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept?.join(",")}
+        multiple={multiple}
+        style={{ display: "none" }}
+        onChange={handleInputChange}
+      />
+    ),
+    [accept, multiple, handleInputChange]
   );
 
   return {
+    uploadedFiles,
+    status,
+    isUploading: status === "uploading",
+    isSuccess: status === "success",
+    isError: status === "error",
+    error,
     openFilePicker,
+    removeFile,
+    reset,
     FileInput,
   };
 }
+
+const formatBytes = (bytes: number): string => {
+  if (bytes < 1024) return `${bytes}B`;
+  if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(1)}KB`;
+  return `${(bytes / 1024 ** 2).toFixed(1)}MB`;
+};

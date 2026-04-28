@@ -95,4 +95,8 @@
   .sidebarTrigger {
     display: block;
   }
+
+  .desktopOnly {
+    display: none !important;
+  }
 }

@@ -9,35 +9,27 @@ import {
   PHOTOS_REFETCH_INTERVAL,
 } from "@/config";
 import { useEventsQuery } from "@/hooks/useEvents";
-import { useFileUpload } from "@/hooks/useFileUpload";
 import {
-  useDownloadImagesMutation,
   useImagesQuery,
   useMyImagesQuery,
-  useUploadImageMutation,
   useUploadedImageCountQuery,
 } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
-import { getUploadErrorMessageDescriptor } from "@/utils/fileUploadErrorMessages";
-import { ActionCard, Button, SegmentedControl, Title, useToast } from "@flash/ui";
-import { ChevronRight, Download, ImageMinus, OctagonAlert, Upload } from "lucide-react";
+import { ActionCard, Button, SegmentedControl, Title } from "@flash/ui";
+import { ChevronRight, Download, ImageMinus, Upload } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styles from "./UploadImage.module.css";
 
 const IMAGE_PAGE_SIZE = 12;
-const maxFileSizeInMb = Math.ceil(MAX_IMAGE_SIZE / (1024 * 1024)); //TODO: Move this to a more appropriate location
 
 export default function Page() {
   const router = useRouter();
   const tCommon = useTranslations("common");
   const tUpload = useTranslations("guest.event.upload");
-  const { createToast } = useToast();
   const eventAuth = useEventAuth();
   const imagePreviewRef = useRef<ImagePreviewHandle>(null);
-  const { mutate: downloadImages } = useDownloadImagesMutation();
-  const { mutateAsync: uploadImage } = useUploadImageMutation();
 
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
@@ -77,24 +69,8 @@ export default function Page() {
 
   const [isUploading, setIsUploading] = useState(false);
 
-  const showUploadErrorToast = (message: string) => {
-    createToast({
-      id: "upload-error-toast",
-      title: tUpload("errors.uploadFailedTitle"),
-      description: message,
-      icon: <OctagonAlert />,
-      "data-color": "danger",
-      duration: 5000,
-    });
-  };
-
   //Event date data
   const isEnded = eventData ? new Date() > eventData.endDate : false;
-
-  // Translation strings
-  const eventName =
-    eventData?.name ??
-    (isLoading ? tUpload("loadingEvent") : tUpload("eventFallbackName"));
 
   const userImageCount = uploadedCountData?.count ?? 0;
 
@@ -111,62 +87,23 @@ export default function Page() {
         ? tCommon("uploads.none.long")
         : tCommon("uploads.remaining.long", { count: uploadsRemaining });
 
-  // If/when this page is refactored and this function is extracted as its own util, the contents of
-  // utils/fileUploadErrorMessages should possible be integrated into the new util as well
-  const { openFilePicker, FileInput } = useFileUpload({
-    multiple: false,
-    onFilesSelected: async files => {
-      if (!eventId) {
-        showUploadErrorToast(tUpload("errors.uploadUnavailable"));
-        return;
-      }
-
-      setIsUploading(true);
-
-      try {
-        const [results] = await Promise.all([
-          Promise.allSettled(
-            Array.from(files).map(file => uploadImage({ eventId, file }))
-          ),
-          new Promise(resolve => setTimeout(resolve, 650)),
-        ]);
-        const uploadErrorDescriptor = getUploadErrorMessageDescriptor(results, {
-          maxFileSize: maxFileSizeInMb,
-        });
-
-        if (uploadErrorDescriptor) {
-          showUploadErrorToast(
-            tUpload(
-              uploadErrorDescriptor.key,
-              "values" in uploadErrorDescriptor ? uploadErrorDescriptor.values : undefined
-            )
-          );
-        }
-      } finally {
-        setIsUploading(false);
-      }
-    },
-  });
-
   useEffect(() => {
     if (eventAuth !== undefined && !eventAuth.isAuthenticated) {
       router.push("/");
     }
-  }, [eventAuth, router]);
+  }, [eventAuth, router, eventData]);
 
   return (
     <>
       <ImagePreview ref={imagePreviewRef} images={displayedImages} />
 
       <div className={styles.pageWrapper}>
-        <PhoneHeader
-          title={eventName}
-          username={eventAuth?.nickname ?? ""}
-          description={uploadDescription}
-        ></PhoneHeader>
+        <PhoneHeader />
+
         {!isLoading && (isError || !eventData) ? (
           <p className={styles.errorText}>{tUpload("eventLoadFailed")}</p>
         ) : null}
+
         <div className={styles.mobileOnly}>
           <ActionCard
             data-testid="action-card"
@@ -178,7 +115,7 @@ export default function Page() {
               text: isEnded
                 ? tCommon("actions.downloadImages")
                 : tCommon("actions.uploadImage"),
-              onClick: isEnded ? () => downloadImages({ eventId }) : openFilePicker,
+              // onClick: isEnded ? () => downloadImages({ eventId }) : openFilePicker,
               loading: isUploading,
             }}
             secondaryButton={

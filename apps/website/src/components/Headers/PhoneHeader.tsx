@@ -9,46 +9,24 @@ import { useTranslations } from "next-intl";
 import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
 import { useParams, useRouter } from "next/navigation";
 import { useEventAuth } from "@/providers/EventAuthContext";
-import { useDownloadImagesMutation, useUploadImageMutation } from "@/hooks/useImages";
+import { useDownloadImagesMutation, useUploadedImageCountQuery } from "@/hooks/useImages";
 import { useFileUpload } from "@/hooks/useFileUpload";
-import { getUploadErrorMessageDescriptor } from "@/utils/fileUploadErrorMessages";
 import { EVENT_REFETCH_INTERVAL, MAX_IMAGE_SIZE } from "@/config";
+import { getUploadsRemaining, hasEnded } from "@/utils/event-utils";
 
-export interface PhoneHeaderProps extends BaseHeaderProps {
-  /**
-   * The title of the event.
-   */
-  title: string;
-  /**
-   * Current loged in user. Will be displayed next to user icon.
-   */
-  username: string;
-  /**
-   * The description in the header. This will be hidden on small screens.
-   */
-  description?: string;
-  /**
-   * Child elements inside the header
-   */
-  children?: React.ReactNode;
-}
+// export interface PhoneHeaderProps extends BaseHeaderProps {}
 
-export const PhoneHeader = ({
-  title,
-  description,
-  username,
-  ...rest
-}: PhoneHeaderProps) => {
+export const PhoneHeader = ({ ...rest }: BaseHeaderProps) => {
   const t = useTranslations("common");
   const tUpload = useTranslations("guest.event.upload");
+  const tCommon = useTranslations("common");
   const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { id: eventId } = useParams<{ id: string }>();
   const eventAuth = useEventAuth();
   const { mutate: downloadImages } = useDownloadImagesMutation();
-  const { mutateAsync: uploadImage } = useUploadImageMutation();
   const { createToast } = useToast();
-  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
   const { data } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined,
@@ -77,35 +55,26 @@ export const PhoneHeader = ({
     [createToast, tUpload]
   );
 
-  const handleFilesSelected = (files: File[]) => {
-    if (!eventId) return errorToast(tUpload("errors.uploadUnavailable"));
-    setIsUploading(true);
+  const getUploadDescription = useCallback(
+    (remaining: number | undefined, ended: boolean) => {
+      if (ended) return tCommon("uploads.eventEnded");
+      if (remaining === undefined) return tCommon("uploads.unlimited.long");
+      if (remaining === 0) return tCommon("uploads.none.long");
+      return tCommon("uploads.remaining.long", { count: remaining });
+    },
+    [tCommon]
+  );
 
-    Promise.all([
-      Promise.allSettled(Array.from(files).map(file => uploadImage({ eventId, file }))),
-      new Promise(resolve => setTimeout(resolve, 650)),
-    ])
-      .then(([uploadResults]) => {
-        const uploadErrorDescriptor = getUploadErrorMessageDescriptor(uploadResults, {
-          maxFileSize: MAX_IMAGE_SIZE,
-        });
-
-        if (uploadErrorDescriptor) {
-          const errorValues =
-            "values" in uploadErrorDescriptor ? uploadErrorDescriptor.values : undefined;
-          errorToast(tUpload(uploadErrorDescriptor.key, errorValues));
-        }
-      })
-      .catch(e => console.error("Unexpected upload error:", e))
-      .finally(() => setIsUploading(false));
-  };
-
-  const { openFilePicker, FileInput } = useFileUpload({
-    multiple: false,
-    onFilesSelected: handleFilesSelected,
+  const { openFilePicker, FileInput, isUploading } = useFileUpload({
+    multiple: true,
+    eventId,
+    onError: e => errorToast(e.message),
   });
 
-  const isEnded = eventData ? new Date() > eventData.endDate : false;
+  if (!eventData) return;
+
+  const isEnded = hasEnded(eventData);
+  const uploadsRemaining = getUploadsRemaining(eventData, uploadedCountData?.count ?? 0);
 
   return (
     <>
@@ -134,14 +103,15 @@ export const PhoneHeader = ({
       <BaseHeader {...rest}>
         <div className={styles.titleBlock}>
           <Title size="small" as="h1">
-            {title}
+            {eventData?.name}
           </Title>
           <span className={styles.user}>
             <User />
-            <span className={styles.truncate}>{username}</span>
+            <span className={styles.truncate}>{eventAuth.nickname}</span>
           </span>
-          <span>{description}</span>
+          <span>{getUploadDescription(uploadsRemaining, isEnded)}</span>
         </div>
+
         <span className={styles.childSection}>
           <Button
             icon={<QrCode />}
