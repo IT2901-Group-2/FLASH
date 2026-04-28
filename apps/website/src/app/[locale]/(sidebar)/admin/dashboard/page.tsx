@@ -37,6 +37,8 @@ const Page = () => {
   const events = data?.pages.flatMap(page => page.items) ?? [];
   const loadMoreRef = useLoadMore(eventsQuery);
 
+  // `archived` is not a status. It's a boolean field for an event
+  // This makes it so it can be handled as a status when sorting
   const handleStatus = (status: GetEventsParams["status"] | "archived") => {
     if (status === "archived") {
       setArchived(true);
