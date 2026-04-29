@@ -7,6 +7,8 @@ import { NextIntlClientProvider } from "next-intl";
 import { Geist, Geist_Mono } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
+import { Sidebar } from "@flash/ui";
+import SidebarProvider from "@/providers/SidebarProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,7 +54,9 @@ export default async function RootLayout({
         <NextIntlClientProvider>
           <ReactQueryProvider>
             <ThemeProvider defaultTheme={"system"}>
-              <ToastProvider>{children}</ToastProvider>
+              <SidebarProvider>
+                <ToastProvider>{children}</ToastProvider>
+              </SidebarProvider>
             </ThemeProvider>
           </ReactQueryProvider>
         </NextIntlClientProvider>
