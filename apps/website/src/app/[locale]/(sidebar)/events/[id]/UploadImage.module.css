@@ -8,7 +8,7 @@
 .actionCardContainer {
   position: absolute;
   background: transparent;
-  z-index: 9999;
+  z-index: 99;
   bottom: 0;
 
   width: clamp(20rem, 100%, 40rem);
