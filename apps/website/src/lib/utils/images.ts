@@ -21,3 +21,15 @@ export function getImageSrc(
 
   return `/api/events/${eventId}/images/${imageId}${queryString}`;
 }
+
+/**
+ * Formats the file too big error message.
+ *
+ * @param bytes The maximum image size in bytes
+ * @returns A formated string
+ */
+export const formatBytes = (bytes: number): string => {
+  if (bytes < 1024) return `${bytes}B`;
+  if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(1)}KB`;
+  return `${(bytes / 1024 ** 2).toFixed(1)}MB`;
+};

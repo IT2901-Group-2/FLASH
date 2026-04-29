@@ -1,12 +1,15 @@
 import { vi } from "vitest";
-import type { useFileUpload } from "@/hooks/useFileUpload";
-
-//* Return-type of is not its own type, so this is the best solution
-type UseFileUploadReturn = ReturnType<typeof useFileUpload>;
+import type { UseFileUploadReturn } from "@/hooks/useFileUpload";
 
 export const defaultFileUploadReturn: UseFileUploadReturn = {
   openFilePicker: vi.fn(),
-  FileInput: () => <div data-testid="file-upload" />,
+  uploadFiles: vi.fn(),
+  isSuccess: true,
+  isError: false,
+  error: null,
+  isUploading: false,
+  reset: vi.fn(),
+  status: "success",
 };
 
 /**

@@ -96,6 +96,7 @@
       "emptyState": "No photos found",
       "imageAlt": "Photo {index} of {total}",
       "imageTitle": "Photo {index}",
+      "success": { "title": "Success", "message": "All photos have been uploaded" },
       "errors": {
         "uploadUnavailable": "Unable to upload images for this event.",
         "uploadFailedTitle": "Upload Failed",
@@ -103,7 +104,11 @@
         "uploadFailedTooLarge": "The file is too large. Max file size is {maxFileSize} MB.",
         "uploadFailedUnsupportedFormat": "The file format is not supported.",
         "uploadFailedNetwork": "Please check your internet connection and try again.",
-        "uploadLimitReached": "You have reached this event's image upload limit."
+        "uploadLimitReached": "You have reached this event's image upload limit.",
+        "tooManyFiles": "You can upload at most {max} files at a time.",
+        "fileTooLarge": "\"{name}\" exceeds the {max} size limit.",
+        "invalidType": "\"{name}\" is not an accepted file type ({accepted}).",
+        "uploadFailed": "Failed to upload \"{name}\"."
       }
     }
   }

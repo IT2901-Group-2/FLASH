@@ -24,7 +24,7 @@
 .actionCardContainer {
   position: absolute;
   background: transparent;
-  z-index: 9999;
+  z-index: 99;
   bottom: 0;
 
   right: 50%;

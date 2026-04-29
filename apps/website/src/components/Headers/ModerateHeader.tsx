@@ -27,7 +27,7 @@ export const ModerateHeader = ({
   const selectAllLabel = allSelected ? t("actions.deselectAll") : t("actions.selectAll");
 
   return (
-    <BaseHeader {...rest}>
+    <BaseHeader {...rest} showTrigger={false}>
       <div className={styles.leftSection}>
         <Button
           className={styles.backButton}

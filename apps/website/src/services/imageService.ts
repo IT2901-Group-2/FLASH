@@ -1,4 +1,4 @@
-import { JWT_SECRET, MAX_IMAGE_SIZE, storage } from "@/config";
+import { JWT_SECRET, MAX_IMAGE_SIZE } from "@/config";
 import { HTTPError } from "@/lib/utils/error";
 import { getEventCookie } from "@/lib/utils/eventCookie";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
@@ -23,6 +23,8 @@ import ShortUniqueId from "short-unique-id";
 import AdmZip from "adm-zip";
 import { verifyAccessToken } from "@/lib/utils/auth";
 import { eventService } from "./eventService";
+import { storage } from "@/config/storage";
+import { formatBytes } from "@/lib/utils/images";
 
 const uid = new ShortUniqueId();
 
@@ -52,7 +54,11 @@ export class ImageService {
       }
 
       if (meta.size > MAX_IMAGE_SIZE) {
-        return Result.error(new Error("Image exceeded the max image size"));
+        return Result.error(
+          new Error(
+            `Image exceeded the max image size of ${formatBytes(MAX_IMAGE_SIZE)}.`
+          )
+        );
       }
 
       return Result.ok(sharpImage);

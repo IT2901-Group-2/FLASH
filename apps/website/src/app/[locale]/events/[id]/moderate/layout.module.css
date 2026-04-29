@@ -1,0 +1,14 @@
+.layout {
+  display: flex;
+  position: relative;
+  height: 100dvh;
+  overflow-y: scroll;
+  flex-direction: column;
+}
+
+.main {
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}

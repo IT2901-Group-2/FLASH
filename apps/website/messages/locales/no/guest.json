@@ -96,6 +96,11 @@
       "emptyState": "Ingen bilder funnet",
       "imageAlt": "Bilde {index} av {total}",
       "imageTitle": "Bilde {index}",
+
+      "success": {
+        "title": "Sukses",
+        "message": "Alle bilder har blitt lastet opp"
+      },
       "errors": {
         "uploadUnavailable": "Kan ikke laste opp bilder for dette eventet.",
         "uploadFailedTitle": "Opplasting mislyktes",
@@ -103,7 +108,11 @@
         "uploadFailedTooLarge": "Filen er for stor. Maks filstørrelse er {maxFileSize} MB.",
         "uploadFailedUnsupportedFormat": "Filformatet støttes ikke.",
         "uploadFailedNetwork": "Sjekk internettforbindelsen din og prøv igjen.",
-        "uploadLimitReached": "Du har nådd opplastingsgrensen for dette eventet."
+        "uploadLimitReached": "Du har nådd opplastingsgrensen for dette eventet.",
+        "tooManyFiles": "Du kan laste opp {max} filer på en gang.",
+        "fileTooLarge": "\"{name}\" er større enn grensen på {max}.",
+        "invalidType": "\"{name}\" er ikke en akseptert filtype ({accepted}).",
+        "uploadFailed": "Greide ikke å laste opp \"{name}\"."
       }
     }
   }
