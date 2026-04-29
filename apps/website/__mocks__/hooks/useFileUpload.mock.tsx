@@ -7,6 +7,14 @@ type UseFileUploadReturn = ReturnType<typeof useFileUpload>;
 export const defaultFileUploadReturn: UseFileUploadReturn = {
   openFilePicker: vi.fn(),
   FileInput: () => <div data-testid="file-upload" />,
+  isSuccess: true,
+  isError: false,
+  error: null,
+  isUploading: false,
+  removeFile: vi.fn(),
+  reset: vi.fn(),
+  status: "success",
+  uploadedFiles: [],
 };
 
 /**
