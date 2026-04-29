@@ -74,7 +74,7 @@ export function useFileUpload({
   onError,
   onAllUploaded,
 }: FileUploadOptions): UseFileUploadReturn {
-  const t = useTranslations("useFileUpload");
+  const t = useTranslations("guest.event.upload.errors");
   const { mutateAsync: uploadImage } = useUploadImageMutation();
   const inputRef = useRef<HTMLInputElement>(null);
 
