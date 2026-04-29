@@ -114,55 +114,57 @@ export default function Page() {
     <>
       <ImagePreview ref={imagePreviewRef} images={displayedImages} />
       <FileInput />
+      <PhoneHeader />
 
       <div className={styles.pageWrapper}>
-        <PhoneHeader />
-
         {!isLoading && (isError || !eventData) ? (
           <p className={styles.errorText}>{tUpload("eventLoadFailed")}</p>
         ) : null}
-      </div>
 
-      {showTabs && (
-        <SegmentedControl
-          fill
-          className={styles.tabContainer}
-          value={activeTab}
-          onChange={t => setActiveTab(t as "all" | "user")}
-        >
-          <SegmentedControl.Item value="all" label={tUpload("tabs.allPhotos")} />
-          <SegmentedControl.Item value="user" label={tUpload("tabs.userPhotos")} />
-        </SegmentedControl>
-      )}
-
-      <div className={styles.sectionTitleRow}>
-        <Title as="h2" className={styles.sectionTitle}>
-          {isShowingUserTab ? tUpload("tabs.userPhotos") : tUpload("tabs.allPhotos")}
-        </Title>
-        {!isShowingUserTab && (
-          <Button
-            variant="secondary"
-            icon={<ChevronRight />}
-            iconPosition="right"
-            className={styles.slideshowButton}
-            onClick={() => router.push(`./${eventId}/slideshow`)}
-            size={isMobile ? "small" : "medium"}
+        {showTabs && (
+          <SegmentedControl
+            fill
+            value={activeTab}
+            onChange={t => setActiveTab(t as "all" | "user")}
           >
-            {tCommon("actions.slideshow")}
-          </Button>
+            <SegmentedControl.Item value="all" label={tUpload("tabs.allPhotos")} />
+            <SegmentedControl.Item value="user" label={tUpload("tabs.userPhotos")} />
+          </SegmentedControl>
         )}
+
+        <div className={styles.sectionTitleRow}>
+          <Title as="h2" className={styles.sectionTitle}>
+            {isShowingUserTab ? tUpload("tabs.userPhotos") : tUpload("tabs.allPhotos")}
+          </Title>
+          {!isShowingUserTab && (
+            <Button
+              variant="secondary"
+              icon={<ChevronRight />}
+              iconPosition="right"
+              className={styles.slideshowButton}
+              onClick={() => router.push(`./${eventId}/slideshow`)}
+              size={isMobile ? "small" : "medium"}
+            >
+              {tCommon("actions.slideshow")}
+            </Button>
+          )}
+        </div>
+        <PhotoList
+          eventId={eventId}
+          query={isShowingUserTab ? myImagesQuery : imagesQuery}
+          loadingText={
+            isShowingUserTab ? tUpload("userPhotosEmptyState") : tUpload("emptyState")
+          }
+          onClick={({ index }) => imagePreviewRef.current?.open(index)}
+          setState={({ isApproved }) =>
+            isApproved === null
+              ? "pending"
+              : isApproved === false
+                ? "rejected"
+                : undefined
+          }
+        />
       </div>
-      <PhotoList
-        eventId={eventId}
-        query={isShowingUserTab ? myImagesQuery : imagesQuery}
-        loadingText={
-          isShowingUserTab ? tUpload("userPhotosEmptyState") : tUpload("emptyState")
-        }
-        onClick={({ index }) => imagePreviewRef.current?.open(index)}
-        setState={({ isApproved }) =>
-          isApproved === null ? "pending" : isApproved === false ? "rejected" : undefined
-        }
-      />
 
       <div className={styles.actionCardContainer}>
         <Card data-testid="action-card" className={styles.actionCard}>
