@@ -105,7 +105,10 @@ export function useFileUpload({
         return;
       }
 
-      Promise.all(files.map(makeUploadPromise)).then(() => setStatus("success"));
+      Promise.all(files.map(makeUploadPromise)).then(
+        () => setStatus("success"),
+        () => setStatus("error")
+      );
     },
     [maxFiles, t, makeUploadPromise]
   );

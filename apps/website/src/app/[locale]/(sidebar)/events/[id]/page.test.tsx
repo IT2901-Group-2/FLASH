@@ -47,7 +47,6 @@ describe("Guest Upload Page", () => {
       render(<Page />);
       expect(screen.getByTestId("phone-header")).toBeInTheDocument();
       expect(screen.getByTestId("action-card")).toBeInTheDocument();
-      expect(screen.getByTestId("file-upload")).toBeInTheDocument();
     });
 
     it("uses the correct parameters and callbacks", () => {

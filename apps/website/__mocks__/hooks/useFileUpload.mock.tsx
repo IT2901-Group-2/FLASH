@@ -3,14 +3,13 @@ import type { UseFileUploadReturn } from "@/hooks/useFileUpload";
 
 export const defaultFileUploadReturn: UseFileUploadReturn = {
   openFilePicker: vi.fn(),
+  uploadFiles: vi.fn(),
   isSuccess: true,
   isError: false,
   error: null,
   isUploading: false,
-  removeFile: vi.fn(),
   reset: vi.fn(),
   status: "success",
-  uploadedFiles: [],
 };
 
 /**

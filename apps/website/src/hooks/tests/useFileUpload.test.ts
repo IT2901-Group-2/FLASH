@@ -36,11 +36,6 @@ describe("useFileUpload", () => {
       expect(result.current.status).toBe("idle");
     });
 
-    it("returns empty uploadedFiles array", () => {
-      const { result } = setup();
-      expect(result.current.uploadedFiles).toEqual([]);
-    });
-
     it("returns null error", () => {
       const { result } = setup();
       expect(result.current.error).toBeNull();
@@ -68,41 +63,32 @@ describe("useFileUpload", () => {
       await waitFor(() => expect(result.current.status).toBe("success"));
     });
 
-    it("appends the uploaded file to uploadedFiles", async () => {
-      const { result } = setup();
-      const file = makeMockFile();
-
-      result.current.uploadFiles(file);
-      await waitFor(() => {
-        expect(result.current.uploadedFiles).toHaveLength(1);
-        expect(result.current.uploadedFiles[0]!.data).toEqual(uploadedImage);
-        expect(result.current.uploadedFiles[0]!.file).toEqual(file);
-      });
-    });
-
     it("sets isSuccess to true", async () => {
       const { result } = setup();
       result.current.uploadFiles(makeMockFile());
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
     });
 
-    it("calls onUpload callback with the uploaded file info", async () => {
-      const onUpload = vi.fn();
-      const { result } = setup({ onUpload });
+    it("calls onSuccess callback", async () => {
+      const onSuccess = vi.fn();
+      const { result } = setup({ onSuccess });
       const file = makeMockFile();
 
       result.current.uploadFiles(file);
-      await waitFor(() => {
-        expect(onUpload).toHaveBeenCalledWith({ file, data: uploadedImage });
-      });
+      await waitFor(() => expect(onSuccess).toHaveBeenCalledOnce());
     });
 
-    it("calls onAllUploaded after all files finish", async () => {
-      const onAllUploaded = vi.fn();
-      const { result } = setup({ onAllUploaded });
+    it("calls onError callback", async () => {
+      vi.mocked(useUploadImageMutation).mockReturnValue({
+        ...defaultUploadImageMutationReturn,
+        mutateAsync: vi.fn().mockRejectedValue(new Error("Network error")),
+      });
+
+      const onError = vi.fn();
+      const { result } = setup({ onError });
 
       result.current.uploadFiles(makeMockFile());
-      await waitFor(() => expect(onAllUploaded).toHaveBeenCalledTimes(1));
+      await waitFor(() => expect(onError).toHaveBeenCalledOnce());
     });
 
     it("passes eventId and file to the upload mutation", async () => {
@@ -188,23 +174,29 @@ describe("useFileUpload", () => {
   });
 
   describe("validation", () => {
-    it("sets TOO_MANY_FILES error when file count exceeds maxFiles", () => {
+    it("sets TOO_MANY_FILES error when file count exceeds maxFiles", async () => {
       const { result } = setup({ maxFiles: 2 });
       result.current.uploadFiles(makeMockFile(), makeMockFile(), makeMockFile());
+
+      await waitFor(() => expect(result.current.isError).toBe(true));
       expect(result.current.error?.code).toBe("TOO_MANY_FILES");
       expect(result.current.status).toBe("error");
     });
 
-    it("includes the max count in the error message", () => {
+    it("includes the max count in the error message", async () => {
       const { result } = setup({ maxFiles: 2 });
       result.current.uploadFiles(makeMockFile(), makeMockFile(), makeMockFile());
+
+      await waitFor(() => expect(result.current.isError).toBe(true));
       expect(result.current.error?.message).toBe("tooManyFiles");
     });
 
-    it("calls onError with TOO_MANY_FILES when file count exceeds maxFiles", () => {
+    it("calls onError with TOO_MANY_FILES when file count exceeds maxFiles", async () => {
       const onError = vi.fn();
       const { result } = setup({ maxFiles: 1, onError });
       result.current.uploadFiles(makeMockFile(), makeMockFile());
+
+      await waitFor(() => expect(result.current.isError).toBe(true));
       expect(onError).toHaveBeenCalledWith(
         expect.objectContaining({ code: "TOO_MANY_FILES" })
       );
@@ -230,49 +222,7 @@ describe("useFileUpload", () => {
     });
   });
 
-  describe("removeFile", () => {
-    it("removes the matching file from uploadedFiles by id", async () => {
-      const imageA = makeImage({ id: "img-a" });
-      const imageB = makeImage({ id: "img-b" });
-      vi.mocked(useUploadImageMutation).mockReturnValue({
-        ...defaultUploadImageMutationReturn,
-        mutateAsync: vi.fn().mockResolvedValueOnce(imageA).mockResolvedValueOnce(imageB),
-      });
-
-      const { result } = setup({ multiple: true });
-
-      result.current.uploadFiles(
-        makeMockFile({ name: "a.jpg" }),
-        makeMockFile({ name: "b.jpg" })
-      );
-
-      await waitFor(() => expect(result.current.uploadedFiles).toHaveLength(2));
-      act(() => result.current.removeFile("img-a"));
-      expect(result.current.uploadedFiles).toHaveLength(1);
-      expect(result.current.uploadedFiles[0]!.data.id).toBe("img-b");
-    });
-
-    it("does nothing when removing a non-existent id", async () => {
-      const { result } = setup();
-
-      result.current.uploadFiles(makeMockFile());
-      await waitFor(() => expect(result.current.uploadedFiles).toHaveLength(1));
-      act(() => result.current.removeFile("non-existent-id"));
-      expect(result.current.uploadedFiles).toHaveLength(1);
-    });
-  });
-
   describe("reset", () => {
-    it("clears uploadedFiles", async () => {
-      const { result } = setup();
-
-      result.current.uploadFiles(makeMockFile());
-      await waitFor(() => expect(result.current.uploadedFiles).toHaveLength(1));
-
-      act(() => result.current.reset());
-      expect(result.current.uploadedFiles).toEqual([]);
-    });
-
     it("resets status to idle", async () => {
       const { result } = setup();
 
@@ -327,25 +277,6 @@ describe("useFileUpload", () => {
         makeMockFile({ name: "b.jpg" })
       );
       await waitFor(() => expect(mockMutateAsync).toHaveBeenCalledTimes(2));
-    });
-
-    it("calls onUpload once for each successfully uploaded file", async () => {
-      vi.mocked(useUploadImageMutation).mockReturnValue({
-        ...defaultUploadImageMutationReturn,
-        mutateAsync: vi
-          .fn()
-          .mockResolvedValueOnce(makeImage({ id: "img-1" }))
-          .mockResolvedValueOnce(makeImage({ id: "img-2" })),
-      });
-
-      const onUpload = vi.fn();
-      const { result } = setup({ multiple: true, onUpload });
-
-      result.current.uploadFiles(
-        makeMockFile({ name: "a.jpg" }),
-        makeMockFile({ name: "b.jpg" })
-      );
-      await waitFor(() => expect(onUpload).toHaveBeenCalledTimes(2));
     });
   });
 });
