@@ -7,7 +7,6 @@ import { NextIntlClientProvider } from "next-intl";
 import { Geist, Geist_Mono } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
-import { Sidebar } from "@flash/ui";
 import SidebarProvider from "@/providers/SidebarProvider";
 
 const geistSans = Geist({
