@@ -5,7 +5,7 @@ test.use({
 });
 
 test("test", async ({ page }) => {
-  await page.routeFromHAR("e2e/hars/edit-event.har", { url: "**/api/**" });
+  await page.routeFromHAR("e2e/hars/edit-event.har.zip", { url: "**/api/**" });
 
   await page.goto("http://localhost:3000/no");
   await page.getByRole("link", { name: "Administrator" }).click();

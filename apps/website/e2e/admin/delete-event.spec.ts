@@ -5,7 +5,7 @@ test.use({
 });
 
 test("test", async ({ page }) => {
-  await page.routeFromHAR("e2e/hars/delete-event.har", {
+  await page.routeFromHAR("e2e/hars/delete-event.har.zip", {
     url: "**/api/**",
   });
 
