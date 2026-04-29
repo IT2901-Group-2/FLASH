@@ -64,18 +64,16 @@ export interface UseFileUploadReturn {
   FileInput: () => React.ReactElement;
 }
 
-export function useFileUpload(options: FileUploadOptions): UseFileUploadReturn {
-  const {
-    eventId,
-    accept = ["image/*"],
-    multiple = false,
-    maxSizeBytes,
-    maxFiles,
-    onUpload,
-    onError,
-    onAllUploaded,
-  } = options;
-
+export function useFileUpload({
+  eventId,
+  accept = ["image/*"],
+  multiple = false,
+  maxSizeBytes,
+  maxFiles,
+  onUpload,
+  onError,
+  onAllUploaded,
+}: FileUploadOptions): UseFileUploadReturn {
   const t = useTranslations("useFileUpload");
   const { mutateAsync: uploadImage } = useUploadImageMutation();
   const inputRef = useRef<HTMLInputElement>(null);
