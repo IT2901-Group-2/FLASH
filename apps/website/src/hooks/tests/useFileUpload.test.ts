@@ -13,24 +13,41 @@ import userEvent from "@testing-library/user-event";
 const wrapper = createQueryClientWrapper();
 const event = makeEvent();
 
+const DEFAULT_OPTIONS = {
+  eventId: "event-1",
+  accept: ["image/*"],
+} satisfies FileUploadOptions;
+
 const setup = (opts?: Partial<FileUploadOptions>) => {
   const { result } = renderHook(() => useFileUpload({ ...opts, eventId: event.id }), {
     wrapper,
   });
-  const { FileInput, openFilePicker } = result.current;
+  const { FileInput, ...rest } = result.current;
   render(FileInput());
   const input = document.querySelector("input[type='file']") as HTMLInputElement;
-  return { input, openFilePicker };
+  return { input, FileInput, ...rest };
 };
 
 describe("useFileUpload", () => {
-  describe("return shape", () => {
-    it("returns openFilePicker and FileInput", () => {
-      const { result } = renderHook(() => useFileUpload({ eventId: event.id }), {
-        wrapper,
-      });
-      expect(typeof result.current.openFilePicker).toBe("function");
+  describe("initial state", () => {
+    it("starts idle with no uploaded files or errors", () => {
+      const { result } = renderHook(() => useFileUpload(DEFAULT_OPTIONS), { wrapper });
+
+      expect(result.current.status).toBe("idle");
+      expect(result.current.isUploading).toBe(false);
+      expect(result.current.isSuccess).toBe(false);
+      expect(result.current.isError).toBe(false);
+      expect(result.current.uploadedFiles).toEqual([]);
+      expect(result.current.error).toBeNull();
+    });
+
+    it("returns the expected API surface", () => {
+      const { result } = renderHook(() => useFileUpload(DEFAULT_OPTIONS), { wrapper });
+
       expect(typeof result.current.FileInput).toBe("function");
+      expect(typeof result.current.openFilePicker).toBe("function");
+      expect(typeof result.current.removeFile).toBe("function");
+      expect(typeof result.current.reset).toBe("function");
     });
   });
 
