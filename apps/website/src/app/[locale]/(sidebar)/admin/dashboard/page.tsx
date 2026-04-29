@@ -118,8 +118,8 @@ const Page = () => {
             />
           ))
         )}
-        {hasNextPage ?? <div ref={loadMoreRef} className={styles.loadMoreSentinel} />}
-        {isFetchingNextPage ?? (
+        {hasNextPage && <div ref={loadMoreRef} className={styles.loadMoreSentinel} />}
+        {isFetchingNextPage && (
           <div className={styles.loadingContainer} data-testid="loading-more-spinner">
             <Loader size="large" />
           </div>

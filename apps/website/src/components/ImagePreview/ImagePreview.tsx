@@ -11,6 +11,7 @@ import { Button } from "@flash/ui";
 import Image from "next/image";
 import type { Image as EventImage } from "@/db";
 import styles from "./ImagePreview.module.css";
+import { getImageSrc } from "@/lib/utils/images";
 
 interface ImagePreviewProps {
   images: EventImage[];
@@ -109,11 +110,6 @@ export const ImagePreview = forwardRef<ImagePreviewHandle, ImagePreviewProps>(
     const eventId = currentImage.eventId;
     const altText = `Image ${previewIndex + 1} of ${images.length}`;
 
-    const previewImage = {
-      src: `/api/events/${eventId}/images/${currentImage.id}`,
-      alt: altText,
-    };
-
     return (
       <div
         className={styles.previewPage}
@@ -124,8 +120,9 @@ export const ImagePreview = forwardRef<ImagePreviewHandle, ImagePreviewProps>(
       >
         <Image
           fill
-          src={previewImage.src}
-          alt={previewImage.alt}
+          loader={({ width }) => getImageSrc(eventId, currentImage.id, { width })}
+          src={getImageSrc(eventId, currentImage.id)}
+          alt={altText}
           className={styles.previewFullscreenImage}
           sizes="100vw"
         />

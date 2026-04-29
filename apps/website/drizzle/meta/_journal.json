@@ -50,6 +50,13 @@
       "when": 1776626050407,
       "tag": "0006_messy_demogoblin",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1776960682316,
+      "tag": "0007_broad_darkstar",
+      "breakpoints": true
     }
   ]
 }

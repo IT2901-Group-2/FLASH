@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image, { ImageLoader } from "next/image";
 import { CircleCheckBig, CircleX, Timer } from "lucide-react";
 import { useCallback } from "react";
 import { useTranslations } from "next-intl";
@@ -22,6 +22,7 @@ export interface ImageCardProps extends React.HTMLAttributes<HTMLDivElement> {
   state?: ImageCardState;
   placeholder?: string;
   ref?: React.Ref<HTMLDivElement>;
+  loader?: ImageLoader;
 }
 
 export const ImageCard = ({
@@ -31,6 +32,7 @@ export const ImageCard = ({
   onClick,
   ref,
   placeholder,
+  loader,
   ...rest
 }: ImageCardProps) => {
   const t = useTranslations("common.imageStatus");
@@ -61,6 +63,7 @@ export const ImageCard = ({
       <div className={styles.imageWrapper}>
         <Image
           fill
+          loader={loader}
           src={src}
           alt={alt}
           className={styles.image}
