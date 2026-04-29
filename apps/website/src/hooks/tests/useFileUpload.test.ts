@@ -120,7 +120,6 @@ describe("useFileUpload", () => {
       const file = makeMockFile();
 
       fireInputChange(input, [file]);
-
       await waitFor(() => {
         expect(result.current.uploadedFiles).toHaveLength(1);
         expect(result.current.uploadedFiles[0]!.data).toEqual(uploadedImage);
@@ -130,9 +129,7 @@ describe("useFileUpload", () => {
 
     it("sets isSuccess to true", async () => {
       const { result, input } = setup();
-
       fireInputChange(input, [makeMockFile()]);
-
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
     });
 
@@ -142,7 +139,6 @@ describe("useFileUpload", () => {
       const file = makeMockFile();
 
       fireInputChange(input, [file]);
-
       await waitFor(() => {
         expect(onUpload).toHaveBeenCalledWith({ file, data: uploadedImage });
       });
@@ -153,7 +149,6 @@ describe("useFileUpload", () => {
       const { input } = setup({ onAllUploaded });
 
       fireInputChange(input, [makeMockFile()]);
-
       await waitFor(() => expect(onAllUploaded).toHaveBeenCalledTimes(1));
     });
 
@@ -298,9 +293,7 @@ describe("useFileUpload", () => {
       ]);
 
       await waitFor(() => expect(result.current.uploadedFiles).toHaveLength(2));
-
       act(() => result.current.removeFile("img-a"));
-
       expect(result.current.uploadedFiles).toHaveLength(1);
       expect(result.current.uploadedFiles[0]!.data.id).toBe("img-b");
     });
@@ -379,7 +372,6 @@ describe("useFileUpload", () => {
         makeMockFile({ name: "a.jpg" }),
         makeMockFile({ name: "b.jpg" }),
       ]);
-
       await waitFor(() => expect(mockMutateAsync).toHaveBeenCalledTimes(2));
     });
 
@@ -399,7 +391,6 @@ describe("useFileUpload", () => {
         makeMockFile({ name: "a.jpg" }),
         makeMockFile({ name: "b.jpg" }),
       ]);
-
       await waitFor(() => expect(onUpload).toHaveBeenCalledTimes(2));
     });
   });
