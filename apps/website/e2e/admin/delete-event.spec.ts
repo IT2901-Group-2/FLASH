@@ -13,7 +13,6 @@ test("test", async ({ page }) => {
   await page.getByRole("link", { name: "Administrator" }).click();
   await page.getByRole("textbox", { name: "Passord" }).click();
   await page.getByRole("textbox", { name: "Passord" }).fill("Default");
-  await page.getByRole("textbox", { name: "Passord" }).press("Enter");
   await page.getByRole("button", { name: "Logg inn" }).click();
   await page.getByTestId("delete-button").click();
   await page.getByRole("button", { name: "Slett" }).click();

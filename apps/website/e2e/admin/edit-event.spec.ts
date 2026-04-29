@@ -11,28 +11,32 @@ test("test", async ({ page }) => {
   await page.getByRole("link", { name: "Administrator" }).click();
   await page.getByRole("textbox", { name: "Passord" }).click();
   await page.getByRole("textbox", { name: "Passord" }).fill("Default");
+  await page.getByRole("textbox", { name: "Passord" }).press("Enter");
   await page.getByRole("button", { name: "Logg inn" }).click();
   await page.getByTestId("edit-button").click();
-  await page.getByTestId("edit-event-dialog").getByTestId("name").click();
   await page
     .getByTestId("edit-event-dialog")
     .getByTestId("name")
-    .fill("Playwright Test Event");
+    .fill("Playwright Test Edit");
   await page.getByTestId("edit-event-dialog").getByTestId("description").click();
   await page
     .getByTestId("edit-event-dialog")
     .getByTestId("description")
-    .press("ControlOrMeta+a");
+    .press("ControlOrMeta+Shift+ArrowLeft");
   await page
     .getByTestId("edit-event-dialog")
     .getByTestId("description")
-    .fill("New Description");
-  await page.getByRole("radio", { name: "Spesifikke tider" }).click();
+    .press("ControlOrMeta+Shift+ArrowLeft");
+  await page
+    .getByTestId("edit-event-dialog")
+    .getByTestId("description")
+    .fill("Playwright Edit Description");
+  await page.getByRole("radio", { name: "Hele dagen" }).click();
   await page.getByRole("button", { name: "Neste" }).click();
   await page.getByRole("radio", { name: "Begrenset" }).click();
   await page.getByRole("textbox", { name: "*" }).click();
-  await page.getByRole("textbox", { name: "*" }).fill("25");
+  await page.getByRole("textbox", { name: "*" }).fill("10");
   await page.getByRole("switch", { name: "Godkjenn bilder automatisk" }).check();
-  await page.getByRole("switch", { name: "La gjester se alle bilder" }).uncheck();
+  await page.getByRole("switch", { name: "La gjester se alle bilder" }).check();
   await page.getByRole("button", { name: "Lagre" }).click();
 });
