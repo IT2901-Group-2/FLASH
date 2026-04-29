@@ -41,7 +41,8 @@ export const PhotoList: FC<PhotoListProps> = ({
       {images.map((image, index) => (
         <ImageCard
           key={image.id}
-          src={getImageSrc(eventId, image.id, { width: 200, height: 200 })}
+          loader={({ width }) => getImageSrc(eventId, image.id, { width })}
+          src={getImageSrc(eventId, image.id)}
           alt={tUpload("imageAlt", {
             index: index + 1,
             total: images.length,

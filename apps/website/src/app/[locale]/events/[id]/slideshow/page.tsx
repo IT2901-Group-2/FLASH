@@ -99,6 +99,7 @@ const Page = () => {
         {image && (
           <Image
             fill
+            loader={({ width }) => getImageSrc(id, image.id, { width })}
             src={getImageSrc(id, image.id)}
             alt=""
             role="img"
