@@ -67,7 +67,7 @@ describe("Guest Upload Page", () => {
       expect(useImagesQuery).toHaveBeenCalledWith(
         "event-123",
         { approval: "approved", pageSize: 12 },
-        false,
+        true,
         expect.any(Number)
       );
     });
@@ -99,7 +99,7 @@ describe("Guest Upload Page", () => {
     });
 
     it("navigates preview with ArrowRight and ArrowLeft", async () => {
-      vi.mocked(useMyImagesQuery).mockReturnValue(
+      vi.mocked(useImagesQuery).mockReturnValue(
         mockImagesLoaded([
           makeImage({ id: "image-1" }),
           makeImage({ id: "image-2" }),
@@ -136,7 +136,7 @@ describe("Guest Upload Page", () => {
     });
 
     it("wraps preview to last image when pressing ArrowLeft on first image", async () => {
-      vi.mocked(useMyImagesQuery).mockReturnValue(
+      vi.mocked(useImagesQuery).mockReturnValue(
         mockImagesLoaded([
           makeImage({ id: "image-1" }),
           makeImage({ id: "image-2" }),

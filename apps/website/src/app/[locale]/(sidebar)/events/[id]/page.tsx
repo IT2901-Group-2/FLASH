@@ -46,7 +46,7 @@ export default function Page() {
   );
   const eventData = data?.pages[0]?.items[0];
   const uploadsArePrivate = eventData?.uploadsArePrivate ?? false;
-  const showTabs = uploadsArePrivate || !!eventAuth.isModerator;
+  const showTabs = !uploadsArePrivate || eventAuth.isModerator === true;
   const isShowingUserTab = !showTabs || activeTab === "user";
 
   const myImagesQuery = useMyImagesQuery(

@@ -49,20 +49,17 @@
 
   .previewNavButtonLeft,
   .previewNavButtonRight {
-    width: 2.75rem;
-    height: 2.75rem;
     top: auto;
+    left: auto;
+    right: auto;
     bottom: calc(1rem + env(safe-area-inset-bottom));
-    transform: none;
   }
 
   .previewNavButtonLeft {
-    left: calc(50% - 3rem);
-    right: auto;
+    margin-right: 5rem;
   }
 
   .previewNavButtonRight {
-    left: calc(50% + 1.25rem);
-    right: auto;
+    margin-left: 5rem;
   }
 }
