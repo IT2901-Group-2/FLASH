@@ -102,20 +102,13 @@ export function useFileUpload({
       }
 
       for (const file of files) {
-        if (accept && accept.length > 0) {
-          const ok = accept.some(rule =>
-            rule.startsWith(".")
-              ? file.name.toLowerCase().endsWith(rule.toLowerCase())
-              : file.type === rule
-          );
-          if (!ok) {
-            return {
-              file,
-              code: "INVALID_TYPE",
-              message: t("invalidType", { name: file.name, accepted: accept.join(", ") }),
-            };
-          }
-        }
+        if (!accept || accept.length === 0) continue;
+        if (checkFileTypeValidity(file, accept)) continue;
+        return {
+          file,
+          code: "INVALID_TYPE",
+          message: t("invalidType", { name: file.name, accepted: accept.join(", ") }),
+        };
       }
 
       return null;
@@ -219,3 +212,11 @@ const formatBytes = (bytes: number): string => {
   if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(1)}KB`;
   return `${(bytes / 1024 ** 2).toFixed(1)}MB`;
 };
+
+const checkFileTypeValidity = (file: File, accept: string[]): boolean =>
+  accept.some(rule => {
+    const lowerRule = rule.toLowerCase();
+    if (lowerRule.startsWith(".")) return file.name.toLowerCase().endsWith(lowerRule);
+    if (lowerRule.endsWith("/*")) return file.type.startsWith(lowerRule.slice(0, -1)); // "image/"
+    return file.type === lowerRule;
+  });
