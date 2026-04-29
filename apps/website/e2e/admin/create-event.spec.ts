@@ -28,13 +28,13 @@ test("test", async ({ page }) => {
   await page.getByRole("radio", { name: "Uendelig" }).click();
   await page.getByRole("switch", { name: "Godkjenn bilder automatisk" }).check();
   await page.getByRole("button", { name: "Opprett" }).click();
-  const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Last ned" }).click();
+  const downloadPromise = page.waitForEvent("download");
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toMatchSnapshot();
   await page.getByRole("radio", { name: "Moderator" }).click();
-  const download1Promise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Last ned" }).click();
+  const download1Promise = page.waitForEvent("download");
   const download1 = await download1Promise;
   expect(download1.suggestedFilename()).toMatchSnapshot();
   await page.getByTestId("copy-button").click();
