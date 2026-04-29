@@ -1,7 +1,23 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { ChevronRight, Download, ImageMinus, QrCode, Upload } from "lucide-react";
-import styles from "./UploadImage.module.css";
+import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
+import PhoneHeader from "@/components/PhoneHeader/PhoneHeader";
+import { PhotoList } from "@/components/PhotoList/PhotoList";
+import {
+  EVENT_REFETCH_INTERVAL,
+  MAX_IMAGE_SIZE,
+  PHOTOS_REFETCH_INTERVAL,
+} from "@/config/images";
+import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
+import { useFileUpload } from "@/hooks/useFileUpload";
+import {
+  useDownloadImagesMutation,
+  useImagesQuery,
+  useMyImagesQuery,
+  useUploadImageMutation,
+  useUploadedImageCountQuery,
+} from "@/hooks/useImages";
+import { useEventAuth } from "@/providers/EventAuthContext";
+import { getUploadErrorMessageDescriptor } from "@/utils/fileUploadErrorMessages";
 import {
   ActionCard,
   Button,
@@ -9,34 +25,35 @@ import {
   QRDisplay,
   SegmentedControl,
   Title,
+  useToast,
 } from "@flash/ui";
-import { useFileUpload } from "@/hooks/useFileUpload";
+import {
+  ChevronRight,
+  Download,
+  ImageMinus,
+  OctagonAlert,
+  QrCode,
+  Upload,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
-import { useEventCodeQuery, useEventsQuery } from "@/hooks/useEvents";
-import { useEventAuth } from "@/providers/EventAuthContext";
-import { PhoneHeader } from "@/components/PhoneHeader/PhoneHeader";
-import {
-  useDownloadImagesMutation,
-  useImagesQuery,
-  useMyImagesQuery,
-  useUploadedImageCountQuery,
-  useUploadImageMutation,
-} from "@/hooks/useImages";
-import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
-import { EVENT_REFETCH_INTERVAL, PHOTOS_REFETCH_INTERVAL } from "@/config/images";
-import { PhotoList } from "@/components/PhotoList/PhotoList";
+import { useEffect, useRef, useState } from "react";
+import styles from "./UploadImage.module.css";
+import { MULTI_FILE_UPLOAD, TOAST_DISPLAY_TIME } from "@/config/event";
 
 const IMAGE_PAGE_SIZE = 12;
+const maxFileSizeInMb = Math.ceil(MAX_IMAGE_SIZE / (1024 * 1024)); //TODO: Move this to a more appropriate location
 
 export default function Page() {
   const router = useRouter();
   const tCommon = useTranslations("common");
   const tUpload = useTranslations("guest.event.upload");
+  const { createToast } = useToast();
   const eventAuth = useEventAuth();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const imagePreviewRef = useRef<ImagePreviewHandle>(null);
   const { mutate: downloadImages } = useDownloadImagesMutation();
+  const { mutateAsync: uploadImage } = useUploadImageMutation();
 
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
@@ -48,7 +65,7 @@ export default function Page() {
   const eventData = data?.pages[0]?.items[0];
   const uploadsArePrivate = eventData?.uploadsArePrivate ?? false;
   const [activeTab, setActiveTab] = useState<"all" | "user">("all");
-  const showTabs = uploadsArePrivate || !!eventAuth.isModerator;
+  const showTabs = !uploadsArePrivate || eventAuth.isModerator === true;
   const isShowingUserTab = !showTabs || activeTab === "user";
 
   const handleTabChange = (val: string) => {
@@ -74,9 +91,18 @@ export default function Page() {
 
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
 
-  const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const { mutateAsync: uploadImage } = useUploadImageMutation();
+
+  const showUploadErrorToast = (message: string) => {
+    createToast({
+      id: "upload-error-toast",
+      title: tUpload("errors.uploadFailedTitle"),
+      description: message,
+      icon: <OctagonAlert />,
+      "data-color": "danger",
+      duration: TOAST_DISPLAY_TIME,
+    });
+  };
 
   // Join Code
   const { data: joinCode } = useEventCodeQuery(eventId, "guest");
@@ -109,15 +135,16 @@ export default function Page() {
         ? tCommon("uploads.none.long")
         : tCommon("uploads.remaining.long", { count: uploadsRemaining });
 
+  // If/when this page is refactored and this function is extracted as its own util, the contents of
+  // utils/fileUploadErrorMessages should possible be integrated into the new util as well
   const { openFilePicker, FileInput } = useFileUpload({
-    multiple: false,
+    multiple: MULTI_FILE_UPLOAD,
     onFilesSelected: async files => {
       if (!eventId) {
-        setUploadError(tUpload("errors.uploadUnavailable"));
+        showUploadErrorToast(tUpload("errors.uploadUnavailable"));
         return;
       }
 
-      setUploadError(null);
       setIsUploading(true);
 
       try {
@@ -127,21 +154,16 @@ export default function Page() {
           ),
           new Promise(resolve => setTimeout(resolve, 650)),
         ]);
-        const successfulUploads = results.filter(r => r.status === "fulfilled").length;
-        const failureCount = results.length - successfulUploads;
+        const uploadErrorDescriptor = getUploadErrorMessageDescriptor(results, {
+          maxFileSize: maxFileSizeInMb,
+        });
 
-        const hasUploadLimitError = results.some(
-          (result): result is PromiseRejectedResult =>
-            result.status === "rejected" &&
-            result.reason instanceof Error &&
-            /upload\s+limit\s+reached/i.test(result.reason.message)
-        );
-
-        if (failureCount > 0) {
-          setUploadError(
-            hasUploadLimitError
-              ? tUpload("errors.uploadLimitReached")
-              : tUpload("errors.uploadFailed", { count: failureCount })
+        if (uploadErrorDescriptor) {
+          showUploadErrorToast(
+            tUpload(
+              uploadErrorDescriptor.key,
+              "values" in uploadErrorDescriptor ? uploadErrorDescriptor.values : undefined
+            )
           );
         }
       } finally {
@@ -222,16 +244,10 @@ export default function Page() {
         {!isLoading && (isError || !eventData) ? (
           <p className={styles.errorText}>{tUpload("eventLoadFailed")}</p>
         ) : null}
-        {uploadError && (
-          <p role="alert" className={`${styles.errorText} ${styles.desktopOnly}`}>
-            {uploadError}
-          </p>
-        )}
         <div className={styles.mobileOnly}>
           <ActionCard
             data-testid="action-card"
-            description={uploadError ?? uploadDescription}
-            descriptionColor={uploadError ? "danger" : undefined}
+            description={uploadDescription}
             primaryButton={{
               "data-color": "brand-purple",
               icon: isEnded ? <Download size={18} /> : <Upload size={18} />,
@@ -292,7 +308,10 @@ export default function Page() {
         loadingText={
           isShowingUserTab ? tUpload("userPhotosEmptyState") : tUpload("emptyState")
         }
-        onClick={index => imagePreviewRef.current?.open(index)}
+        onClick={({ index }) => imagePreviewRef.current?.open(index)}
+        setState={({ isApproved }) =>
+          isApproved === null ? "pending" : isApproved === false ? "rejected" : undefined
+        }
       />
     </>
   );

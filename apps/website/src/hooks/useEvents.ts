@@ -122,11 +122,12 @@ export function useEventByCodeQuery(code?: string) {
  * @param eventId The event to fetch the stats for.
  * @returns A `UseQueryResult` tracked stats for the specified event or an error.
  */
-export function useEventStatsQuery(eventId?: string) {
+export function useEventStatsQuery(eventId?: string, refetchInterval?: number) {
   return useQuery({
     queryKey: eventsKeys.stats(eventId),
     queryFn: () => makeRequest(getEventStatsSchema, `/api/events/${eventId}/stats`),
     enabled: !!eventId,
+    refetchInterval,
   });
 }
 

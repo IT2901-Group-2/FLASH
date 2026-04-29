@@ -78,18 +78,18 @@ export const OptionsStep = () => {
       <Controller
         control={control}
         name="uploadsArePrivate"
-        defaultValue={false}
+        defaultValue={true}
         render={({ field }) => (
           <Switch
             position="right"
             description={t("fields.guestCanViewAll.description")}
-            checked={field.value}
-            onChange={e => field.onChange(e.target.checked)}
+            checked={!field.value}
+            onChange={e => field.onChange(!e.target.checked)}
           >
             <b>{t("fields.guestCanViewAll.title")}</b>
           </Switch>
         )}
-      />{" "}
+      />
     </>
   );
 };

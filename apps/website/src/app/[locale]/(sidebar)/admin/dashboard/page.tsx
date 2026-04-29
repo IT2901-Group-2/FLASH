@@ -14,9 +14,11 @@ import { useLoadMore } from "@/hooks/useLoadMore";
 const EVENTS_PAGE_SIZE = 12;
 
 const Page = () => {
+  const navigation = useRouter();
   const t = useTranslations("pages.dashboard");
   const c = useTranslations("common.actions");
-  const navigation = useRouter();
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
   const [searchName, setSearchName] = useState<GetEventsParams["name"]>("");
   const [status, setStatus] = useState<GetEventsParams["status"]>(undefined);
   const [sortBy, setSortBy] = useState<GetEventsParams["sortBy"]>("name");
@@ -33,10 +35,10 @@ const Page = () => {
   });
   const { data, isLoading, hasNextPage, isFetchingNextPage } = eventsQuery;
   const events = data?.pages.flatMap(page => page.items) ?? [];
-
-  const dialogRef = useRef<HTMLDialogElement>(null);
   const loadMoreRef = useLoadMore(eventsQuery);
 
+  // `archived` is not a status. It's a boolean field for an event
+  // This makes it so it can be handled as a status when sorting
   const handleStatus = (status: GetEventsParams["status"] | "archived") => {
     if (status === "archived") {
       setArchived(true);
@@ -116,14 +118,12 @@ const Page = () => {
             />
           ))
         )}
-        {hasNextPage ? (
-          <div ref={loadMoreRef} className={styles.loadMoreSentinel} />
-        ) : null}
-        {isFetchingNextPage ? (
+        {hasNextPage && <div ref={loadMoreRef} className={styles.loadMoreSentinel} />}
+        {isFetchingNextPage && (
           <div className={styles.loadingContainer} data-testid="loading-more-spinner">
             <Loader size="large" />
           </div>
-        ) : null}
+        )}
       </div>
     </>
   );

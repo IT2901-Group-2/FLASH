@@ -20,9 +20,13 @@ vi.mock("@/hooks/useImages", () => imageHooksMock());
 vi.mock("@/providers/EventAuthContext", () => eventAuthMock());
 vi.mock("@/hooks/useFileUpload", () => fileUploadHookMock());
 vi.mock("@/components/ImageCard/ImageCard", () => imageCardMock());
+vi.mock("@flash/ui", async importOriginal => {
+  const actual = await importOriginal<typeof import("@flash/ui")>();
+  return { ...actual, useToast: () => ({ createToast: vi.fn() }) };
+});
 
 vi.mock("@/components/PhoneHeader/PhoneHeader", () => ({
-  PhoneHeader: vi.fn(({ children, ...rest }: PhoneHeaderProps) => (
+  default: vi.fn(({ children, ...rest }: PhoneHeaderProps) => (
     <div data-testid="phone-header" {...rest}>
       {children}
     </div>
@@ -58,7 +62,7 @@ describe("Guest Upload Page", () => {
       expect(useImagesQuery).toHaveBeenCalledWith(
         "event-123",
         { approval: "approved", pageSize: 12 },
-        false,
+        true,
         expect.any(Number)
       );
     });
@@ -90,7 +94,7 @@ describe("Guest Upload Page", () => {
     });
 
     it("navigates preview with ArrowRight and ArrowLeft", async () => {
-      vi.mocked(useMyImagesQuery).mockReturnValue(
+      vi.mocked(useImagesQuery).mockReturnValue(
         mockImagesLoaded([
           makeImage({ id: "image-1" }),
           makeImage({ id: "image-2" }),
@@ -127,7 +131,7 @@ describe("Guest Upload Page", () => {
     });
 
     it("wraps preview to last image when pressing ArrowLeft on first image", async () => {
-      vi.mocked(useMyImagesQuery).mockReturnValue(
+      vi.mocked(useImagesQuery).mockReturnValue(
         mockImagesLoaded([
           makeImage({ id: "image-1" }),
           makeImage({ id: "image-2" }),

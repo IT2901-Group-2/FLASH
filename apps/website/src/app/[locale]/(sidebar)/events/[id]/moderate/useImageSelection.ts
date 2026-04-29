@@ -4,18 +4,20 @@ import { useBatchUpdateImageMutation, imagesKeys } from "@/hooks/useImages";
 import { BATCH_IMAGE_LIMIT } from "@/config/images";
 import type { Image } from "@/db";
 
-export function useImageSelection(images: Image[], eventId: string) {
+export function useImageSelection(
+  images: Image[],
+  eventId: string,
+  { onError }: { onError?: (count: number) => void } = {}
+) {
   const queryClient = useQueryClient();
   const { mutateAsync: batchUpdateImage } = useBatchUpdateImageMutation();
 
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [bulkError, setBulkError] = useState<string | null>(null);
 
   const exitSelectMode = useCallback(() => {
     setSelectMode(false);
     setSelectedIds(new Set());
-    setBulkError(null);
   }, []);
 
   const handleSelectToggle = useCallback(() => {
@@ -56,7 +58,6 @@ export function useImageSelection(images: Image[], eventId: string) {
 
   const handleBulkAction = useCallback(
     async (isApproved: boolean) => {
-      setBulkError(null);
       const allIds = Array.from(selectedIds);
       let failed = 0;
 
@@ -78,10 +79,10 @@ export function useImageSelection(images: Image[], eventId: string) {
       // Always exit select mode, partially applied changes cannot be undone by retrying the same selection.
       exitSelectMode();
       if (failed > 0) {
-        setBulkError(`${failed} photo${failed > 1 ? "s" : ""} could not be updated.`);
+        onError?.(failed);
       }
     },
-    [selectedIds, batchUpdateImage, eventId, exitSelectMode, queryClient]
+    [selectedIds, batchUpdateImage, eventId, exitSelectMode, queryClient, onError]
   );
 
   const handleBulkApprove = useCallback(() => handleBulkAction(true), [handleBulkAction]);
@@ -92,7 +93,6 @@ export function useImageSelection(images: Image[], eventId: string) {
     selectMode,
     selectedIds,
     allSelected,
-    bulkError,
     // handlers
     handleSelectToggle,
     handleSelectAllToggle,

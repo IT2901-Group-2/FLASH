@@ -4,7 +4,7 @@ import { getEventCookie } from "@/lib/utils/eventCookie";
 import { makeGlobal } from "@/lib/utils/makeGlobal";
 import { getFirstRow } from "@/lib/utils/sql";
 import { FileStorage } from "@flash/file-storage";
-import { and, asc, eq, inArray, isNull, SQL, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, SQL, sql } from "drizzle-orm";
 import { DatabaseService, dbService } from "./databaseService";
 import { AsyncResult, Result } from "typescript-result";
 import {
@@ -36,7 +36,7 @@ export class ImageService {
     this.storage = storage;
   }
 
-  static readonly TARGET_IMAGE_SIZES: number[] = [250];
+  static readonly TARGET_IMAGE_SIZES: number[] = [250, 500, 1000, 2000];
 
   /**
    * Validates the image metadata using `sharp`.
@@ -76,6 +76,22 @@ export class ImageService {
       next.catch(() => {})
     );
     return next;
+  }
+
+  /**
+   * Returns the filepath the image based on the given parameters.
+   *
+   * @param imageId The id of the image.
+   * @param width The width of the image.
+   * @param height The height of the image.
+   * @returns A filepath.
+   */
+  private getImagePath(imageId: string, width: number, height: number): string {
+    if (width === 0 && height === 0) {
+      return `${imageId}.webp`;
+    }
+
+    return `${imageId}-${width}x${height}.webp`;
   }
 
   /**
@@ -124,7 +140,7 @@ export class ImageService {
    * @param param The desired width and height of the image.
    * @returns An SQL statement to use in an "ORDER BY" clause.
    */
-  private getSizeOrder({ width, height }: GetImageParams): SQL | null {
+  private getSizeOrder({ width, height }: GetImageParams): SQL {
     if (width !== undefined && height !== undefined) {
       return asc(
         sql`abs(${imageSizesTable.width} * ${imageSizesTable.height} - ${width * height})`
@@ -139,7 +155,7 @@ export class ImageService {
       return asc(sql`abs(${imageSizesTable.height} - ${height})`);
     }
 
-    return null;
+    return desc(sql`${imageSizesTable.width} * ${imageSizesTable.height}`);
   }
 
   /**
@@ -156,50 +172,33 @@ export class ImageService {
     imageId: string,
     params: GetImageParams = {}
   ): AsyncResult<Buffer<ArrayBufferLike>, Error> {
-    return Result.gen(this, function* () {
-      yield* this.getVisibleToUserId(eventId)
-        .mapCatching(visibleToUserId =>
-          this.dbService.db
-            .select()
-            .from(imageTable)
-            .where(
-              and(
-                eq(imageTable.eventId, eventId),
-                eq(imageTable.id, imageId),
-                visibleToUserId !== undefined
-                  ? eq(imageTable.userId, visibleToUserId)
-                  : undefined
-              )
-            )
-            .limit(1)
-        )
-        .map(rows =>
-          getFirstRow(
-            rows,
-            `Image with id ${imageId} does not exist on event with id ${eventId}`
-          )
-        );
-
-      const sortOrder = this.getSizeOrder(params);
-      if (sortOrder === null) {
-        return this.storage.read(`${imageId}.webp`);
-      }
-
-      return Result.try(() =>
+    return this.getVisibleToUserId(eventId)
+      .mapCatching(visibleToUserId =>
         this.dbService.db
-          .select()
-          .from(imageSizesTable)
-          .where(eq(imageSizesTable.imageId, imageId))
-          .orderBy(sortOrder)
+          .select({ width: imageSizesTable.width, height: imageSizesTable.height })
+          .from(imageTable)
+          .rightJoin(imageSizesTable, eq(imageTable.id, imageSizesTable.imageId))
+          .where(
+            and(
+              eq(imageTable.eventId, eventId),
+              eq(imageTable.id, imageId),
+              visibleToUserId !== undefined
+                ? eq(imageTable.userId, visibleToUserId)
+                : undefined
+            )
+          )
+          .orderBy(this.getSizeOrder(params))
           .limit(1)
-      ).map(([row]) =>
-        this.storage.read(
-          row === undefined
-            ? `${imageId}.webp`
-            : `${imageId}-${row.width}x${row.height}.webp`
+      )
+      .map(rows =>
+        getFirstRow(
+          rows,
+          `Image with id ${imageId} does not exist on event with id ${eventId}`
         )
+      )
+      .map(({ width, height }) =>
+        this.storage.read(this.getImagePath(imageId, width, height))
       );
-    });
   }
 
   /**
@@ -213,14 +212,15 @@ export class ImageService {
   private saveImage(
     imageId: string,
     sharpImage: Sharp
-  ): AsyncResult<[number, number][], Error> {
-    return Result.try(() => sharpImage.clone().toBuffer())
-      .map(buff => this.storage.write(`${imageId}.webp`, buff))
-      .map(() => sharpImage.metadata())
-      .map(({ width, height }) =>
-        Result.all(
-          ...ImageService.TARGET_IMAGE_SIZES.filter(s => s < Math.max(width, height)).map(
-            s =>
+  ): AsyncResult<[[number, number], ...[number, number][]], Error> {
+    return Result.try(() => sharpImage.metadata()).map(({ width, height }) =>
+      Result.try(() => sharpImage.clone().toBuffer())
+        .map(buff => this.storage.write(this.getImagePath(imageId, width, height), buff))
+        .map(() =>
+          Result.all(
+            ...ImageService.TARGET_IMAGE_SIZES.filter(
+              s => s < Math.max(width, height)
+            ).map(s =>
               Result.try(() =>
                 sharpImage
                   .clone()
@@ -228,12 +228,13 @@ export class ImageService {
                   .toBuffer({ resolveWithObject: true })
               ).map(({ data, info: { width, height } }) =>
                 this.storage
-                  .write(`${imageId}-${width}x${height}.webp`, data)
+                  .write(this.getImagePath(imageId, width, height), data)
                   .map(() => [width, height])
               )
-          )
+            )
+          ).map(sizes => [...sizes, [width, height]])
         )
-      );
+    );
   }
 
   /**
@@ -297,16 +298,12 @@ export class ImageService {
       )
         .map(rows =>
           getFirstRow(rows, "Failed to upload image").map(image =>
-            imageSizes.length > 0
-              ? Result.try(() =>
-                  this.dbService.db
-                    .insert(imageSizesTable)
-                    .values(
-                      imageSizes.map(([width, height]) => ({ imageId, width, height }))
-                    )
-                    .returning()
-                ).map(rows => getFirstRow(rows).map(() => image))
-              : image
+            Result.try(() =>
+              this.dbService.db
+                .insert(imageSizesTable)
+                .values(imageSizes.map(([width, height]) => ({ imageId, width, height })))
+                .returning()
+            ).map(rows => getFirstRow(rows).map(() => image))
           )
         )
         .onSuccess(async image => {
@@ -420,7 +417,24 @@ export class ImageService {
         this.dbService.flush();
         await this.removeImageFromZip(eventId, imageId).getOrThrow();
       })
-      .map(row => this.storage.rm(`${row.id}.webp`).map(() => row));
+      .map(row =>
+        Result.try(() =>
+          this.dbService.db
+            .select({ width: imageSizesTable.width, height: imageSizesTable.height })
+            .from(imageTable)
+            .rightJoin(imageSizesTable, eq(imageTable.id, imageSizesTable.imageId))
+            .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
+            .limit(1)
+        )
+          .map(sizes =>
+            Result.all(
+              ...sizes.map(({ width, height }) =>
+                this.storage.rm(this.getImagePath(imageId, width, height))
+              )
+            )
+          )
+          .map(() => row)
+      );
   }
 
   /**
@@ -466,21 +480,36 @@ export class ImageService {
    * @returns A result containing void or an error.
    */
   private addImageToZip(eventId: string, imageId: string): AsyncResult<void, Error> {
-    return Result.fromAsyncCatching(
-      this.withZipLock(eventId, () =>
-        this.storage
-          .read(`${eventId}.zip`)
-          .recover(() => Result.ok(undefined))
-          .map(zip => new AdmZip(zip))
-          .map(zip =>
-            this.storage
-              .read(`${imageId}.webp`)
-              .map(buffer => zip.addFile(`${imageId}.webp`, buffer))
-              .map(() => this.storage.write(`${eventId}.zip`, zip.toBuffer()))
-          )
-          .getOrThrow()
+    return Result.try(() =>
+      this.dbService.db
+        .select({ width: imageSizesTable.width, height: imageSizesTable.height })
+        .from(imageTable)
+        .rightJoin(imageSizesTable, eq(imageTable.id, imageSizesTable.imageId))
+        .where(and(eq(imageTable.eventId, eventId), eq(imageTable.id, imageId)))
+        .orderBy(desc(sql`${imageSizesTable.width} * ${imageSizesTable.height}`))
+        .limit(1)
+    )
+      .map(rows =>
+        getFirstRow(
+          rows,
+          `Image with id ${imageId} does not exist on event with id ${eventId}`
+        )
       )
-    );
+      .mapCatching(({ width, height }) =>
+        this.withZipLock(eventId, () =>
+          this.storage
+            .read(`${eventId}.zip`)
+            .recover(() => Result.ok(undefined))
+            .map(zip => new AdmZip(zip))
+            .map(zip =>
+              this.storage
+                .read(this.getImagePath(imageId, width, height))
+                .map(buffer => zip.addFile(`${imageId}.webp`, buffer))
+                .map(() => this.storage.write(`${eventId}.zip`, zip.toBuffer()))
+            )
+            .getOrThrow()
+        )
+      );
   }
 
   /**
@@ -492,7 +521,7 @@ export class ImageService {
    * @returns A result containing void or an error.
    */
   private removeImageFromZip(eventId: string, imageId: string): AsyncResult<void, Error> {
-    return Result.fromAsyncCatching(
+    return Result.try(() =>
       this.withZipLock(eventId, () =>
         this.storage
           .read(`${eventId}.zip`)
