@@ -34,7 +34,7 @@ export default function Page() {
   const imagePreviewRef = useRef<ImagePreviewHandle>(null);
   const { mutateAsync: download } = useDownloadImagesMutation();
   const isMobile = useIsMobile();
-  const { uploadErrorToast } = useCustomToast();
+  const { uploadErrorToast, uploadSuccessToast } = useCustomToast();
 
   const [activeTab, setActiveTab] = useState<"all" | "user">("all");
 
@@ -89,6 +89,7 @@ export default function Page() {
     multiple: MULTI_FILE_UPLOAD,
     eventId,
     onError: e => uploadErrorToast(e.message),
+    onSuccess: uploadSuccessToast,
   });
 
   const isEnded = hasEnded(eventData);
