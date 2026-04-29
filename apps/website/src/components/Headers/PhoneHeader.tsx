@@ -11,7 +11,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { useDownloadImagesMutation, useUploadedImageCountQuery } from "@/hooks/useImages";
 import { useFileUpload } from "@/hooks/useFileUpload";
-import { EVENT_REFETCH_INTERVAL, MULTI_FILE_UPLOAD, TOAST_DISPLAY_TIME } from "@/config";
+import { EVENT_REFETCH_INTERVAL, MULTI_FILE_UPLOAD } from "@/config";
 import { getUploadsRemaining, hasEnded } from "@/utils/event-utils";
 import { useCustomToast } from "@/hooks/useCustomToasts";
 
@@ -52,7 +52,7 @@ export const PhoneHeader = ({ ...rest }: PhoneHeaderProps) => {
     [t]
   );
 
-  const { openFilePicker, FileInput, isUploading } = useFileUpload({
+  const { openFilePicker, isUploading } = useFileUpload({
     multiple: MULTI_FILE_UPLOAD,
     eventId,
     onError: e => uploadErrorToast(e.message),
@@ -64,7 +64,6 @@ export const PhoneHeader = ({ ...rest }: PhoneHeaderProps) => {
 
   return (
     <>
-      <FileInput />
       <Dialog ref={dialogRef} closedby="any" className={styles.qrCodeContainer}>
         <div className={styles.qrCodeContainer}>
           {joinLink !== null && (

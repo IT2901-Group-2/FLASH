@@ -21,7 +21,7 @@ import styles from "./UploadImage.module.css";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { getUploadsRemaining, hasEnded } from "@/utils/event-utils";
 import useIsMobile from "@/hooks/useIsMobile";
-import { MULTI_FILE_UPLOAD, TOAST_DISPLAY_TIME } from "@/config/event";
+import { MULTI_FILE_UPLOAD } from "@/config/event";
 import { useCustomToast } from "@/hooks/useCustomToasts";
 
 const IMAGE_PAGE_SIZE = 12;
@@ -85,7 +85,7 @@ export default function Page() {
     [tCommon]
   );
 
-  const { openFilePicker, FileInput, isUploading } = useFileUpload({
+  const { openFilePicker, isUploading } = useFileUpload({
     multiple: MULTI_FILE_UPLOAD,
     eventId,
     onError: e => uploadErrorToast(e.message),
@@ -98,7 +98,6 @@ export default function Page() {
   return (
     <>
       <ImagePreview ref={imagePreviewRef} images={displayedImages} />
-      <FileInput />
       <PhoneHeader />
 
       <div className={styles.pageWrapper}>

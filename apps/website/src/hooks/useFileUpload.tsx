@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, ChangeEvent } from "react";
+import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useUploadImageMutation } from "./useImages";
 import { Image } from "@/db";
@@ -51,14 +51,14 @@ export interface UseFileUploadReturn {
   isSuccess: boolean;
   isError: boolean;
   error: FileUploadError | null;
+  /** Uploads the provided files */
+  uploadFiles: (...files: File[]) => Promise<void>;
   /** Opens the native file picker */
   openFilePicker: () => void;
   /** Remove one uploaded file from the result list */
   removeFile: (fileId: string) => void;
   /** Reset all state back to idle */
   reset: () => void;
-  /** A component you can render anywhere: <FileInput /> */
-  FileInput: () => React.ReactElement;
 }
 
 export function useFileUpload({
@@ -73,7 +73,6 @@ export function useFileUpload({
 }: FileUploadOptions): UseFileUploadReturn {
   const t = useTranslations("guest.event.upload.errors");
   const { mutateAsync: uploadImage } = useUploadImageMutation();
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [status, setStatus] = useState<UploadStatus>("idle");
@@ -91,11 +90,8 @@ export function useFileUpload({
     [maxFiles, t]
   );
 
-  const handleInputChange = useCallback(
-    async (e: ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(e.target.files ?? []);
-      e.target.value = "";
-
+  const uploadFiles = useCallback(
+    async (...files: File[]) => {
       if (files.length === 0) return;
 
       const validationError = validate(files);
@@ -115,12 +111,14 @@ export function useFileUpload({
         files.map(async file => {
           await uploadImage({ eventId, file })
             .then(data => {
+              console.log("success", data);
               const uploaded: UploadedFile = { file, data };
               results.push(uploaded);
               setUploadedFiles(prev => [...prev, uploaded]);
               onUpload?.(uploaded);
             })
             .catch(err => {
+              console.log("error", err);
               const uploadError: FileUploadError = {
                 file,
                 code: "UPLOAD_FAILED",
@@ -129,15 +127,19 @@ export function useFileUpload({
                     ? err.message
                     : t("uploadFailed", { name: file.name }),
               };
+              console.log(error);
               setError(uploadError);
               setStatus("error");
               onError?.(uploadError);
             });
         })
       );
-      setStatus("success");
-      onAllUploaded?.(results);
-      if (!error) onSuccess?.();
+      console.log(error);
+      if (!error) {
+        setStatus("success");
+        onAllUploaded?.(results);
+        onSuccess?.();
+      }
     },
     [
       validate,
@@ -152,7 +154,19 @@ export function useFileUpload({
     ]
   );
 
-  const openFilePicker = useCallback(() => inputRef.current?.click(), []);
+  const createFileInput = useCallback(() => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = accept.join(",");
+    input.multiple = multiple;
+    input.addEventListener(
+      "change",
+      () => input.files !== null && uploadFiles(...input.files)
+    );
+    return input;
+  }, [accept, multiple]);
+
+  const openFilePicker = useCallback(() => createFileInput().click(), []);
 
   const removeFile = useCallback(
     (fileId: string) => setUploadedFiles(prev => prev.filter(f => f.data?.id !== fileId)),
@@ -163,23 +177,7 @@ export function useFileUpload({
     setUploadedFiles([]);
     setStatus("idle");
     setError(null);
-    if (inputRef.current) inputRef.current.value = "";
   }, []);
-
-  const FileInput = useCallback(
-    () => (
-      <input
-        ref={inputRef}
-        type="file"
-        accept={accept?.join(",")}
-        multiple={multiple}
-        style={{ display: "none" }}
-        onChange={handleInputChange}
-        data-testid="file-input"
-      />
-    ),
-    [accept, multiple, handleInputChange]
-  );
 
   return {
     uploadedFiles,
@@ -188,9 +186,9 @@ export function useFileUpload({
     isSuccess: status === "success",
     isError: status === "error",
     error,
+    uploadFiles,
     openFilePicker,
     removeFile,
     reset,
-    FileInput,
   };
 }
