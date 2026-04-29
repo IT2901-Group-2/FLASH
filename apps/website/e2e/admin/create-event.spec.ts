@@ -1,10 +1,10 @@
-import { test } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
 test.use({
   serviceWorkers: "block",
 });
 
-test("Create Event", async ({ page }) => {
+test("test", async ({ page }) => {
   await page.routeFromHAR("e2e/hars/create-event.har", {
     url: "**/api/**",
   });
@@ -13,11 +13,10 @@ test("Create Event", async ({ page }) => {
   await page.getByRole("textbox", { name: "Passord" }).click();
   await page.getByRole("textbox", { name: "Passord" }).fill("Default");
   await page.getByRole("button", { name: "Logg inn" }).click();
-
   await page.getByRole("button", { name: "Lag nytt event" }).click();
-  await page.getByRole("textbox", { name: "Eventnavn" }).fill("Playwright Event");
-  await page.getByRole("textbox", { name: "Eventnavn" }).press("Tab");
-  await page.getByRole("textbox", { name: "Beskrivelse" }).fill("Playwright Description");
+  await page.getByTestId("name").fill("Playwright Test Event");
+  await page.getByTestId("description").click();
+  await page.getByTestId("description").fill("Playwright Test Description");
   await page.getByRole("radio", { name: "Spesifikke tider" }).click();
   await page.getByRole("textbox", { name: "Starttid" }).click();
   await page.getByRole("textbox", { name: "Starttid" }).press("Shift+Tab");
@@ -26,10 +25,18 @@ test("Create Event", async ({ page }) => {
   await page.getByRole("textbox", { name: "Sluttid" }).press("Shift+Tab");
   await page.getByRole("textbox", { name: "Sluttid" }).fill("18:00");
   await page.getByRole("button", { name: "Neste" }).click();
-
   await page.getByRole("radio", { name: "Uendelig" }).click();
   await page.getByRole("switch", { name: "Godkjenn bilder automatisk" }).check();
-  await page.getByRole("switch", { name: "La gjester se alle bilder" }).check();
   await page.getByRole("button", { name: "Opprett" }).click();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Last ned" }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toMatchSnapshot();
+  await page.getByRole("radio", { name: "Moderator" }).click();
+  const download1Promise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Last ned" }).click();
+  const download1 = await download1Promise;
+  expect(download1.suggestedFilename()).toMatchSnapshot();
+  await page.getByTestId("copy-button").click();
   await page.getByRole("button", { name: "Fullfør" }).click();
 });
