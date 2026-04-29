@@ -41,7 +41,7 @@ const Page = () => {
   const eventData = data?.pages[0]?.items[0];
 
   const { data: joinCode } = useEventCodeQuery(id, "guest");
-  const { data: imageStats } = useEventStatsQuery(id);
+  const { data: imageStats } = useEventStatsQuery(id, SLIDESHOW_SLIDE_DURATION);
 
   const {
     data: imagePages,
