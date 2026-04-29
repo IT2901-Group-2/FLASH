@@ -19,14 +19,13 @@ export type PhoneHeaderProps = BaseHeaderProps;
 
 export const PhoneHeader = ({ ...rest }: PhoneHeaderProps) => {
   const t = useTranslations("common");
-  const tCommon = useTranslations("common");
   const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { id: eventId } = useParams<{ id: string }>();
   const eventAuth = useEventAuth();
   const { mutate: downloadImages } = useDownloadImagesMutation();
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
-  const { errorToast } = useCustomToast();
+  const { uploadErrorToast, uploadSuccessToast } = useCustomToast();
 
   const { data } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined,
@@ -45,18 +44,19 @@ export const PhoneHeader = ({ ...rest }: PhoneHeaderProps) => {
 
   const getUploadDescription = useCallback(
     (remaining: number | undefined, ended: boolean) => {
-      if (ended) return tCommon("uploads.eventEnded");
-      if (remaining === undefined) return tCommon("uploads.unlimited.long");
-      if (remaining === 0) return tCommon("uploads.none.long");
-      return tCommon("uploads.remaining.long", { count: remaining });
+      if (ended) return t("uploads.eventEnded");
+      if (remaining === undefined) return t("uploads.unlimited.long");
+      if (remaining === 0) return t("uploads.none.long");
+      return t("uploads.remaining.long", { count: remaining });
     },
-    [tCommon]
+    [t]
   );
 
   const { openFilePicker, FileInput, isUploading } = useFileUpload({
     multiple: MULTI_FILE_UPLOAD,
     eventId,
-    onError: e => errorToast(e.message),
+    onError: e => uploadErrorToast(e.message),
+    onSuccess: uploadSuccessToast,
   });
 
   const isEnded = hasEnded(eventData);

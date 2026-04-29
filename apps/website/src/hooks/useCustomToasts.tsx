@@ -5,20 +5,32 @@ import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 
 export const useCustomToast = () => {
-  const t = useTranslations("guest.event.upload.errors");
+  const tErr = useTranslations("guest.event.upload.errors");
+  const tSucc = useTranslations("guest.event.upload.success");
   const { createToast } = useToast();
 
-  const errorToast = useCallback(
+  const uploadErrorToast = useCallback(
     (message: string) =>
       createToast({
-        title: t("uploadFailedTitle"),
+        title: tErr("uploadFailedTitle"),
         description: message,
         icon: <OctagonAlert />,
         "data-color": "danger",
         duration: TOAST_DISPLAY_TIME,
       }),
-    [createToast, t]
+    [createToast, tErr]
   );
 
-  return { errorToast };
+  const uploadSuccessToast = useCallback(
+    (messageOverride?: string) =>
+      createToast({
+        title: messageOverride ?? tSucc("title"),
+        description: tSucc("message"),
+        "data-color": "success",
+        duration: TOAST_DISPLAY_TIME,
+      }),
+    [createToast, tSucc]
+  );
+
+  return { uploadErrorToast, uploadSuccessToast };
 };

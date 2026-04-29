@@ -40,6 +40,8 @@ export interface FileUploadOptions {
   onError?: (error: FileUploadError) => void;
   /** Called when all queued files have finished uploading */
   onAllUploaded?: (uploaded: UploadedFile[]) => void;
+  /** Called when all queued files have finished uploading and there are no errors */
+  onSuccess?: () => void;
 }
 
 export interface UseFileUploadReturn {
@@ -67,6 +69,7 @@ export function useFileUpload({
   onUpload,
   onError,
   onAllUploaded,
+  onSuccess,
 }: FileUploadOptions): UseFileUploadReturn {
   const t = useTranslations("guest.event.upload.errors");
   const { mutateAsync: uploadImage } = useUploadImageMutation();
@@ -108,32 +111,45 @@ export function useFileUpload({
 
       const results: UploadedFile[] = [];
 
-      files.forEach(async file => {
-        await uploadImage({ eventId, file })
-          .then(data => {
-            const uploaded: UploadedFile = { file, data };
-            results.push(uploaded);
-            setUploadedFiles(prev => [...prev, uploaded]);
-            onUpload?.(uploaded);
-          })
-          .catch(err => {
-            const uploadError: FileUploadError = {
-              file,
-              code: "UPLOAD_FAILED",
-              message:
-                err instanceof Error
-                  ? err.message
-                  : t("uploadFailed", { name: file.name }),
-            };
-            setError(uploadError);
-            setStatus("error");
-            onError?.(uploadError);
-          });
-      });
+      await Promise.all(
+        files.map(async file => {
+          await uploadImage({ eventId, file })
+            .then(data => {
+              const uploaded: UploadedFile = { file, data };
+              results.push(uploaded);
+              setUploadedFiles(prev => [...prev, uploaded]);
+              onUpload?.(uploaded);
+            })
+            .catch(err => {
+              const uploadError: FileUploadError = {
+                file,
+                code: "UPLOAD_FAILED",
+                message:
+                  err instanceof Error
+                    ? err.message
+                    : t("uploadFailed", { name: file.name }),
+              };
+              setError(uploadError);
+              setStatus("error");
+              onError?.(uploadError);
+            });
+        })
+      );
       setStatus("success");
       onAllUploaded?.(results);
+      if (!error) onSuccess?.();
     },
-    [validate, uploadImage, eventId, onUpload, onError, onAllUploaded, t]
+    [
+      validate,
+      uploadImage,
+      eventId,
+      onUpload,
+      onError,
+      onAllUploaded,
+      onSuccess,
+      error,
+      t,
+    ]
   );
 
   const openFilePicker = useCallback(() => inputRef.current?.click(), []);

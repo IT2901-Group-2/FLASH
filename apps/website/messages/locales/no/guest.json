@@ -96,6 +96,11 @@
       "emptyState": "Ingen bilder funnet",
       "imageAlt": "Bilde {index} av {total}",
       "imageTitle": "Bilde {index}",
+
+      "success": {
+        "title": "Sukses",
+        "message": "Alle bilder har blitt lastet opp"
+      },
       "errors": {
         "uploadUnavailable": "Kan ikke laste opp bilder for dette eventet.",
         "uploadFailedTitle": "Opplasting mislyktes",
