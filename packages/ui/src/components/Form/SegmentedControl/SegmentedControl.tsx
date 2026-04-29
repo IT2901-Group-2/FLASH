@@ -95,9 +95,10 @@ const SegmentedControl = ({
 
   const cssVars = {
     "--item-count": React.Children.count(children),
-    "--selected-index": descendants
-      .values()
-      .findIndex(d => d.value === context.selectedValue),
+    "--selected-index": Math.max(
+      0,
+      descendants.values().findIndex(d => d.value === context.selectedValue)
+    ),
   } as React.CSSProperties;
 
   return (
