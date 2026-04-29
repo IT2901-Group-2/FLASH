@@ -2,6 +2,7 @@
   margin: 1.5rem 1rem 0;
   display: flex;
   flex-direction: column;
+  height: 100vh;
 }
 
 .actionCardContainer {
