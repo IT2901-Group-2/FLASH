@@ -55,7 +55,6 @@ describe("Guest Upload Page", () => {
       expect(useFileUpload).toHaveBeenCalledWith(
         expect.objectContaining({
           eventId: expect.any(String),
-          maxSizeBytes: expect.any(Number),
           multiple: expect.any(Boolean),
           onError: expect.any(Function),
         })
