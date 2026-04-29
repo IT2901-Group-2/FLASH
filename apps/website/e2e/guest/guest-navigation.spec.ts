@@ -21,13 +21,13 @@ test("test", async ({ page }) => {
 
   await new Promise(r => setTimeout(r, 2000));
 
-  await page.getByTestId("sidebar-trigger").click();
+  // await page.getByTestId("sidebar-trigger").click();
   await page.getByRole("button", { name: "Lys modus" }).click();
   await page.getByRole("button", { name: "Språk EN NO" }).click();
 
   await new Promise(r => setTimeout(r, 1000));
 
-  await page.getByTestId("sidebar-trigger").click();
+  // await page.getByTestId("sidebar-trigger").click();
   await page.getByRole("button", { name: "Back" }).click();
   await page.getByText("Playwright Test").click();
   await page.getByRole("main").getByRole("button").filter({ hasText: /^$/ }).click();
