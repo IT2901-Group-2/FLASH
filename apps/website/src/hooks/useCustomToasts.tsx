@@ -17,6 +17,7 @@ export const useCustomToast = () => {
         icon: <OctagonAlert />,
         "data-color": "danger",
         duration: TOAST_DISPLAY_TIME,
+        position: "top-center",
       }),
     [createToast, tErr]
   );
@@ -28,6 +29,7 @@ export const useCustomToast = () => {
         description: tSucc("message"),
         "data-color": "success",
         duration: TOAST_DISPLAY_TIME,
+        position: "top-center",
       }),
     [createToast, tSucc]
   );
