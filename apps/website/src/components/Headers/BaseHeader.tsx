@@ -9,16 +9,27 @@ export interface BaseHeaderProps extends HTMLAttributes<HTMLDivElement> {
    * @default false
    */
   hideOnDesktop?: boolean;
+  /**
+   * If the sidebar trigger is shown at all.
+   * Overrides `hideOnDesktop`
+   * @default true
+   */
+  showTrigger?: boolean;
 }
 
-const BaseHeader = ({ hideOnDesktop = false, children, ...props }: BaseHeaderProps) => {
+const BaseHeader = ({
+  hideOnDesktop = false,
+  showTrigger = true,
+  children,
+  ...props
+}: BaseHeaderProps) => {
   const isMobile = useIsMobile();
 
   if (hideOnDesktop && !isMobile) return;
 
   return (
     <header className={styles.header}>
-      {isMobile && <Sidebar.Trigger />}
+      {showTrigger && isMobile && <Sidebar.Trigger />}
       <div {...props} className={styles.headerContent}>
         {children}
       </div>

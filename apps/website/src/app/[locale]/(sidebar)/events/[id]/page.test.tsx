@@ -6,14 +6,16 @@ import {
   makeImage,
   mockImagesLoaded,
   fileUploadHookMock,
+  defaultEventsQueryReturn,
 } from "@test-config";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import Page from "./page";
 import { useImagesQuery, useMyImagesQuery } from "@/hooks/useImages";
 import userEvent from "@testing-library/user-event";
-import { PhoneHeaderProps } from "@/components/PhoneHeader/PhoneHeader";
+import { PhoneHeaderProps } from "@/components/Headers";
 import { useFileUpload } from "@/hooks/useFileUpload";
+import { useEventsQuery } from "@/hooks/useEvents";
 
 vi.mock("@/hooks/useEvents", () => eventHooksMock());
 vi.mock("@/hooks/useImages", () => imageHooksMock());
@@ -25,8 +27,8 @@ vi.mock("@flash/ui", async importOriginal => {
   return { ...actual, useToast: () => ({ createToast: vi.fn() }) };
 });
 
-vi.mock("@/components/PhoneHeader/PhoneHeader", () => ({
-  default: vi.fn(({ children, ...rest }: PhoneHeaderProps) => (
+vi.mock("@/components/Headers", () => ({
+  PhoneHeader: vi.fn(({ children, ...rest }: PhoneHeaderProps) => (
     <div data-testid="phone-header" {...rest}>
       {children}
     </div>
@@ -37,6 +39,7 @@ describe("Guest Upload Page", () => {
   beforeEach(() => {
     vi.mocked(useImagesQuery).mockReturnValue(mockImagesLoaded([makeImage()]));
     vi.mocked(useMyImagesQuery).mockReturnValue(mockImagesLoaded([makeImage()]));
+    vi.mocked(useEventsQuery).mockReturnValue({ ...defaultEventsQueryReturn });
   });
 
   describe("render and hook setup", () => {
@@ -44,14 +47,15 @@ describe("Guest Upload Page", () => {
       render(<Page />);
       expect(screen.getByTestId("phone-header")).toBeInTheDocument();
       expect(screen.getByTestId("action-card")).toBeInTheDocument();
-      expect(screen.getByTestId("file-upload")).toBeInTheDocument();
     });
 
-    it("uses useFileUpload with onFilesSelected callback", () => {
+    it("uses the correct parameters and callbacks", () => {
       render(<Page />);
       expect(useFileUpload).toHaveBeenCalledWith(
         expect.objectContaining({
-          onFilesSelected: expect.any(Function),
+          eventId: expect.any(String),
+          multiple: expect.any(Boolean),
+          onError: expect.any(Function),
         })
       );
     });

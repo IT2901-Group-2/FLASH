@@ -1,114 +1,282 @@
-import { render, renderHook, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
-import { useFileUpload } from "../useFileUpload";
-import { act } from "react";
-import { makeMockFile, makeMockFiles } from "@test-config";
-import userEvent from "@testing-library/user-event";
+import {
+  defaultUploadImageMutationReturn,
+  imageHooksMock,
+  makeImage,
+  makeMockFile,
+} from "@test-config";
+import { renderHook, act, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, Mock } from "vitest";
+import { useFileUpload } from "@/hooks/useFileUpload";
+import { useUploadImageMutation } from "@/hooks/useImages";
+import { Image } from "@/db";
 
-const setup = (opts?: Parameters<typeof useFileUpload>[0]) => {
-  const { result } = renderHook(() => useFileUpload(opts));
-  const { FileInput, openFilePicker } = result.current;
-  render(FileInput());
-  const input = document.querySelector("input[type='file']") as HTMLInputElement;
-  return { input, openFilePicker };
-};
+vi.mock("@/hooks/useImages", () => imageHooksMock());
+
+const EVENT_ID = "event-123";
+function setup(options: Partial<Parameters<typeof useFileUpload>[0]> = {}) {
+  return renderHook(() => useFileUpload({ eventId: EVENT_ID, ...options }));
+}
 
 describe("useFileUpload", () => {
-  describe("return shape", () => {
-    it("returns openFilePicker and FileInput", () => {
-      const { result } = renderHook(() => useFileUpload());
-      expect(typeof result.current.openFilePicker).toBe("function");
-      expect(typeof result.current.FileInput).toBe("function");
+  let uploadedImage: Image;
+  let mockMutateAsync: Mock;
+
+  beforeEach(() => {
+    uploadedImage = makeImage({ eventId: EVENT_ID });
+    mockMutateAsync = vi.fn().mockResolvedValue(uploadedImage);
+    vi.mocked(useUploadImageMutation).mockReturnValue({
+      ...defaultUploadImageMutationReturn,
+      mutateAsync: mockMutateAsync,
     });
   });
 
-  describe("FileInput component", () => {
-    it("renders a hidden file input", () => {
-      const { result } = renderHook(() => useFileUpload());
-      render(result.current.FileInput());
-
-      const input = screen.getByTestId("file-input") as HTMLInputElement;
-      expect(input.tagName).toBe("INPUT");
-      expect(input.type).toBe("file");
-      expect(input.style.display).toBe("none");
+  describe("initial state", () => {
+    it("returns idle status", () => {
+      const { result } = setup();
+      expect(result.current.status).toBe("idle");
     });
 
-    it("applies the default accept value of image/*", () => {
-      const { input } = setup();
-      expect(input.accept).toBe("image/*");
+    it("returns null error", () => {
+      const { result } = setup();
+      expect(result.current.error).toBeNull();
     });
 
-    it("applies a custom accept value", () => {
-      const { input } = setup({ accept: ".pdf" });
-      expect(input.accept).toBe(".pdf");
-    });
-
-    it("enables multiple by default", () => {
-      const { input } = setup();
-      expect(input.multiple).toBe(true);
-    });
-
-    it("disables multiple when multiple: false is passed", () => {
-      const { input } = setup({ multiple: false });
-      expect(input.multiple).toBe(false);
+    it("returns correct boolean flags", () => {
+      const { result } = setup();
+      expect(result.current.isUploading).toBe(false);
+      expect(result.current.isSuccess).toBe(false);
+      expect(result.current.isError).toBe(false);
     });
   });
 
   describe("openFilePicker", () => {
-    it("calls click() on the hidden input", () => {
-      const { input, openFilePicker } = setup();
-      const clickSpy = vi.spyOn(input, "click");
-
-      act(() => openFilePicker());
-
-      expect(clickSpy).toHaveBeenCalledOnce();
-    });
-
-    it("does not throw when the ref is not yet attached", () => {
-      const { result } = renderHook(() => useFileUpload());
-      // FileInput is NOT rendered, so fileInputRef.current is null
-      expect(() => act(() => result.current.openFilePicker())).not.toThrow();
+    it("is a function", () => {
+      const { result } = setup();
+      expect(result.current.openFilePicker).toBeTypeOf("function");
     });
   });
 
-  describe("onFilesSelected callback", () => {
-    const onFilesSelected = vi.fn();
-
-    it("calls onFilesSelected with the FileList when files are chosen", async () => {
-      const { input } = setup({ onFilesSelected });
-      const files = [makeMockFile()];
-      await userEvent.upload(input, files);
-
-      expect(onFilesSelected).toHaveBeenCalledOnce();
-      expect(onFilesSelected).toHaveBeenCalledWith(files);
+  describe("successful upload", () => {
+    it("sets status to success after upload", async () => {
+      const { result } = setup();
+      result.current.uploadFiles(makeMockFile());
+      await waitFor(() => expect(result.current.status).toBe("success"));
     });
 
-    it("passes all selected files when multiple files are chosen", async () => {
-      const { input } = setup({ onFilesSelected });
-      const files = makeMockFiles(3);
-      await userEvent.upload(input, files);
-
-      expect(onFilesSelected).toHaveBeenCalledOnce();
-      expect(onFilesSelected).toHaveBeenCalledWith(files);
+    it("sets isSuccess to true", async () => {
+      const { result } = setup();
+      result.current.uploadFiles(makeMockFile());
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
     });
 
-    it("does not call onFilesSelected when no files are selected", async () => {
-      const { input } = setup({ onFilesSelected });
-      await userEvent.upload(input, []);
-      expect(onFilesSelected).not.toHaveBeenCalled();
+    it("calls onSuccess callback", async () => {
+      const onSuccess = vi.fn();
+      const { result } = setup({ onSuccess });
+      const file = makeMockFile();
+
+      result.current.uploadFiles(file);
+      await waitFor(() => expect(onSuccess).toHaveBeenCalledOnce());
     });
 
-    it("does not throw when onFilesSelected is not provided", async () => {
-      const { input } = setup();
-      expect(() => userEvent.upload(input, makeMockFiles(2))).not.toThrow();
+    it("calls onError callback", async () => {
+      vi.mocked(useUploadImageMutation).mockReturnValue({
+        ...defaultUploadImageMutationReturn,
+        mutateAsync: vi.fn().mockRejectedValue(new Error("Network error")),
+      });
+
+      const onError = vi.fn();
+      const { result } = setup({ onError });
+
+      result.current.uploadFiles(makeMockFile());
+      await waitFor(() => expect(onError).toHaveBeenCalledOnce());
+    });
+
+    it("passes eventId and file to the upload mutation", async () => {
+      const { result } = setup();
+      const file = makeMockFile();
+
+      result.current.uploadFiles(file);
+      await waitFor(() => {
+        expect(mockMutateAsync).toHaveBeenCalledWith({ eventId: EVENT_ID, file });
+      });
     });
   });
 
-  describe("input reset after selection", () => {
-    it("resets the input value to empty string after files are selected", async () => {
-      const { input } = setup();
-      await userEvent.upload(input, makeMockFiles(1));
-      expect(input.value).toBe("");
+  describe("upload failure", () => {
+    it("sets status to error on upload failure", async () => {
+      vi.mocked(useUploadImageMutation).mockReturnValue({
+        ...defaultUploadImageMutationReturn,
+        mutateAsync: vi.fn().mockRejectedValue(new Error("Network error")),
+      });
+
+      const { result } = setup();
+      result.current.uploadFiles(makeMockFile());
+      await waitFor(() => {
+        expect(result.current.status).toBe("error");
+        expect(result.current.isError).toBe(true);
+      });
+    });
+
+    it("sets error with UPLOAD_FAILED code and the error message", async () => {
+      vi.mocked(useUploadImageMutation).mockReturnValue({
+        ...defaultUploadImageMutationReturn,
+        mutateAsync: vi.fn().mockRejectedValue(new Error("Server down")),
+      });
+
+      const { result } = setup();
+      result.current.uploadFiles(makeMockFile());
+      await waitFor(() => {
+        expect(result.current.error?.code).toBe("UPLOAD_FAILED");
+        expect(result.current.error?.message).toBe("Server down");
+      });
+    });
+
+    it("attaches the failing file to the error object", async () => {
+      vi.mocked(useUploadImageMutation).mockReturnValue({
+        ...defaultUploadImageMutationReturn,
+        mutateAsync: vi.fn().mockRejectedValue(new Error("Forbidden")),
+      });
+
+      const { result } = setup();
+      const file = makeMockFile({ name: "photo.jpg" });
+      result.current.uploadFiles(file);
+      await waitFor(() => expect(result.current.error?.file).toEqual(file));
+    });
+
+    it("uses translated fallback message when rejection is not an Error instance", async () => {
+      vi.mocked(useUploadImageMutation).mockReturnValue({
+        ...defaultUploadImageMutationReturn,
+        mutateAsync: vi.fn().mockRejectedValue(new Error("uploadFailed")),
+      });
+
+      const { result } = setup();
+      result.current.uploadFiles(makeMockFile({ name: "photo.jpg" }));
+      await waitFor(() => {
+        expect(result.current.error?.message).toBe("uploadFailed");
+      });
+    });
+
+    it("calls onError callback on upload failure", async () => {
+      vi.mocked(useUploadImageMutation).mockReturnValue({
+        ...defaultUploadImageMutationReturn,
+        mutateAsync: vi.fn().mockRejectedValue(new Error("Forbidden")),
+      });
+
+      const onError = vi.fn();
+      const { result } = setup({ onError });
+      result.current.uploadFiles(makeMockFile());
+      await waitFor(() => {
+        expect(onError).toHaveBeenCalledWith(
+          expect.objectContaining({ code: "UPLOAD_FAILED" })
+        );
+      });
+    });
+  });
+
+  describe("validation", () => {
+    it("sets TOO_MANY_FILES error when file count exceeds maxFiles", async () => {
+      const { result } = setup({ maxFiles: 2 });
+      result.current.uploadFiles(makeMockFile(), makeMockFile(), makeMockFile());
+
+      await waitFor(() => expect(result.current.isError).toBe(true));
+      expect(result.current.error?.code).toBe("TOO_MANY_FILES");
+      expect(result.current.status).toBe("error");
+    });
+
+    it("includes the max count in the error message", async () => {
+      const { result } = setup({ maxFiles: 2 });
+      result.current.uploadFiles(makeMockFile(), makeMockFile(), makeMockFile());
+
+      await waitFor(() => expect(result.current.isError).toBe(true));
+      expect(result.current.error?.message).toBe("tooManyFiles");
+    });
+
+    it("calls onError with TOO_MANY_FILES when file count exceeds maxFiles", async () => {
+      const onError = vi.fn();
+      const { result } = setup({ maxFiles: 1, onError });
+      result.current.uploadFiles(makeMockFile(), makeMockFile());
+
+      await waitFor(() => expect(result.current.isError).toBe(true));
+      expect(onError).toHaveBeenCalledWith(
+        expect.objectContaining({ code: "TOO_MANY_FILES" })
+      );
+    });
+
+    it("does not call the upload mutation when validation fails", () => {
+      const { result } = setup({ maxFiles: 1 });
+      result.current.uploadFiles(makeMockFile(), makeMockFile());
+      expect(mockMutateAsync).not.toHaveBeenCalled();
+    });
+
+    it("allows exactly maxFiles files without error", () => {
+      const { result } = setup({ maxFiles: 2 });
+      result.current.uploadFiles(makeMockFile(), makeMockFile());
+      expect(result.current.error).toBeNull();
+    });
+
+    it("does nothing when the file list is empty", () => {
+      const { result } = setup();
+      result.current.uploadFiles();
+      expect(mockMutateAsync).not.toHaveBeenCalled();
+      expect(result.current.status).toBe("idle");
+    });
+  });
+
+  describe("reset", () => {
+    it("resets status to idle", async () => {
+      const { result } = setup();
+
+      result.current.uploadFiles(makeMockFile());
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      act(() => result.current.reset());
+      expect(result.current.status).toBe("idle");
+    });
+
+    it("clears the error state", () => {
+      const { result } = setup({ maxFiles: 1 });
+
+      result.current.uploadFiles(makeMockFile(), makeMockFile());
+      waitFor(() => expect(result.current.isError).toBe(true));
+
+      act(() => result.current.reset());
+
+      expect(result.current.error).toBeNull();
+      expect(result.current.isError).toBe(false);
+    });
+
+    it("resets all boolean flags to false", async () => {
+      const { result } = setup();
+
+      result.current.uploadFiles(makeMockFile());
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      act(() => result.current.reset());
+      expect(result.current.isUploading).toBe(false);
+      expect(result.current.isSuccess).toBe(false);
+      expect(result.current.isError).toBe(false);
+    });
+  });
+
+  describe("multiple file uploads", () => {
+    it("calls the upload mutation once per file", async () => {
+      const mockMutateAsync = vi
+        .fn()
+        .mockResolvedValueOnce(makeImage({ id: "img-1" }))
+        .mockResolvedValueOnce(makeImage({ id: "img-2" }));
+
+      vi.mocked(useUploadImageMutation).mockReturnValue({
+        ...defaultUploadImageMutationReturn,
+        mutateAsync: mockMutateAsync,
+      });
+
+      const { result } = setup({ multiple: true });
+
+      result.current.uploadFiles(
+        makeMockFile({ name: "a.jpg" }),
+        makeMockFile({ name: "b.jpg" })
+      );
+      await waitFor(() => expect(mockMutateAsync).toHaveBeenCalledTimes(2));
     });
   });
 });

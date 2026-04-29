@@ -1,69 +1,145 @@
-import { useRef, ChangeEvent } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { useTranslations } from "next-intl";
+import { useUploadImageMutation } from "./useImages";
 
-interface UseFileUploadOptions {
-  accept?: string;
-  multiple?: boolean;
-  onFilesSelected?: (files: File[]) => void;
+export type UploadStatus = "idle" | "uploading" | "success" | "error";
+
+export interface FileUploadError {
+  file?: File;
+  message: string;
+  code: "FILE_TOO_LARGE" | "INVALID_TYPE" | "TOO_MANY_FILES" | "UPLOAD_FAILED";
 }
 
-/**
- * Custom hook to handle file uploads via a hidden file input.
- *
- * Provides a function to open the file picker and a component for the file input.
- *
- * @param options - Configuration options for the file upload behavior.
- * @returns An object containing the `openFilePicker` function and the `FileInput` component.
- *
- * @example
- * const { openFilePicker, FileInput } = useFileUpload({
- *   accept: "image/*",
- *   multiple: false,
- *  onFilesSelected: (files) => console.log(files[0]),
- * });
- *
- * return (<>
- *   <FileInput />
- *   <button onClick={openFilePicker}>Upload Image</button>
- * </>);
- */
-export function useFileUpload(options: UseFileUploadOptions = {}) {
-  // Default to accepting all image types and allowing multiple file selection
-  const { accept = "image/*", multiple = true, onFilesSelected } = options;
+export interface FileUploadOptions {
+  eventId: string;
+  /**
+   * Accepted MIME types or file extensions, e.g. ["image/png", ".jpg"]
+   * @default ["image/*"]
+   */
+  accept?: string[];
+  /**
+   * Allow selecting multiple files at once
+   * @default false
+   */
+  multiple?: boolean;
+  /**
+   * Maximum number of files. No limit if undefined
+   * @default undefined
+   */
+  maxFiles?: number;
+  /** Called on validation or upload failure */
+  onError?: (error: FileUploadError) => void;
+  /** Called when all queued files have finished uploading and there are no errors */
+  onSuccess?: () => void;
+}
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+export interface UseFileUploadReturn {
+  status: UploadStatus;
+  isUploading: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+  error: FileUploadError | null;
+  /** Uploads the provided files */
+  uploadFiles: (...files: File[]) => void;
+  /** Opens the native file picker */
+  openFilePicker: () => void;
+  /** Reset all state back to idle */
+  reset: () => void;
+}
 
-  // Function to programmatically open the file picker
-  const openFilePicker = () => {
-    fileInputRef.current?.click();
-  };
+export function useFileUpload({
+  eventId,
+  accept = ["image/*"],
+  multiple = false,
+  maxFiles,
+  onError,
+  onSuccess,
+}: FileUploadOptions): UseFileUploadReturn {
+  const t = useTranslations("guest.event.upload.errors");
+  const { mutateAsync: uploadImage } = useUploadImageMutation();
 
-  // Handler for when files are selected through the file input.
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      onFilesSelected?.(Array.from(files));
+  const [status, setStatus] = useState<UploadStatus>("idle");
+  const [error, setError] = useState<FileUploadError | null>(null);
+
+  useEffect(() => {
+    if (status === "success") {
+      onSuccess?.();
     }
-    // Reset input value to allow selecting the same file again if needed
-    if (event.target) {
-      event.target.value = "";
-    }
-  };
 
-  // Component for the hidden file input that is triggered by the openFilePicker function
-  const FileInput = () => (
-    <input
-      ref={fileInputRef}
-      type="file"
-      accept={accept}
-      multiple={multiple}
-      style={{ display: "none" }}
-      onChange={handleFileChange}
-      data-testid="file-input"
-    />
+    if (status === "error" && error !== null) {
+      onError?.(error);
+    }
+  }, [status, error, onError, onSuccess]);
+
+  const makeUploadPromise = useCallback(
+    (file: File) => {
+      const promise = uploadImage({ eventId, file });
+
+      promise.catch(err => {
+        setStatus("error");
+        setError({
+          file,
+          code: "UPLOAD_FAILED",
+          message:
+            err instanceof Error ? err.message : t("uploadFailed", { name: file.name }),
+        });
+      });
+
+      return promise;
+    },
+    [uploadImage, eventId, t]
   );
 
+  const uploadFiles = useCallback(
+    (...files: File[]) => {
+      if (files.length === 0) return;
+      setStatus("uploading");
+      setError(null);
+
+      if (maxFiles !== undefined && files.length > maxFiles) {
+        setStatus("error");
+        setError({
+          code: "TOO_MANY_FILES",
+          message: t("tooManyFiles", { max: maxFiles }),
+        });
+        return;
+      }
+
+      Promise.all(files.map(makeUploadPromise)).then(
+        () => setStatus("success"),
+        () => setStatus("error")
+      );
+    },
+    [maxFiles, t, makeUploadPromise]
+  );
+
+  const createFileInput = useCallback(() => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = accept.join(",");
+    input.multiple = multiple;
+    input.addEventListener(
+      "change",
+      () => input.files !== null && uploadFiles(...input.files)
+    );
+    return input;
+  }, [accept, multiple, uploadFiles]);
+
+  const openFilePicker = useCallback(() => createFileInput().click(), [createFileInput]);
+
+  const reset = useCallback(() => {
+    setStatus("idle");
+    setError(null);
+  }, []);
+
   return {
+    status,
+    isUploading: status === "uploading",
+    isSuccess: status === "success",
+    isError: status === "error",
+    error,
+    uploadFiles,
     openFilePicker,
-    FileInput,
+    reset,
   };
 }
