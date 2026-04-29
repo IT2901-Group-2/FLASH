@@ -101,9 +101,26 @@ export function useFileUpload({
         };
       }
 
+      for (const file of files) {
+        if (accept && accept.length > 0) {
+          const ok = accept.some(rule =>
+            rule.startsWith(".")
+              ? file.name.toLowerCase().endsWith(rule.toLowerCase())
+              : file.type === rule
+          );
+          if (!ok) {
+            return {
+              file,
+              code: "INVALID_TYPE",
+              message: t("invalidType", { name: file.name, accepted: accept.join(", ") }),
+            };
+          }
+        }
+      }
+
       return null;
     },
-    [maxFiles, maxSizeBytes, t]
+    [maxFiles, maxSizeBytes, t, accept]
   );
 
   const handleInputChange = useCallback(
