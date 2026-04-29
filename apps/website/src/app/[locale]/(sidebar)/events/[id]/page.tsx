@@ -39,6 +39,8 @@ export default function Page() {
   const { mutateAsync: download } = useDownloadImagesMutation();
   const isMobile = useIsMobile();
 
+  const [activeTab, setActiveTab] = useState<"all" | "user">("all");
+
   // Event Data
   const { id: eventId } = useParams<{ id: string }>();
   const { data, isLoading, isError } = useEventsQuery(
@@ -48,13 +50,8 @@ export default function Page() {
   );
   const eventData = data?.pages[0]?.items[0];
   const uploadsArePrivate = eventData?.uploadsArePrivate ?? false;
-  const [activeTab, setActiveTab] = useState<"all" | "user">("all");
   const showTabs = uploadsArePrivate || !!eventAuth.isModerator;
   const isShowingUserTab = !showTabs || activeTab === "user";
-
-  const handleTabChange = (val: string) => {
-    if (val === "all" || val === "user") setActiveTab(val);
-  };
 
   const myImagesQuery = useMyImagesQuery(
     eventId,
@@ -110,8 +107,6 @@ export default function Page() {
     maxSizeBytes: MAX_IMAGE_SIZE,
   });
 
-  // if (!eventData) return;
-
   const isEnded = hasEnded(eventData);
   const uploadsRemaining = getUploadsRemaining(eventData, uploadedCountData?.count ?? 0);
 
@@ -133,7 +128,7 @@ export default function Page() {
           fill
           className={styles.tabContainer}
           value={activeTab}
-          onChange={handleTabChange}
+          onChange={t => setActiveTab(t as "all" | "user")}
         >
           <SegmentedControl.Item value="all" label={tUpload("tabs.allPhotos")} />
           <SegmentedControl.Item value="user" label={tUpload("tabs.userPhotos")} />
