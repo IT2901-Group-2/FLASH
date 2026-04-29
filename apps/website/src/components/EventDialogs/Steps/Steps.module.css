@@ -16,9 +16,9 @@
   gap: 2rem;
 }
 
-.scroll {
+/* .scroll {
   overflow-y: auto;
-}
+} */
 
 @media screen and (max-width: 1024px) {
   .infoContainer {
