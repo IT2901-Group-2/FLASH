@@ -24,6 +24,7 @@ import AdmZip from "adm-zip";
 import { verifyAccessToken } from "@/lib/utils/auth";
 import { eventService } from "./eventService";
 import { storage } from "@/config/storage";
+import { formatBytes } from "@/lib/utils/images";
 
 const uid = new ShortUniqueId();
 
@@ -53,7 +54,11 @@ export class ImageService {
       }
 
       if (meta.size > MAX_IMAGE_SIZE) {
-        return Result.error(new Error("Image exceeded the max image size"));
+        return Result.error(
+          new Error(
+            `Image exceeded the max image size of ${formatBytes(MAX_IMAGE_SIZE)}.`
+          )
+        );
       }
 
       return Result.ok(sharpImage);
