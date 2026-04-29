@@ -6,7 +6,7 @@
 }
 
 .actionCardContainer {
-  position: sticky;
+  position: absolute;
   background: transparent;
   z-index: 9999;
   bottom: 0;
