@@ -19,7 +19,7 @@ vi.mock("@flash/ui", async importOriginal => {
   return { ...actual, useToast: () => ({ createToast: vi.fn() }) };
 });
 
-vi.mock("@/components/ModerateHeader", () => ({
+vi.mock("@/components/Headers", () => ({
   ModerateHeader: ({
     onBack,
     selectMode,

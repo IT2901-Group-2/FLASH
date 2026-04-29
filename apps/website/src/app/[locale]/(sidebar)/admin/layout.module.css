@@ -1,28 +1,9 @@
-.header {
-  height: 4.15rem;
-  border-bottom: 0.1rem solid var(--color-border-base);
-  background-color: var(--color-primary-base);
-  padding: 1rem;
-
-  display: none;
-  justify-content: start;
-  align-items: center;
-
-  position: fixed;
-  z-index: 1;
-  width: 100%;
-}
-
 .section {
   padding: 2rem;
 }
 
 @media screen and (max-width: 768px) {
   .section {
-    padding-top: 4.5rem;
-    margin-bottom: 5rem;
-  }
-  .header {
-    display: flex;
+    padding-bottom: 5rem;
   }
 }

@@ -5,8 +5,9 @@ import { Button, Title } from "@flash/ui";
 import { useTranslations } from "next-intl";
 import { cl } from "@/utils/className";
 import styles from "./ModerateHeader.module.css";
+import BaseHeader, { BaseHeaderProps } from "./BaseHeader";
 
-export interface ModerateHeaderProps {
+export interface ModerateHeaderProps extends BaseHeaderProps {
   onBack: () => void;
   selectMode: boolean;
   onSelectToggle: () => void;
@@ -20,12 +21,13 @@ export const ModerateHeader = ({
   onSelectToggle,
   onSelectAll,
   allSelected = false,
+  ...rest
 }: ModerateHeaderProps) => {
   const t = useTranslations("guest.event.moderate");
   const selectAllLabel = allSelected ? t("actions.deselectAll") : t("actions.selectAll");
 
   return (
-    <header className={styles.header}>
+    <BaseHeader {...rest}>
       <div className={styles.leftSection}>
         <Button
           className={styles.backButton}
@@ -66,7 +68,7 @@ export const ModerateHeader = ({
           {selectMode ? t("actions.cancel") : t("actions.select")}
         </Button>
       </div>
-    </header>
+    </BaseHeader>
   );
 };
 
