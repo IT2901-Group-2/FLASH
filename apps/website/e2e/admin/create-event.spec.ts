@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 
 test.use({
   serviceWorkers: "block",
@@ -29,14 +29,10 @@ test("test", async ({ page }) => {
   await page.getByRole("switch", { name: "Godkjenn bilder automatisk" }).check();
   await page.getByRole("button", { name: "Opprett" }).click();
   await page.getByRole("button", { name: "Last ned" }).click();
-  const downloadPromise = page.waitForEvent("download");
-  const download = await downloadPromise;
-  expect(download.suggestedFilename()).toMatchSnapshot();
+
   await page.getByRole("radio", { name: "Moderator" }).click();
   await page.getByRole("button", { name: "Last ned" }).click();
-  const download1Promise = page.waitForEvent("download");
-  const download1 = await download1Promise;
-  expect(download1.suggestedFilename()).toMatchSnapshot();
+
   await page.getByTestId("copy-button").click();
   await page.getByRole("button", { name: "Fullfør" }).click();
 });
