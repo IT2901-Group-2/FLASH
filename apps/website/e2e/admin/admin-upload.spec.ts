@@ -18,7 +18,7 @@ test("test", async ({ page }) => {
   await page.getByRole("button", { name: "Last opp bilde" }).click();
   await page
     .getByRole("button", { name: "Last opp bilde" })
-    .setInputFiles("pixel-night.png");
+    .setInputFiles("e2e/test-img.png");
   await page.getByRole("radio", { name: "Dine bilder" }).click();
   await expect(
     page.getByRole("button", { name: "Bilde 2 av 2 Ventende..." })
