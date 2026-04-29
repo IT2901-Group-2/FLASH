@@ -15,6 +15,9 @@ test("test", async ({ page }) => {
   await page.getByRole("button", { name: "Logg inn" }).click();
   await page.getByText("Playwright Test").click();
   await page.getByRole("button", { name: "Bli med" }).click();
+
+  await new Promise(r => setTimeout(r, 1000));
+
   await page.getByRole("button", { name: "Last opp bilde" }).click();
   await page
     .getByRole("button", { name: "Last opp bilde" })
