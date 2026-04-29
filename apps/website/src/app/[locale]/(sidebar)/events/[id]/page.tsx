@@ -12,8 +12,8 @@ import {
   useUploadedImageCountQuery,
 } from "@/hooks/useImages";
 import { useEventAuth } from "@/providers/EventAuthContext";
-import { Button, Card, SegmentedControl, Title, useToast } from "@flash/ui";
-import { ChevronRight, Download, ImageMinus, OctagonAlert, Upload } from "lucide-react";
+import { Button, Card, SegmentedControl, Title } from "@flash/ui";
+import { ChevronRight, Download, ImageMinus, Upload } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -22,6 +22,7 @@ import { useFileUpload } from "@/hooks/useFileUpload";
 import { getUploadsRemaining, hasEnded } from "@/utils/event-utils";
 import useIsMobile from "@/hooks/useIsMobile";
 import { MULTI_FILE_UPLOAD, TOAST_DISPLAY_TIME } from "@/config/event";
+import { useCustomToast } from "@/hooks/useCustomToasts";
 
 const IMAGE_PAGE_SIZE = 12;
 
@@ -31,9 +32,9 @@ export default function Page() {
   const tUpload = useTranslations("guest.event.upload");
   const eventAuth = useEventAuth();
   const imagePreviewRef = useRef<ImagePreviewHandle>(null);
-  const { createToast } = useToast();
   const { mutateAsync: download } = useDownloadImagesMutation();
   const isMobile = useIsMobile();
+  const { errorToast } = useCustomToast();
 
   const [activeTab, setActiveTab] = useState<"all" | "user">("all");
 
@@ -73,18 +74,6 @@ export default function Page() {
       router.push("/");
     }
   }, [eventAuth, router, eventData]);
-
-  const errorToast = useCallback(
-    (message: string) =>
-      createToast({
-        title: tUpload("errors.uploadFailedTitle"),
-        description: message,
-        icon: <OctagonAlert />,
-        "data-color": "danger",
-        duration: TOAST_DISPLAY_TIME,
-      }),
-    [createToast, tUpload]
-  );
 
   const getUploadDescription = useCallback(
     (remaining: number | undefined, ended: boolean) => {

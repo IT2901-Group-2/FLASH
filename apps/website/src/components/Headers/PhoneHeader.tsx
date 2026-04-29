@@ -1,8 +1,8 @@
 "use client";
 
 import styles from "./PhoneHeader.module.css";
-import { Button, Dialog, QRDisplay, Title, useToast } from "@flash/ui";
-import { Download, ImageMinus, OctagonAlert, QrCode, Upload, User } from "lucide-react";
+import { Button, Dialog, QRDisplay, Title } from "@flash/ui";
+import { Download, ImageMinus, QrCode, Upload, User } from "lucide-react";
 import BaseHeader, { BaseHeaderProps } from "./BaseHeader";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
@@ -13,20 +13,20 @@ import { useDownloadImagesMutation, useUploadedImageCountQuery } from "@/hooks/u
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { EVENT_REFETCH_INTERVAL, MULTI_FILE_UPLOAD, TOAST_DISPLAY_TIME } from "@/config";
 import { getUploadsRemaining, hasEnded } from "@/utils/event-utils";
+import { useCustomToast } from "@/hooks/useCustomToasts";
 
 export type PhoneHeaderProps = BaseHeaderProps;
 
 export const PhoneHeader = ({ ...rest }: PhoneHeaderProps) => {
   const t = useTranslations("common");
-  const tUpload = useTranslations("guest.event.upload");
   const tCommon = useTranslations("common");
   const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { id: eventId } = useParams<{ id: string }>();
   const eventAuth = useEventAuth();
   const { mutate: downloadImages } = useDownloadImagesMutation();
-  const { createToast } = useToast();
   const { data: uploadedCountData } = useUploadedImageCountQuery(eventId);
+  const { errorToast } = useCustomToast();
 
   const { data } = useEventsQuery(
     eventId ? { id: [eventId] } : undefined,
@@ -42,18 +42,6 @@ export const PhoneHeader = ({ ...rest }: PhoneHeaderProps) => {
     (async () =>
       setJoinLink(new URL(`/join/${joinCode}`, window.location.origin).href))();
   }, [setJoinLink, joinCode]);
-
-  const errorToast = useCallback(
-    (message: string) =>
-      createToast({
-        title: tUpload("errors.uploadFailedTitle"),
-        description: message,
-        icon: <OctagonAlert />,
-        "data-color": "danger",
-        duration: TOAST_DISPLAY_TIME,
-      }),
-    [createToast, tUpload]
-  );
 
   const getUploadDescription = useCallback(
     (remaining: number | undefined, ended: boolean) => {
