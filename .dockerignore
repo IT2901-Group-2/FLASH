@@ -1,30 +1,37 @@
 ############################################################
+
 # Production-ready .dockerignore for a Next.js (Vercel-style) app
+
 # Keeps Docker builds fast, lean, and free of development files.
+
 ############################################################
 
 # Dependencies (installed inside Docker, never copied)
+
 **/node_modules/
 **/.pnpm-store/
-**/npm-debug.log*
+**/npm-debug.log\*
 **/yarn-debug.log*
-**/yarn-error.log*
-**/pnpm-debug.log*
-**/lerna-debug.log*
+\*\*/yarn-error.log*
+**/pnpm-debug.log\*
+**/lerna-debug.log\*
 
 # Next.js build outputs (always generated during `next build`)
+
 **/.next/
 **/out/
 **/dist/
 **/build/
-**/.vercel/
+\*\*/.vercel/
 
 # Tests and testing output (not needed in production images)
+
 **/coverage/
 **/.nyc_output/
-**/__tests__/
-**/__test__/
-**/__mocks__/
+**/**tests**/
+**/**test**/
+**/e2e/
+**/**mocks**/
 **/jest/
 **/cypress/
 **/cypress/screenshots/
@@ -33,53 +40,59 @@
 **/test-results/
 **/.vitest/
 **/.storybook/
-**/vitest.config.*
-**/vitest.setup.*
-**/jest.config.*
-**/cypress.config.*
-**/playwright.config.*
-**/*.test.*
-**/*.spec.*
-**/*.stories.*
+**/vitest.config.\*
+**/vitest.setup._
+\*\*/jest.config._
+**/cypress.config.\*
+**/playwright.config._
+\*\*/_.test._
+\*\*/_.spec._
+\*\*/_.stories.\*
 
 # Local development and editor files
+
 **/.git/
 **/.gitignore
 **/.gitattributes
 **/.vscode/
 **/.idea/
-**/*.swp
-**/*.swo
-**/*~
-**/*.log
+**/_.swp
+\*\*/_.swo
+**/\*~
+**/\*.log
 
 # Environment variables (only commit template files)
+
 **/.env
-**/.env*.local
+**/.env\*.local
 **/.env.development
 **/.env.test
-**/.env.production.local
+\*\*/.env.production.local
 
 # Docker configuration files (not needed inside build context)
-**/Dockerfile*
+
+**/Dockerfile\*
 **/.dockerignore
 **/compose.yaml
 **/compose.yml
-**/docker-compose*.yaml
-**/docker-compose*.yml
+**/docker-compose\*.yaml
+**/docker-compose\*.yml
 
 # Documentation
-**/*.md
+
+**/\*.md
 **/docs/
 
 # CI/CD configuration files
+
 **/.github/
 **/.gitlab-ci.yml
 **/.travis.yml
 **/.circleci/
-**/Jenkinsfile
+\*\*/Jenkinsfile
 
 # Cache directories and temporary data
+
 **/.cache/
 **/.parcel-cache/
 **/.eslintcache
@@ -90,32 +103,35 @@
 **/.temp/
 
 # TypeScript build metadata
-**/*.tsbuildinfo
+
+\*_/_.tsbuildinfo
 
 # Sensitive or unnecessary configuration files
-**/*.pem
+
+**/\*.pem
 **/.editorconfig
-**/.prettierrc*
-**/prettier.config.*
-**/.eslintrc*
-**/eslint.config.*
+**/.prettierrc\*
+**/prettier.config._
+\*\*/.eslintrc_
+**/eslint.config.\*
 **/.stylelintrc*
-**/stylelint.config.*
-**/.babelrc*
-**/*.iml
-**/*.ipr
-**/*.iws
+\*\*/stylelint.config.*
+**/.babelrc\*
+**/_.iml
+\*\*/_.ipr \*_/_.iws
 
 # OS-specific junk
+
 **/.DS_Store
-**/._*
+**/.\_\*
 **/.Spotlight-V100
 **/.Trashes
 **/ehthumbs.db
 **/Thumbs.db
-**/Desktop.ini
+\*\*/Desktop.ini
 
 # AI/ML tool metadata and configs
+
 **/.cursor/
 **/.cursorrules
 **/.copilot/
@@ -126,13 +142,13 @@
 **/.kiro
 **/.claude
 **/AGENTS.md
-**/.agents/
+\*\*/.agents/
 
 # AI-generated temp files
-**/*.aider*
-**/*.copilot*
-**/*.chatgpt*
-**/*.claude*
-**/*.gemini*
-**/*.openai*
-**/*.anthropic*
+
+**/_.aider_
+**/_.copilot_
+**/_.chatgpt_
+**/_.claude_
+**/_.gemini_
+**/_.openai_ \*_/_.anthropic\*
