@@ -69,7 +69,7 @@ export function useFileUpload({
     if (status === "error" && error !== null) {
       onError?.(error);
     }
-  }, [status, error, onError]);
+  }, [status, error, onError, onSuccess]);
 
   const makeUploadPromise = useCallback(
     (file: File) => {
@@ -123,9 +123,9 @@ export function useFileUpload({
       () => input.files !== null && uploadFiles(...input.files)
     );
     return input;
-  }, [accept, multiple]);
+  }, [accept, multiple, uploadFiles]);
 
-  const openFilePicker = useCallback(() => createFileInput().click(), []);
+  const openFilePicker = useCallback(() => createFileInput().click(), [createFileInput]);
 
   const reset = useCallback(() => {
     setStatus("idle");
