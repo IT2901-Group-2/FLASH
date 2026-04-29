@@ -4,6 +4,13 @@ import { OctagonAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 
+/**
+ * Hook containing some comonly used versions of the createToast.
+ * This is primarily used on the image upload page.
+ *
+ * @example
+ * const { uploadErrorToast } = useCustomToasts()
+ */
 export const useCustomToast = () => {
   const tErr = useTranslations("guest.event.upload.errors");
   const tSucc = useTranslations("guest.event.upload.success");
