@@ -3,11 +3,7 @@
 import { ImagePreview, ImagePreviewHandle } from "@/components/ImagePreview/ImagePreview";
 import { PhoneHeader } from "@/components/Headers";
 import { PhotoList } from "@/components/PhotoList/PhotoList";
-import {
-  EVENT_REFETCH_INTERVAL,
-  MAX_IMAGE_SIZE,
-  PHOTOS_REFETCH_INTERVAL,
-} from "@/config";
+import { EVENT_REFETCH_INTERVAL, PHOTOS_REFETCH_INTERVAL } from "@/config";
 import { useEventsQuery } from "@/hooks/useEvents";
 import {
   useDownloadImagesMutation,
@@ -104,7 +100,6 @@ export default function Page() {
     multiple: MULTI_FILE_UPLOAD,
     eventId,
     onError: e => errorToast(e.message),
-    maxSizeBytes: MAX_IMAGE_SIZE,
   });
 
   const isEnded = hasEnded(eventData);

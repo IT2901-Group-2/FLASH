@@ -11,12 +11,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEventAuth } from "@/providers/EventAuthContext";
 import { useDownloadImagesMutation, useUploadedImageCountQuery } from "@/hooks/useImages";
 import { useFileUpload } from "@/hooks/useFileUpload";
-import {
-  EVENT_REFETCH_INTERVAL,
-  MAX_IMAGE_SIZE,
-  MULTI_FILE_UPLOAD,
-  TOAST_DISPLAY_TIME,
-} from "@/config";
+import { EVENT_REFETCH_INTERVAL, MULTI_FILE_UPLOAD, TOAST_DISPLAY_TIME } from "@/config";
 import { getUploadsRemaining, hasEnded } from "@/utils/event-utils";
 
 export type PhoneHeaderProps = BaseHeaderProps;
@@ -74,7 +69,6 @@ export const PhoneHeader = ({ ...rest }: PhoneHeaderProps) => {
     multiple: MULTI_FILE_UPLOAD,
     eventId,
     onError: e => errorToast(e.message),
-    maxSizeBytes: MAX_IMAGE_SIZE,
   });
 
   const isEnded = hasEnded(eventData);

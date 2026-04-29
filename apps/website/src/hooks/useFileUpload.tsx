@@ -30,11 +30,6 @@ export interface FileUploadOptions {
    */
   multiple?: boolean;
   /**
-   * Maximum file size in bytes. No limit if undefined.
-   * @default undefined
-   */
-  maxSizeBytes?: number;
-  /**
    * Maximum number of files. No limit if undefined
    * @default undefined
    */
@@ -68,7 +63,6 @@ export function useFileUpload({
   eventId,
   accept = ["image/*"],
   multiple = false,
-  maxSizeBytes,
   maxFiles,
   onUpload,
   onError,
@@ -89,31 +83,9 @@ export function useFileUpload({
           code: "TOO_MANY_FILES",
           message: t("tooManyFiles", { max: maxFiles }),
         };
-      const oversized = maxSizeBytes ? files.find(f => f.size > maxSizeBytes) : undefined;
-      if (oversized) {
-        return {
-          file: oversized,
-          code: "FILE_TOO_LARGE",
-          message: t("fileTooLarge", {
-            name: oversized.name,
-            max: formatBytes(maxSizeBytes!),
-          }),
-        };
-      }
-
-      for (const file of files) {
-        if (!accept || accept.length === 0) continue;
-        if (checkFileTypeValidity(file, accept)) continue;
-        return {
-          file,
-          code: "INVALID_TYPE",
-          message: t("invalidType", { name: file.name, accepted: accept.join(", ") }),
-        };
-      }
-
       return null;
     },
-    [maxFiles, maxSizeBytes, t, accept]
+    [maxFiles, t]
   );
 
   const handleInputChange = useCallback(
@@ -206,17 +178,3 @@ export function useFileUpload({
     FileInput,
   };
 }
-
-const formatBytes = (bytes: number): string => {
-  if (bytes < 1024) return `${bytes}B`;
-  if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(1)}KB`;
-  return `${(bytes / 1024 ** 2).toFixed(1)}MB`;
-};
-
-const checkFileTypeValidity = (file: File, accept: string[]): boolean =>
-  accept.some(rule => {
-    const lowerRule = rule.toLowerCase();
-    if (lowerRule.startsWith(".")) return file.name.toLowerCase().endsWith(lowerRule);
-    if (lowerRule.endsWith("/*")) return file.type.startsWith(lowerRule.slice(0, -1)); // "image/"
-    return file.type === lowerRule;
-  });
