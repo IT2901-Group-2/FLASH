@@ -165,16 +165,31 @@ export default function Page() {
               {tCommon("actions.moderate")}
             </Button>
           )}
-          <Button
-            data-color="brand-purple"
-            icon={isEnded ? <Download /> : <Upload />}
-            iconPosition="right"
-            loading={isUploading}
-            onClick={isEnded ? () => download({ eventId }) : openFilePicker}
-            fill
-          >
-            {isEnded ? tCommon("actions.downloadImages") : tCommon("actions.uploadImage")}
-          </Button>
+
+          {isEnded ? (
+            <Button
+              data-color="brand-purple"
+              icon={<Download />}
+              iconPosition="right"
+              loading={isUploading}
+              onClick={() => download({ eventId })}
+              fill
+            >
+              {tCommon("actions.downloadImages")}
+            </Button>
+          ) : (
+            <Button
+              data-color="brand-purple"
+              icon={<Upload />}
+              iconPosition="right"
+              loading={isUploading}
+              onClick={openFilePicker}
+              disabled={uploadsRemaining === 0}
+              fill
+            >
+              {tCommon("actions.uploadImage")}
+            </Button>
+          )}
         </Card>
       </div>
     </>

@@ -117,17 +117,32 @@ export const PhoneHeader = ({ ...rest }: PhoneHeaderProps) => {
               {t("actions.moderate")}
             </Button>
           )}
-          <Button
-            icon={isEnded ? <Download /> : <Upload />}
-            iconPosition="right"
-            data-color="brand-purple"
-            variant="primary"
-            onClick={isEnded ? () => downloadImages({ eventId }) : openFilePicker}
-            loading={isUploading}
-            className={styles.desktopOnly}
-          >
-            {isEnded ? t("actions.downloadImages") : t("actions.uploadImage")}
-          </Button>
+          {isEnded ? (
+            <Button
+              data-color="brand-purple"
+              icon={<Download />}
+              iconPosition="right"
+              loading={isUploading}
+              onClick={() => downloadImages({ eventId })}
+              className={styles.desktopOnly}
+              fill
+            >
+              {t("actions.downloadImages")}
+            </Button>
+          ) : (
+            <Button
+              data-color="brand-purple"
+              icon={<Upload />}
+              iconPosition="right"
+              loading={isUploading}
+              onClick={openFilePicker}
+              disabled={uploadsRemaining === 0}
+              className={styles.desktopOnly}
+              fill
+            >
+              {t("actions.uploadImage")}
+            </Button>
+          )}
         </span>
       </BaseHeader>
     </>
