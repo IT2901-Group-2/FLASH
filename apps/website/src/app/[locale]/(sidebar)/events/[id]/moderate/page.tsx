@@ -10,7 +10,7 @@ import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import styles from "./Moderate.module.css";
-import { useImageSelection } from "./useImageSelection";
+import { useImageSelection } from "@/hooks/useImageSelection";
 import { PhotoList } from "@/components/PhotoList/PhotoList";
 import { TOAST_DISPLAY_TIME } from "@/config/event";
 import { cl } from "@/utils/className";
