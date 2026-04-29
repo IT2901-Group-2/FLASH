@@ -101,9 +101,9 @@ export default function Page() {
       <PhoneHeader />
 
       <div className={styles.pageWrapper}>
-        {!isLoading && (isError || !eventData) ? (
+        {!isLoading && (isError || !eventData) && (
           <p className={styles.errorText}>{tUpload("eventLoadFailed")}</p>
-        ) : null}
+        )}
 
         {showTabs && (
           <SegmentedControl
@@ -162,7 +162,7 @@ export default function Page() {
               onClick={() => router.push(`./${eventId}/moderate`)}
               fill
             >
-              Moderate
+              {tCommon("actions.moderate")}
             </Button>
           )}
           <Button
