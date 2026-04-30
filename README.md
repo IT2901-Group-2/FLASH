@@ -49,11 +49,7 @@
 
 ## Usage
 
-### Administrating
-
-### Moderation
-
-### Participating
+_**ADD THE VIDEO HERE**_
 
 ## Additional documentation
 
