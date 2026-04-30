@@ -24,3 +24,5 @@ jobs:
       - run: pnpm install
       - run: pnpm build
       - run: pnpm test:e2e
+        env:
+          HOME: /root
