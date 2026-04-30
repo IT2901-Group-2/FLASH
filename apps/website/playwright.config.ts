@@ -23,25 +23,7 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 2 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [
-    ["html"],
-    ["list"],
-    // [
-    //   "monocart-reporter",
-    //   {
-    //     name: "E2E Coverage Report",
-    //     outputFile: "coverage/index.html",
-    //     coverage: {
-    //       // Only collect coverage from your app, not node_modules etc.
-    //       entryFilter: (entry: { url: string }) => entry.url.includes("localhost:3000"),
-    //       sourceFilter: (sourcePath: string) => sourcePath.includes("/src/"),
-    //       reports: ["v8", "html", "lcov", "text-summary"],
-    //       // Where to write the coverage data
-    //       outputDir: "coverage",
-    //     },
-    //   } as CoverageReportOptions,
-    // ],
-  ],
+  reporter: "line",
 
   timeout: 30 * 1000,
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -73,7 +55,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "pnpm dev",
+    command: process.env.CI ? "pnpm start" : "pnpm dev",
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
   },
