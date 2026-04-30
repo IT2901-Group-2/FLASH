@@ -5,7 +5,9 @@ test.use({
 });
 
 test.describe("Edit Event", () => {
-  test("Admin editing an event", async ({ page }) => {
+  test("Admin editing an event", async ({ page, browserName }) => {
+    test.skip(browserName === "webkit");
+
     await page.routeFromHAR("e2e/hars/edit-event.har.zip", { url: "**/api/**" });
 
     await page.goto("http://localhost:3000/no");

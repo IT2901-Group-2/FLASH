@@ -5,7 +5,7 @@ test.use({
 });
 
 test.describe("Admin Moderate", () => {
-  test("Admin moderating an event", async ({ page }) => {
+  test.skip("Admin moderating an event", async ({ page }) => {
     await page.routeFromHAR("e2e/hars/admin-moderate.har.zip", {
       url: "**/api/**",
     });

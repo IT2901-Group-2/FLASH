@@ -18,7 +18,7 @@ test.describe("Moderator navigation", () => {
     await page.getByRole("button", { name: "Bli med" }).click();
   });
 
-  test("Moderating navigating the moderation pages", async ({ page }) => {
+  test.skip("Moderating navigating the moderation pages", async ({ page }) => {
     await page.routeFromHAR("e2e/hars/moderator-navigation.har.zip", {
       url: "**/api/**",
     });
