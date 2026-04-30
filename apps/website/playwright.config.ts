@@ -1,4 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
+import { tmpdir } from "os";
+import path from "path";
+
+export const DB_TEMP_DIR = path.join(tmpdir(), "flash-playwright");
+export const DB_FIXTURE_DIR = path.join(__dirname, "e2e", "db");
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -6,6 +11,8 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./e2e",
   forbidOnly: !!process.env.CI,
+  globalSetup: "./playwright.setup.ts",
+  globalTeardown: "./playwright.teardown.ts",
 
   use: {
     baseURL: "http://localhost:3000",
@@ -22,7 +29,7 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: "pnpm start",
+    command: `STORAGE_DIR=${DB_TEMP_DIR} pnpm start`,
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     wait: { stdout: /(Loaded|Couldn't load) existing database/ },
