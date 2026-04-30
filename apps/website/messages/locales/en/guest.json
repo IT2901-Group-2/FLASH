@@ -96,7 +96,7 @@
       "emptyState": "No photos found",
       "imageAlt": "Photo {index} of {total}",
       "imageTitle": "Photo {index}",
-      "success": { "title": "Success", "message": "All photos have been uploaded" },
+      "success": { "title": "Success", "message": "Upload successful" },
       "errors": {
         "uploadUnavailable": "Unable to upload images for this event.",
         "uploadFailedTitle": "Upload Failed",

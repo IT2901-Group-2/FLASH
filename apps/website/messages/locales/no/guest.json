@@ -99,7 +99,7 @@
 
       "success": {
         "title": "Sukses",
-        "message": "Alle bilder har blitt lastet opp"
+        "message": "Opplasting fullført"
       },
       "errors": {
         "uploadUnavailable": "Kan ikke laste opp bilder for dette eventet.",
