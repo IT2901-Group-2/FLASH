@@ -2,6 +2,8 @@
 
 ## Table of Contents
 
+{{Table Of Content}}
+
 ## Overview
 
 ### Key Features
