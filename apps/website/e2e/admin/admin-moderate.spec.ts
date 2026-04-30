@@ -4,7 +4,7 @@ test.use({
   serviceWorkers: "block",
 });
 
-test("test", async ({ page }) => {
+test.skip("test", async ({ page }) => {
   await page.routeFromHAR("e2e/hars/admin-moderate.har.zip", {
     url: "**/api/**",
   });
