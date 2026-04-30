@@ -54,3 +54,15 @@
 ### Moderation
 
 ### Participating
+
+## Additional documentation
+
+**Apps**
+
+- [Website](./apps/website/README.md)
+
+**Packages**
+
+- [File-Storage](./packages/file-storage/REEADME.md)
+- [Tokens](./packages/tokens/README.md)
+- [UI](./packages/ui/README.md)
