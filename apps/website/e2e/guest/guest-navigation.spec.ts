@@ -5,7 +5,7 @@ test.use({
 });
 
 test.describe("Guest navigation", () => {
-  test("Join", async ({ page }) => {
+  test("Guest joining an event", async ({ page }) => {
     await page.routeFromHAR("e2e/hars/guest-navigation.har.zip", { url: "**/api/**" });
 
     await page.goto("http://localhost:3000/no");

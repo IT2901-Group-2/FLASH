@@ -5,7 +5,7 @@ test.use({
 });
 
 test.describe("Moderator navigation", () => {
-  test("Join", async ({ page }) => {
+  test("Moderator joining an event", async ({ page }) => {
     await page.routeFromHAR("e2e/hars/guest-navigation.har.zip", { url: "**/api/**" });
 
     await page.goto("http://localhost:3000/no");
@@ -18,7 +18,7 @@ test.describe("Moderator navigation", () => {
     await page.getByRole("button", { name: "Bli med" }).click();
   });
 
-  test.skip("Moderate", async ({ page }) => {
+  test("Moderating navigating the moderation pages", async ({ page }) => {
     await page.routeFromHAR("e2e/hars/moderator-navigation.har.zip", {
       url: "**/api/**",
     });
