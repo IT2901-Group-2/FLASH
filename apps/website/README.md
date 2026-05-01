@@ -1,6 +1,6 @@
 # Website
 
-> The core application for Flash — a self-hosted photo event sharing platform.
+> The core application for Flash - a self-hosted photo event sharing platform.
 
 ## Overview
 
