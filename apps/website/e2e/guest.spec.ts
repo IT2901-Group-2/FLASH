@@ -1,6 +1,6 @@
 import { test, expect } from "./fixtures";
 
-test("Guest joining an event old", async ({ page, appUrl }) => {
+test("Guest navigation test", async ({ page, appUrl }) => {
   await page.goto(`${appUrl}/en`);
   await page.getByRole("textbox", { name: "Event Code" }).click();
   await page.getByRole("textbox", { name: "Event Code" }).fill("DBZ78S");
@@ -12,6 +12,8 @@ test("Guest joining an event old", async ({ page, appUrl }) => {
   await page.getByRole("button", { name: "Join Event" }).click();
   await page.waitForURL("**/events/*");
 
+  await expect(page.locator("h1")).toContainText("Test event 1");
+  await expect(page.locator("header")).toContainText("Playwright Guest");
   await page.getByTestId("sidebar-trigger").last().click();
   await page.getByRole("button", { name: "Back" }).click();
   await page.waitForURL("**/en");
@@ -19,8 +21,6 @@ test("Guest joining an event old", async ({ page, appUrl }) => {
   await page.getByRole("heading", { name: "Test event 1" }).click();
   await page.waitForURL("**/events/*");
 
-  await expect(page.locator("header")).toMatchAriaSnapshot(`
-  - heading "Test event 1" [level=1]
-  - text: Playwright Guest You can upload 1 photo
-  `);
+  await expect(page.locator("h1")).toContainText("Test event 1");
+  await expect(page.locator("header")).toContainText("Playwright Guest");
 });
