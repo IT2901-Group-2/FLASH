@@ -16,10 +16,6 @@
   gap: 2rem;
 }
 
-.scroll {
-  overflow-y: auto;
-}
-
 @media screen and (max-width: 1024px) {
   .infoContainer {
     flex-direction: column-reverse;
