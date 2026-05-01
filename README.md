@@ -39,6 +39,10 @@
 
 ### Environment Variables
 
+| Variable | Description | Default Value | Required |
+| -------- | ----------- | ------------- | -------- |
+| `...`    | ...         |               | Yes      |
+
 ## Running the App
 
 ### Development
