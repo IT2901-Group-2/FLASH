@@ -1,4 +1,4 @@
-import { test, expect } from "./fixtures";
+import { test, expect, getFileHash } from "./fixtures";
 
 test("Admin dashboard test", async ({ page, appUrl, login }) => {
   test.skip(); // FIXME: Fails in CI/CD
@@ -168,4 +168,18 @@ test("Admin slideshow test", async ({ page, appUrl, login }) => {
     - img
     - text: DBZ78S
     `);
+});
+
+test("Admin download test", async ({ page, appUrl, login }) => {
+  await page.goto(`${appUrl}/en`);
+
+  await login();
+  await page.getByRole("heading", { name: "Test event 1" }).click();
+  await page.waitForURL("**/admin/dashboard/*");
+
+  await expect(page.getByRole("heading")).toContainText("Test event 1");
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Download" }).click();
+  const hash = await downloadPromise.then(d => d.path()).then(getFileHash);
+  expect(hash).toBe("40d9fff1ce9203c713eff4ff6deea49d");
 });

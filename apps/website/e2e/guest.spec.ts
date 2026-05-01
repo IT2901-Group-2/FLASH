@@ -70,7 +70,7 @@ test("Guest download test", async ({ page, appUrl, joinEvent }) => {
 
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download Images" }).click();
-  const hash = await downloadPromise.then(d => d.path()).then(path => getFileHash(path));
+  const hash = await downloadPromise.then(d => d.path()).then(getFileHash);
   expect(hash).toBe("9cc2e6e007fcabc2e8da87c38c3fb59e");
 });
 
