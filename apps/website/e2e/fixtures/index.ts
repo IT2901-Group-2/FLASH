@@ -1,5 +1,7 @@
 import { test as base, Page } from "@playwright/test";
 import { spawn } from "child_process";
+import { createReadStream } from "fs";
+import { createHash } from "crypto";
 import getPort from "get-port";
 import waitOn from "wait-on";
 import fs from "fs/promises";
@@ -57,4 +59,12 @@ async function joinEvent(page: Page, code: string, nickname: string): Promise<vo
   await page.getByRole("textbox", { name: "Nickname" }).fill(nickname);
   await page.getByRole("button", { name: "Join Event" }).click();
   await page.waitForURL("**/events/*");
+}
+
+export async function getFileHash(path: string): Promise<string> {
+  const hash = createHash("md5");
+  await createReadStream(path).forEach(async chunk => {
+    hash.update(chunk);
+  });
+  return hash.digest("hex");
 }

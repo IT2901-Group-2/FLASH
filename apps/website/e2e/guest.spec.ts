@@ -1,15 +1,5 @@
 import path from "path";
-import { test, expect } from "./fixtures";
-import { createHash } from "crypto";
-import fs from "fs";
-
-async function getFileHash(path: string): Promise<string> {
-  const hash = createHash("md5");
-  await fs.createReadStream(path).forEach(async chunk => {
-    hash.update(chunk);
-  });
-  return hash.digest("hex");
-}
+import { test, expect, getFileHash } from "./fixtures";
 
 test("Guest navigation test", async ({ page, appUrl, joinEvent }) => {
   await page.goto(`${appUrl}/en`);
