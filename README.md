@@ -47,6 +47,19 @@
 
 ### Tests
 
+FLASH uses a mix of testing strategies across its packages.
+
+To run all **unit** tests across all packages and the website run
+
+```bash
+pnpm test                       # For all unit tests
+pnpm --filter <workspace> test  # To run unit test for a specific workspace
+```
+
+To run **End-to-End** (E2E) tests for the website
+
+####
+
 ## Usage
 
 _**ADD THE VIDEO HERE**_
