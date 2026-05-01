@@ -1,7 +1,16 @@
 import { test as base } from "@playwright/test";
 
 type NavigationFixture = {
+  /**
+   * Attempts to join an event using the given event code and nickname.
+   * Must be used while on the root page (`/[locale]`).
+   */
   joinEvent: (code: string, nickname: string) => Promise<void>;
+
+  /**
+   * Attempts to log in as an administrator using the given password.
+   * Must be used while on the root page (`/[locale]`).
+   */
   login: (password?: string) => Promise<void>;
 };
 

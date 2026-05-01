@@ -10,6 +10,12 @@ export { expect } from "@playwright/test";
 
 export const sampleImage = path.join(__dirname, "sample.jpg");
 
+/**
+ * Calculates the md5 checksum of a file.
+ *
+ * @param path The path to the file.
+ * @returns The md5 checksum of the given file
+ */
 export async function getFileHash(path: string): Promise<string> {
   const hash = createHash("md5");
   await createReadStream(path).forEach(async chunk => {
