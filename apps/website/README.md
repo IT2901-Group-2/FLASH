@@ -74,7 +74,7 @@ import { Button, Card, Sidebar } from "@flash/ui";
 import "@flash/tokens";
 ```
 
-- **Theming** — Use `data-theme="dark"` / `.dark` for dark mode. Use `data-color="..."`
+- **Theming** - Use `data-theme="dark"` / `.dark` for dark mode. Use `data-color="..."`
   on any element to apply a contextual color role (`primary`, `accent`, `success`, etc.).
 
 See [`packages/tokens`](../../packages/tokens) and [`packages/ui`](../../packages/ui) for full documentation.
