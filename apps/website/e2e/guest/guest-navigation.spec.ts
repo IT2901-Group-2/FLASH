@@ -1,11 +1,10 @@
-import { test, expect } from "@playwright/test";
-import { randomUUID } from "crypto";
+import { test } from "../fixtures/app";
 
 test.describe("Guest navigation", () => {
-  test("Guest joining an event", async ({ page }) => {
-    const nickname = randomUUID();
+  test("Guest joining an event", async ({ page, appUrl }) => {
+    const nickname = "guest-playwright";
 
-    await page.goto("http://localhost:3000/en");
+    await page.goto(`${appUrl}/en`);
     await page.getByRole("textbox", { name: "Event Code" }).click();
     await page.getByRole("textbox", { name: "Event Code" }).fill("S91UFJ");
     await page.getByRole("button", { name: "Join Event" }).click();
