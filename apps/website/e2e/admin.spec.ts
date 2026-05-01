@@ -95,3 +95,51 @@ test("Admin dashboard test", async ({ page, appUrl }) => {
     - button
     `);
 });
+
+test("Admin share test", async ({ page, appUrl }) => {
+  await page.goto(`${appUrl}/en`);
+  await page.getByRole("link", { name: "Admin" }).click();
+  await page.waitForURL("**/admin");
+
+  await page.getByRole("textbox", { name: "Password" }).click();
+  await page.getByRole("textbox", { name: "Password" }).fill("Default");
+  await page.getByRole("button", { name: "Sign in" }).click();
+  await page.waitForURL("**/admin/dashboard");
+
+  await page.getByRole("heading", { name: "Test event 1" }).click();
+  await page.waitForURL("**/admin/dashboard/*");
+
+  await expect(page.getByRole("heading")).toContainText("Test event 1");
+  await page.getByRole("button", { name: "Share Event" }).click();
+  await expect(page.getByRole("dialog")).toMatchAriaSnapshot(`
+    - heading "Share Your Event" [level=2]
+    - paragraph: Share the QR code or event link so others can join and upload photos.
+    - radiogroup:
+      - radio "Guest" [checked]
+      - radio "Moderator"
+    - img
+    - text: DBZ78S Scan to upload photos
+    - button "Download"
+    - heading "Guest Link" [level=2]
+    - paragraph: Anyone with this link can upload photos to the event.
+    - textbox "Guest Link": /http:\\/\\/localhost:\\d+\\/join\\/DBZ78S/
+    - button
+    - button "Close"
+    `);
+  await page.getByRole("radio", { name: "Moderator" }).click();
+  await expect(page.getByRole("dialog")).toMatchAriaSnapshot(`
+    - heading "Share Your Event" [level=2]
+    - paragraph: Share the QR code or event link so others can join and upload photos.
+    - radiogroup:
+      - radio "Guest"
+      - radio "Moderator" [checked]
+    - img
+    - text: 8OGLU2 Scan to upload photos
+    - button "Download"
+    - heading "Moderator Link" [level=2]
+    - paragraph: Anyone with this link can review and moderate uploaded photos.
+    - textbox "Guest Link": /http:\\/\\/localhost:\\d+\\/join\\/8OGLU2/
+    - button
+    - button "Close"
+    `);
+});
