@@ -135,8 +135,8 @@ test("Admin share test", async ({ page, appUrl, login }) => {
 
 test("Admin join test", async ({ page, appUrl, login }) => {
   await page.goto(`${appUrl}/en`);
-  await login();
 
+  await login();
   await page.getByRole("heading", { name: "Test event 1" }).click();
   await page.waitForURL("**/admin/dashboard/*");
 
@@ -148,4 +148,24 @@ test("Admin join test", async ({ page, appUrl, login }) => {
   await expect(page.getByRole("button", { name: "Moderate" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Photo 1 of" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Photo 2 of" })).toBeVisible();
+});
+
+test("Admin slideshow test", async ({ page, appUrl, login }) => {
+  await page.goto(`${appUrl}/en`);
+
+  await login();
+  await page.getByRole("heading", { name: "Test event 1" }).click();
+  await page.waitForURL("**/admin/dashboard/*");
+
+  await expect(page.getByRole("heading")).toContainText("Test event 1");
+  await page.getByRole("button", { name: "Slideshow" }).click();
+  await page.waitForURL("**/events/*/slideshow");
+
+  await expect(page.locator("img")).toBeVisible();
+  await expect(page.getByRole("heading")).toContainText("Test event 1");
+  await expect(page.getByRole("paragraph")).toContainText("1 of 2");
+  await expect(page.getByTestId("page")).toMatchAriaSnapshot(`
+    - img
+    - text: DBZ78S
+    `);
 });
