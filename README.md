@@ -21,7 +21,23 @@
 
 ## Table of Contents
 
-{{ content | toc }}
+- [Overview](#overview)
+  - [Key Features](#key-features)
+- [Architecture](#architecture)
+  - [Monorepo Structure](#monorepo-structure)
+  - [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Environment Variables](#environment-variables)
+- [Running the App](#running-the-app)
+  - [Development](#development)
+  - [Production (Docker)](#production-docker)
+  - [Tests](#tests)
+    - [Test Overview](#test-overview)
+    - [Running Tests](#running-tests)
+- [Usage](#usage)
+- [Additional Documentation](#additional-documentation)
 
 ## Overview
 
