@@ -232,11 +232,11 @@ export function useJoinMutation() {
         body: formData,
       });
 
-      const payload = await response.json().catch(() => null);
-      if (response.ok && typeof payload === "string") {
-        return { redirectUrl: payload };
+      if (response.ok) {
+        return { redirectUrl: response.url };
       }
 
+      const payload = await response.json().catch(() => null);
       throw new Error(toJoinErrorCode(response.status, payload));
     },
   });
