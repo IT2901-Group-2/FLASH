@@ -1,6 +1,4 @@
 import { test as base } from "@playwright/test";
-import { createReadStream } from "fs";
-import { createHash } from "crypto";
 
 type NavigationFixture = {
   joinEvent: (code: string, nickname: string) => Promise<void>;

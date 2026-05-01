@@ -1,5 +1,4 @@
-import path from "path";
-import { test, expect, getFileHash } from "./fixtures";
+import { test, expect, getFileHash, sampleImage } from "./fixtures";
 
 test("Guest navigation test", async ({ page, appUrl, joinEvent }) => {
   await page.goto(`${appUrl}/en`);
@@ -29,9 +28,7 @@ test("Guest upload test", async ({ page, appUrl, joinEvent }) => {
   const fileChooserPromise = page.waitForEvent("filechooser");
   await page.getByRole("button", { name: "Upload Image" }).click();
   const fileChooser = await fileChooserPromise;
-  fileChooser.setFiles(
-    path.join(__dirname, "fixtures", "images", "sample-wedding-3.jpg")
-  );
+  fileChooser.setFiles(sampleImage);
   await page.getByRole("button", { name: "Dismiss toast" }).click();
 
   await expect(page.getByRole("button", { name: "Photo 1 of" })).toBeVisible();
@@ -51,9 +48,7 @@ test("Guest upload test", async ({ page, appUrl, joinEvent }) => {
   const fileChooserPromise2 = page.waitForEvent("filechooser");
   await page.getByRole("button", { name: "Upload Image" }).click();
   const fileChooser2 = await fileChooserPromise2;
-  fileChooser2.setFiles(
-    path.join(__dirname, "fixtures", "images", "sample-wedding-3.jpg")
-  );
+  fileChooser2.setFiles(sampleImage);
   await page.getByRole("button", { name: "Dismiss toast" }).click();
 
   await expect(

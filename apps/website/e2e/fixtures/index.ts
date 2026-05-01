@@ -1,11 +1,14 @@
-import { createReadStream } from "fs";
-import { createHash } from "crypto";
-import { test as appTest } from "./app";
 import { test as navTest } from "./navigation";
 import { mergeTests } from "@playwright/test";
+import { test as appTest } from "./app";
+import { createReadStream } from "fs";
+import { createHash } from "crypto";
+import path from "path";
 
 export const test = mergeTests(appTest, navTest);
 export { expect } from "@playwright/test";
+
+export const sampleImage = path.join(__dirname, "sample.jpg");
 
 export async function getFileHash(path: string): Promise<string> {
   const hash = createHash("md5");
