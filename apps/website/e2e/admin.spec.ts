@@ -1,15 +1,9 @@
 import { test, expect } from "./fixtures";
 
-test("Admin dashboard test", async ({ page, appUrl }) => {
+test("Admin dashboard test", async ({ page, appUrl, login }) => {
   await page.goto(`${appUrl}/en`);
-  await page.getByRole("link", { name: "Admin" }).click();
-  await page.waitForURL("**/admin");
 
-  await page.getByRole("textbox", { name: "Password" }).click();
-  await page.getByRole("textbox", { name: "Password" }).fill("Default");
-  await page.getByRole("button", { name: "Sign in" }).click();
-  await page.waitForURL("**/admin/dashboard");
-
+  await login();
   await expect(page.locator("section")).toMatchAriaSnapshot(`
     - heading "Events" [level=2]
     - paragraph: Manage your events
@@ -96,16 +90,10 @@ test("Admin dashboard test", async ({ page, appUrl }) => {
     `);
 });
 
-test("Admin share test", async ({ page, appUrl }) => {
+test("Admin share test", async ({ page, appUrl, login }) => {
   await page.goto(`${appUrl}/en`);
-  await page.getByRole("link", { name: "Admin" }).click();
-  await page.waitForURL("**/admin");
 
-  await page.getByRole("textbox", { name: "Password" }).click();
-  await page.getByRole("textbox", { name: "Password" }).fill("Default");
-  await page.getByRole("button", { name: "Sign in" }).click();
-  await page.waitForURL("**/admin/dashboard");
-
+  await login();
   await page.getByRole("heading", { name: "Test event 1" }).click();
   await page.waitForURL("**/admin/dashboard/*");
 

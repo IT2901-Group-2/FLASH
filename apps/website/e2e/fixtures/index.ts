@@ -15,6 +15,7 @@ const MOCK_DATE = "2026-05-01T10:00:00Z";
 type AppFixture = {
   appUrl: string;
   joinEvent: (code: string, nickname: string) => Promise<void>;
+  login: (password?: string) => Promise<void>;
 };
 
 export const test = base.extend<AppFixture>({
@@ -45,7 +46,8 @@ export const test = base.extend<AppFixture>({
     await fs.rm(STORAGE_DIR, { recursive: true });
   },
 
-  joinEvent: async ({ page }, _use) => _use((...params) => joinEvent(page, ...params)),
+  joinEvent: ({ page }, _use) => _use((...params) => joinEvent(page, ...params)),
+  login: ({ page }, _use) => _use((...params) => login(page, ...params)),
 });
 export { expect } from "@playwright/test";
 
@@ -59,6 +61,16 @@ async function joinEvent(page: Page, code: string, nickname: string): Promise<vo
   await page.getByRole("textbox", { name: "Nickname" }).fill(nickname);
   await page.getByRole("button", { name: "Join Event" }).click();
   await page.waitForURL("**/events/*");
+}
+
+async function login(page: Page, password: string = "Default"): Promise<void> {
+  await page.getByRole("link", { name: "Admin" }).click();
+  await page.waitForURL("**/admin");
+
+  await page.getByRole("textbox", { name: "Password" }).click();
+  await page.getByRole("textbox", { name: "Password" }).fill(password);
+  await page.getByRole("button", { name: "Sign in" }).click();
+  await page.waitForURL("**/admin/dashboard");
 }
 
 export async function getFileHash(path: string): Promise<string> {
