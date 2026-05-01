@@ -11,18 +11,10 @@ async function getFileHash(path: string): Promise<string> {
   return hash.digest("hex");
 }
 
-test("Guest navigation test", async ({ page, appUrl }) => {
+test("Guest navigation test", async ({ page, appUrl, joinEvent }) => {
   await page.goto(`${appUrl}/en`);
-  await page.getByRole("textbox", { name: "Event Code" }).click();
-  await page.getByRole("textbox", { name: "Event Code" }).fill("DBZ78S");
-  await page.getByRole("button", { name: "Join Event" }).click();
-  await page.waitForURL("**/join/*");
 
-  await page.getByRole("textbox", { name: "Nickname" }).click();
-  await page.getByRole("textbox", { name: "Nickname" }).fill("Playwright Guest");
-  await page.getByRole("button", { name: "Join Event" }).click();
-  await page.waitForURL("**/events/*");
-
+  await joinEvent("DBZ78S", "Playwright Guest");
   await expect(page.locator("h1")).toContainText("Test event 1");
   await expect(page.locator("header")).toContainText("Playwright Guest");
   await page.getByTestId("sidebar-trigger").last().click();
@@ -36,18 +28,10 @@ test("Guest navigation test", async ({ page, appUrl }) => {
   await expect(page.locator("header")).toContainText("Playwright Guest");
 });
 
-test("Guest upload test", async ({ page, appUrl }) => {
+test("Guest upload test", async ({ page, appUrl, joinEvent }) => {
   await page.goto(`${appUrl}/en`);
-  await page.getByRole("textbox", { name: "Event Code" }).click();
-  await page.getByRole("textbox", { name: "Event Code" }).fill("DBZ78S");
-  await page.getByRole("button", { name: "Join Event" }).click();
-  await page.waitForURL("**/join/*");
 
-  await page.getByRole("textbox", { name: "Nickname" }).click();
-  await page.getByRole("textbox", { name: "Nickname" }).fill("Playwright Guest");
-  await page.getByRole("button", { name: "Join Event" }).click();
-  await page.waitForURL("**/events/*");
-
+  await joinEvent("DBZ78S", "Playwright Guest");
   await expect(page.locator("h1")).toContainText("Test event 1");
   await expect(page.getByRole("button", { name: "Photo 1 of" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Photo 2 of" })).toBeVisible();
@@ -69,16 +53,7 @@ test("Guest upload test", async ({ page, appUrl }) => {
   await page.getByRole("button", { name: "Back" }).click();
   await page.waitForURL("**/en");
 
-  await page.getByRole("textbox", { name: "Event Code" }).click();
-  await page.getByRole("textbox", { name: "Event Code" }).fill("HSOUKJ");
-  await page.getByRole("button", { name: "Join Event" }).click();
-  await page.waitForURL("**/join/*");
-
-  await page.getByRole("textbox", { name: "Nickname" }).click();
-  await page.getByRole("textbox", { name: "Nickname" }).fill("Playwright Guest");
-  await page.getByRole("button", { name: "Join Event" }).click();
-  await page.waitForURL("**/events/*");
-
+  await joinEvent("HSOUKJ", "Playwright Guest");
   await expect(page.getByRole("status")).toMatchAriaSnapshot(
     `- status: You haven't uploaded any photos yet`
   );
@@ -97,18 +72,10 @@ test("Guest upload test", async ({ page, appUrl }) => {
   await expect(page.getByRole("main")).toContainText("Pending...");
 });
 
-test("Guest download test", async ({ page, appUrl }) => {
+test("Guest download test", async ({ page, appUrl, joinEvent }) => {
   await page.goto(`${appUrl}/en`);
-  await page.getByRole("textbox", { name: "Event Code" }).click();
-  await page.getByRole("textbox", { name: "Event Code" }).fill("1GAX9V");
-  await page.getByRole("button", { name: "Join Event" }).click();
-  await page.waitForURL("**/join/*");
 
-  await page.getByRole("textbox", { name: "Nickname" }).click();
-  await page.getByRole("textbox", { name: "Nickname" }).fill("Playwright Guest");
-  await page.getByRole("button", { name: "Join Event" }).click();
-  await page.waitForURL("**/events/*");
-
+  await joinEvent("1GAX9V", "Playwright Guest");
   await expect(page.locator("h1")).toContainText("Test event 3");
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download Images" }).click();
@@ -116,18 +83,10 @@ test("Guest download test", async ({ page, appUrl }) => {
   expect(hash).toBe("9cc2e6e007fcabc2e8da87c38c3fb59e");
 });
 
-test("Guest preview/slideshow test", async ({ page, appUrl }) => {
+test("Guest preview/slideshow test", async ({ page, appUrl, joinEvent }) => {
   await page.goto(`${appUrl}/en`);
-  await page.getByRole("textbox", { name: "Event Code" }).click();
-  await page.getByRole("textbox", { name: "Event Code" }).fill("DBZ78S");
-  await page.getByRole("button", { name: "Join Event" }).click();
-  await page.waitForURL("**/join/*");
 
-  await page.getByRole("textbox", { name: "Nickname" }).click();
-  await page.getByRole("textbox", { name: "Nickname" }).fill("Playwright Guest");
-  await page.getByRole("button", { name: "Join Event" }).click();
-  await page.waitForURL("**/events/*");
-
+  await joinEvent("DBZ78S", "Playwright Guest");
   await expect(page.locator("h1")).toContainText("Test event 1");
   await expect(page.getByRole("button", { name: "Photo 1 of" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Photo 2 of" })).toBeVisible();

@@ -1,4 +1,4 @@
-import { test as base } from "@playwright/test";
+import { test as base, Page } from "@playwright/test";
 import { spawn } from "child_process";
 import getPort from "get-port";
 import waitOn from "wait-on";
@@ -12,6 +12,7 @@ const MOCK_DATE = "2026-05-01T10:00:00Z";
 
 type AppFixture = {
   appUrl: string;
+  joinEvent: (code: string, nickname: string) => Promise<void>;
 };
 
 export const test = base.extend<AppFixture>({
@@ -41,5 +42,19 @@ export const test = base.extend<AppFixture>({
 
     await fs.rm(STORAGE_DIR, { recursive: true });
   },
+
+  joinEvent: async ({ page }, _use) => _use((...params) => joinEvent(page, ...params)),
 });
 export { expect } from "@playwright/test";
+
+async function joinEvent(page: Page, code: string, nickname: string): Promise<void> {
+  await page.getByRole("textbox", { name: "Event Code" }).click();
+  await page.getByRole("textbox", { name: "Event Code" }).fill(code);
+  await page.getByRole("button", { name: "Join Event" }).click();
+  await page.waitForURL("**/join/*");
+
+  await page.getByRole("textbox", { name: "Nickname" }).click();
+  await page.getByRole("textbox", { name: "Nickname" }).fill(nickname);
+  await page.getByRole("button", { name: "Join Event" }).click();
+  await page.waitForURL("**/events/*");
+}
