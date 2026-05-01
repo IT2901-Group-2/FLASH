@@ -15,7 +15,7 @@
 
 <div align="center">
 
-![NTNU IT2901](https://img.shields.io/badge/NTNU-IT2901-blue)
+![NTNU IT2901](https://img.shields.io/badge/NTNU-IT2901-red)
 
 </div>
 
