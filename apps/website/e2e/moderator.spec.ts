@@ -99,3 +99,37 @@ test("Moderator preview/slideshow test", async ({ page, appUrl, joinEvent }) => 
   await expect(page.getByRole("paragraph")).toContainText("1 of 2");
   await expect(page.locator("div").filter({ hasText: "DBZ78S" }).nth(2)).toBeVisible();
 });
+
+test("Moderator moderation test", async ({ page, appUrl, joinEvent }) => {
+  await page.goto(`${appUrl}/en`);
+
+  await joinEvent("6YGE73", "Playwright Moderator");
+  await page.getByRole("button", { name: "Moderate" }).click();
+  await page.waitForURL("**/events/*/moderate");
+
+  await expect(page.getByRole("button", { name: "Photo 1 of" })).toBeVisible();
+  await page.getByRole("radio", { name: "Approved" }).click();
+  await expect(page.getByRole("status")).toMatchAriaSnapshot(
+    `- status: No approved photos found`
+  );
+  await page.getByRole("radio", { name: "Rejected" }).click();
+  await expect(page.getByRole("button", { name: "Photo 1 of" })).toBeVisible();
+  await page.getByRole("button", { name: "Select" }).click();
+  await page.getByRole("button", { name: "Photo 1 of" }).click();
+  await page.getByRole("button", { name: "Approve selected photos" }).click();
+  await expect(page.getByRole("status")).toMatchAriaSnapshot(
+    `- status: No rejected photos found`
+  );
+  await page.getByRole("radio", { name: "Approved" }).click();
+  await expect(page.getByRole("button", { name: "Photo 1 of" })).toBeVisible();
+  await page.getByRole("radio", { name: "Pending" }).click();
+  await page.getByRole("button", { name: "Select" }).click();
+  await page.getByRole("button", { name: "Photo 1 of" }).click();
+  await page.getByRole("button", { name: "Approve selected photos" }).click();
+  await expect(page.getByRole("status")).toMatchAriaSnapshot(
+    `- status: No pending photos found`
+  );
+  await page.getByRole("radio", { name: "Approved" }).click();
+  await expect(page.getByRole("button", { name: "Photo 1 of" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Photo 2 of" })).toBeVisible();
+});
