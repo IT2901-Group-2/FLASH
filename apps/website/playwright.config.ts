@@ -1,7 +1,4 @@
 import { defineConfig, devices } from "@playwright/test";
-import path from "path";
-
-export const DB_FIXTURE_DIR = path.join(__dirname, "e2e", "db");
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -23,11 +20,4 @@ export default defineConfig({
     { name: "Mobile Chrome", use: { ...devices["Pixel 5"] } },
     { name: "Mobile Safari", use: { ...devices["iPhone 12"] } },
   ],
-
-  webServer: {
-    command: `STORAGE_DIR=${DB_FIXTURE_DIR} pnpm start`,
-    url: "http://localhost:3000",
-    reuseExistingServer: !process.env.CI,
-    wait: { stdout: /Loaded existing database/ },
-  },
 });
