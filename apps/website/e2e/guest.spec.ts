@@ -1,4 +1,4 @@
-import { test } from "./fixtures";
+import { test, expect } from "./fixtures";
 
 test("Guest joining an event old", async ({ page, appUrl }) => {
   const nickname = "guest-playwright";
@@ -21,8 +21,8 @@ test("Guest joining an event old", async ({ page, appUrl }) => {
   await page.locator("div").filter({ hasText: "Test event 1Unlimited" }).nth(3).click();
   await page.waitForURL("**/events/*");
 
-  // await expect(page.locator("header")).toMatchAriaSnapshot(`
-  // - heading "Test event 1" [level=1]
-  // - text: ${nickname} You can upload unlimited photos
-  // `);
+  await expect(page.locator("header")).toMatchAriaSnapshot(`
+  - heading "Test event 1" [level=1]
+  - text: ${nickname} You can upload unlimited photos
+  `);
 });

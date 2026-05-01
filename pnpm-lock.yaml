@@ -152,6 +152,9 @@ importers:
       happy-dom:
         specifier: ^20.8.9
         version: 20.8.9
+      mockdate:
+        specifier: ^3.0.5
+        version: 3.0.5
       monocart-reporter:
         specifier: ^2.10.1
         version: 2.10.1
@@ -4903,6 +4906,9 @@ packages:
 
   mlly@1.8.2:
     resolution: {integrity: sha512-d+ObxMQFmbt10sretNDytwt85VrbkhhUA/JBGm1MPaWJ65Cl4wOgLaB1NYvJSZ0Ef03MMEU/0xpPMXUIQ29UfA==}
+
+  mockdate@3.0.5:
+    resolution: {integrity: sha512-iniQP4rj1FhBdBYS/+eQv7j1tadJ9lJtdzgOpvsOHng/GbcDh2Fhdeq+ZRldrPYdXvCyfFUmFeEwEGXZB5I/AQ==}
 
   monocart-coverage-reports@2.12.11:
     resolution: {integrity: sha512-yo4/FdUdFIWoc9OjhBZCNXM95tYHS4e8nov9Q3AGbpvteT/W5aQSc4B+Q0nhmedZFvjvm3BUH/Xu9GT2n/0wkw==}
@@ -11313,6 +11319,8 @@ snapshots:
       pathe: 2.0.3
       pkg-types: 1.3.1
       ufo: 1.6.3
+
+  mockdate@3.0.5: {}
 
   monocart-coverage-reports@2.12.11:
     dependencies:
