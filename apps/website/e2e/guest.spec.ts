@@ -1,5 +1,15 @@
 import path from "path";
 import { test, expect } from "./fixtures";
+import { createHash } from "crypto";
+import fs from "fs";
+
+async function getFileHash(path: string): Promise<string> {
+  const hash = createHash("md5");
+  await fs.createReadStream(path).forEach(async chunk => {
+    hash.update(chunk);
+  });
+  return hash.digest("hex");
+}
 
 test("Guest navigation test", async ({ page, appUrl }) => {
   await page.goto(`${appUrl}/en`);
@@ -85,4 +95,23 @@ test("Guest upload test", async ({ page, appUrl }) => {
     page.getByRole("button", { name: "Photo 1 of 1 Pending..." })
   ).toBeVisible();
   await expect(page.getByRole("main")).toContainText("Pending...");
+});
+
+test("Guest download test", async ({ page, appUrl }) => {
+  await page.goto(`${appUrl}/en`);
+  await page.getByRole("textbox", { name: "Event Code" }).click();
+  await page.getByRole("textbox", { name: "Event Code" }).fill("1GAX9V");
+  await page.getByRole("button", { name: "Join Event" }).click();
+  await page.waitForURL("**/join/*");
+
+  await page.getByRole("textbox", { name: "Nickname" }).click();
+  await page.getByRole("textbox", { name: "Nickname" }).fill("Playwright Guest");
+  await page.getByRole("button", { name: "Join Event" }).click();
+  await page.waitForURL("**/events/*");
+
+  await expect(page.locator("h1")).toContainText("Test event 3");
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Download Images" }).click();
+  const hash = await downloadPromise.then(d => d.path()).then(path => getFileHash(path));
+  expect(hash).toBe("9cc2e6e007fcabc2e8da87c38c3fb59e");
 });
