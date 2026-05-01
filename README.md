@@ -29,6 +29,13 @@
 
 ### Monorepo Structure
 
+| Package            | Description                                                                      |
+| ------------------ | -------------------------------------------------------------------------------- |
+| **`website`**      | The heart of `FLASH`. Contains both the user-facing frontend and the backend API |
+| **`file-storage`** | The file management logic for `FLASH`. Supprots multiple storage solutions       |
+| **`tokens`**       | A TypeScript-first CSS design token system                                       |
+| **`UI`**           | The component library for the Flash design system                                |
+
 ### Tech Stack
 
 ## Getting Started
@@ -55,12 +62,12 @@ FLASH includes a comprehensive test suite and a mix of testing strategies across
 
 #### Test Overview
 
-| Package          | Unit | Accessibility | Interaction | E2E |
-| ---------------- | ---- | ------------- | ----------- | --- |
-| **Website**      | ✓    |               |             | ✓   |
-| **file-storage** | ✓    |               |             |     |
-| **tokens**       | ✓    |               |             |     |
-| **UI**           | ✓    | ✓             | ✓           |     |
+| Package            | Unit | Accessibility | Interaction | E2E |
+| ------------------ | ---- | ------------- | ----------- | --- |
+| **`Website`**      | ✓    |               |             | ✓   |
+| **`file-storage`** | ✓    |               |             |     |
+| **`tokens`**       | ✓    |               |             |     |
+| **`UI`**           | ✓    | ✓             | ✓           |     |
 
 #### Running Tests
 
