@@ -1,4 +1,4 @@
-import { test, expect } from "./fixtures";
+import { test, expect, getFileHash } from "./fixtures";
 import path from "path";
 
 test("Moderator navigation test", async ({ page, appUrl, joinEvent }) => {
@@ -63,4 +63,17 @@ test("Moderator upload test", async ({ page, appUrl, joinEvent }) => {
     page.getByRole("button", { name: "Photo 1 of 1 Pending..." })
   ).toBeVisible();
   await expect(page.getByRole("main")).toContainText("Pending...");
+});
+
+test("Moderator download test", async ({ page, appUrl, joinEvent }) => {
+  await page.goto(`${appUrl}/en`);
+
+  await joinEvent("TJ4X33", "Playwright Moderator");
+  await expect(page.locator("h1")).toContainText("Test event 3");
+  await expect(page.getByRole("button", { name: "Moderate" })).toBeVisible();
+
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Download Images" }).click();
+  const hash = await downloadPromise.then(d => d.path()).then(path => getFileHash(path));
+  expect(hash).toBe("9cc2e6e007fcabc2e8da87c38c3fb59e");
 });

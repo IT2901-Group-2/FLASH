@@ -67,6 +67,7 @@ test("Guest download test", async ({ page, appUrl, joinEvent }) => {
 
   await joinEvent("1GAX9V", "Playwright Guest");
   await expect(page.locator("h1")).toContainText("Test event 3");
+
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download Images" }).click();
   const hash = await downloadPromise.then(d => d.path()).then(path => getFileHash(path));
