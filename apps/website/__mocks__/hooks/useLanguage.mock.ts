@@ -28,10 +28,10 @@ export const mockLanguageReady = (
  * Drop-in `vi.mock()` factory for `@/hooks/useLanguage`.
  *
  * @example
- * // vitest.setup.tsx — register once globally
+ * // vitest.setup.tsx - register once globally
  * vi.mock("@/hooks/useLanguage", () => languageHookMock());
  *
- * // YourComponent.test.tsx — override per test
+ * // YourComponent.test.tsx - override per test
  * import { useLanguage } from "@/hooks/useLanguage";
  * import { mockLanguageReady } from "@test-config";
  *

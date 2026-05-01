@@ -51,7 +51,7 @@ describe("getSystemTheme", () => {
 
   it("returns 'light' when window is undefined (SSR)", () => {
     const originalWindow = global.window;
-    // @ts-expect-error — intentionally simulating SSR environment
+    // @ts-expect-error - intentionally simulating SSR environment
     delete global.window;
 
     expect(getSystemTheme()).toBe("light");

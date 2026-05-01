@@ -249,7 +249,7 @@ export function createDescendantContext<T extends HTMLElement, M extends object>
     // Re-register on meta changes (e.g. disabled toggling) without unmounting
     useLayoutEffect(() => {
       if (nodeRef.current) manager.register(nodeRef.current, metaRef.current);
-      // Only re-run when manager or disabled changes — value is stable per item
+      // Only re-run when manager or disabled changes - value is stable per item
     }, [manager, meta.disabled]);
 
     const index = nodeRef.current

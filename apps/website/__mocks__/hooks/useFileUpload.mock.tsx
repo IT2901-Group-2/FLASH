@@ -32,10 +32,10 @@ export const mockFileUploadReady = (
  * Drop-in `vi.mock()` factory for `@/hooks/useFileUpload`.
  *
  * @example
- * // vitest.setup.tsx — register once globally
+ * // vitest.setup.tsx - register once globally
  * vi.mock("@/hooks/useFileUpload", () => fileUploadHookMock());
  *
- * // YourComponent.test.tsx — override per test
+ * // YourComponent.test.tsx - override per test
  * import { useFileUpload } from "@/hooks/useFileUpload";
  * import { mockFileUploadReady } from "@test-config";
  *
