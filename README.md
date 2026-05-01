@@ -21,6 +21,8 @@
 
 ## Table of Contents
 
+{{ content | toc }}
+
 ## Overview
 
 ### Key Features
