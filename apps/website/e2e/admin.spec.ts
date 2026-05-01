@@ -183,3 +183,50 @@ test("Admin download test", async ({ page, appUrl, login }) => {
   const hash = await downloadPromise.then(d => d.path()).then(getFileHash);
   expect(hash).toBe("40d9fff1ce9203c713eff4ff6deea49d");
 });
+
+test("Admin create event test", async ({ page, appUrl, login }) => {
+  await page.goto(`${appUrl}/en`);
+
+  await login();
+  await page.getByRole("button", { name: "Create New Event" }).click();
+  await page.getByRole("textbox", { name: "Event Name" }).click();
+  await page.getByRole("textbox", { name: "Event Name" }).fill("New Event");
+  await page.getByRole("textbox", { name: "Description" }).click();
+  await page.getByRole("textbox", { name: "Description" }).fill("Event description");
+  await page.getByRole("radio", { name: "Specific Time" }).click();
+  await page.getByRole("textbox", { name: "Start Time" }).click();
+  await page.getByRole("textbox", { name: "Start Time" }).press("Shift+Tab");
+  await page.getByRole("textbox", { name: "Start Time" }).fill("12:00");
+  await page.getByRole("textbox", { name: "End Time" }).click();
+  await page.getByRole("textbox", { name: "End Time" }).press("Shift+Tab");
+  await page.getByRole("textbox", { name: "End Time" }).fill("18:00");
+  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByRole("radio", { name: "Unlimited" }).click();
+  await page.getByRole("switch", { name: "Automatically approve" }).check();
+  await page.getByRole("button", { name: "Create", exact: true }).click();
+  await expect(page.getByText("Guest Link")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Download" })).toBeVisible();
+  await page.getByRole("radio", { name: "Moderator" }).click();
+  await expect(page.getByText("Moderator Link")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Download" })).toBeVisible();
+  await page.getByRole("button", { name: "Finish" }).click();
+  await page.getByTestId("edit-button").nth(3).click();
+  await expect(page.getByRole("textbox", { name: "Event Name" })).toHaveValue(
+    "New Event"
+  );
+  await expect(page.getByRole("textbox", { name: "Description" })).toHaveValue(
+    "Event description"
+  );
+  await expect(page.getByRole("textbox", { name: "Start Time" })).toHaveValue("12:00");
+  await expect(page.getByRole("textbox", { name: "End Time" })).toHaveValue("18:00");
+  await page.getByRole("button", { name: "Next" }).click();
+  await expect(page.getByRole("radiogroup")).toMatchAriaSnapshot(`
+    - radiogroup:
+      - radio "Limited"
+      - radio "Unlimited" [checked]
+    `);
+  await expect(page.getByRole("switch", { name: "Automatically approve" })).toBeChecked();
+  await expect(
+    page.getByRole("switch", { name: "Allow guests to view all" })
+  ).toBeChecked();
+});
