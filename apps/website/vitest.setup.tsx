@@ -4,7 +4,7 @@
  * Runs once before all test files (listed in vitest.config.mts setupFiles).
  *
  * RULES UPHELD HERE:
- *  1. vi.mock() factory functions are 100 % self-contained — no references to
+ *  1. vi.mock() factory functions are 100 % self-contained - no references to
  *     imported variables.  Vitest hoists vi.mock() calls above every import
  *     statement, so any imported variable inside a factory is undefined.
  *  2. Only modules that every test benefits from are mocked globally:
