@@ -230,3 +230,52 @@ test("Admin create event test", async ({ page, appUrl, login }) => {
     page.getByRole("switch", { name: "Allow guests to view all" })
   ).toBeChecked();
 });
+
+test("Admin edit event test", async ({ page, appUrl, login }) => {
+  await page.goto(`${appUrl}/en`);
+
+  await login();
+  await page.getByTestId("edit-button").nth(2).click();
+  await expect(page.getByRole("textbox", { name: "Event Name" })).toHaveValue(
+    "Test event 1"
+  );
+  await page.getByRole("textbox", { name: "Event Name" }).click();
+  await page.getByRole("textbox", { name: "Event Name" }).fill("New name");
+  await expect(page.getByRole("textbox", { name: "Description" })).toBeEmpty();
+  await page.getByRole("textbox", { name: "Description" }).click();
+  await page.getByRole("textbox", { name: "Description" }).fill("New description");
+  await page.getByRole("button", { name: "Next" }).click();
+  await expect(page.getByRole("radiogroup")).toMatchAriaSnapshot(`
+    - radiogroup:
+      - radio "Limited" [checked]
+      - radio "Unlimited"
+    `);
+  await expect(page.getByRole("textbox", { name: "*" })).toHaveValue("1");
+  await page.getByRole("textbox", { name: "*" }).click();
+  await page.getByRole("textbox", { name: "*" }).fill("5");
+  await expect(page.getByRole("switch", { name: "Automatically approve" })).toBeChecked();
+  await expect(
+    page.getByRole("switch", { name: "Allow guests to view all" })
+  ).toBeChecked();
+  await page.getByRole("switch", { name: "Automatically approve" }).uncheck();
+  await page.getByRole("switch", { name: "Allow guests to view all" }).uncheck();
+  await page.getByRole("button", { name: "Save" }).click();
+  await page.getByTestId("edit-button").nth(2).click();
+  await expect(page.getByRole("textbox", { name: "Event Name" })).toHaveValue("New name");
+  await expect(page.getByRole("textbox", { name: "Description" })).toHaveValue(
+    "New description"
+  );
+  await page.getByRole("button", { name: "Next" }).click();
+  await expect(page.getByRole("radiogroup")).toMatchAriaSnapshot(`
+    - radiogroup:
+      - radio "Limited" [checked]
+      - radio "Unlimited"
+    `);
+  await expect(page.getByRole("textbox", { name: "*" })).toHaveValue("5");
+  await expect(
+    page.getByRole("switch", { name: "Automatically approve" })
+  ).not.toBeChecked();
+  await expect(
+    page.getByRole("switch", { name: "Allow guests to view all" })
+  ).not.toBeChecked();
+});
