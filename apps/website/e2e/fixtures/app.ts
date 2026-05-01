@@ -6,14 +6,12 @@ import fs from "fs/promises";
 import path from "path";
 import os from "os";
 
-const DB_FIXTURE_DIR = path.join(__dirname, "db");
-const DATE_MOCKER = path.join(__dirname, "mock-date.js");
 const MOCK_DATE = "2026-05-01T10:00:00Z";
 
 export const test = base.extend<{ appUrl: string }>({
   appUrl: async ({ page }, use) => {
     const STORAGE_DIR = await fs.mkdtemp(path.join(os.tmpdir(), "flash-playwright-"));
-    await fs.cp(DB_FIXTURE_DIR, STORAGE_DIR, { recursive: true });
+    await fs.cp(path.join(__dirname, "db"), STORAGE_DIR, { recursive: true });
 
     await page.clock.install({ time: MOCK_DATE });
 
@@ -23,9 +21,8 @@ export const test = base.extend<{ appUrl: string }>({
         ...process.env,
         STORAGE_DIR,
         MOCK_DATE,
-        NODE_OPTIONS: `--require ${DATE_MOCKER}`,
+        NODE_OPTIONS: `--require ${path.join(__dirname, "date-mocker.js")}`,
       },
-      shell: true,
     });
 
     const appUrl = `http://localhost:${port}`;
