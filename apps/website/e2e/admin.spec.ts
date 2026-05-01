@@ -279,3 +279,19 @@ test("Admin edit event test", async ({ page, appUrl, login }) => {
     page.getByRole("switch", { name: "Allow guests to view all" })
   ).not.toBeChecked();
 });
+
+test("Admin delete event test", async ({ page, appUrl, login }) => {
+  await page.goto(`${appUrl}/en`);
+
+  await login();
+  await expect(page.getByRole("heading", { name: "Test event 3" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Test event 2" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Test event 1" })).toBeVisible();
+  await page.getByTestId("delete-button").first().click();
+  await page.getByRole("button", { name: "Delete" }).click();
+  await expect(page.getByRole("heading", { name: "Test event 2" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Test event 1" })).toBeVisible();
+  await page.getByTestId("delete-button").first().click();
+  await page.getByRole("button", { name: "Delete" }).click();
+  await expect(page.getByRole("heading", { name: "Test event 1" })).toBeVisible();
+});
