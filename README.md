@@ -29,6 +29,8 @@
 
 ### Monorepo Structure
 
+This project uses a monorepo structure. The different parts of the monorepo and their functionality is:
+
 | Package            | Description                                                                      |
 | ------------------ | -------------------------------------------------------------------------------- |
 | **`website`**      | The heart of `FLASH`. Contains both the user-facing frontend and the backend API |
