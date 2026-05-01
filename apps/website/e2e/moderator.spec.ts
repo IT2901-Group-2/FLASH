@@ -88,7 +88,7 @@ test("Moderator preview/slideshow test", async ({ page, appUrl, joinEvent }) => 
   await expect(page.getByRole("button", { name: "Photo 2 of" })).toBeVisible();
   await page.getByRole("button", { name: "Photo 1 of" }).click();
   await expect(page.getByRole("img", { name: "Image 1 of" })).toBeVisible();
-  await page.getByRole("button").filter({ hasText: /^$/ }).nth(4).click();
+  await page.locator("button[data-variant=icon]").nth(2).click();
   await expect(page.getByRole("img", { name: "Image 2 of" })).toBeVisible();
   await page.getByRole("button").nth(5).click();
   await page.getByRole("button", { name: "Slideshow" }).click();
