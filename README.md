@@ -66,8 +66,6 @@ To run **End-to-End** (E2E) tests for the `apps/website`, run
 pnpm test:e2e
 ```
 
-####
-
 ## Usage
 
 _**ADD THE VIDEO HERE**_
@@ -82,6 +80,6 @@ There is additional documentation in README.md files for each app and package in
 
 **Packages**
 
-- [File-Storage](./packages/file-storage/REEADME.md)
+- [File-Storage](./packages/file-storage/README.md)
 - [Tokens](./packages/tokens/README.md)
 - [UI](./packages/ui/README.md)
