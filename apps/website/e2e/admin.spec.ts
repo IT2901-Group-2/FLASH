@@ -131,3 +131,20 @@ test("Admin share test", async ({ page, appUrl, login }) => {
     - button "Close"
     `);
 });
+
+test("Admin join test", async ({ page, appUrl, login }) => {
+  await page.goto(`${appUrl}/en`);
+  await login();
+
+  await page.getByRole("heading", { name: "Test event 1" }).click();
+  await page.waitForURL("**/admin/dashboard/*");
+
+  await page.getByRole("button", { name: "Join Event" }).click();
+  await page.waitForURL("**/events/*");
+
+  await expect(page.locator("h1")).toContainText("Test event 1");
+  await expect(page.locator("header")).toContainText("Admin");
+  await expect(page.getByRole("button", { name: "Moderate" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Photo 1 of" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Photo 2 of" })).toBeVisible();
+});
