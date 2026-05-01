@@ -9,7 +9,6 @@ export default defineConfig({
   retries: 2,
 
   use: {
-    baseURL: "http://localhost:3000",
     trace: process.env.CI ? "off" : "retain-on-failure",
     screenshot: process.env.CI ? "off" : "only-on-failure",
   },
