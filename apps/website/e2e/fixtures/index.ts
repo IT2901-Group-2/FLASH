@@ -8,7 +8,7 @@ import os from "os";
 
 const DB_FIXTURE_DIR = path.join(__dirname, "db");
 const DATE_MOCKER = path.join(__dirname, "mock-date.js");
-const MOCK_DATE = "2026-04-30T10:00:00Z";
+const MOCK_DATE = "2026-05-01T10:00:00Z";
 
 type AppFixture = {
   appUrl: string;
@@ -22,7 +22,7 @@ export const test = base.extend<AppFixture>({
     await page.clock.install({ time: MOCK_DATE });
 
     const port = await getPort();
-    const app = spawn("pnpm", ["start", "-p", port.toString()], {
+    const app = spawn("pnpm", ["start", "-p", `${port}`], {
       env: {
         ...process.env,
         STORAGE_DIR,
