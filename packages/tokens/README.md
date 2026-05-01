@@ -268,11 +268,11 @@ npm run build
 
 Compiles all token source files into `dist/`, generating:
 
-- `dist/tokens.css` — bundled CSS (all tokens, Lightning CSS processed)
-- `dist/tokens.js` / `dist/tokens.d.ts` — ES module with type declarations
-- `dist/token_docs.js` — documentation object
-- `dist/output.types.d.ts` — exported TypeScript types
-- `dist/css/reset.css` — CSS reset
+- `dist/tokens.css` - bundled CSS (all tokens, Lightning CSS processed)
+- `dist/tokens.js` / `dist/tokens.d.ts` - ES module with type declarations
+- `dist/token_docs.js` - documentation object
+- `dist/output.types.d.ts` - exported TypeScript types
+- `dist/css/reset.css` - CSS reset
 
 ### Test
 

@@ -77,7 +77,7 @@ Each concept (except `backdrop`) comes in three variants:
 
 ## Concepts and When to Use Them
 
-### `background` — Page shell and canvas
+### `background` - Page shell and canvas
 
 The outermost layer. Every page starts here.
 
@@ -87,7 +87,7 @@ The outermost layer. Every page starts here.
   background-color: var(--color-background-base);
 }
 
-/* ❌ Wrong — primary is for cards, not the page shell */
+/* ❌ Wrong - primary is for cards, not the page shell */
 .page {
   background-color: var(--color-primary-base);
 }
@@ -95,7 +95,7 @@ The outermost layer. Every page starts here.
 
 ---
 
-### `primary` — First elevated surface
+### `primary` - First elevated surface
 
 Cards, panels, and containers that sit one layer above the page shell.
 
@@ -114,7 +114,7 @@ Cards, panels, and containers that sit one layer above the page shell.
 
 ---
 
-### `secondary` — Nested surfaces
+### `secondary` - Nested surfaces
 
 Inner panels, sidebars, and surfaces nested inside a `primary` surface.
 
@@ -130,9 +130,9 @@ Inner panels, sidebars, and surfaces nested inside a `primary` surface.
 
 ---
 
-### `accent` — Warm sand/terracotta highlight
+### `accent` - Warm sand/terracotta highlight
 
-Decorative highlights, badges, and accent strips. Not for primary actions — use `brand` for those.
+Decorative highlights, badges, and accent strips. Not for primary actions - use `brand` for those.
 
 ```css
 /* ✅ Decorative badge */
@@ -141,7 +141,7 @@ Decorative highlights, badges, and accent strips. Not for primary actions — us
   color: var(--color-text-base);
 }
 
-/* ❌ Wrong — accent is not for CTA buttons */
+/* ❌ Wrong - accent is not for CTA buttons */
 .btn-primary {
   background-color: var(--color-accent-base);
 }
@@ -149,7 +149,7 @@ Decorative highlights, badges, and accent strips. Not for primary actions — us
 
 ---
 
-### `brand` — Brand purple actions
+### `brand` - Brand purple actions
 
 Primary call-to-action buttons, interactive highlights, and anything that drives the user toward a primary action.
 
@@ -170,7 +170,7 @@ Primary call-to-action buttons, interactive highlights, and anything that drives
 
 ---
 
-### `text` — Foreground text
+### `text` - Foreground text
 
 All readable text and icons. Use `base` for body copy, `secondary` for supporting labels, `tertiary` for captions.
 
@@ -179,12 +179,12 @@ All readable text and icons. Use `base` for body copy, `secondary` for supportin
   color: var(--color-text-base);
 }
 
-/* Supporting label — slightly muted */
+/* Supporting label - slightly muted */
 .label-secondary {
   color: var(--color-text-secondary);
 }
 
-/* Caption — least prominent */
+/* Caption - least prominent */
 .caption {
   color: var(--color-text-tertiary);
 }
@@ -194,7 +194,7 @@ All readable text and icons. Use `base` for body copy, `secondary` for supportin
 
 ---
 
-### `border` — Dividers and outlines
+### `border` - Dividers and outlines
 
 Separates surfaces, wraps inputs and cards. Use `base` by default; `dark` for focus rings.
 
@@ -216,7 +216,7 @@ Separates surfaces, wraps inputs and cards. Use `base` by default; `dark` for fo
 
 ---
 
-### `danger` — Error and delete actions
+### `danger` - Error and delete actions
 
 Irreversible or dangerous interactions only. Do not use for warnings or informational states.
 
@@ -241,7 +241,7 @@ Irreversible or dangerous interactions only. Do not use for warnings or informat
 
 ---
 
-### `success` — Confirmation states
+### `success` - Confirmation states
 
 Positive feedback, completed states, and confirmations.
 
@@ -258,7 +258,7 @@ Positive feedback, completed states, and confirmations.
 
 ---
 
-### `warning` — Caution states
+### `warning` - Caution states
 
 Non-danger alerts and advisory messages. The action is recoverable, use `danger` if it is not.
 
@@ -271,7 +271,7 @@ Non-danger alerts and advisory messages. The action is recoverable, use `danger`
 
 ---
 
-### `backdrop` — Modal overlay scrim
+### `backdrop` - Modal overlay scrim
 
 Exclusively for the overlay behind modals, dialogs, drawers, and popups. No variant suffix, always use it as-is. Do not use it for any other purpose.
 
@@ -281,7 +281,7 @@ Exclusively for the overlay behind modals, dialogs, drawers, and popups. No vari
   background-color: var(--color-backdrop);
 }
 
-/* ❌ Wrong — do not use backdrop as a general dark overlay */
+/* ❌ Wrong - do not use backdrop as a general dark overlay */
 .dimmed-section {
   background-color: var(--color-backdrop);
 }
@@ -317,7 +317,7 @@ body {
 }
 ```
 
-Dark mode is automatic — no media query or extra class needed. The `data-theme` attribute on `:root` handles resolution.
+Dark mode is automatic - no media query or extra class needed. The `data-theme` attribute on `:root` handles resolution.
 
 ---
 

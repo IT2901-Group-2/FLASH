@@ -43,6 +43,8 @@ export interface ActionCardProps extends React.HTMLAttributes<HTMLDivElement> {
  * and navigation purposes, or to save changes.
  *
  * > _Last updated: `2026-02-07`_
+ *
+ * @deprecated
  */
 export const ActionCard = ({
   description,
