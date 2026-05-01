@@ -51,7 +51,18 @@
 
 ### Tests
 
-FLASH uses a mix of testing strategies across its packages.
+FLASH includes a comprehensive test suite and a mix of testing strategies across its packages to ensure reliability and correctness across all components.
+
+#### Test Overview
+
+| Package          | Unit | Accessibility | Interaction | E2E |
+| ---------------- | ---- | ------------- | ----------- | --- |
+| **Website**      | ✓    |               |             | ✓   |
+| **file-storage** | ✓    |               |             |     |
+| **tokens**       | ✓    |               |             |     |
+| **UI**           | ✓    | ✓             | ✓           |     |
+
+#### Running Tests
 
 To run all **unit** tests across all packages and the website, run
 
@@ -64,6 +75,12 @@ To run **End-to-End** (E2E) tests for the `apps/website`, run
 
 ```bash
 pnpm test:e2e
+```
+
+For storybook, the `test` command only runs the unit and interaction tests. For visual and accessibility tests, start Storybook and use the UI to run the tests.
+
+```bash
+pnpm storybook
 ```
 
 ## Usage
