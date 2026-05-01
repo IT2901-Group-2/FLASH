@@ -77,3 +77,25 @@ test("Moderator download test", async ({ page, appUrl, joinEvent }) => {
   const hash = await downloadPromise.then(d => d.path()).then(path => getFileHash(path));
   expect(hash).toBe("9cc2e6e007fcabc2e8da87c38c3fb59e");
 });
+
+test("Moderator preview/slideshow test", async ({ page, appUrl, joinEvent }) => {
+  await page.goto(`${appUrl}/en`);
+
+  await joinEvent("8OGLU2", "Playwright Moderator");
+  await expect(page.locator("h1")).toContainText("Test event 1");
+  await expect(page.getByRole("button", { name: "Moderate" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Photo 1 of" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Photo 2 of" })).toBeVisible();
+  await page.getByRole("button", { name: "Photo 1 of" }).click();
+  await expect(page.getByRole("img", { name: "Image 1 of" })).toBeVisible();
+  await page.getByRole("button").filter({ hasText: /^$/ }).nth(4).click();
+  await expect(page.getByRole("img", { name: "Image 2 of" })).toBeVisible();
+  await page.getByRole("button").nth(5).click();
+  await page.getByRole("button", { name: "Slideshow" }).click();
+  await page.waitForURL("**/events/*/slideshow");
+
+  await expect(page.locator("img")).toBeVisible();
+  await expect(page.getByRole("heading")).toContainText("Test event 1");
+  await expect(page.getByRole("paragraph")).toContainText("1 of 2");
+  await expect(page.locator("div").filter({ hasText: "DBZ78S" }).nth(2)).toBeVisible();
+});
