@@ -29,7 +29,7 @@ pnpm build
 pnpm --filter website dev
 ```
 
-This will run the projltect with the defau settings for all **Environment Variables** variables. For setting the variables see the [root README.md](/README.md)
+This will run the project with the defaut values for all **Environment Variables**. For setting the variables to custom values, see the [root README.md](/README.md)
 
 ## Project Structure
 
