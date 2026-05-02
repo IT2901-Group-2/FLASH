@@ -19,11 +19,34 @@ interface (See: [Adding a backend](#adding-a-backend)).
 
 ### Local file system
 
-...
+```ts
+class FSStorage implements FileStorage {
+  constructor(dir: string) {
+    // ...
+  }
+}
+```
+
+The [`FSStorage`](./src/implementations/fsStorage.ts) class implements local
+file storage using Node.js' [`node:fs`] module. The constructor takes a path to
+the local directory to be used as root for the initialized `FSStorage` instance.
+All file storage interactions through the instance will be constrained to the
+provided root directory.
 
 ### Google Cloud Storage
 
-...
+```ts
+class GcloudStorage implements FileStorage {
+  constructor(bucket: Bucket) {
+    // ...
+  }
+```
+
+The [`GcloudStorage`](./src/implementations/gcloudStorage.ts) class interfaces
+with Google Cloud Storage using Google's own
+[`@google-cloud/storage`](www.npmjs.com/package/@google-cloud/storage) npm
+package. The constructor takes a `Bucket` instance from `@google-cloud/storage`
+which will be used to read from / write to.
 
 ## Installation
 
