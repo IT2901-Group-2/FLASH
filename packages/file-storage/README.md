@@ -30,8 +30,11 @@ class FSStorage implements FileStorage {
 The [`FSStorage`](./src/implementations/fsStorage.ts) class implements local
 file storage using Node.js' [`node:fs`] module. The constructor takes a path to
 the local directory to be used as root for the initialized `FSStorage` instance.
-All file storage interactions through the instance will be constrained to the
-provided root directory.
+If the provided directory does not exist, it will be created.
+
+All file storage interactions through an
+[`FSStorage`](./src/implementations/fsStorage.ts) instance will be constrained
+to the provided root directory.
 
 ### Google Cloud Storage
 
@@ -63,9 +66,9 @@ dependencies, like so:
 
 ## Usage
 
-The generic `FileStorage` interface defines 6 methods for interacting with a
-file storage solution. All of which should be kept consistent across all
-concrete implementations.
+The generic `FileStorage` interface defines 6 methods for interacting with file
+storage solutions. All of which should be kept consistent across all concrete
+implementations.
 
 File path resolution ...
 
