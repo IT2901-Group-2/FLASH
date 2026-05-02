@@ -49,31 +49,29 @@ File path resolution ...
 All of the public methods return an `AsyncResult` instance from
 [`typescript-results`](https://www.typescript-result.dev/).
 
-### list
+### [list](./src/interface.ts#L26)
 
 ```ts
 FileStorage.list(path: string): AsyncResult<string[], Error>;
 ```
 
-[temp link](./src/interface.ts#L26)
-
 Returns a list of all the filenames of all files in the given directory. The
 parameter `path` must be a valid path to a directory, otherwise this method will
 fail.
 
-### read
+### [read](./src/interface.ts#L40)
 
 ```ts
 FileStorage.read(path: string): AsyncResult<Buffer, Error>;
 ```
 
-### mkdir
+### [mkdir](./src/interface.ts#L53)
 
 ```ts
 FileStorage.mkdir(path: string): AsyncResult<void, Error>;
 ```
 
-### write
+### [write](./src/interface.ts#L69)
 
 ```ts
 FileStorage.write(
@@ -82,13 +80,13 @@ FileStorage.write(
 ): AsyncResult<void, Error>;
 ```
 
-### rm
+### [rm](./src/interface.ts#L95)
 
 ```ts
 FileStorage.rm(path: string): AsyncResult<void, Error>;
 ```
 
-### rmdir
+### [rmdir](./src/interface.ts#L119)
 
 ```ts
 FileStorage.rmdir(path: string): AsyncResult<void, Error>;
