@@ -52,7 +52,6 @@ const ReviewStep = ({ status, result }: ReviewStepProps) => {
       <SegmentedControl
         onChange={role => setRole(role as "guest" | "moderator")}
         value={role}
-        className={styles.scroll}
         fill
       >
         <SegmentedControl.Item label="Guest" value="guest" />

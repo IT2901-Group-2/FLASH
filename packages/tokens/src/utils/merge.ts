@@ -5,9 +5,9 @@
  * Arrays are concatenated. Undefined values in the source objects are
  * ignored and do not overwrite existing values in the destination object.
  *
- * @param T — The type of the source objects.
- * @param object — The destination object.
- * @param source — The source objects.
+ * @param T - The type of the source objects.
+ * @param object - The destination object.
+ * @param source - The source objects.
  */
 export const merge = <T extends Record<string, any>>(
   object: Record<string, any>,

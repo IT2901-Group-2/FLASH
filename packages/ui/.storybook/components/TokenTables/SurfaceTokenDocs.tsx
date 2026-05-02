@@ -42,7 +42,7 @@ const CONCEPT_GROUPS: ConceptGroup[] = [
   {
     concept: "primary",
     description:
-      "First elevated surface — cards, panels, and containers that sit above the page shell.",
+      "First elevated surface - cards, panels, and containers that sit above the page shell.",
     tokens: [
       {
         cssVar: "--color-primary-base",
@@ -67,7 +67,7 @@ const CONCEPT_GROUPS: ConceptGroup[] = [
   {
     concept: "neutral",
     description:
-      "Nested surfaces — sidebars, inner panels, and surfaces nested inside a primary surface.",
+      "Nested surfaces - sidebars, inner panels, and surfaces nested inside a primary surface.",
     tokens: [
       {
         cssVar: "--color-neutral-base",
@@ -116,7 +116,7 @@ const CONCEPT_GROUPS: ConceptGroup[] = [
   },
   {
     concept: "brand",
-    description: "Brand purple — primary actions, buttons, and interactive highlights.",
+    description: "Brand purple - primary actions, buttons, and interactive highlights.",
     tokens: [
       {
         cssVar: "--color-brand-base",
@@ -251,7 +251,7 @@ const CONCEPT_GROUPS: ConceptGroup[] = [
   },
   {
     concept: "warning",
-    description: "Caution states — non-destructive alerts and advisory messages.",
+    description: "Caution states - non-destructive alerts and advisory messages.",
     tokens: [
       {
         cssVar: "--color-warning-base",
@@ -276,7 +276,7 @@ const CONCEPT_GROUPS: ConceptGroup[] = [
   {
     concept: "backdrop",
     description:
-      "Modal overlay scrim. No variants — one theme-aware value. Always use --color-backdrop without a suffix.",
+      "Modal overlay scrim. No variants - one theme-aware value. Always use --color-backdrop without a suffix.",
     tokens: [
       {
         cssVar: "--color-backdrop",

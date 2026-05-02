@@ -47,7 +47,7 @@ function toEventsSearchParams(params?: GetEventsParams): string {
 
 /**
  * Centralized React Query key factory for the events domain.
- * Using a shared factory keeps cache invalidation predictable — calling
+ * Using a shared factory keeps cache invalidation predictable - calling
  * `invalidateQueries({ queryKey: eventsKeys.all })` will bust every
  * events-related query in one go.
  *

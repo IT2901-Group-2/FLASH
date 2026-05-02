@@ -19,7 +19,7 @@ export const TIME_PRESETS: Record<TimePreset, EventTime> = {
 
 /**
  * Defines a single step in the multi-step event form.
- * Validation is handled by HTML's built-in constraint validation API —
+ * Validation is handled by HTML's built-in constraint validation API -
  * each step declares its validity via `required`, `min`, `type`, etc. on its inputs.
  * The card calls `form.reportValidity()` before advancing to the next step.
  */

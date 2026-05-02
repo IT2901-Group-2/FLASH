@@ -3,7 +3,7 @@ import { createStrictContext } from "@/util/helpers";
 import { useSegmentedControl } from "./useSegmentedControl";
 import { SegmentedControlProps } from "./SegmentedControl";
 
-// Descendant context — gives each item access to the ordered registry.
+// Descendant context - gives each item access to the ordered registry.
 export const [
   SegmentedControlDescendantsProvider,
   useSegmentedControlDescendantsContext,
@@ -11,7 +11,7 @@ export const [
   useSegmentedControlDescendant,
 ] = createDescendantContext<HTMLButtonElement, { value: string }>();
 
-// State context — selected/focused value + setters.
+// State context - selected/focused value + setters.
 type SegmentedControlContextValue = ReturnType<typeof useSegmentedControl> &
   Pick<SegmentedControlProps, "size">;
 
