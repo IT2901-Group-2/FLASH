@@ -257,13 +257,14 @@ import type {
 ### Setup
 
 ```bash
-npm install
+pnpm i
 ```
 
 ### Build
 
 ```bash
-npm run build
+# When in this directory
+pnpm build
 ```
 
 Compiles all token source files into `dist/`, generating:
@@ -277,16 +278,15 @@ Compiles all token source files into `dist/`, generating:
 ### Test
 
 ```bash
-npm test            # run tests with coverage
-npm run test:watch  # watch mode
+pnpm test     # run tests with coverage
 ```
 
 ### Lint & Format
 
 ```bash
-npm run lint
-npm run format
-npm run format:check
+pnpm lint
+pnpm format
+pnpm format:check
 ```
 
 ---
