@@ -12,7 +12,7 @@ develop and test our application across changing storage environments.
 ## Supported backends
 
 Currently, the package supports saving files on the local file system and in
-Google cloud.
+Google Cloud Storage.
 
 Additional providers can be added by implementing the generic `FileStorage`
 interface (See: [Adding a backend](#adding-a-backend)).
@@ -21,7 +21,7 @@ interface (See: [Adding a backend](#adding-a-backend)).
 
 ...
 
-### Google cloud storage
+### Google Cloud Storage
 
 ...
 
@@ -40,7 +40,59 @@ dependencies, like so:
 
 ## Usage
 
-Interface overview ...
+The generic `FileStorage` interface defines 6 methods for interacting with a
+file storage solution. All of which should be kept consistent across all
+concrete implementations.
+
+File path resolution ...
+
+All of the public methods return an `AsyncResult` instance from
+[`typescript-results`](https://www.typescript-result.dev/).
+
+### list
+
+```ts
+FileStorage.list(path: string): AsyncResult<string[], Error>;
+```
+
+[temp link](./src/interface.ts#L26)
+
+Returns a list of all the filenames of all files in the given directory. The
+parameter `path` must be a valid path to a directory, otherwise this method will
+fail.
+
+### read
+
+```ts
+FileStorage.read(path: string): AsyncResult<Buffer, Error>;
+```
+
+### mkdir
+
+```ts
+FileStorage.mkdir(path: string): AsyncResult<void, Error>;
+```
+
+### write
+
+```ts
+FileStorage.write(
+  path: string,
+  data: WithImplicitCoercion<ArrayLike<number>> | string
+): AsyncResult<void, Error>;
+```
+
+### rm
+
+```ts
+FileStorage.rm(path: string): AsyncResult<void, Error>;
+```
+
+### rmdir
+
+```ts
+FileStorage.rmdir(path: string): AsyncResult<void, Error>;
+```
 
 ## Development
 
