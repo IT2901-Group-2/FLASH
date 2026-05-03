@@ -1,6 +1,6 @@
 <div align="center">
 
-![alt text](.github/images/header.png)
+![alt text](.github/media/header.png)
 
 </div>
 
@@ -112,7 +112,7 @@ pnpm storybook
 
 ## Usage
 
-_**ADD THE VIDEO HERE**_
+[![Demo Video](.github/media/header.png)](.github/media/demo.mp4)
 
 ## Additional documentation
 
