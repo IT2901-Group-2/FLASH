@@ -70,10 +70,9 @@ The generic `FileStorage` interface defines 6 methods for interacting with file
 storage solutions. All of which should be kept consistent across all concrete
 implementations.
 
-File path resolution ...
-
 All of the public methods return an `AsyncResult` instance from
-[`typescript-results`](https://www.typescript-result.dev/).
+[`typescript-results`](https://www.typescript-result.dev/) which propagetes the
+actual `Error` instance thrown on error.
 
 ### [list](./src/interface.ts#L26)
 
@@ -81,9 +80,10 @@ All of the public methods return an `AsyncResult` instance from
 FileStorage.list(path: string): AsyncResult<string[], Error>;
 ```
 
-Returns a list of all the filenames of all files in the given directory. The
-parameter `path` must be a valid path to a directory, otherwise this method will
-fail.
+Returns a list of all the file and directory names in the directory at the given
+`path`. All directory names end with a `/`.
+
+The parameter `path` must be a valid path to a directory.
 
 ### [read](./src/interface.ts#L40)
 
@@ -91,11 +91,18 @@ fail.
 FileStorage.read(path: string): AsyncResult<Buffer, Error>;
 ```
 
+Returns the contents of the file at the given `path` as a `Buffer`.
+
+The parameter `path` must be a valid path to a file.
+
 ### [mkdir](./src/interface.ts#L53)
 
 ```ts
 FileStorage.mkdir(path: string): AsyncResult<void, Error>;
 ```
+
+Creates a new directory at the specified `path`. If directory already exists,
+does nothing.
 
 ### [write](./src/interface.ts#L69)
 
@@ -106,17 +113,32 @@ FileStorage.write(
 ): AsyncResult<void, Error>;
 ```
 
+Creates a new file at the given `path` and writes the given `data` to it. If the
+file already exists it will be overwritten.
+
+The paramater `path` must be a valid path to a file. The parameter `data`
+accepts anything that can be passed to `Buffer.from`.
+
 ### [rm](./src/interface.ts#L95)
 
 ```ts
 FileStorage.rm(path: string): AsyncResult<void, Error>;
 ```
 
+Deletes the file at the given `path`.
+
+The parameter `path` must be a valid path to a file.
+
 ### [rmdir](./src/interface.ts#L119)
 
 ```ts
 FileStorage.rmdir(path: string): AsyncResult<void, Error>;
 ```
+
+Deletes the directory at the given `path`. All of the directories contents will
+be recursively deleted as well.
+
+The parameter `path` must be a valid path to a directory.
 
 ## Development
 
