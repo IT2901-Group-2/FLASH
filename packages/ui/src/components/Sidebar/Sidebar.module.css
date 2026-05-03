@@ -183,7 +183,7 @@
 
   &[data-color] {
     background-color: var(--color-base);
-    color: var(--color-text-contrast);
+    color: white;
 
     &:hover {
       background-color: var(--color-light);
