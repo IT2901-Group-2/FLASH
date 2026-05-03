@@ -78,7 +78,7 @@ This project uses a monorepo structure. The different parts of the monorepo and 
 
 ### Tests
 
-FLASH includes a comprehensive test suite and a mix of testing strategies across its packages to ensure reliability and correctness across all components.
+FLASH includes a comprehensive test suite and a mix of testing strategies across its packages to ensure reliability and correctness across all parts of the application.
 
 #### Test Overview
 
