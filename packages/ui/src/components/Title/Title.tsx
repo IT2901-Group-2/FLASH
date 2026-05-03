@@ -33,6 +33,10 @@ export interface TitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
    */
   "data-color"?: ColorName;
   /**
+   * Clamp title text to this many lines, then ellipsis. Omit for single-line truncation.
+   */
+  lines?: number;
+  /**
    * Ref to the heading element
    */
   ref?: React.Ref<HTMLHeadingElement>;
@@ -50,6 +54,7 @@ export const Title = ({
   size = "large",
   weight = "bold",
   align = "left",
+  lines,
   "data-color": color,
   ref,
   className,
@@ -66,7 +71,14 @@ export const Title = ({
         className={cl(styles.title, className)}
         {...props}
       >
-        {children && <span className={styles.text}>{children}</span>}
+        {children && (
+          <span
+            className={lines ? styles.textClamp : styles.text}
+            style={lines ? { WebkitLineClamp: lines } : undefined}
+          >
+            {children}
+          </span>
+        )}
       </Component>
       {description && (
         <p data-align={align} data-size={size} className={styles.description}>

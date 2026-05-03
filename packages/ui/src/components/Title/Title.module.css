@@ -122,3 +122,11 @@
   text-overflow: ellipsis;
   min-width: 0;
 }
+
+.textClamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
