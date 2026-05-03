@@ -40,7 +40,7 @@
   justify-content: space-between;
   width: 100%;
   margin: 1rem 0;
-  padding: 0 1rem;
+  padding: 0;
 
   .sectionTitle {
     margin: 0;
@@ -48,12 +48,24 @@
   }
 }
 
-@media (width >= 768px) {
+@media (width > 768px) {
   .actionCardContainer {
     display: none;
   }
+}
 
-  .sectionTitleRow {
-    padding: 0 1rem;
+@media (width < 768px) {
+  /* Button's .button:not([data-variant="icon"]) selector has specificity (0,2,0),
+     outranking this class (0,1,0). !important is needed until Button lowers its
+     own specificity (e.g. via :where()) to make overrides work naturally. */
+  .slideshowButton {
+    height: 2.4rem !important;
+    padding-inline: 0.75rem 0.3rem !important;
+    gap: 0.1rem !important;
+    font-size: var(--font-size-small) !important;
+  }
+
+  .sectionTitle[data-size] {
+    font-size: var(--font-size-heading-medium);
   }
 }
