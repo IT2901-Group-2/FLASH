@@ -28,7 +28,7 @@ class FSStorage implements FileStorage {
 ```
 
 The [`FSStorage`](./src/implementations/fsStorage.ts) class implements local
-file storage using Node.js' [`node:fs`] module. The constructor takes a path to
+file storage using Node.js' `node:fs` module. The constructor takes a path to
 the local directory to be used as root for the initialized `FSStorage` instance.
 If the provided directory does not exist, it will be created.
 
@@ -166,4 +166,13 @@ pnpm test
 
 ### Adding a backend
 
-...
+To add an additional storage provider implementation, simply create a new class
+implementing the `FileStorage` interface and export it from the package. Be sure
+all the method implementation to adhere to the behaviour described in
+[implementation.ts](./src/implementation.ts).
+
+The constructor does not have any unifiedsignature or behaviour across
+implementations, only the 6 methods defined in the `FileStorage` interface.
+
+Remember to add unit tests to ensure the new implementation is compatible with
+the rest of them.
