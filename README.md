@@ -112,8 +112,6 @@ pnpm storybook
 
 ## Usage
 
-[![Demo Video](.github/media/header.png)](.github/media/demo.mp4)
-
 ## Additional documentation
 
 There is additional documentation in README.md files for each app and package in the monorepo. The links to them is bellow.
