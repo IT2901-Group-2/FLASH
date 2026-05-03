@@ -142,11 +142,27 @@ The parameter `path` must be a valid path to a directory.
 
 ## Development
 
+### Requirements
+
+- Node.js 20+
+- Pnpm 10+
+
+All other dependencies can be installed by running the following command in this
+directory.
+
+```bash
+pnpm install
+```
+
 ### Testing
 
-Tests are run with `pnpm test` (bla bla bla)
+[Unit tests](./src/implementations/__tests__) are implemented for each
+`FileStorage` implementation using [`jest`](https://jestjs.io/). To run all the
+tests use the following command.
 
-...
+```bash
+pnpm test
+```
 
 ### Adding a backend
 
