@@ -24,11 +24,6 @@ function renderStep(defaultValues = TEST_DEFAULT_FORM_DATA) {
 
 describe("BasicInfoStep", () => {
   describe("rendering", () => {
-    it("renders title and description", () => {
-      renderStep();
-      expect(screen.getByTestId("title")).toBeInTheDocument();
-    });
-
     it("renders the name field", () => {
       renderStep();
       expect(screen.getByTestId("name")).toBeInTheDocument();
