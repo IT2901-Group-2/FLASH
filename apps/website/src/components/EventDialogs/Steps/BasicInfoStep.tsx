@@ -1,4 +1,4 @@
-import { Title, TextField, Textarea, DatePicker, DateRange } from "@flash/ui";
+import { TextField, Textarea, DatePicker, DateRange } from "@flash/ui";
 import { useTranslations } from "next-intl";
 import { Controller, useFormContext, useFormState, useWatch } from "react-hook-form";
 import EventTimeField from "../TimeField";
@@ -42,7 +42,6 @@ export const BasicInfoStep = () => {
 
   return (
     <>
-      <Title description={t("description")}>{t("title")}</Title>
       <TextField
         {...register("name", {
           required: t("field.name.error.required"),
