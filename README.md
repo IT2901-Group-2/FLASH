@@ -67,22 +67,22 @@ their functionality is:
 
 ### Environment Variables
 
-| Variable                    | Description | Default Value        |
-| --------------------------- | ----------- | -------------------- |
-| `ADMIN_PASSWORD`            | ...         | `"Default"`          |
-| `TOAST_DISPLAY_TIME`        | ...         | `5000`               |
-| `MULTI_FILE_UPLOAD`         | ...         | `true`               |
-| `SLIDESHOW_SLIDE_DURATION`  | ...         | `10000`              |
-| `MAX_IMAGE_SIZE`            | ...         | `12582912`           |
-| `EVENT_REFETCH_INTERVAL`    | ...         | `120000`             |
-| `PHOTOS_REFETCH_INTERVAL`   | ...         | `12000`              |
-| `JWT_SECRET`                | ...         | `"SUPER_SECRET_KEY"` |
-| `STORAGE_BACKEND`           | ...         | `"fs"`               |
-| `STORAGE_DIR`               | ...         | `$tmp/flash`         |
-| `GCP_BUCKET`                | ...         | -                    |
-| `GCP_PROJECT_ID`            | ...         | -                    |
-| `GCP_SERVICE_ACCOUNT_EMAIL` | ...         | -                    |
-| `GCP_PRIVATE_KEY`           | ...         | -                    |
+| Variable                    | Default Value          | Description                                                                                                        |
+| --------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `ADMIN_PASSWORD`            | `"Default"`            | The administrator password to use.                                                                                 |
+| `TOAST_DISPLAY_TIME`        | `5000` (5 seconds)     | The amount of time in milliseconds notification toasts stay on screen for.                                         |
+| `MULTI_FILE_UPLOAD`         | `false`                | Whether or not to allow users to upload multiple images at once. `"true"` and `"1"` are accepted as truthy values. |
+| `SLIDESHOW_SLIDE_DURATION`  | `10000` (10 seconds)   | The amount of time in milliseconds before progressing to the next slide on the slideshow.                          |
+| `MAX_IMAGE_SIZE`            | `12582912` (12 MiB)    | The maximum image size in bytes that the user is allowed to upload.                                                |
+| `EVENT_REFETCH_INTERVAL`    | `120000` (120 seconds) | ...                                                                                                                |
+| `PHOTOS_REFETCH_INTERVAL`   | `12000`                | ...                                                                                                                |
+| `JWT_SECRET`                | `"SUPER_SECRET_KEY"`   | The secret key to use for JWT token encryption/decryption. Keep this private.                                      |
+| `STORAGE_BACKEND`           | `"fs"`                 | Which storage backend to use. Currently one of `"fs"` or `"gcloud"`                                                |
+| `STORAGE_DIR`               | `$tmp/flash`           |                                                                                                                    |
+| `GCP_BUCKET`                | -                      |                                                                                                                    |
+| `GCP_PROJECT_ID`            | -                      |                                                                                                                    |
+| `GCP_SERVICE_ACCOUNT_EMAIL` | -                      |                                                                                                                    |
+| `GCP_PRIVATE_KEY`           | -                      |                                                                                                                    |
 
 ## Running the App
 
