@@ -183,7 +183,7 @@
 
   &[data-color] {
     background-color: var(--color-base);
-    color: var(--color-text-contrast);
+    color: white;
 
     &:hover {
       background-color: var(--color-light);
@@ -199,12 +199,18 @@
     font-weight: 500;
     opacity: 1;
     overflow: hidden;
-    white-space: nowrap;
 
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  .itemTitleText {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   [data-open="false"] & {

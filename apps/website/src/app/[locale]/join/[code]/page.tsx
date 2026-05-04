@@ -51,8 +51,9 @@ export default function Page() {
           <Title
             data-testid="title"
             align="center"
-            size="large"
+            size="medium"
             as="h1"
+            lines={3}
             description={tNickname("description")}
           >
             {eventName ? `${tNickname("title")} ${eventName}` : tNickname("title")}
