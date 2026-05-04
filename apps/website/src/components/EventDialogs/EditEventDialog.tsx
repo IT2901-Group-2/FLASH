@@ -1,5 +1,5 @@
 import { RefAttributes, useState } from "react";
-import { Button, Dialog, ProgressDots } from "@flash/ui";
+import { Button, Dialog, ProgressDots, Title } from "@flash/ui";
 import { useTranslations } from "next-intl";
 import { useUpdateEventMutation } from "@/hooks/useEvents";
 import { FORM_STEPS } from "./formSteps";
@@ -19,6 +19,7 @@ export const EditEventDialog = ({
   ...rest
 }: EditEventDialogProps) => {
   const t = useTranslations("common.actions");
+  const tTitle = useTranslations("admin.dashboard.event.basics.edit");
   const { mutateAsync, status } = useUpdateEventMutation();
 
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
@@ -66,6 +67,9 @@ export const EditEventDialog = ({
         data-color="brand-purple"
       />
       <FormProvider {...methods}>
+        {isOnFirstStep && (
+          <Title description={tTitle("description")}>{tTitle("title")}</Title>
+        )}
         <form key={formKey} className={styles.form} noValidate>
           {currentStep && <currentStep.Component />}
 
