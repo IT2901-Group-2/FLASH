@@ -1,6 +1,6 @@
 <div align="center">
 
-![alt text](.github/media/header.png)
+![Logo header](.github/media/header.png)
 
 </div>
 
@@ -47,12 +47,13 @@
 
 ### Monorepo Structure
 
-This project uses a monorepo structure. The different parts of the monorepo and their functionality is:
+This project uses a monorepo structure. The different parts of the monorepo and
+their functionality is:
 
 | Package            | Description                                                                      |
 | ------------------ | -------------------------------------------------------------------------------- |
 | **`website`**      | The heart of `FLASH`. Contains both the user-facing frontend and the backend API |
-| **`file-storage`** | The file management logic for `FLASH`. Supprots multiple storage solutions       |
+| **`file-storage`** | The file management logic for `FLASH`. Supports multiple storage solutions       |
 | **`tokens`**       | A TypeScript-first CSS design token system                                       |
 | **`UI`**           | The component library for the Flash design system                                |
 
@@ -66,9 +67,22 @@ This project uses a monorepo structure. The different parts of the monorepo and 
 
 ### Environment Variables
 
-| Variable | Description | Default Value | Required |
-| -------- | ----------- | ------------- | -------- |
-| `...`    | ...         |               | Yes      |
+| Variable                    | Description | Default Value        |
+| --------------------------- | ----------- | -------------------- |
+| `ADMIN_PASSWORD`            | ...         | `"Default"`          |
+| `TOAST_DISPLAY_TIME`        | ...         | `5000`               |
+| `MULTI_FILE_UPLOAD`         | ...         | `true`               |
+| `SLIDESHOW_SLIDE_DURATION`  | ...         | `10000`              |
+| `MAX_IMAGE_SIZE`            | ...         | `12582912`           |
+| `EVENT_REFETCH_INTERVAL`    | ...         | `120000`             |
+| `PHOTOS_REFETCH_INTERVAL`   | ...         | `12000`              |
+| `JWT_SECRET`                | ...         | `"SUPER_SECRET_KEY"` |
+| `STORAGE_BACKEND`           | ...         | `"fs"`               |
+| `STORAGE_DIR`               | ...         | `$tmp/flash`         |
+| `GCP_BUCKET`                | ...         | -                    |
+| `GCP_PROJECT_ID`            | ...         | -                    |
+| `GCP_SERVICE_ACCOUNT_EMAIL` | ...         | -                    |
+| `GCP_PRIVATE_KEY`           | ...         | -                    |
 
 ## Running the App
 
@@ -78,7 +92,9 @@ This project uses a monorepo structure. The different parts of the monorepo and 
 
 ### Tests
 
-FLASH includes a comprehensive test suite and a mix of testing strategies across its packages to ensure reliability and correctness across all parts of the application.
+FLASH includes a comprehensive test suite and a mix of testing strategies across
+its packages to ensure reliability and correctness across all parts of the
+application.
 
 #### Test Overview
 
@@ -104,7 +120,8 @@ To run **End-to-End** (E2E) tests for the `apps/website`, run
 pnpm test:e2e
 ```
 
-For storybook, the `test` command only runs the unit and interaction tests. For visual and accessibility tests, start Storybook and use the UI to run the tests.
+For storybook, the `test` command only runs the unit and interaction tests. For
+visual and accessibility tests, start Storybook and use the UI to run the tests.
 
 ```bash
 pnpm storybook
@@ -114,7 +131,8 @@ pnpm storybook
 
 ## Additional documentation
 
-There is additional documentation in README.md files for each app and package in the monorepo. The links to them is bellow.
+There is additional documentation in README.md files for each app and package in
+the monorepo. The links to them is bellow.
 
 **Apps**
 
