@@ -4,8 +4,14 @@
     "main": {},
     "event": {
       "basics": {
-        "title": "Opprett event",
-        "description": "Sett opp et nytt fotoevent for gjestene dine. En QR-kode vil bli generert automatisk.",
+        "create": {
+          "title": "Opprett event",
+          "description": "Sett opp et nytt fotoevent for gjestene dine. En QR-kode vil bli generert automatisk."
+        },
+        "edit": {
+          "title": "Rediger Event",
+          "description": "Rediger eventet ditt til å passe kravene dine."
+        },
         "field": {
           "name": {
             "title": "Eventnavn",

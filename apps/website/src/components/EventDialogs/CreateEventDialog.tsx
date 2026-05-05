@@ -1,7 +1,7 @@
 "use client";
 
 import { MouseEvent, RefAttributes, useState } from "react";
-import { Button, Dialog, ProgressDots } from "@flash/ui";
+import { Button, Dialog, ProgressDots, Title } from "@flash/ui";
 import styles from "./CreateEventDialog.module.css";
 import { ReviewStep } from "./Steps";
 import { useTranslations } from "next-intl";
@@ -17,6 +17,7 @@ interface CreateEventDialogProps extends RefAttributes<HTMLDialogElement> {
 
 export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogProps) => {
   const t = useTranslations("common.actions");
+  const tTitle = useTranslations("admin.dashboard.event.basics.create");
   const { mutateAsync, status } = useCreateEventMutation();
 
   const [formKey, setFormKey] = useState<number>(0);
@@ -70,6 +71,9 @@ export const CreateEventDialog = ({ ref, onClose, ...rest }: CreateEventDialogPr
         data-color="brand-purple"
       />
       <FormProvider {...methods}>
+        {isOnFirstStep && (
+          <Title description={tTitle("description")}>{tTitle("title")}</Title>
+        )}
         <form key={formKey} className={styles.form} noValidate>
           {isOnReviewStep ? (
             <ReviewStep status={status} result={eventResult} />

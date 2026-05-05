@@ -4,8 +4,14 @@
     "main": {},
     "event": {
       "basics": {
-        "title": "Create Event",
-        "description": "Set up a new photo event for your guests. A QR code will be generated automatically.",
+        "create": {
+          "title": "Create Event",
+          "description": "Set up a new photo event for your guests. A QR code will be generated automatically."
+        },
+        "edit": {
+          "title": "Edit Event",
+          "description": "Edit your event to fit your requirements."
+        },
         "field": {
           "name": {
             "title": "Event Name",

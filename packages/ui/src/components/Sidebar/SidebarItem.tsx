@@ -1,4 +1,4 @@
-import { HTMLAttributes } from "react";
+import React, { HTMLAttributes } from "react";
 import styles from "./Sidebar.module.css";
 
 export interface SidebarItemProps extends HTMLAttributes<HTMLButtonElement> {
@@ -34,7 +34,17 @@ export const SidebarItem = ({
       {...rest}
     >
       {icon}
-      {<span className={styles.itemTitle}>{children}</span>}
+      {
+        <span className={styles.itemTitle}>
+          {React.Children.map(children, child =>
+            typeof child === "string" ? (
+              <span className={styles.itemTitleText}>{child}</span>
+            ) : (
+              child
+            )
+          )}
+        </span>
+      }
     </button>
   );
 };

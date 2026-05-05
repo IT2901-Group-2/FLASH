@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Playwright Tests
 
 on:
   push:
@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   pipeline:
-    name: CI/CD Pipeline
+    name: E2E pipeline
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.59.1-noble
@@ -20,9 +20,9 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-
+      
       - run: pnpm install
-      - run: pnpm format:check
-      - run: pnpm lint
       - run: pnpm build
-      - run: pnpm test
+      - run: pnpm test:e2e
+        env:
+          HOME: /root
