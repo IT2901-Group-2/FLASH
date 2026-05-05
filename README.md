@@ -73,9 +73,9 @@ installed.
 Building the dockerfile can be done by running:
 
 ```bash
-pnpm build
+pnpm docker
 # or
-docker build . -t flash # If `pnpm` is not installed on your system
+docker build . -t flash # If `pnpm` is not available on your system
 ```
 
 ### Running the Docker Image
@@ -110,22 +110,22 @@ The full `docker run` documentation can be found
 
 ### Environment Variables
 
-| Variable                    | Default Value          | Description                                                                                                        |
-| --------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `ADMIN_PASSWORD`            | `"Default"`            | The administrator password to use.                                                                                 |
-| `TOAST_DISPLAY_TIME`        | `5000` (5 seconds)     | The amount of time in milliseconds notification toasts stay on screen for.                                         |
-| `MULTI_FILE_UPLOAD`         | `false`                | Whether or not to allow users to upload multiple images at once. `"true"` and `"1"` are accepted as truthy values. |
-| `SLIDESHOW_SLIDE_DURATION`  | `10000` (10 seconds)   | The amount of time in milliseconds before progressing to the next slide on the slideshow.                          |
-| `MAX_IMAGE_SIZE`            | `12582912` (12 MiB)    | The maximum image size in bytes that the user is allowed to upload.                                                |
-| `EVENT_REFETCH_INTERVAL`    | `120000` (120 seconds) | ...                                                                                                                |
-| `PHOTOS_REFETCH_INTERVAL`   | `12000`                | ...                                                                                                                |
-| `JWT_SECRET`                | `"SUPER_SECRET_KEY"`   | The secret key to use for JWT token encryption/decryption. Keep this private.                                      |
-| `STORAGE_BACKEND`           | `"fs"`                 | Which storage backend to use. Currently one of `"fs"` or `"gcloud"`                                                |
-| `STORAGE_DIR`               | `$tmp/flash`           |                                                                                                                    |
-| `GCP_BUCKET`                | -                      |                                                                                                                    |
-| `GCP_PROJECT_ID`            | -                      |                                                                                                                    |
-| `GCP_SERVICE_ACCOUNT_EMAIL` | -                      |                                                                                                                    |
-| `GCP_PRIVATE_KEY`           | -                      |                                                                                                                    |
+| Variable                    | Default Value          | Description                                                                                                                                                                                 |
+| --------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ADMIN_PASSWORD`            | `"Default"`            | The administrator password.                                                                                                                                                                 |
+| `TOAST_DISPLAY_TIME`        | `5000` (5 seconds)     | The amount of time in milliseconds notification toasts stay on screen for.                                                                                                                  |
+| `MULTI_FILE_UPLOAD`         | `false`                | Whether or not to allow users to upload multiple images at once. `"true"` and `"1"` are accepted as truthy values.                                                                          |
+| `SLIDESHOW_SLIDE_DURATION`  | `10000` (10 seconds)   | The amount of time in milliseconds before progressing to the next slide on the slideshow.                                                                                                   |
+| `MAX_IMAGE_SIZE`            | `12582912` (12 MiB)    | The maximum image size in bytes that the user is allowed to upload.                                                                                                                         |
+| `EVENT_REFETCH_INTERVAL`    | `120000` (120 seconds) | ...                                                                                                                                                                                         |
+| `PHOTOS_REFETCH_INTERVAL`   | `12000`                | ...                                                                                                                                                                                         |
+| `JWT_SECRET`                | `"SUPER_SECRET_KEY"`   | The secret key to use for JWT token encryption/decryption. Keep this private.                                                                                                               |
+| `STORAGE_BACKEND`           | `"fs"`                 | Which storage backend to use. Currently one of `"fs"` or `"gcloud"`.                                                                                                                        |
+| `STORAGE_DIR`               | `$tmp/flash`           | Path to the directory to store the FLASH database in. Only relevant if `STORAGE_BACKEND="fs"`.                                                                                              |
+| `GCP_BUCKET`                | -                      | The name of the Google Cloud Storage bucket to save store the FLASH database to. Required for `STORAGE_BACKEND="gcloud"`, ignored otherwise.                                                |
+| `GCP_PROJECT_ID`            | -                      | The ID of the Google Cloud Storage project to use. Only required in conjunction with `GCP_SERVICE_ACCOUNT_EMAIL` and `GCP_PRIVATE_KEY`.                                                     |
+| `GCP_SERVICE_ACCOUNT_EMAIL` | -                      | The email of the service account to use for authentication with the Google Cloud Storage project. Only required in conjunction with `GCP_PROJECT_ID` and `GCP_PRIVATE_KEY`.                 |
+| `GCP_PRIVATE_KEY`           | -                      | The private key of the service account to use for authentication with the Google Cloud Storage project. Only required in conjunction with `GCP_PROJECT_ID` and `GCP_SERVICE_ACCOUNT_EMAIL`. |
 
 ## Development
 
