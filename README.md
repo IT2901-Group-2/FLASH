@@ -30,14 +30,12 @@
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Environment Variables](#environment-variables)
-- [Running the App](#running-the-app)
-  - [Development](#development)
-  - [Production (Docker)](#production-docker)
+- [Development](#development)
+  - [Requirements](#requirements)
   - [Tests](#tests)
     - [Test Overview](#test-overview)
     - [Running Tests](#running-tests)
-- [Usage](#usage)
-- [Additional Documentation](#additional-documentation)
+  - [Running the Application](#running-the-application)
 
 ## Overview
 
@@ -50,12 +48,12 @@
 This project uses a monorepo structure. The different parts of the monorepo and
 their functionality is:
 
-| Package                                                 | Description                                                                      |
-| ------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| [**`website`**](./apps/website/README.md)               | The heart of `FLASH`. Contains both the user-facing frontend and the backend API |
-| [**`file-storage`**](./packages/file-storage/README.md) | The file management logic for `FLASH`. Supports multiple storage solutions       |
-| [**`tokens`**](./packages/tokens/README.md)             | A TypeScript-first CSS design token system                                       |
-| [**`UI`**](./packages/ui/README.md)                     | The component library for the Flash design system                                |
+| Package                                                 | Description                                                                            |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| [**`website`**](./apps/website/README.md)               | The heart of `FLASH`. Contains both the user-facing frontend and the backend API.      |
+| [**`file-storage`**](./packages/file-storage/README.md) | The file management logic for `FLASH`. Manages support for multiple storage solutions. |
+| [**`tokens`**](./packages/tokens/README.md)             | A TypeScript-first CSS design token system.                                            |
+| [**`UI`**](./packages/ui/README.md)                     | The component library for the Flash design system.                                     |
 
 ### Tech Stack
 
@@ -148,7 +146,7 @@ visual and accessibility tests, start Storybook and use the UI to run the tests.
 pnpm storybook
 ```
 
-### Running the application
+### Running the Application
 
 After installing the dependencies and building the packages, you can start the
 main application in development mode using this command:
