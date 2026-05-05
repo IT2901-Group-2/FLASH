@@ -45,17 +45,26 @@
 
 ### Monorepo Structure
 
-This project uses a monorepo structure. The different parts of the monorepo and
-their functionality is:
+This project uses a monorepo structure where the main application and shared
+functionality are split into separate packages:
 
-| Package                                                 | Description                                                                            |
-| ------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| [**`website`**](./apps/website/README.md)               | The heart of `FLASH`. Contains both the user-facing frontend and the backend API.      |
-| [**`file-storage`**](./packages/file-storage/README.md) | The file management logic for `FLASH`. Manages support for multiple storage solutions. |
-| [**`tokens`**](./packages/tokens/README.md)             | A TypeScript-first CSS design token system.                                            |
-| [**`UI`**](./packages/ui/README.md)                     | The component library for the Flash design system.                                     |
+| Package                                                 | Description                                                                                                                                                                                                                                                                                  |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [**`website`**](./apps/website/README.md)               | The main application. Built with Next.js, it contains both the React frontend and backend API routes. The frontend uses shared components from UI and styling from tokens. The backend provides endpoints for events, image handling, authentication, and admin functionality.               |
+| [**`file-storage`**](./packages/file-storage/README.md) | Handles all file storage operations through a common interface (upload, retrieval, deletion). The application interacts with storage exclusively through this package. Uses local filesystem storage by default, with support for alternative backends configured via environment variables. |
+| [**`UI`**](./packages/ui/README.md)                     | Shared React component library used by the frontend. Components are intended to be reusable and consistent across the application.                                                                                                                                                           |
+| [**`tokens`**](./packages/tokens/README.md)             | Centralized TypeScript-first CSS design tokens (e.g. colors, spacing, typography) used by the UI components and frontend.                                                                                                                                                                    |
 
 ### Tech Stack
+
+- **Frontend**: React with TypeScript + vanilla CSS
+- **Framework**: Next.js (handles both frontend rendering and API routes)
+- **Backend**: Node.js (via Next.js API routes)
+- **PWA** support: The app can be installed and used as a Progressive Web App
+- **Storage**: Configurable through the file-storage package (local by default,
+  optional cloud backends)
+- **Testing/infrastructure**: Docker is used to run local instances of external
+  services (e.g. storage) during testing
 
 ## Getting Started
 
