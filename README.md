@@ -50,12 +50,12 @@
 This project uses a monorepo structure. The different parts of the monorepo and
 their functionality is:
 
-| Package            | Description                                                                      |
-| ------------------ | -------------------------------------------------------------------------------- |
-| **`website`**      | The heart of `FLASH`. Contains both the user-facing frontend and the backend API |
-| **`file-storage`** | The file management logic for `FLASH`. Supports multiple storage solutions       |
-| **`tokens`**       | A TypeScript-first CSS design token system                                       |
-| **`UI`**           | The component library for the Flash design system                                |
+| Package                                                 | Description                                                                      |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| [**`website`**](./apps/website/README.md)               | The heart of `FLASH`. Contains both the user-facing frontend and the backend API |
+| [**`file-storage`**](./packages/file-storage/README.md) | The file management logic for `FLASH`. Supports multiple storage solutions       |
+| [**`tokens`**](./packages/tokens/README.md)             | A TypeScript-first CSS design token system                                       |
+| [**`UI`**](./packages/ui/README.md)                     | The component library for the Flash design system                                |
 
 ### Tech Stack
 
@@ -84,11 +84,32 @@ their functionality is:
 | `GCP_SERVICE_ACCOUNT_EMAIL` | -                      |                                                                                                                    |
 | `GCP_PRIVATE_KEY`           | -                      |                                                                                                                    |
 
-## Running the App
+## Development
 
-### Development
+### Requirements
 
-### Production (Docker)
+- Node.js 20+
+- Pnpm 10+
+
+Project dependencies can be installed by running the following command:
+
+```bash
+pnpm install
+```
+
+Before the application or any tests can be run the local monorepo packages have
+to be built with the following command:
+
+```bash
+pnpm build:packages
+```
+
+In order to run end to end tests Playwright browsers need to be installed as
+well. This can be done like so:
+
+```bash
+pnpm --filter website exec playwright install
+```
 
 ### Tests
 
@@ -127,19 +148,24 @@ visual and accessibility tests, start Storybook and use the UI to run the tests.
 pnpm storybook
 ```
 
-## Usage
+### Running the application
 
-## Additional documentation
+After installing the dependencies and building the packages, you can start the
+main application in development mode using this command:
 
-There is additional documentation in README.md files for each app and package in
-the monorepo. The links to them is bellow.
+```shell
+pnpm dev
+```
 
-**Apps**
+This will start a Next.js development server which compiles pages on-demand only
+when accessed and automatically rebuilds pages when the code changes.
 
-- [Website](./apps/website/README.md)
+The application can also be built locally and started in production mode.
 
-**Packages**
+```bash
+pnpm build # Builds every package along with the main application
+# or
+pnpm --filter website build # Builds only the main application (useful if you have run `pnpm build:packages` already)
 
-- [File-Storage](./packages/file-storage/README.md)
-- [Tokens](./packages/tokens/README.md)
-- [UI](./packages/ui/README.md)
+pnpm start # Starts the production server
+```
