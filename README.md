@@ -66,11 +66,10 @@ to function. For building and running the application locally, see
 
 ### Building the Docker Image
 
-Currently we do not provide a pre-built docker image anywhere, so you will have
-to build it yourself. The only requirement is that your computer has `Docker`
-installed.
+Currently we do not provide pre-built docker images, so you will have to build
+one yourself. The only requirement is that your computer has `Docker` installed.
 
-Building the dockerfile can be done by running:
+Building the docker image can be done by running:
 
 ```bash
 pnpm docker
@@ -89,9 +88,9 @@ docker run -p <port>:3000 flash
 ```
 
 Many of FLASH's features can be configured using environment variables, which
-are described in more detail [below](#environment-variables). They can be passed
-to the docker container using the `-e` flag. For example setting the
-administrator password would look like this:
+are described in more detail [below](#configuration). They can be passed to the
+docker container using the `-e` flag. For example setting the administrator
+password would look like this:
 
 ```bash
 docker run -p <port>:3000 -e ADMIN_PASSWORD=1234 flash
@@ -108,7 +107,7 @@ docker run -p <port>:3000 -e STORAGE_BACKEND=fs -e STORAGE_DIR=/srv/flash -v <lo
 The full `docker run` documentation can be found
 [here](https://docs.docker.com/reference/cli/docker/container/run/).
 
-### Environment Variables
+### Configuration
 
 | Variable                    | Default Value          | Description                                                                                                                                                                                 |
 | --------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -126,6 +125,16 @@ The full `docker run` documentation can be found
 | `GCP_PROJECT_ID`            | -                      | The ID of the Google Cloud Storage project to use. Only required in conjunction with `GCP_SERVICE_ACCOUNT_EMAIL` and `GCP_PRIVATE_KEY`.                                                     |
 | `GCP_SERVICE_ACCOUNT_EMAIL` | -                      | The email of the service account to use for authentication with the Google Cloud Storage project. Only required in conjunction with `GCP_PROJECT_ID` and `GCP_PRIVATE_KEY`.                 |
 | `GCP_PRIVATE_KEY`           | -                      | The private key of the service account to use for authentication with the Google Cloud Storage project. Only required in conjunction with `GCP_PROJECT_ID` and `GCP_SERVICE_ACCOUNT_EMAIL`. |
+
+Currently, two storage backends are supported; the local file system and Google
+Cloud Storage. You can switch between them by setting the `STORAGE_BACKEND`
+environment variable.
+
+When using Google Cloud Storage, the environment variables `GCP_PROJECT_ID`,
+`GCP_SERVICE_ACCOUNT_EMAIL` and `GCP_PRIVATE_KEY` can all be omitted in order to
+authenticate using
+[Application Default Credentials](https://docs.cloud.google.com/docs/authentication/provide-credentials-adc).
+Otherwise, all three need to be provided.
 
 ## Development
 
