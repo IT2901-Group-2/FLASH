@@ -24,8 +24,8 @@
 - [Overview](#overview)
   - [Key Features](#key-features)
 - [Architecture](#architecture)
-  - [Monorepo Structure](#monorepo-structure)
   - [Tech Stack](#tech-stack)
+  - [Monorepo Structure](#monorepo-structure)
 - [Getting Started](#getting-started)
   - [Building the Docker Image](#building-the-docker-image)
   - [Running the Docker Image](#running-the-docker-image)
@@ -43,18 +43,6 @@
 
 ## Architecture
 
-### Monorepo Structure
-
-This project uses a monorepo structure where the main application and shared
-functionality are split into separate packages:
-
-| Package                                                 | Description                                                                                                                                                                                                                                                                                  |
-| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [**`website`**](./apps/website/README.md)               | The main application. Built with Next.js, it contains both the React frontend and backend API routes. The frontend uses shared components from UI and styling from tokens. The backend provides endpoints for events, image handling, authentication, and admin functionality.               |
-| [**`file-storage`**](./packages/file-storage/README.md) | Handles all file storage operations through a common interface (upload, retrieval, deletion). The application interacts with storage exclusively through this package. Uses local filesystem storage by default, with support for alternative backends configured via environment variables. |
-| [**`UI`**](./packages/ui/README.md)                     | Shared React component library used by the frontend. Components are intended to be reusable and consistent across the application.                                                                                                                                                           |
-| [**`tokens`**](./packages/tokens/README.md)             | Centralized TypeScript-first CSS design tokens (e.g. colors, spacing, typography) used by the UI components and frontend.                                                                                                                                                                    |
-
 ### Tech Stack
 
 - **Frontend**: React with TypeScript + vanilla CSS
@@ -65,6 +53,18 @@ functionality are split into separate packages:
   optional cloud backends)
 - **Testing/infrastructure**: Docker is used to run local instances of external
   services (e.g. storage) during testing
+
+### Monorepo Structure
+
+This project uses a monorepo structure where the main application and shared
+functionality are split into separate packages:
+
+| Package                                                 | Description                                                                                                                                                                                                                                                                                  |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [**`website`**](./apps/website/README.md)               | The heart of `FLASH`. Built with Next.js, it contains both the React frontend and backend API routes. The frontend uses shared components from UI and styling from tokens. The backend provides endpoints for events, image handling, authentication, and admin functionality.               |
+| [**`file-storage`**](./packages/file-storage/README.md) | Handles all file storage operations through a common interface (upload, retrieval, deletion). The application interacts with storage exclusively through this package. Uses local filesystem storage by default, with support for alternative backends configured via environment variables. |
+| [**`UI`**](./packages/ui/README.md)                     | Shared React component library used by the frontend. Components are intended to be reusable and consistent across the application.                                                                                                                                                           |
+| [**`tokens`**](./packages/tokens/README.md)             | Centralized TypeScript-first CSS design tokens (e.g. colors, spacing, typography) used by the UI components and frontend.                                                                                                                                                                    |
 
 ## Getting Started
 
