@@ -59,9 +59,54 @@ their functionality is:
 
 ## Getting Started
 
-### Prerequisites
+FLASH can be self-hosted on any VPS capable of running Node.js. For ease of use
+we provide a `Dockerfile` which packages all the dependencies needed for FLASH
+to function. For building and running the application locally, see
+[Running the Application](#running-the-application).
 
-### Installation
+### Building the Docker Image
+
+Currently we do not provide a pre-built docker image anywhere, so you will have
+to build it yourself. The only requirement is that your computer has `Docker`
+installed.
+
+Building the dockerfile can be done by running:
+
+```bash
+pnpm build
+# or
+docker build . -t flash # If `pnpm` is not installed on your system
+```
+
+### Running the Docker Image
+
+After the docker image is built, FLASH can be started using the following
+command, where `<port>` is the port number you want to expose the application
+on.
+
+```bash
+docker run -p <port>:3000 flash
+```
+
+Many of FLASH's features can be configured using environment variables, which
+are described in more detail [below](#environment-variables). They can be passed
+to the docker container using the `-e` flag. For example setting the
+administrator password would look like this:
+
+```bash
+docker run -p <port>:3000 -e ADMIN_PASSWORD=1234 flash
+```
+
+Another useful `docker run` flag is `-v`, which shares a host folder with the
+docker container. It can be used in conjunction with the `FS` storage to persist
+events and images to a local folder on the host between container runs.
+
+```bash
+docker run -p <port>:3000 -e STORAGE_BACKEND=fs -e STORAGE_DIR=/srv/flash -v <local-folder>:/srv/flash flash
+```
+
+The full `docker run` documentation can be found
+[here](https://docs.docker.com/reference/cli/docker/container/run/).
 
 ### Environment Variables
 
