@@ -147,7 +147,7 @@ import { cl } from "@flash/ui";
 
 ### Design tokens
 
-All colour values, spacing, typography, radii, and opacity are consumed as CSS custom properties sourced from [`@flash/tokens`](../tokens/). Components never hardcode colour values - they reference variables like `--color-base`, `--radius-full`, `--font-size-large`, and `--opacity-disabled`.
+All colour values, spacing, typography, radii, and opacity are consumed as CSS custom properties sourced from [`@flash/tokens`](../tokens/). Components never hardcode colour values. They reference variables like `--color-base`, `--radius-full`, `--font-size-large`, and `--opacity-disabled`.
 
 ### Theming with `data-color`
 
