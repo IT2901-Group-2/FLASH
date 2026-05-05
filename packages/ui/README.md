@@ -56,7 +56,7 @@ This package is consumed via the monorepo workspace protocol. Add it to a packag
 }
 ```
 
-Then import directly from the package root - no deep imports needed:
+Then import directly from the package root. No deep imports needed:
 
 ```tsx
 import { Button, Card, Form, Sidebar } from "@flash/ui";
@@ -186,7 +186,9 @@ Start Storybook for a full live-reload development loop:
 pnpm storybook
 ```
 
-Storybook picks up stories from `src/**/*.stories.tsx` and MDX documentation from `src/**/*.mdx`. No manual registration is needed - add a `.stories.tsx` file next to a component and it appears automatically.
+Storybook picks up stories from `src/**/*.stories.tsx` and MDX documentation from `src/**/*.mdx`.
+
+Add a `.stories.tsx` file next to a component and it should appear in Storybook automatically.
 
 ---
 
