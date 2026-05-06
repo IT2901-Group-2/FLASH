@@ -41,6 +41,10 @@
 
 ### Key Features
 
+| Creating an Event                                 | Upload Images                                   | Moderation                              |
+| ------------------------------------------------- | ----------------------------------------------- | --------------------------------------- |
+| ![Creating Event](.github/media/create_event.mp4) | ![Upload Image](.github/media/upload_image.mp4) | ![Moderate](.github/media/moderate.mp4) |
+
 ## Architecture
 
 ### Tech Stack
