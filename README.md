@@ -43,15 +43,15 @@
 
 #### Creating an Event
 
-https://github.com/user-attachments/assets/632aa247-10f1-41a0-b320-61bde28fd9cc
+<video src="https://github.com/user-attachments/assets/632aa247-10f1-41a0-b320-61bde28fd9cc" width="400" controls></video>
 
-#### Uloading Images
+#### Uploading Images
 
-https://github.com/user-attachments/assets/6ad24493-d9d1-4d86-a992-226d697174f3
+<video src="https://github.com/user-attachments/assets/c933fd44-e22e-41b6-97ac-8b1f5e5171b6" width="400" controls></video>
 
 #### Moderating an Event
 
-https://github.com/user-attachments/assets/c933fd44-e22e-41b6-97ac-8b1f5e5171b6
+<video src="https://github.com/user-attachments/assets/6ad24493-d9d1-4d86-a992-226d697174f3" width="400" controls></video>
 
 ## Architecture
 
