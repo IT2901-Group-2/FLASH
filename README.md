@@ -41,9 +41,9 @@
 
 ### Key Features
 
-| Creating an Event                                       | Upload Images                                         | Moderation                                    |
-| ------------------------------------------------------- | ----------------------------------------------------- | --------------------------------------------- |
-| ![Creating Event](.github/media/video/create_event.mp4) | ![Upload Image](.github/media/video/upload_image.mp4) | ![Moderate](.github/media/video/moderate.mp4) |
+| Creating an Event                                                                                         | Upload Images                                         | Moderation                                    |
+| --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | --------------------------------------------- |
+| [![Creating Event](.github/media/video/thumbnail/create_event.png)](.github/media/video/create_event.mp4) | ![Upload Image](.github/media/video/upload_image.mp4) | ![Moderate](.github/media/video/moderate.mp4) |
 
 ## Architecture
 
