@@ -1,12 +1,12 @@
 # @flash/ui
 
-The component library for the Flash design system. Built with React 19 and TypeScript, themed via design tokens, and documented and tested with Storybook.
+The component library for the FLASH design system. Built with React 19 and TypeScript, themed via design tokens, and documented and tested with Storybook.
 
 ---
 
 ## What this package provides
 
-`@flash/ui` is the single source of truth for UI components across Flash products. It exports:
+`@flash/ui` is the single source of truth for UI components across the FLASH application. It exports:
 
 - **React components** - layout, forms, feedback, and display primitives
 - **TypeScript types** - full prop types for every component, including the shared `ColorName` type
@@ -56,7 +56,7 @@ This package is consumed via the monorepo workspace protocol. Add it to a packag
 }
 ```
 
-Then import directly from the package root - no deep imports needed:
+Then import directly from the package root. No deep imports needed:
 
 ```tsx
 import { Button, Card, Form, Sidebar } from "@flash/ui";
@@ -147,7 +147,7 @@ import { cl } from "@flash/ui";
 
 ### Design tokens
 
-All colour values, spacing, typography, radii, and opacity are consumed as CSS custom properties sourced from `@flash/tokens`. Components never hardcode colour values - they reference variables like `--color-base`, `--radius-full`, `--font-size-large`, and `--opacity-disabled`.
+All colour values, spacing, typography, radii, and opacity are consumed as CSS custom properties sourced from [`@flash/tokens`](../tokens/). Components never hardcode colour values. They reference variables like `--color-base`, `--radius-full`, `--font-size-large`, and `--opacity-disabled`.
 
 ### Theming with `data-color`
 
@@ -157,10 +157,6 @@ Components expose a `data-color` prop that accepts a `ColorName` (a `ColorRole` 
 <Button data-color="brand-purple">Primary action</Button>
 <Button data-color="neutral">Secondary action</Button>
 ```
-
-### Fonts
-
-Storybook previews load **Nunito Sans** (primary) and **Verdana** (fallback). Ensure these fonts are available in the consuming application.
 
 ---
 
@@ -190,7 +186,9 @@ Start Storybook for a full live-reload development loop:
 pnpm storybook
 ```
 
-Storybook picks up stories from `src/**/*.stories.tsx` and MDX documentation from `src/**/*.mdx`. No manual registration is needed - add a `.stories.tsx` file next to a component and it appears automatically.
+Storybook picks up stories from `src/**/*.stories.tsx` and MDX documentation from `src/**/*.mdx`.
+
+Add a `.stories.tsx` file next to a component and it should appear in Storybook automatically.
 
 ---
 
@@ -205,7 +203,7 @@ Storybook is the primary environment for developing, reviewing, and documenting 
 | `@storybook/addon-vitest`  | Runs Vitest tests directly inside the Storybook UI             |
 | `@chromatic-com/storybook` | Enables Chromatic visual regression snapshots                  |
 
-Stories are organised into four top-level sections: **Fundamentals**, **Building Blocks › Components**, **Building Blocks › Icons**, and **Patterns and Templates**.
+Stories are organised into four top-level sections: **Fundamentals**, **Building Blocks $\rightarrow$ Components**, **Building Blocks $\rightarrow$ Icons**, and **Patterns and Templates**.
 
 To add a new story for an existing component, create a `ComponentName.stories.tsx` file next to the component:
 
@@ -239,7 +237,7 @@ pnpm build-storybook
 
 ### Tests
 
-Tests are written as Storybook `play` functions and run in a real Chromium browser via Playwright and Vitest:
+Tests are written as Storybook `play` functions and run with Playwright and Vitest:
 
 ```bash
 pnpm test
@@ -249,8 +247,7 @@ Coverage is collected with Istanbul and reported to the console. To add a test, 
 
 ```tsx
 export const Clickable: Story = {
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole("button"));
     await expect(canvas.getByText("Clicked!")).toBeInTheDocument();
   },

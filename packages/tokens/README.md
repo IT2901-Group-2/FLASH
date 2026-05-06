@@ -1,10 +1,6 @@
 # @flash/tokens
 
-A TypeScript-first CSS design token system with light/dark theme support, semantic color roles, and `data-color` contextual theming.
-
-Built on [Style Dictionary](https://styledictionary.com/) and compiled with [Lightning CSS](https://lightningcss.dev/).
-
-This package is inspired by the implementation in [aksel.nav.no](https://github.com/navikt/aksel/tree/main/%40navikt/core/tokens) (GitHub).
+A TypeScript-first CSS design token system for FLASH. The single source of thruth for color, typography, spacing and more. Suports light/dark themes, semantic color roles, and `data-color` contextual theming.
 
 ---
 
@@ -63,6 +59,17 @@ A baseline CSS reset is also included:
 ---
 
 ## Token Categories
+
+### Overview
+
+| Color      | Prefix (css)    | Example                               |
+| ---------- | --------------- | ------------------------------------- |
+| Color      | `--color-`      | `--color-base`                        |
+| Typography | `--font-`       | `--font-family`, `--font-weight-bold` |
+| Radius     | `--radius-`     | `--radius-16`, `--radius-full`        |
+| Breakpoint | `--breakpoint-` | `--breakpoint-lg`                     |
+| Shadow     | `--shadow-`     | `--shadow-dialog`                     |
+| Opacity    | `--opacity-`    | `--opcity-disabled`                   |
 
 ### Colors
 
@@ -291,6 +298,22 @@ pnpm format:check
 
 ---
 
-## License
+## Package Contents
 
-See [LICENSE](/LICENSE) for details.
+```
+src/
+├── css/
+│   └── reset.css           # CSS for a base look across all browsers
+│
+├── tokens/                 # All token values
+│   └── colors/             # Token values related to color
+│       └── roles/          # Categorizing color values into roles for "data-color"
+│
+├── types/                  # Internal and output types fot this package
+└── utils/                  # Utils for calculating and combining token values
+
+```
+
+---
+
+A full overview of how tokes should be used can be found in the [UI package](../ui/), specifically the [Surface Tokens Guide](../ui/src/docs/01-fundementals/SurfaceTokensGuide.mdx)
