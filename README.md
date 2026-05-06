@@ -39,6 +39,8 @@
 
 ## Overview
 
+FLASH is a privacy-focused web application designed to capture and share memories from weddings and other special events. Create events, let guests join and upload photos, then moderate the images - choosing which images gets rejected and which are approved. A key feature of the application is the slideshow, so you can shows all approved images on the big screen.
+
 ### Key Features
 
 | Creating an Event                                       | Upload Images                                           | Moderation                                          |
